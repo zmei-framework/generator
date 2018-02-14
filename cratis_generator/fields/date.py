@@ -1,0 +1,36 @@
+from cratis_generator.config.domain import FieldDef, FieldDeclaration
+from cratis_generator.generator.utils import gen_args
+
+
+class DateFieldDef(FieldDef):
+    def get_model_field(self, collection):
+        args = self.prepare_field_arguemnts()
+
+        return FieldDeclaration(
+            [('django.db', 'models')],
+            'models.DateField({})'.format(gen_args(args))
+        )
+
+
+class DateTimeFieldDef(FieldDef):
+    def get_model_field(self, collection):
+        args = self.prepare_field_arguemnts()
+
+        return FieldDeclaration(
+            [('django.db', 'models')],
+            'models.DateTimeField({})'.format(gen_args(args))
+        )
+
+
+class AutoNowDateTimeFieldDef(DateTimeFieldDef):
+    def prepare_field_arguemnts(self, own_args=None):
+        args = super().prepare_field_arguemnts(own_args)
+        args['auto_now'] = True
+        return args
+
+
+class AutoNowAddDateTimeFieldDef(DateTimeFieldDef):
+    def prepare_field_arguemnts(self, own_args=None):
+        args = super().prepare_field_arguemnts(own_args)
+        args['auto_now_add'] = True
+        return args
