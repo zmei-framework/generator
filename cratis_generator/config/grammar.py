@@ -4,7 +4,7 @@ from pyparsing import *
 
 identifier = Word(alphas + '_', alphanums + '_')
 
-uri_segment = OneOrMore(Word(alphanums + '-') | (Literal('<') + SkipTo(Literal('>')) + Literal('>')))
+uri_segment = OneOrMore(Word(alphanums + '-.') | (Literal('<') + SkipTo(Literal('>')) + Literal('>')))
 uri_expr = Combine(Optional('$') + Literal('/') + Optional(delimitedList(uri_segment, delim='/', combine=True)) + Optional('/'))
 file_name = Word(alphanums + '-/_.')
 
@@ -32,7 +32,9 @@ page_header = Suppress('[') + Optional(identifier.setResultsName('parent_name') 
                                                                 Optional(Suppress(':') + file_name_or_expr)) + Suppress(']')
 page_item = Group(identifier.setResultsName('key') + Suppress(':') + restOfLine.setResultsName('expression'))
 
-page = Group(page_header + extras + ZeroOrMore(page_item).setResultsName('page_items'))
+page_code = Optional(QuotedString('{', endQuoteChar='}', multiline=True).setResultsName('page_code'))
+
+page = Group(page_header + Each([ZeroOrMore(page_item).setResultsName('page_items'), extras]) + page_code)
 
 # Collection header
 

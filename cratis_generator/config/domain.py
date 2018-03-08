@@ -45,10 +45,16 @@ class PageDef(object):
         """:type: CollectionSetDef"""
         self.collection_set = collection_set
 
+        self.rss = None
+
         self.name = parse_result.page_name
         self.parent_name = parse_result.parent_name
         self.parsed_template_name = parse_result.template_name
         self.parsed_template_expr = parse_result.template_expr
+        self.page_code = '\n'.join([x.strip() for x in parse_result.page_code.split('\n')])
+
+        # error handler for:
+        self.handlers = []
 
         self.allow_post = False
 
@@ -56,6 +62,8 @@ class PageDef(object):
             raise ValidationException('Parent "{}" for page "{}" does not exist'.format(self.parent_name, self.name))
 
         self.uri_params = []
+
+
 
         def find_params(match):
             param = match.group(1)
@@ -104,9 +112,18 @@ class PageDef(object):
     @property
     def parent_view_name(self):
         if not self.parent_name:
+            if self.rss:
+                return
             return 'TemplateView'
 
         return self.collection_set.pages[self.parent_name].view_name
+
+    def get_imports(self):
+        imports = []
+        # if self.rss:
+        #     imports.append(('django.core.exceptions', 'ObjectDoesNotExist'))
+
+        return imports
 
     @property
     def has_sitemap(self):

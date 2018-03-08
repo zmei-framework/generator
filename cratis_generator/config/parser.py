@@ -7,7 +7,9 @@ from cratis_generator.config.domain import ValidationException
 from cratis_generator.config.grammar import collection_set
 from cratis_generator.extras.dates import DateTreeExtra
 from cratis_generator.extras.document import DocumentExtra
+from cratis_generator.extras.page.page_handlers import HandleErrorExtra
 from cratis_generator.extras.page.post import PostPageExtra
+from cratis_generator.extras.page.rss import RssPageExtra
 from cratis_generator.extras.sortable import SortableExtra, OrderExtra
 from cratis_generator.extras.tree import TreeExtra
 from cratis_generator.extras.mixin import MixinExtra
@@ -108,5 +110,7 @@ class Parser(object):
     def get_page_extras_available(self):
         return {x.get_name(): x for x in (
             PostPageExtra,
+            RssPageExtra,
+            HandleErrorExtra
         )}
 

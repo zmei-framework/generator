@@ -153,6 +153,9 @@ def generate_views_py(app_name, collection_set):
 
         for page in collection_set.pages.values():
 
+            for import_spec in page.get_imports():
+                imports.add(*import_spec)
+
             for item in page.page_items.values():
                 for import_spec in item.get_imports():
                     imports.add(*import_spec)

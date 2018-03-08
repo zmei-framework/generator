@@ -39,6 +39,8 @@ class {{ page.view_name }}({{ page.parent_view_name }}):
             raise Http404
         {% endif %}{% endfor %}
 
+        {{ page.page_code|indent(8) }}
+
         self.template_name = {{ page.template_name_expr }}
 
         data.update({ {% for key in (page.page_item_names + ['url']) %}'{{ key }}': {{ key }}{% if not loop.last %}, {% endif %}{% endfor %} })
@@ -49,6 +51,15 @@ class {{ page.view_name }}({{ page.parent_view_name }}):
 {% if page.name == 'global' %}
 def global_context(request):
     return GlobalView(request=request, kwargs={}, args=[]).get_context_data()
+{% endif %}
+
+{% if page.handlers %}
+from django.conf import urls
+{% for handler_code in page.handlers %}
+from django.conf.urls import handler{{ handler_code }}
+handler_{{ handler_code }}_view = {{ page.view_name }}.as_view()
+setattr(urls, 'handler{{ handler_code }}', '{{ collection_set.app_name }}.views.handler_{{ handler_code }}_view')
+{% endfor %}
 {% endif %}
 
 {% endfor %}

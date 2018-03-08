@@ -10,7 +10,10 @@ Welcome to Cratis Generator's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   samples/collection
+   intro
+   installation
+   basics
+
 
 
 
