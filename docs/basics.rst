@@ -1,47 +1,11 @@
-Collections generator
+Tutorial
 ========================
 
-Cratis Lib has powerful module for Django code-generation. It allows to generate
-models, admin and rest API from easy to write configuration file.
+Make sure generator is installed and working::
 
-In this tutorial we will create small Hotel booking application.
+    $ django-gen
 
-Preparation
-----------------
-
-Add :class:`Generator <cratis_generator.features.Generator>` to app.py::
-
-    from cratis import App
-    from cratis.features import Common
-
-    from cratis_common.db import Mysql
-    from bundles import CratisCms
-    from cratis_generator.features import Generator
-
-    app = App(locals())
-
-    app.load(
-        Common(),
-
-        Mysql('mydb', user='root', password='123123'),
-
-        CratisCms(title='Hotel Grand Cnyon'),
-
-        Generator()
-    )
-
-    app.run()
-
-
-Install deps::
-
-    $ django install
-
-Make sure generator is working::
-
-    $ django gen
-
-Nothing should be displayed.
+Nothing should be displayed as you have not created any *.col files yet.
 
 
 First experiment
@@ -56,7 +20,7 @@ Let's create simple collection definition in *hotel.col* file::
 
 and run generator again::
 
-    $ django gen
+    $ django-gen
 
 This time generator picked up our collection file, and created new feature and models file:
 
@@ -75,7 +39,7 @@ Now we need migrations to create database structure. We can generate migrations 
 
 There is another way to generate migrations quicker, but first lets unapply & remove all the migrations::
 
-    $ django gen --remove hotel
+    $ django-gen --remove hotel
 
     Unapplying migrations
     Operations to perform:
@@ -87,7 +51,7 @@ There is another way to generate migrations quicker, but first lets unapply & re
 
 Better to generate migrations with *gen* command. It will generate code, create migrations and apply migrations. All in one command::
 
-    $ django gen --auto
+    $ django-gen --auto
 
     Application hotel
     hotel
@@ -101,7 +65,7 @@ Better to generate migrations with *gen* command. It will generate code, create 
       Applying hotel.0001_initial... OK
 
 .. note::
-    Starting from this moment, every time we change something in *hotel.col* we will execute *gen --auto* command.
+    Starting from this moment, every time we change something in *hotel.col* we will execute *django-gen --auto* command.
 
 
 Admin panel
@@ -206,7 +170,7 @@ Now let's add rooms to our hotel::
 
 As usually, generator will do all the dirty work for us::
 
-    $ django gen --auto
+    $ django-gen --auto
 
     Application hotel
     Migrations for 'hotel':
@@ -264,7 +228,7 @@ Another thing we can do, is to move location into separate model. First let's re
 
 And then execute *gen --auto* as usually::
 
-    $ django gen --auto
+    $ django-gen --auto
 
 Now let's add new model and field::
 
