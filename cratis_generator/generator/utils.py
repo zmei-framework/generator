@@ -37,6 +37,11 @@ def fill_file(file_path, context, template=None):
     with open(file_path, 'w') as f:
         f.write(data)
 
+
+def is_file_generated(filename):
+    with open(filename, 'r') as f:
+        return re.match('^\s*{#\s*generated\s*#}\s*', f.read(20))
+
 def generate_file(filename, template_name, context=None):
     """
     Generates a new file using Jinja2 template
@@ -46,16 +51,25 @@ def generate_file(filename, template_name, context=None):
     :param context:
     :return:
     """
+    dirname = os.path.dirname(filename)
+    if len(dirname) and not os.path.exists(dirname):
+        os.makedirs(dirname)
+
     if os.path.exists(filename):
         with open(filename, 'r') as f:
-            match = re.match('^\s*#\s*freeze(\s*,\s+generate\s+to\s*:\s*([a-zA-Z0-9\.\-_]+.py))?', f.read(100))
-            if match:
-                print('NB! Skipping file {} as it contains #freeze marker'.format(filename))
-                if match.group(2):
-                    print('NB! Generating to {} instead'.format(match.group(2)))
-                    filename = os.path.join(os.path.dirname(filename), match.group(2))
-                else:
+            if filename.endswith('.py'):
+                match = re.match('^\s*#\s*freeze(\s*,\s+generate\s+to\s*:\s*([a-zA-Z0-9\.\-_]+.py))?', f.read(100))
+                if match:
+                    print('NB! Skipping file {} as it contains #freeze marker'.format(filename))
+                    if match.group(2):
+                        print('NB! Generating to {} instead'.format(match.group(2)))
+                        filename = os.path.join(os.path.dirname(filename), match.group(2))
+                    else:
+                        return
+            else:
+                if not re.match('^\s*{#\s*generated\s*#}\s*', f.read(20)):
                     return
+
 
     context = context or {}
 
@@ -77,11 +91,16 @@ def generate_file(filename, template_name, context=None):
     def to_name(ref):
         return ' '.join([x.capitalize() for x in ref.split('_')])
 
-    env = Environment(loader=PackageLoader('cratis_generator', 'templates'))
+    def include_file(name):
+        return jinja2.Markup(loader.get_source(env, name)[0])
+
+    loader = PackageLoader('cratis_generator', 'templates')
+    env = Environment(loader=loader)
     env.filters['field_names'] = field_names
     env.filters['format_names'] = format_names
     env.filters['to_name'] = to_name
     env.filters['repr'] = repr
+    env.globals['include_file'] = include_file
 
     template = env.get_template(template_name)
 

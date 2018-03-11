@@ -14,8 +14,15 @@ class MixinExtra(Extra):
         class_name = extra.extra_body.strip()
 
         parts = class_name.split('.')
+        model_cls = parts[-1]
+
+        if model_cls == collection.class_name:
+            alias = '{}_'.format(model_cls)
+        else:
+            alias = model_cls
+
         collection.mixin_classes.append(
-            ('.'.join(parts[:-1]), parts[-1])
+            ('.'.join(parts[:-1]), parts[-1], alias)
         )
 
 

@@ -4,6 +4,8 @@ from cratis_generator.config.domain import ValidationException, ReferenceField, 
 from cratis_generator.config.extras import Extra
 from pyparsing import *
 
+from cratis_generator.config.grammar import field_name_spec
+
 
 class AdminExtra(Extra):
 
@@ -14,8 +16,6 @@ class AdminExtra(Extra):
     def get_parser(self):
 
         identifier = Word(alphas, alphanums + '_')
-
-        field_name_spec = Literal('*') | Literal('.*') | (Combine(Optional('^') + Optional('.') + Optional('*') + identifier + Optional('*')))
 
         admin_inline_args = Optional(
             Suppress('fields:') + Group(delimitedList(field_name_spec)).setResultsName('fields')) + \

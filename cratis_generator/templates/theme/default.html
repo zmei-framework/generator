@@ -1,0 +1,18 @@
+{{ "{# generated #}" }}
+{% if parent.defined_template_name -%}
+{{ "{% extends '" }}{{ parent.defined_template_name }}{{ "' %}" }}
+{%- else -%}
+{{ "{% extends 'base.html' %}" }}
+{%- endif %}
+
+{% for area, blocks in page.blocks.items() -%}
+{{ "{% block " }}{{ area }}{{ " %}" }}
+{% for block in blocks -%}
+{% if block.name == '..' -%}
+{{ super() }}
+{%- else -%}
+{{ include_file(block.template_name) }}
+{%- endif %}
+{%- endfor %}
+{{ "{% endblock %}" }}
+{%- endfor %}

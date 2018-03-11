@@ -14,6 +14,9 @@ file_name = Word(alphanums + '-/_.')
 extra = (LineStart() +
          Combine(Suppress('@') + Word(alphanums + '_')).setResultsName("extra_name") +
          Optional(
+             Suppress('.') + Word(alphanums + '_').setResultsName("descriptor")
+         ) +
+         Optional(
              QuotedString('<<', endQuoteChar='>>', multiline=True) |
              QuotedString('{{', endQuoteChar='}}', multiline=True) |
              QuotedString('{', endQuoteChar='}', multiline=True) |
@@ -28,7 +31,9 @@ file_name_expr = Literal('expr') + QuotedString("(", endQuoteChar=")").setResult
 file_name_or_expr = file_name_expr | file_name.setResultsName('template_name')
 
 page_header = Suppress('[') + Optional(identifier.setResultsName('parent_name') + Suppress('->')) + \
-              identifier.setResultsName('page_name') + Optional(Suppress(':') + uri_expr.setResultsName('uri') +
+              identifier.setResultsName('page_name') + \
+              Optional(Suppress('as') + identifier.setResultsName('url_alias')) + \
+              Optional(Suppress(':') + uri_expr.setResultsName('uri') +
                                                                 Optional(Suppress(':') + file_name_or_expr)) + Suppress(']')
 page_item = Group(identifier.setResultsName('key') + Suppress(':') + restOfLine.setResultsName('expression'))
 
@@ -37,6 +42,8 @@ page_code = Optional(QuotedString('{', endQuoteChar='}', multiline=True).setResu
 page = Group(page_header + Each([ZeroOrMore(page_item).setResultsName('page_items'), extras]) + page_code)
 
 # Collection header
+
+field_name_spec = Literal('*') | Literal('.*') | (Combine(Optional('^') + Optional('.') + Optional('*') + identifier + Optional('*')))
 
 def modifier(symbol, name):
     return Optional(Literal(symbol)).setParseAction(lambda tokens: len(tokens) > 0).setResultsName(name)

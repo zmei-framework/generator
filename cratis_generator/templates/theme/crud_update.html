@@ -1,0 +1,9 @@
+<a href="{% url crud.list %}">&laquo; Back to list</a>
+
+<div>
+    <h2>{{ object }}</h2>
+    <form action="" method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Save" />
+    </form>
+</div>

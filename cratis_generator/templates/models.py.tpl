@@ -12,7 +12,7 @@
 ###################
 
 {% for cname, col in collections %}
-class {{ col.class_name }}({% for import_str, class_name in col.mixin_classes %}{{ class_name }}, {% endfor %}{{ col.model_class_declaration }}):
+class {{ col.class_name }}({% for import_str, class_name, alias in col.mixin_classes %}{{ alias }}, {% endfor %}{{ col.model_class_declaration }}):
     """
     {{ col.class_name }}
     """

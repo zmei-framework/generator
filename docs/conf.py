@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Cratis Generator documentation build configuration file, created by
+# Genius Generator documentation build configuration file, created by
 # sphinx-quickstart on Sun Jan  7 00:25:10 2018.
 #
 # This file is execfile()d with the current directory set to its
@@ -50,7 +50,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'Cratis Generator'
+project = 'Genius Generator'
 copyright = '2018, Alex Rudakov'
 author = 'Alex Rudakov'
 
@@ -131,11 +131,16 @@ html_sidebars = {
     ]
 }
 
+html_theme_options = {
+    'logo': 'img/genius-logo.png',
+    # 'github_user': 'bitprophet',
+    # 'github_repo': 'alabaster',
+}
 
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'CratisGeneratordoc'
+htmlhelp_basename = 'GeniusGeneratordoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -162,7 +167,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'CratisGenerator.tex', 'Cratis Generator Documentation',
+    (master_doc, 'GeniusGenerator.tex', 'Genius Generator Documentation',
      'Alex Rudakov', 'manual'),
 ]
 
@@ -172,7 +177,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'cratisgenerator', 'Cratis Generator Documentation',
+    (master_doc, 'Geniusgenerator', 'Genius Generator Documentation',
      [author], 1)
 ]
 
@@ -183,8 +188,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'CratisGenerator', 'Cratis Generator Documentation',
-     author, 'CratisGenerator', 'One line description of project.',
+    (master_doc, 'GeniusGenerator', 'Genius Generator Documentation',
+     author, 'GeniusGenerator', 'One line description of project.',
      'Miscellaneous'),
 ]
 

@@ -6,6 +6,7 @@ from abc import abstractmethod, abstractproperty
 from collections import namedtuple
 
 import sys
+from cratis_generator.config.grammar import page as page_parser
 from cratis_generator.generator.utils import StopGenerator, handle_parse_exception
 from pyparsing import ParseException
 from termcolor import colored
@@ -35,6 +36,9 @@ class PageExtra(object):
     def parse(self, extra, collection):
         pass
 
+    def post_process(self):
+        pass
+
 
 class PageDef(object):
     def __init__(self, parse_result, collection_set) -> None:
@@ -47,7 +51,10 @@ class PageDef(object):
 
         self.rss = None
 
+        self.extra_bases = []
+
         self.name = parse_result.page_name
+        self.url_alias = parse_result.url_alias or self.name
         self.parent_name = parse_result.parent_name
         self.parsed_template_name = parse_result.template_name
         self.parsed_template_expr = parse_result.template_expr
@@ -63,6 +70,13 @@ class PageDef(object):
 
         self.uri_params = []
 
+        self.children = []
+
+        self.imports = []
+
+        self.options = {}
+        self.methods = {}
+        self.blocks = {}
 
 
         def find_params(match):
@@ -73,6 +87,7 @@ class PageDef(object):
             return '(?P<{}>{})'.format(param, expr)
 
         uri = parse_result.uri
+        self.defined_uri = uri
         self.has_uri = bool(uri)
 
         self.i18n = False
@@ -89,8 +104,6 @@ class PageDef(object):
             self.sitemap_expr = self.page_items.pop('sitemap')
         else:
             self.sitemap_expr = None
-
-        self.page_item_names = list(self.page_items.keys())
 
         extras = self.collection_set.parser.get_page_extras_available()
 
@@ -110,20 +123,18 @@ class PageDef(object):
                 raise ValidationException('Extra not found: {}, reason: {}'.format(extra.extra_name, e))
 
     @property
+    def page_item_names(self):
+        return list(self.page_items.keys())
+
+    @property
     def parent_view_name(self):
         if not self.parent_name:
-            if self.rss:
-                return
             return 'TemplateView'
 
         return self.collection_set.pages[self.parent_name].view_name
 
     def get_imports(self):
-        imports = []
-        # if self.rss:
-        #     imports.append(('django.core.exceptions', 'ObjectDoesNotExist'))
-
-        return imports
+        return self.imports
 
     @property
     def has_sitemap(self):
@@ -139,13 +150,90 @@ class PageDef(object):
         uri = self.uri[1:] if self.uri.startswith('/') else self.uri
         return '^{}$'.format(uri)
 
+
+    def render_method_headers(self, use_data=False, use_parent=False, use_url=False, use_request=False):
+        code = ""
+        if use_data:
+            code += "data = super().get_context_data(**self.kwargs)\n"
+        if use_parent:
+            code += "parent = type('parent', (object,), data)\n"
+        if use_request:
+            code += "request = self.request\n"
+        if use_url:
+            code += "url = type('url', (object,), self.kwargs)\n"
+
+        if len(code) > 0:
+            code += "\n"
+
+        return code
+
+    def render_page_code(self):
+
+        code = ""
+
+        for key, item in self.page_items.items():
+            if not item.or_404:
+                code += key + " = " + item.render_python_code() + "\n"
+            else:
+                code += "try:\n"
+                code += "   " + key + " = " + item.render_python_code() + "\n"
+                code += "except ObjectDoesNotExist:\n"
+                code += "   raise Http404\n"
+
+        code += self.page_code
+
+        code = self.render_method_headers(
+            use_data=False,
+            use_parent='parent' in code,
+            use_request='request' in code,
+            use_url='url' in code,
+        ) + code
+
+        if len(code.strip()) == 0:
+            return ''
+
+        return code
+
     @property
-    def template_name_expr(self):
+    def defined_template_name(self):
+        """
+        Returns name of template if it is not an expression
+        """
         if self.parsed_template_expr:
-            return self.parsed_template_expr
+            return None
         elif self.parsed_template_name:
-            return '"{}"'.format(self.parsed_template_name)
-        return '"{}/{}.html"'.format(self.collection_set.app_name, self.name)
+            return '{}'.format(self.parsed_template_name)
+        else:
+            return '{}/{}.html'.format(self.collection_set.app_name, self.name)
+
+    def render_template_name_expr(self):
+
+        if self.parsed_template_expr:
+            code = self.parsed_template_expr
+        else:
+            code = '"{tpl}"'.format(tpl=self.defined_template_name)
+
+        code = self.render_method_headers(
+            use_data='data' in code,
+            use_parent='parent' in code,
+            use_request='request' in code,
+            use_url='url' in code,
+        ) + 'return [' + code + ']\n'
+
+        return code
+
+    def render_method_expr(self, method_code):
+        code = method_code
+
+        code = self.render_method_headers(
+            use_data='data' in code,
+            use_parent='parent' in code,
+            use_request='request' in code,
+            use_url='url' in code,
+        ) + code + '\n'
+
+        return code
+
 
 
 class PageExpression(object):
@@ -627,7 +715,21 @@ class CollectionSetDef(object):
             self.collections[collection_def.ref] = collection_def
 
         for page in parse_result.pages:
-            self.pages[page.page_name] = PageDef(page, self)
+            page_def = PageDef(page, self)
+            self.pages[page.page_name] = page_def
+
+            for subpage_raw in page_def.children:
+                try:
+                    subpage_parsed = page_parser.parseString(subpage_raw, parseAll=True)[0]
+                except ParseException as e:
+                    handle_parse_exception(e, subpage_raw,
+                                           'Page {} auto-generated subpages: {}'.format(page.page_name, e))
+
+                self.pages[subpage_parsed.page_name] = PageDef(subpage_parsed, self)
+
+        for page in self.pages.values():
+            for extra in page.extras:
+                extra.post_process()
 
         for col_name, collection in self.collections.items():
             for field_name, field in list(collection.fields.items()):

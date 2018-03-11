@@ -1,0 +1,16 @@
+<div>
+    <ul>
+        {% for item in items %}
+        <li>
+            {% if crud.details %}<a href="{% url crud.details pk=item.pk %}">{{ item }}</a>{% endif %}
+
+            {% if crud.update %}<a href="{% url crud.update pk=item.pk %}">[Edit]</a>{% endif %}
+            {% if crud.delete %}<a href="{% url crud.delete pk=item.pk %}">[X]</a>{% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+
+    <p>
+        {% if crud.create %}<a href="{% url crud.create %}">[Create]</a>{% endif %}
+    </p>
+</div>

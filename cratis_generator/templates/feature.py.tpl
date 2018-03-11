@@ -58,7 +58,7 @@ class {{ feature_name }}(Feature):
         {% for page in collection_set.pages.values() %}{% if page.has_uri %}{% if page.i18n %}
         urls += tuple(i18n_patterns({% else %}
         urls += ({% endif %}
-            url(r'{{ page.urls_line }}', {{ page.view_name }}.as_view(), name='{{ package_name }}.{{ page.name }}'),
+            url(r'{{ page.urls_line }}', {{ page.view_name }}.as_view(), name='{{ package_name }}.{{ page.url_alias }}'),
         {% if page.i18n %})){% else %}
         ){% endif %}{% endif %}
         {% endfor %}

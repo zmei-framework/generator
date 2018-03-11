@@ -1,6 +1,8 @@
 Collection name
 ####################
 
+Base syntax for collection
+
 Reference
 ==============
 

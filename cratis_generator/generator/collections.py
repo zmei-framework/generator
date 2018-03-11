@@ -1,9 +1,11 @@
+from glob import glob
+
 import os
 import re
 
 from cratis_generator.config.domain import CollectionSetDef, CollectionDef, FieldDef, FieldDeclaration, NoModelField
 from cratis_generator.generator.imports import ImportSet
-from cratis_generator.generator.utils import generate_feature, generate_file
+from cratis_generator.generator.utils import generate_feature, generate_file, is_file_generated
 
 
 def list_apps():
@@ -148,6 +150,7 @@ def generate_views_py(app_name, collection_set):
 
         col.rest_conf.configure_imports(imports)
 
+    generated_templates = []
     if len(collection_set.pages.items()) > 0:
         imports.add('django.views.generic', 'TemplateView')
 
@@ -159,6 +162,22 @@ def generate_views_py(app_name, collection_set):
             for item in page.page_items.values():
                 for import_spec in item.get_imports():
                     imports.add(*import_spec)
+
+            template = page.defined_template_name
+            if template:
+                template_name = '{app_name}/templates/{template}'.format(app_name=app_name, template=template, )
+
+                generate_file(template_name, 'theme/default.html', {
+                    'page': page,
+                    'parent': collection_set.pages[page.parent_name] if page.parent_name else None
+                })
+
+                generated_templates.append(template_name)
+
+    for template in glob(f'{app_name}/templates/**/*.html', recursive=True):
+        if template not in generated_templates and is_file_generated(template):
+            os.unlink(template)
+
 
     generate_file('{}/views.py'.format(app_name), 'views.py.tpl', {
         'imports': imports.import_sting(),
@@ -184,7 +203,10 @@ def generate_models_py(app_name, collection_set):
 
         if collection.mixin_classes:
             for import_decl in collection.mixin_classes:
-                imports.add(*import_decl)
+                pkg, cls, alias = import_decl
+                if alias != cls:
+                    cls = '{} as {}'.format(cls, alias)
+                imports.add(*(pkg, cls))
 
         for field in collection.own_fields:  # type: FieldDef
             model_field = field.get_model_field(collection)

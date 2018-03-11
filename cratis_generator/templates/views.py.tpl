@@ -19,32 +19,30 @@ class {{ col.class_name }}ViewSet({{ col.rest_class[1] }}):
 {% endfor %}
 {{ collection_set.page_imports }}
 {% for page in pages %}
-class {{ page.view_name }}({{ page.parent_view_name }}):
+class {{ page.view_name }}({% if page.extra_bases %}{{ page.extra_bases|join(", ") }}, {% endif %}{{ page.parent_view_name }}):
+    {% if page.options %}{% for key, option in page.options.items() %}{{ key }} = {{ option }}
+    {% endfor %}{% endif %}{% if page.methods %}{% for key, method_code in page.methods.items() %}
+    def {{ key }}(self, *args, **kwargs):
+        {{ page.render_method_expr(method_code)|indent(8) }}
+    {% endfor %}{% endif %}
     {% if page.has_sitemap %}
     @classmethod
     def get_sitemap(cls):
         return {{ page.sitemap_expr.render_python_code() }}
     {% endif %}
+    def get_template_names(self):
+        {{ page.render_template_name_expr()|indent(8) }}
+
+    {% set code=page.render_page_code() %}{% if code %}
     def get_context_data(self, **kwargs):
-        data = super().get_context_data(**kwargs)
-        request = self.request
-        parent = type('parent', (object,), data)
-        url = type('url', (object,), self.kwargs)
-
-        {% for key, item in page.page_items.items() %}{% if not item.or_404 %}
-        {{ key }} = {{ item.render_python_code() }}{% else %}
-        try:
-            {{ key }} = {{ item.render_python_code() }}
-        except ObjectDoesNotExist:
-            raise Http404
-        {% endif %}{% endfor %}
-
-        {{ page.page_code|indent(8) }}
-
-        self.template_name = {{ page.template_name_expr }}
-
-        data.update({ {% for key in (page.page_item_names + ['url']) %}'{{ key }}': {{ key }}{% if not loop.last %}, {% endif %}{% endfor %} })
+        data = super().get_context_data(**self.kwargs)
+        {{ code|indent(8) }}
+        {% if page.page_item_names %}
+        return {**data, **{ {% for key in (page.page_item_names) %}'{{ key }}': {{ key }}{% if not loop.last %}, {% endif %}{% endfor %} } }
+        {% else %}
         return data
+        {% endif %}
+    {% endif %}
     {% if page.allow_post %}
     post = {{ page.parent_view_name }}.get
     {% endif %}

@@ -4,7 +4,7 @@
 # You can set these variables from the command line.
 SPHINXOPTS    =
 SPHINXBUILD   = /Users/alex/.virtualenvs/gen/bin/sphinx-build
-SPHINXPROJ    = CratisGenerator
+SPHINXPROJ    = GeniusGenerator
 SOURCEDIR     = .
 BUILDDIR      = _build
 
