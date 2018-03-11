@@ -3,12 +3,17 @@ from pyparsing import *
 
 from cratis_generator.config.grammar import identifier
 
-parser = delimitedList(identifier | Literal('..'))
+val = QuotedString('"') | Word(alphanums + '_')
+field = Group(identifier.setResultsName('key') + Suppress('=') + Optional(val.setResultsName('value')))
+
+block_expr = identifier.setResultsName('name') + Optional(Suppress('<') + delimitedList(field).setResultsName('fields') + Suppress('>'))
+parser = delimitedList(Group(block_expr)).setResultsName('blocks').ignore(cStyleComment)
 
 class PageBlock(object):
-    def __init__(self, name) -> None:
+    def __init__(self, name, fields=None) -> None:
         super().__init__()
         self.name = name
+        self.fields = fields or {}
 
     @property
     def template_name(self):
@@ -27,10 +32,16 @@ class BlocksPageExtra(PageExtra):
         area_name = parsed_result.descriptor or 'content'
 
         blocks = []
-        for block_name in parser.parseString(parsed_result.extra_body):
-            blocks.append(PageBlock(name=block_name))
+        for block in parser.parseString(parsed_result.extra_body, parseAll=True).blocks:
+            fields = {}
+            if block.fields:
+                for field in block.fields:
+                    fields[field.key] = field.value
+            blocks.append(PageBlock(name=block.name, fields=fields))
 
-        page.blocks[area_name] = blocks
-
+        if not area_name in page.blocks:
+            page.blocks[area_name] = blocks
+        else:
+            page.blocks[area_name] = page.blocks[area_name] + blocks
 
 

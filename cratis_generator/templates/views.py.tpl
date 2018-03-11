@@ -34,8 +34,8 @@ class {{ page.view_name }}({% if page.extra_bases %}{{ page.extra_bases|join(", 
         {{ page.render_template_name_expr()|indent(8) }}
 
     {% set code=page.render_page_code() %}{% if code %}
-    def get_context_data(self, **kwargs):
-        data = super().get_context_data(**self.kwargs)
+    def get_context_data(self, inherited=False, **kwargs):
+        data = super().get_context_data(inherited=True, **self.kwargs)
         {{ code|indent(8) }}
         {% if page.page_item_names %}
         return {**data, **{ {% for key in (page.page_item_names) %}'{{ key }}': {{ key }}{% if not loop.last %}, {% endif %}{% endfor %} } }

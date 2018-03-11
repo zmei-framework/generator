@@ -1,3 +1,5 @@
+.. _FiledTypes:
+
 Field types
 ================
 

@@ -91,16 +91,25 @@ def generate_file(filename, template_name, context=None):
     def to_name(ref):
         return ' '.join([x.capitalize() for x in ref.split('_')])
 
-    def include_file(name):
-        return jinja2.Markup(loader.get_source(env, name)[0])
+    def include_block(block):
+        template = block_env.get_template(block.template_name)
+        return template.render(**block.fields)
 
     loader = PackageLoader('cratis_generator', 'templates')
+
+    block_env = Environment(loader=loader,
+                            variable_start_string='<{',
+                            variable_end_string='}>',
+                            block_start_string='<%',
+                            block_end_string='%>'
+                            )
+
     env = Environment(loader=loader)
     env.filters['field_names'] = field_names
     env.filters['format_names'] = format_names
     env.filters['to_name'] = to_name
     env.filters['repr'] = repr
-    env.globals['include_file'] = include_file
+    env.globals['include_block'] = include_block
 
     template = env.get_template(template_name)
 

@@ -17,6 +17,7 @@ extra = (LineStart() +
              Suppress('.') + Word(alphanums + '_').setResultsName("descriptor")
          ) +
          Optional(
+             QuotedString('<@', endQuoteChar='@>', multiline=True) |
              QuotedString('<<', endQuoteChar='>>', multiline=True) |
              QuotedString('{{', endQuoteChar='}}', multiline=True) |
              QuotedString('{', endQuoteChar='}', multiline=True) |

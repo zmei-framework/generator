@@ -124,7 +124,12 @@ class PageDef(object):
 
     @property
     def page_item_names(self):
-        return list(self.page_items.keys())
+        names = ['url']
+        for key in self.page_items.keys():
+            if key.startswith('_'):
+                key = key[1:]
+            names.append(key)
+        return list(names)
 
     @property
     def parent_view_name(self):
@@ -154,7 +159,7 @@ class PageDef(object):
     def render_method_headers(self, use_data=False, use_parent=False, use_url=False, use_request=False):
         code = ""
         if use_data:
-            code += "data = super().get_context_data(**self.kwargs)\n"
+            code += "data = super().get_context_data(inherited=True, **self.kwargs)\n"
         if use_parent:
             code += "parent = type('parent', (object,), data)\n"
         if use_request:
@@ -172,13 +177,25 @@ class PageDef(object):
         code = ""
 
         for key, item in self.page_items.items():
+            indent = 0
+            inherited = False
+            # private variables
+            if key.startswith('_'):
+                key = key[1:]
+                indent = 4
+                inherited = True
+                code += "if not inherited:\n"
+
             if not item.or_404:
-                code += key + " = " + item.render_python_code() + "\n"
+                code += " " * indent + key + " = " + item.render_python_code() + "\n"
             else:
-                code += "try:\n"
-                code += "   " + key + " = " + item.render_python_code() + "\n"
-                code += "except ObjectDoesNotExist:\n"
-                code += "   raise Http404\n"
+                code += " " * indent + "try:\n"
+                code += " " * indent + "   " + key + " = " + item.render_python_code() + "\n"
+                code += " " * indent + "except ObjectDoesNotExist:\n"
+                code += " " * indent + "   raise Http404\n"
+            if inherited:
+                code += "else:\n"
+                code += " " * indent + key + " = None\n"
 
         code += self.page_code
 
@@ -186,7 +203,7 @@ class PageDef(object):
             use_data=False,
             use_parent='parent' in code,
             use_request='request' in code,
-            use_url='url' in code,
+            use_url=True,
         ) + code
 
         if len(code.strip()) == 0:
@@ -214,8 +231,8 @@ class PageDef(object):
             code = '"{tpl}"'.format(tpl=self.defined_template_name)
 
         code = self.render_method_headers(
-            use_data='data' in code,
-            use_parent='parent' in code,
+            use_data=False,
+            use_parent=False,
             use_request='request' in code,
             use_url='url' in code,
         ) + 'return [' + code + ']\n'
@@ -226,8 +243,8 @@ class PageDef(object):
         code = method_code
 
         code = self.render_method_headers(
-            use_data='data' in code,
-            use_parent='parent' in code,
+            use_data=False,
+            use_parent=False,
             use_request='request' in code,
             use_url='url' in code,
         ) + code + '\n'

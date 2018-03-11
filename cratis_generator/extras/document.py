@@ -21,7 +21,7 @@ class DocumentExtra(Extra):
 
         document = identifier + Suppress('(') + name + Suppress(',') + template + Suppress(',') + data + Suppress(')')
 
-        return stringStart + delimitedList(document, ',').setResultsName('documents') + stringEnd
+        return (stringStart + delimitedList(document, ',').setResultsName('documents')).ignore(cStyleComment) + stringEnd
 
     def parse(self, extra, collection: CollectionDef):
 

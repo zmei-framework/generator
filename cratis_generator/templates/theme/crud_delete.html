@@ -1,5 +1,5 @@
 
-<a href="{% url crud.list %}">&laquo; Back to list</a>
+<a href="{% url <{ crud_prefix }>crud.list <{ link_extra }>%}">&laquo; Back to list</a>
 <form action="" method="post">{% csrf_token %}
 
     <p>Are you sure you want to delete "{{ object }}"?</p>

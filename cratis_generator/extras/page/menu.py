@@ -12,7 +12,7 @@ menu_item = Group(identifier.setResultsName('ref') + Suppress('=>') + \
             (Word(alphanums) | QuotedString('"') | QuotedString("'")).setResultsName('label') + \
             Suppress(':') + url_expression)
 
-parser = OneOrMore(menu_item).setResultsName('items')
+parser = OneOrMore(menu_item).setResultsName('items').ignore(cStyleComment)
 
 
 class MenuPageExtra(PageExtra):

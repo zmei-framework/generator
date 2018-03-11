@@ -11,7 +11,7 @@
 {% if block.name == '..' -%}
 {{ super() }}
 {%- else -%}
-{{ include_file(block.template_name) }}
+{{ include_block(block) }}
 {%- endif %}
 {%- endfor %}
 {{ "{% endblock %}" }}

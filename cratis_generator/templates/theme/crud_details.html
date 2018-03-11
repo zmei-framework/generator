@@ -1,10 +1,12 @@
+<% set pk_param=pk_param|default('pk') %>
+
 <div>
-    <a href="{% url crud.list %}">&laquo; Back to list</a>
-    <h2>{{ item }}</h2>
+    <a href="{% url <{ crud_prefix }>crud.list <{ link_extra }>%}">&laquo; Back to list</a>
+    <h2>{{ <{ crud_prefix }>item }}</h2>
 
     <p>
-        {% if crud.update %}<a href="{% url crud.update pk=item.pk %}">[Edit]</a>{% endif %}
+        {% if <{ crud_prefix }>crud.update %}<a href="{% url <{ crud_prefix }>crud.update <{ link_extra }><{ pk_param }>=<{ crud_prefix }>item.pk %}">[Edit]</a>{% endif %}
         |
-        {% if crud.delete %}<a href="{% url crud.delete pk=item.pk %}">[Delete]</a>{% endif %}
+        {% if <{ crud_prefix }>crud.delete %}<a href="{% url <{ crud_prefix }>crud.delete <{ link_extra }><{ pk_param }>=<{ crud_prefix }>item.pk %}">[Delete]</a>{% endif %}
     </p>
 </div>

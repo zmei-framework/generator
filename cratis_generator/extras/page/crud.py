@@ -12,10 +12,15 @@ class_parser = Word(alphanums + '_.').setResultsName('model') + \
                Optional(QuotedString('<', endQuoteChar='>').setResultsName('query')) + \
                Optional(Suppress('fields:') + Group(delimitedList(Word(alphanums + '_'))).setResultsName('fields'))
 
-parser = (ref_parser | class_parser) + \
+parser = ((ref_parser | class_parser) + \
          Optional(Suppress('skip:') + Group(delimitedList(
              Literal('create') | Literal('update') | Literal('delete') | Literal('detail')
-         )).setResultsName('skip'))
+         )).setResultsName('skip')) + \
+         Optional(Suppress('block:') + identifier.setResultsName('block_name')) + \
+         Optional(Suppress('url_prefix:') + Word(alphanums + '-/').setResultsName('url_prefix')) +\
+         Optional(Suppress('pk_param:') + Word(alphanums + '_').setResultsName('pk_param')) +\
+         Optional(Suppress('link_extra:') + QuotedString('"').setResultsName('link_extra'))
+         ).ignore(cStyleComment)
 
 
 def parse_crud_extra(page, extra_body):
@@ -52,69 +57,114 @@ class CrudPageExtra(PageExtra):
     def __init__(self, parsed_result, page):
         super().__init__(parsed_result, page)
 
-        block_name = parsed_result.descriptor or 'content'
-
         crud, formatted_query, model_cls, fields = parse_crud_extra(page, parsed_result.extra_body)
 
-        page.has_uri = False
+        descriptor = parsed_result.descriptor or None
+
+        # link extra
+        if len(crud.link_extra):
+            link_extra = crud.link_extra + " "
+            link_extra_params = []
+            for item in link_extra.split(','):
+                key, val = item.split('=')
+                link_extra_params.append(f"'{key}': {val}")
+            link_extra_params = ', '.join(link_extra_params)
+        else:
+            link_extra = ''
+            link_extra_params = ''
+
+        # name_prefix
+        if descriptor:
+            name_prefix = f'{descriptor}_'
+            name_suffix = f'_{descriptor}'
+        else:
+            name_prefix = ''
+            name_suffix = ''
+
+        # block name
+        if crud.block_name:
+            block_name = crud.block_name
+        elif descriptor:
+            block_name = f'{descriptor}_content'
+        else:
+            block_name = 'content'
+
+        # url prefix
+        if crud.url_prefix:
+            url_prefix = crud.url_prefix
+            if not url_prefix.endswith('/'):
+                url_prefix = url_prefix + '/'
+        elif descriptor:
+            url_prefix = f'{descriptor}/'
+        else:
+            url_prefix = ''
+        if not page.defined_uri.endswith('/'):
+            url_prefix = '/' + url_prefix
+
+        # pk
+        if crud.pk_param:
+            pk_param = crud.pk_param
+        elif descriptor:
+            pk_param = f'{descriptor}_pk'
+        else:
+            pk_param = 'pk'
+
 
         skip = list(crud.skip or [])
 
-        page_urls = {'list': '{page.collection_set.app_name}.{page.name}'.format(page=page)}
+        page_urls = {'list': f'{page.collection_set.app_name}.{page.name}'}
 
         if 'details' not in skip:
-            page_urls['details'] = '{page.collection_set.app_name}.{page.name}_details'.format(page=page)
+            page_urls['details'] = f'{page.collection_set.app_name}.{page.name}{name_suffix}_details'
         if 'create' not in skip:
-            page_urls['create'] = '{page.collection_set.app_name}.{page.name}_create'.format(page=page)
+            page_urls['create'] = f'{page.collection_set.app_name}.{page.name}{name_suffix}_create'
         if 'update' not in skip:
-            page_urls['update'] = '{page.collection_set.app_name}.{page.name}_update'.format(page=page)
+            page_urls['update'] = f'{page.collection_set.app_name}.{page.name}{name_suffix}_update'
         if 'delete' not in skip:
-            page_urls['delete'] = '{page.collection_set.app_name}.{page.name}_delete'.format(page=page)
+            page_urls['delete'] = f'{page.collection_set.app_name}.{page.name}{name_suffix}_delete'
 
-        page.page_items['crud'] = PageExpression('items', repr(page_urls), page)
+        page.page_items[f'{name_prefix}crud'] = PageExpression(f'{name_prefix}crud', repr(page_urls), page)
+        page.page_items[f'_{name_prefix}items'] = PageExpression(f'{name_prefix}items',
+                                                                f"{model_cls}.objects{formatted_query}", page)
+        if not block_name in page.blocks:
+            page.blocks[block_name] = []
+        page.blocks[block_name].append(PageBlock(name='crud_list', fields={'crud_prefix': name_prefix, 'pk_param': pk_param, 'link_extra': link_extra}))
 
-        page.children.append(
-            """
-[{page.name}->{page.name}_list as {page.name}: {page.defined_uri}]
-items: {cls}.objects{query}
-@blocks.{block_name}(crud_list)
-            """.format(block_name=block_name, page=page, cls=model_cls, query=formatted_query)
-        )
 
         if 'details' not in skip:
             page.children.append(
+            f"""
+[{page.name}->{page.name}{name_suffix}_details: {page.defined_uri}{url_prefix}<{pk_param}>/]
+{name_prefix}item: {model_cls}.objects{formatted_query}.get(pk=url.{pk_param}) 
+@blocks.{block_name}(crud_details<crud_prefix={name_prefix}, pk_param={pk_param}, link_extra="{link_extra}">)
             """
-[{page.name}->{page.name}_details: {page.defined_uri}/<pk>/]
-item: {cls}.objects{query}.get(pk=url.pk) 
-@blocks.{block_name}(crud_details)
-            """.format(block_name=block_name, page=page, cls=model_cls, query=formatted_query)
         )
 
         if 'create' not in skip:
             page.children.append(
+            f"""
+[{page.name}->{page.name}{name_suffix}_create: {page.defined_uri}{url_prefix}add]
+@crud_create<@{parsed_result.extra_body} => '{page.collection_set.app_name}.{page.name}', kwargs={{{link_extra_params}}}@> 
+@blocks.{block_name}(crud_add<crud_prefix={name_prefix}, pk_param={pk_param}, link_extra="{link_extra}">)
             """
-[{page.name}->{page.name}_create: {page.defined_uri}/add]
-@crud_create({args} => '{page.collection_set.app_name}.{page.name}') 
-@blocks.{block_name}(crud_add)
-            """.format(block_name=block_name, page=page, args=parsed_result.extra_body)
         )
 
         if 'update' not in skip:
             page.children.append(
             f"""
-[{page.name}->{page.name}_update: {page.defined_uri}/<pk>/edit]
-@crud_update({parsed_result.extra_body} => '{page.collection_set.app_name}.{page.name}_details', kwargs={{'pk': url.pk}}) 
-@blocks.{block_name}(crud_update)
+[{page.name}->{page.name}{name_suffix}_update: {page.defined_uri}{url_prefix}<{pk_param}>/edit]
+@crud_update<@{parsed_result.extra_body} => '{page.collection_set.app_name}.{page.name}_details', kwargs={{'{pk_param}': url.{pk_param}, {link_extra_params}}}@>  
+@blocks.{block_name}(crud_update<crud_prefix={name_prefix}, pk_param={pk_param}, link_extra="{link_extra}">)
             """
         )
 
         if 'delete' not in skip:
             page.children.append(
+            f"""
+[{page.name}->{page.name}{name_suffix}_delete: {page.defined_uri}{url_prefix}<{pk_param}>/delete]
+@crud_delete<@{parsed_result.extra_body} => '{page.collection_set.app_name}.{page.name}', kwargs={{{link_extra_params}}}@>  
+@blocks.{block_name}(crud_delete<crud_prefix={name_prefix}, pk_param={pk_param}, link_extra="{link_extra}">)
             """
-[{page.name}->{page.name}_delete: {page.defined_uri}/<pk>/delete]
-@crud_delete({args} => '{page.collection_set.app_name}.{page.name}') 
-@blocks.{block_name}(crud_delete)
-            """.format(block_name=block_name, page=page, args=parsed_result.extra_body)
         )
 
 
@@ -139,7 +189,7 @@ class CrudCreatePageExtra(PageExtra):
 
         page.options['model'] = model_cls
         page.options['fields'] = repr(fields)
-        page.methods['get_success_url'] = "return reverse_lazy({})".format(next_page)
+        page.methods['get_success_url'] = f"return reverse_lazy({next_page})"
 
         page.methods['get_initial'] = "self.object = {}({})\nreturn super().get_initial()".format(
             model_cls, crud.query)
@@ -169,7 +219,7 @@ class CrudUpdatePageExtra(PageExtra):
         page.options['model'] = model_cls
         page.options['object'] = None
         page.options['fields'] = repr(fields)
-        page.methods['get_success_url'] = "return reverse_lazy({})".format(next_page)
+        page.methods['get_success_url'] = f"return reverse_lazy({next_page})"
 
         render = "self.object = self.get_object()\nreturn super().get(request, *args, **kwargs)"
         page.methods['get'] = render
@@ -198,7 +248,7 @@ class CrudDeletePageExtra(PageExtra):
         )
 
         page.options['model'] = model_cls
-        page.methods['get_success_url'] = "return reverse_lazy({})".format(next_page)
+        page.methods['get_success_url'] = f"return reverse_lazy({next_page})"
 
         render = "self.object = self.get_object()\nreturn super().get(request, *args, **kwargs)"
         page.methods['get'] = render
