@@ -1,18 +1,18 @@
-<% set pk_param=pk_param|default('pk') %>
-
 <div>
-    <ul>
-        {% for <{ crud_prefix }>item in <{ crud_prefix }>items %}
-        <li>
-            {% if <{ crud_prefix }>crud.details %}<a href="{% url <{ crud_prefix }>crud.details <{ link_extra }><{ pk_param }>=<{ crud_prefix }>item.pk %}">{{ <{ crud_prefix }>item }}</a>{% endif %}
+    <h2>{{ <{ meta }>.verbose_name_plural }}</h2>
 
-            {% if <{ crud_prefix }>crud.update %}<a href="{% url <{ crud_prefix }>crud.update <{ link_extra }><{ pk_param }>=<{ crud_prefix }>item.pk %}">[Edit]</a>{% endif %}
-            {% if <{ crud_prefix }>crud.delete %}<a href="{% url <{ crud_prefix }>crud.delete <{ link_extra }><{ pk_param }>=<{ crud_prefix }>item.pk %}">[X]</a>{% endif %}
+    <ul>
+        {% for <{ item }> in <{ items }> %}
+        <li>
+            <% if crud.detail %><a href="{% url <{ crud.detail }> <{ by_id }> %}">{{ <{ item }> }}</a><% endif %>
+
+            <% if crud.update %><a href="{% url <{ crud.edit }> <{ by_id }> %}">[Edit]</a><% endif %>
+            <% if crud.delete %><a href="{% url <{ crud.delete }> <{ by_id }> %}">[X]</a><% endif %>
         </li>
         {% endfor %}
     </ul>
 
     <p>
-        {% if <{ crud_prefix }>crud.create %}<a href="{% url <{ crud_prefix }>crud.create <{ link_extra }>%}">[Create]</a>{% endif %}
+        <% if crud.create %><a href="{% url <{ crud.create }> %}">[Create]</a><% endif %>
     </p>
 </div>

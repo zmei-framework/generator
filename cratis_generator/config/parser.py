@@ -9,8 +9,9 @@ from cratis_generator.extras.dates import DateTreeExtra
 from cratis_generator.extras.document import DocumentExtra
 from cratis_generator.extras.page.blocks import BlocksPageExtra
 from cratis_generator.extras.page.crud import CrudPageExtra, CrudCreatePageExtra, CrudUpdatePageExtra, \
-    CrudDeletePageExtra
+    CrudDeletePageExtra, CrudDetailPageExtra
 from cratis_generator.extras.page.menu import MenuPageExtra
+from cratis_generator.extras.page.merge import MergePageExtra
 from cratis_generator.extras.page.page_handlers import HandleErrorExtra
 from cratis_generator.extras.page.post import PostPageExtra
 from cratis_generator.extras.page.rss import RssPageExtra
@@ -117,9 +118,11 @@ class Parser(object):
             CrudCreatePageExtra,
             CrudUpdatePageExtra,
             CrudDeletePageExtra,
+            CrudDetailPageExtra,
             BlocksPageExtra,
             MenuPageExtra,
             PostPageExtra,
+            MergePageExtra,
             RssPageExtra,
             HandleErrorExtra
         )}

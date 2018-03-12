@@ -1,16 +1,11 @@
-from copy import copy
-
 import re
-
-from abc import abstractmethod, abstractproperty
+from abc import abstractmethod
 from collections import namedtuple
-
-import sys
-from cratis_generator.config.grammar import page as page_parser
-from cratis_generator.generator.utils import StopGenerator, handle_parse_exception
 from pyparsing import ParseException
 from termcolor import colored
-from typing import List, Dict
+
+from cratis_generator.config.grammar import page as page_parser
+from cratis_generator.generator.utils import handle_parse_exception
 
 
 class ValidationException(Exception):
@@ -31,10 +26,6 @@ class PageExtra(object):
 
     def get_python_code(self):
         return ''
-
-    @abstractmethod
-    def parse(self, extra, collection):
-        pass
 
     def post_process(self):
         pass
@@ -59,6 +50,8 @@ class PageDef(object):
         self.parsed_template_name = parse_result.template_name
         self.parsed_template_expr = parse_result.template_expr
         self.page_code = '\n'.join([x.strip() for x in parse_result.page_code.split('\n')])
+
+        self.allow_merge = False
 
         # error handler for:
         self.handlers = []
@@ -121,6 +114,23 @@ class PageDef(object):
                                            '@{} expression for page "{}"'.format(extra.extra_name, self.name))
             except KeyError as e:
                 raise ValidationException('Extra not found: {}, reason: {}'.format(extra.extra_name, e))
+
+    def add_block(self, area, block):
+        if area not in self.blocks:
+            self.blocks[area] = []
+
+        self.blocks[area].append(block)
+
+    def get_parent(self):
+        if self.parent_name:
+            return self.collection_set.pages[self.parent_name]
+
+    def merge(self, page):
+        for area, blocks in page.blocks.items():
+            if area in self.blocks:
+                self.blocks[area] = blocks + self.blocks[area]
+            else:
+                self.blocks[area] = blocks
 
     @property
     def page_item_names(self):
@@ -733,7 +743,15 @@ class CollectionSetDef(object):
 
         for page in parse_result.pages:
             page_def = PageDef(page, self)
-            self.pages[page.page_name] = page_def
+            if page.page_name not in self.pages:
+                self.pages[page.page_name] = page_def
+            else:
+                if page_def.allow_merge:
+                    page_def.merge(self.pages[page.page_name])
+                    self.pages[page.page_name] = page_def
+                else:
+                    raise ValidationException(f'Can not add page "{page.page_name}" one more time. '
+                                          f'Page with same name is already added and it do not allow merge.')
 
             for subpage_raw in page_def.children:
                 try:
@@ -742,7 +760,11 @@ class CollectionSetDef(object):
                     handle_parse_exception(e, subpage_raw,
                                            'Page {} auto-generated subpages: {}'.format(page.page_name, e))
 
-                self.pages[subpage_parsed.page_name] = PageDef(subpage_parsed, self)
+                if subpage_parsed.page_name not in self.pages:
+                    self.pages[subpage_parsed.page_name] = PageDef(subpage_parsed, self)
+                else:
+                    raise ValidationException(f'Can not add page "{subpage_parsed.page_name}" one more time. '
+                                              f'Page with same name is already added.')
 
         for page in self.pages.values():
             for extra in page.extras:

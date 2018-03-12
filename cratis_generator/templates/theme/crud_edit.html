@@ -1,7 +1,7 @@
-<a href="{% url <{ crud_prefix }>crud.list <{ link_extra }>%}">&laquo; Back to list</a>
+<a href="{% url <{ crud.list }> %}">&laquo; Back to list</a>
 
 <div>
-    <h2>{{ object }}</h2>
+    <h2>{{ <{ meta }>.verbose_name }} "{{ <{ item }> }}"</h2>
     <form action="" method="post">{% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="Save" />
