@@ -386,6 +386,7 @@ class CollectionDef(object):
         self.child_collections = []
 
         self.mixin_classes = []
+        self.signal_handlers = []
 
         if parse_result.parent:
             if parse_result.parent not in self.collection_set.collections:
@@ -442,7 +443,6 @@ class CollectionDef(object):
         self.admin_tabs = []
         self.tab_names = {}
 
-        self.rest_conf = None
         self.rest_mode = None
         self.rest = False
 
@@ -497,15 +497,6 @@ class CollectionDef(object):
             return []
 
         return [x.class_name for x in self.child_collections]
-
-    @property
-    def rest_class(self):
-        if self.rest_mode == 'rw':
-            return 'rest_framework.viewsets', 'ModelViewSet'
-        elif self.rest_mode == 'w':
-            return 'cratis_api.views', 'WriteOnlyModelViewSet'
-        else:
-            return 'rest_framework.viewsets', 'ReadOnlyModelViewSet'
 
     @property
     def admin_class_declaration(self):
@@ -813,14 +804,15 @@ class NoModelField(Exception):
 
 
 class ReferenceField(object):
-    def __init__(self, collection: CollectionDef, target_collection: CollectionDef, name: str, source_field_name: str) -> None:
+    def __init__(self, collection: CollectionDef, target_collection: CollectionDef, name: str, source_field: str) -> None:
         super().__init__()
 
         self.target_collection = target_collection
 
         self.type_name = 'ref'
         self.name = name
-        self.source_field_name = source_field_name
+        self.source_field = source_field
+        self.source_field_name = source_field.name
 
         self.collection = collection
         self.display_field = False
@@ -850,7 +842,7 @@ class ReferenceField(object):
 
     @property
     def is_many(self):
-        return True
+        return self.source_field.is_many_reverse
 
     @property
     def admin_list_renderer(self):

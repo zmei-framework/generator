@@ -4,7 +4,10 @@ Overview
 Models are cornerstone of Genius generator. Genius automates all routine
 work with Django's models.
 
-Here is example of simple model::
+Here is example of simple model:
+
+.. code-block:: col
+    :caption: models.py
 
     #cat
     --------
@@ -26,7 +29,10 @@ Model names, examples:
 - dog
 - block1
 
-Header also may include verbose name::
+Header also may include verbose name:
+
+.. code-block:: col
+    :caption: models.py
 
     #cat: Kitty
     --------

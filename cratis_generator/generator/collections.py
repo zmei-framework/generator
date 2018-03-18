@@ -5,7 +5,8 @@ import re
 
 from cratis_generator.config.domain import CollectionSetDef, CollectionDef, FieldDef, FieldDeclaration, NoModelField
 from cratis_generator.generator.imports import ImportSet
-from cratis_generator.generator.utils import generate_feature, generate_file, is_file_generated
+from cratis_generator.generator.utils import generate_feature, generate_file, is_file_generated, \
+    generate_urls_file, generate_urls_rest
 
 
 def list_apps():
@@ -18,22 +19,46 @@ def list_apps():
 
 
 def generate(app_name: str, collection_set: CollectionSetDef):
-    url_imports = ImportSet()
-    url_imports.add('django.conf.urls', 'url')
-
-    for page in collection_set.pages.values():
-        url_imports.add('.views', page.view_name)
-
-        if page.i18n:
-            url_imports.add('django.conf.urls.i18n', 'i18n_patterns')
-
-    generate_feature(app_name, app_name.capitalize(), {
-        'collection_set': collection_set,
-        'url_imports': url_imports.import_sting()
-    })
 
     # urls
+    pages_i18n = [page for page in collection_set.pages.values() if page.has_uri and page.i18n]
+    if len(pages_i18n) > 0:
+        generate_urls_file(
+            app_name,
+            collection_set,
+            pages_i18n,
+            i18n=True
+        )
+    else:
+        if os.path.exists('{}/urls_i18n.py'.format(app_name)):
+            os.unlink('{}/urls_i18n.py'.format(app_name))
 
+    # urls i18n
+    pages = [page for page in collection_set.pages.values() if page.has_uri and not page.i18n]
+    if len(pages) > 0:
+        generate_urls_file(
+            app_name,
+            collection_set,
+            pages,
+            i18n=False
+        )
+    else:
+        if os.path.exists('{}/urls.py'.format(app_name)):
+            os.unlink('{}/urls.py'.format(app_name))
+
+    # urls rest
+    if collection_set.rest:
+        generate_urls_rest(app_name, collection_set)
+    else:
+        if os.path.exists('{}/urls_rest.py'.format(app_name)):
+            os.unlink('{}/urls_rest.py'.format(app_name))
+
+    # features
+    generate_feature(app_name, app_name.capitalize(), {
+        'collection_set': collection_set,
+        'pages_i18n': pages_i18n,
+        'pages': pages
+    })
 
     # Models
 
@@ -137,16 +162,16 @@ def generate_views_py(app_name, collection_set):
 
     if collection_set.rest:
         imports.add('rest_framework', 'serializers')
-        imports.add('cratis_api.api_filter', 'AnyFilterBackend')
-        imports.add('cratis_api.views', 'Pagination')
-        imports.add('rest_framework.permissions', 'AllowAny')
+        # imports.add('cratis_api.api_filter', 'AnyFilterBackend')
+        # imports.add('cratis_api.views', 'Pagination')
+
+
 
     for col in collection_set.collections.values():
         if not col.rest:
             continue
 
         imports.add('{}.models'.format(app_name), col.class_name)
-        imports.add(*col.rest_class)
 
         col.rest_conf.configure_imports(imports)
 
@@ -192,6 +217,11 @@ def generate_models_py(app_name, collection_set):
     imports.add('django.db', 'models')
 
     for collection in collection_set.collections.values():  # type: CollectionDef
+
+        for signal_import, code in collection.signal_handlers:
+            imports.add('django.dispatch', 'receiver')
+            imports.add(*signal_import)
+
         if collection.polymorphic and collection.tree:
             imports.add('polymorphic_tree.models', 'PolymorphicMPTTModel', 'PolymorphicTreeForeignKey')
         else:

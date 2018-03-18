@@ -4,17 +4,23 @@
 {% include 'serializer.py.tpl' %}
 {% endwith %}
 
-class {{ col.class_name }}ViewSet({{ col.rest_class[1] }}):
+{% if col.rest_conf.auth_methods.token %}
+class {{ col.class_name }}TokenAuthentication(TokenAuthentication):
+    model = {{ col.rest_conf.auth_methods.token.model }}
+{% endif %}
+
+class {{ col.class_name }}ViewSet({{ col.rest_conf.rest_class[1] }}):
     """
     {{ col.class_name }} API
     """
 
-    filter_backends = (AnyFilterBackend,)
     filter_fields = ['{{ col.rest_conf.field_names|join("','") }}']
-    queryset = {{ col.class_name }}.objects.all(){% if col.rest_conf.annotations %}.annotate({{ col.rest_conf.annotations|join(", ") }}){% endif %}
     serializer_class = {{ col.class_name }}Serializer
-    pagination_class = Pagination
-    permission_classes = [AllowAny]
+    permission_classes = [{% if col.rest_conf.auth_methods %}IsAuthenticated{% else %}AllowAny{% endif %}]
+    authentication_classes = [{{ col.rest_conf.auth_method_classes|join(', ') }}]
+
+    def get_queryset(self):
+        return {{ col.class_name }}.objects.{{ col.rest_conf.query }}{% if col.rest_conf.user_field %}.filter({{ col.rest_conf.user_field }}=self.request.user){% endif %}{% if col.rest_conf.annotations %}.annotate({{ col.rest_conf.annotations|join(", ") }}){% endif %}
 
 {% endfor %}
 {{ collection_set.page_imports }}

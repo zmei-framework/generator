@@ -1,8 +1,5 @@
-{{ imports }}
+{{ url_imports }}
 
-urlpatterns = ()
-{% for page in collection_set.pages.values() %}
-{% if page.i18n %}urlpatterns += tuple(i18n_patterns({% else %}urlpatterns += ({% endif %}
-    url(r'{{ page.urls_line }}', {{ page.view_name }}.as_view(), name='{{ page.name }}'),
-{% if page.i18n %})){% else %}){% endif %}
-{% endfor %}
+urlpatterns = ({% for page in pages %}
+    url(r'{{ page.urls_line }}', {{ page.view_name }}.as_view(), name='{{ package_name }}.{{ page.url_alias }}'),
+{% endfor %})

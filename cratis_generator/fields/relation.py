@@ -31,7 +31,7 @@ class RelationDef(FieldDef):
                 if self.related_name in ref_collection.fields:
                     raise ValidationException('Can not override field with related field: {}'.format(self.related_name))
 
-                ref_collection.fields[self.related_name] = ReferenceField(ref_collection, self.collection, self.related_name, self.name)
+                ref_collection.fields[self.related_name] = ReferenceField(ref_collection, self.collection, self.related_name, self)
 
             self.related_class = ref_collection.class_name
         else:
@@ -43,6 +43,10 @@ class RelationDef(FieldDef):
 
     @property
     def is_many(self):
+        return None
+
+    @property
+    def is_many_reverse(self):
         return None
 
     @property
@@ -79,6 +83,38 @@ class RelationOneDef(RelationDef):
     def is_many(self):
         return False
 
+    @property
+    def is_many_reverse(self):
+        return True
+
+
+class RelationOne2OneDef(RelationDef):
+    def get_model_field(self, collection):
+        args = self.prepare_field_arguemnts({'related_name': self.related_name or '+'})
+
+        return FieldDeclaration(
+            [('django.db', 'models')],
+            'models.OneToOneField("{}", {}, on_delete=models.CASCADE)'.format(self.related_class, gen_args(args))
+        )
+
+    def get_admin_widget(self):
+        return FieldDeclaration(
+            [('django_select2.forms', 'Select2Widget')],
+            'Select2Widget'
+        )
+
+    @property
+    def qualifier(self):
+        return '1'
+
+    @property
+    def is_many(self):
+        return False
+
+    @property
+    def is_many_reverse(self):
+        return False
+
 
 class RelationManyDef(RelationDef):
     def get_model_field(self, collection):
@@ -108,4 +144,8 @@ class RelationManyDef(RelationDef):
 
     @property
     def is_many(self):
+        return True
+
+    @property
+    def is_many_reverse(self):
         return True

@@ -66,9 +66,12 @@ Most commonly slugs are used in urls.
 
 Syntax is following::
 
-    my_field: slug(another_field)
+    my_field: slug(target_field)
 
-another_field should be a text field.
+target_field should be a text field.
+
+.. note::
+    Slug field length is taken from target field.
 
 
 Number

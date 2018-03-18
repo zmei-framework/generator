@@ -3,15 +3,15 @@ from cratis.features import Feature, require
 from cratis_admin.features import AdminArea
 {% endif %}
 
-{% if collection_set.rest %}
-from cratis_api.features import RestApi
-{% endif %}
+{#{% if collection_set.rest %}#}
+{#from cratis_api.features import RestApi#}
+{#{% endif %}#}
 
 {% if collection_set.admin or collection_set.rest %}
 @require({% if collection_set.admin %}
     AdminArea(),{% endif %}
-    {% if collection_set.rest %}
-    RestApi(),{% endif %}
+{#    {% if collection_set.rest %}#}
+{#    RestApi(),{% endif %}#}
 ){% endif %}
 class {{ feature_name }}(Feature):
 
@@ -25,14 +25,14 @@ class {{ feature_name }}(Feature):
             )})
         {% endif %}
 
-        {% if collection_set.rest %}
-        with self.use(RestApi) as api:
-            {% for name, collection in collection_set.collections.items() %}{% if collection.rest %}
-            api.routes.append(
-                (r'{{ package_name }}/{{ name }}', '{{ package_name }}.views.{{ collection.class_name }}ViewSet', "{{ name }}")
-            )
-            {% endif %}{% endfor %}
-        {% endif %}
+{#        {% if collection_set.rest %}#}
+{#        with self.use(RestApi) as api:#}
+{#            {% for name, collection in collection_set.collections.items() %}{% if collection.rest %}#}
+{#            api.routes.append(#}
+{#                (r'{{ package_name }}/{{ name }}', '{{ package_name }}.views.{{ collection.class_name }}ViewSet', "{{ name }}")#}
+{#            )#}
+{#            {% endif %}{% endfor %}#}
+{#        {% endif %}#}
 
         {% if 'global' in collection_set.pages %}
         self.append_template_processor(
@@ -52,17 +52,28 @@ class {{ feature_name }}(Feature):
 
     {% endif %}
 
+    {% if pages_i18n or pages %}
     def configure_urls(self, urls):
-        {{ url_imports|indent(8) }}
+        from django.conf.urls import url, include
+        {% if pages_i18n -%}
+        from django.conf.urls.i18n import i18n_patterns
+        urls += tuple(i18n_patterns(
+            url(r'^', include('{{ collection_set.app_name }}.urls_i18n')),
+        ))
+        {% endif %}
+        {% if collection_set.rest %}
+        urls += tuple(i18n_patterns(
+            url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+            url(r'^api/{{ collection_set.app_name }}/', include('{{ collection_set.app_name }}.urls_rest')),
+        ))
+        {% endif %}
 
-        {% for page in collection_set.pages.values() %}{% if page.has_uri %}{% if page.i18n %}
-        urls += tuple(i18n_patterns({% else %}
-        urls += ({% endif %}
-            url(r'{{ page.urls_line }}', {{ page.view_name }}.as_view(), name='{{ package_name }}.{{ page.url_alias }}'),
-        {% if page.i18n %})){% else %}
-        ){% endif %}{% endif %}
-        {% endfor %}
-
+        {% if pages %}
+        urls += (
+            url(r'^', include('{{ collection_set.app_name }}.urls')),
+        )
+        {% endif %}
+    {% endif %}
 
     {% if collection_set.deps %}
     def get_deps(self):

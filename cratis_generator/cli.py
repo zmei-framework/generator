@@ -207,6 +207,11 @@ def handle(app='all', path='data', auto=False, uml=False, rebuild=None, remove=N
     except click.exceptions.Abort as e:
         print('Aborted.')
 
-    except (StopGenerator, ValidationException) as e:
+    except ValidationException as e:
         print(e)
+        print('Generator has been stopped, due errors.')
+
+    except StopGenerator as e:
+        print(e)
+        print(e.description)
         print('Generator has been stopped, due errors.')

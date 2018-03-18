@@ -1,15 +1,7 @@
 
 {{ imports }}
 
-###################
-# Collection imports
-###################
-
 {{ collection_set.collection_imports }}
-
-###################
-# Model code
-###################
 
 {% for cname, col in collections %}
 class {{ col.class_name }}({% for import_str, class_name, alias in col.mixin_classes %}{{ alias }}, {% endfor %}{{ col.model_class_declaration }}):
@@ -57,5 +49,12 @@ class {{ col.class_name }}({% for import_str, class_name, alias in col.mixin_cla
         {% if col.sortable_field %}
         ordering = ['{{ col.sortable_field }}']
         {% endif %}
+
+{% for (pkg, signal), code in col.signal_handlers %}
+@receiver({{ signal }}, sender={{ col.class_name }})
+def {{ col.ref }}_{{ signal }}_callback(sender, instance, **kwargs):
+    args = type('args', (object,), kwargs)
+    {{ code|indent(4) }}
+{% endfor %}
 
 {% endfor %}

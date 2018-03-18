@@ -7,6 +7,8 @@ from jinja2 import Environment
 from jinja2 import PackageLoader
 from termcolor import colored
 
+from cratis_generator.generator.imports import ImportSet
+
 
 def indent_text(nr, text):
     inds = (' ' * nr)
@@ -146,6 +148,48 @@ def generate_feature(package_name: str, feature_name: str, extra_context=None):
     generate_file(filepath, 'feature.py.tpl', context)
 
 
+def generate_urls_file(app_name, collection_set, pages, i18n=False):
+
+    url_imports = ImportSet()
+    url_imports.add('django.conf.urls', 'url')
+
+    for page in pages:
+        url_imports.add('.views', page.view_name)
+
+    context = {
+        'package_name': app_name,
+        'collection_set': collection_set,
+        'pages': pages,
+        'url_imports': url_imports.import_sting(),
+    }
+
+    filepath = os.path.join(package_to_path(app_name), 'urls_i18n.py' if i18n else 'urls.py')
+    print(filepath)
+
+    generate_file(filepath, 'urls.py.tpl', context)
+
+
+def generate_urls_rest(app_name, collection_set):
+
+    url_imports = ImportSet()
+    url_imports.add('django.conf.urls', 'url')
+    url_imports.add('django.conf.urls', 'include')
+    url_imports.add('rest_framework', 'routers')
+
+    for name, collection in collection_set.collections.items():
+        if collection.rest:
+            url_imports.add('.views', f'{collection.class_name}ViewSet')
+
+    context = {
+        'package_name': app_name,
+        'collection_set': collection_set,
+        'url_imports': url_imports.import_sting(),
+    }
+
+    filepath = os.path.join(package_to_path(app_name), 'urls_rest.py')
+    generate_file(filepath, 'urls_rest.py.tpl', context)
+
+
 def generate_package(package_name, path=None):
     if not path:
         path = os.getcwd()
@@ -169,13 +213,17 @@ def generate_package(package_name, path=None):
 
 
 class StopGenerator(Exception):
-    pass
+    def __init__(self, description=None, *args) -> None:
+        super().__init__(*args)
+
+        self.description = description or 'Unknown fail'
 
 
 def handle_parse_exception(e, parsed_string, subject):
-    print(type(e))
-    print('Cannot parse {}, error: {}'.format(subject, e))
-    print('-' * 100)
+    out = []
+    out.append(str(type(e)))
+    out.append('Cannot parse {}, error: {}'.format(subject, e))
+    out.append('-' * 100)
     for nr, line in enumerate(parsed_string.splitlines()):
         if (nr + 1) == e.lineno:
             before = line[:e.col - 1]
@@ -183,12 +231,12 @@ def handle_parse_exception(e, parsed_string, subject):
             after = line[e.col:]
             line = before + colored(char, 'white', 'on_blue') + after
 
-            print(colored('{0:04d}| {1}'.format(nr + 1, line), 'white', 'on_red'))
+            out.append(colored('{0:04d}| {1}'.format(nr + 1, line), 'white', 'on_red'))
         else:
-            print('{0:04d}| {1}'.format(nr + 1, line))
+            out.append('{0:04d}| {1}'.format(nr + 1, line))
 
-    print('-' * 100)
-    raise StopGenerator()
+    out.append('-' * 100)
+    raise StopGenerator('\n'.join(out))
 
 
 def gen_args(args):

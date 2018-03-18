@@ -27,6 +27,7 @@ setup(
         'wheel',
         'click',
         'jinja2',
+        # 'google-pasta'
     ],
 
     entry_points={

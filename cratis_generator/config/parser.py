@@ -6,6 +6,8 @@ import os
 from cratis_generator.config.domain import ValidationException
 from cratis_generator.config.grammar import collection_set
 from cratis_generator.extras.dates import DateTreeExtra
+from cratis_generator.extras.db_signals import DbSignalExtra, PreSaveExtra, PostSaveExtra, PreDeleteExtra, \
+    PostDeleteExtra, M2mChangedExtra
 from cratis_generator.extras.document import DocumentExtra
 from cratis_generator.extras.page.blocks import BlocksPageExtra
 from cratis_generator.extras.page.crud import CrudPageExtra, CrudCreatePageExtra, CrudUpdatePageExtra, \
@@ -110,6 +112,12 @@ class Parser(object):
             DocumentExtra,
             DateTreeExtra,
             MixinExtra,
+
+            PreSaveExtra,
+            PostSaveExtra,
+            PreDeleteExtra,
+            PostDeleteExtra,
+            M2mChangedExtra,
         )}
 
     def get_page_extras_available(self):
