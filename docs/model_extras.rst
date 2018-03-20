@@ -7,4 +7,4 @@ Model Extras
     :maxdepth: 2
     :glob:
 
-    extras/*
+    models/extras/*

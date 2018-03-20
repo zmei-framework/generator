@@ -8,6 +8,15 @@ from jinja2 import PackageLoader
 from termcolor import colored
 
 from cratis_generator.generator.imports import ImportSet
+from contextlib import contextmanager
+
+
+@contextmanager
+def chdir(path):
+    cwd = os.getcwd()
+    os.chdir(path)
+    yield
+    os.chdir(cwd)
 
 
 def indent_text(nr, text):
@@ -145,7 +154,7 @@ def generate_feature(package_name: str, feature_name: str, extra_context=None):
     if extra_context:
         context.update(extra_context)
 
-    generate_file(filepath, 'feature.py.tpl', context)
+    generate_file(filepath, 'cratis/feature.py.tpl', context)
 
 
 def generate_urls_file(app_name, collection_set, pages, i18n=False):

@@ -1,12 +1,16 @@
 from glob import glob
+from shutil import copytree, rmtree
 
 import os
 import re
+from subprocess import Popen
+
+import tempfile
 
 from cratis_generator.config.domain import CollectionSetDef, CollectionDef, FieldDef, FieldDeclaration, NoModelField
 from cratis_generator.generator.imports import ImportSet
 from cratis_generator.generator.utils import generate_feature, generate_file, is_file_generated, \
-    generate_urls_file, generate_urls_rest
+    generate_urls_file, generate_urls_rest, chdir
 
 
 def list_apps():
@@ -18,7 +22,20 @@ def list_apps():
             yield filename[0:-4]
 
 
-def generate(app_name: str, collection_set: CollectionSetDef):
+def generate(app_name: str, collection_set: CollectionSetDef, features=None):
+    features = features or []
+    features = type('features', (object,), {x: x in features for x in [
+        'cratis', 'django'
+    ]})
+
+    if features.django:
+        env = os.environ.copy()
+        del env['DJANGO_SETTINGS_MODULE']
+
+        Popen(['django-admin', 'startproject', 'app'], env=env).wait()
+        os.system('mv app tmp')
+        os.system('mv tmp/* .')
+        os.system('rm -rf tmp')
 
     # urls
     pages_i18n = [page for page in collection_set.pages.values() if page.has_uri and page.i18n]
@@ -53,12 +70,13 @@ def generate(app_name: str, collection_set: CollectionSetDef):
         if os.path.exists('{}/urls_rest.py'.format(app_name)):
             os.unlink('{}/urls_rest.py'.format(app_name))
 
-    # features
-    generate_feature(app_name, app_name.capitalize(), {
-        'collection_set': collection_set,
-        'pages_i18n': pages_i18n,
-        'pages': pages
-    })
+    if features.cratis:
+        # features
+        generate_feature(app_name, app_name.capitalize(), {
+            'collection_set': collection_set,
+            'pages_i18n': pages_i18n,
+            'pages': pages
+        })
 
     # Models
 

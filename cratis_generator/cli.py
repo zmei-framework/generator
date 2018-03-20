@@ -192,7 +192,7 @@ def handle(app='all', path='data', auto=False, uml=False, rebuild=None, remove=N
                     filename = 'col/' + filename
                 collection_set = Parser().parse_file(filename, app_name=app_name)
 
-                generate(app_name, collection_set)
+                generate(app_name, collection_set, features=['cratis'])
 
                 if auto:
                     subprocess.run('{} makemigrations {}'.format(django_command, app_name), shell=True, check=True)

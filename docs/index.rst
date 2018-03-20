@@ -14,6 +14,7 @@ Welcome to Genius Generator's documentation!
    basics
 
    models
+   model_extras
    pages
    general
 
