@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='cratis-gen',
-    version='1.0.5',
+    version='1.0.6',
     packages=find_packages(),
 
     url='',
@@ -13,7 +13,12 @@ setup(
     long_description='',
 
     package_data={
-        'cratis_generator': ['templates/*.tpl']
+        'cratis_generator': [
+            'templates/*.tpl',
+            'templates/cratis/*.tpl',
+            'templates/django/*.tpl',
+            'templates/theme/*.tpl',
+        ]
     },
 
     install_requires=[

@@ -130,11 +130,12 @@ Full example (use "open in new tab" button to see full code):
     body: longtext
 
 
-
+Rest configuration
+=======================
 
 
 Authentication
-===================
+-----------
 
 You can add authentication of your choice easily:
 
@@ -184,4 +185,207 @@ token
     `Token based authentication <http://www.django-rest-framework.org/api-guide/authentication/#tokenauthentication>`_. Use only over SSL.
 
 
+i18n
+-----------
+
+You can enable i18n urls for @rest by adding i18n: true option.
+
+
+Query
+-----------
+
+Default query can be specified with "query":
+
+
+.. code-block:: col
+    :caption: views.py
+
+    #dog
+    --------------
+    name
+    age
+    alive: bool
+
+    @rest {
+        query: filter(alive=True)
+    }
+
+
+Serializer configuration
+==========================
+
+Fields
+----------
+
+"fields:" are list of fields that will be used by serializer.
+
+Fields can be specified as coma separated list:
+
+.. code-block:: col
+    :caption: views.py
+
+    #dog
+    ----------
+    name
+    age
+    height
+    length
+    weight
+
+    @rest {
+        fields: name, age
+    }
+
+Or *, for all fields:
+
+.. code-block:: col
+    :caption: views.py
+
+    #dog
+    ----------
+    name
+    age
+    height
+    length
+    weight
+
+    @rest {
+        fields: *
+    }
+
+Some fields may be excluded:
+
+.. code-block:: col
+    :caption: views.py
+
+    #dog
+    ----------
+    name
+    age
+    height
+    length
+    weight
+
+    @rest {
+        fields: *, ^length
+    }
+
+Fields may be marked as read-only. Read only has same syntax as fields:
+
+.. code-block:: col
+    :caption: views.py
+
+    #dog
+    ----------
+    name
+    age
+    height
+    length
+    weight
+
+    @rest {
+        fields: *, ^length
+        read_only: *, ^name
+    }
+
+User field
+--------------
+
+Sometimes it is needed to restrict user to work only with objects created
+only by himself. Then "user" field may be used:
+
+.. code-block:: col
+    :caption: views.py
+
+    #dog
+    ----------
+    name
+    age
+    owner: one(some.User)
+
+    @rest {
+        fields: * [rw]
+        user_field: owner
+    }
+
+Serializer will auto-sign authenticated user to the field and will filter
+entries by this user.
+
+Inline
+-----------
+
+Serializer may include other serializers using "include":
+
+
+.. code-block:: col
+    :caption: views.py
+
+    #dog
+    --------------
+    name
+    age
+    alive: bool
+
+    @rest {
+        fields: *
+
+        inline: dogs(
+            fields: *
+        )
+    }
+
+    #man
+    -----------
+    age: int
+    dogs: many(#dog -> dogs)
+
+
+Also inlines may be writable, then special create method will be defined:
+
+
+.. code-block:: col
+    :caption: views.py
+
+    #dog
+    --------------
+    name
+    age
+    alive: bool
+
+    @rest {
+        fields: * [rw]
+
+        inline: dogs(
+            fields: * [rw]
+        )
+    }
+
+    #man
+    -----------
+    age: int
+    dogs: many(#dog -> dogs)
+
+
+
+Annotate
+-----------
+
+.. code-block:: col
+    :caption: views.py
+
+    #dog
+    --------------
+    name
+    age
+    alive: bool
+
+    #man
+    -----------
+    age: int
+    dogs: many(#dog -> dogs)
+
+    @rest {
+        query: filter(age__gt=50)
+        annotate: count(dogs) as dog_cnt
+    }
 

@@ -51,7 +51,7 @@ class RestExtra(Extra):
         rest = Each([
             Optional(Group(Suppress('auth') + Suppress('(') + delimitedList(auth_methods) + Suppress(')')).setResultsName('auth_methods')),
             Optional(Suppress('i18n:') + (Literal('true') | Literal('false')).setResultsName('i18n')),
-            Optional(Suppress('query:') + restOfLine.setResultsName('query')),
+            Optional(Suppress('query:') + White() + restOfLine.setResultsName('query')),
             Optional(Suppress('on_create:') + restOfLine.setResultsName('on_create')),
 
         ]) + extra_rest_gr
@@ -83,7 +83,7 @@ class RestSerializerConfig(object):
         self.auth_method_classes = []
         self.query = 'all()'
         self.parent_field = parent_field
-        self.on_create = None
+        self.on_create = ''
 
         if parse_result.fields:
             self.rest_mode = parse_result.fields.mode
@@ -99,6 +99,7 @@ class RestSerializerConfig(object):
 
         if parse_result.on_create:
             self.on_create = parse_result.on_create.strip()
+
 
         if parse_result.auth_methods:
             for method in parse_result.auth_methods:
