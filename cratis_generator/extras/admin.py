@@ -17,10 +17,11 @@ class AdminExtra(Extra):
 
         identifier = Word(alphas, alphanums + '_')
 
-        admin_inline_args = Optional(
-            Suppress('fields:') + Group(delimitedList(field_name_spec)).setResultsName('fields')) + \
-                            Optional(Suppress(',')) + Optional(Suppress('type:') + oneOf('tabular stacked polymorphic').setResultsName('type')) + \
+        admin_inline_args = Each([
+                            Optional(Suppress('fields:') + Group(delimitedList(field_name_spec)).setResultsName('fields')),
+                            Optional(Suppress(',')) + Optional(Suppress('type:') + oneOf('tabular stacked polymorphic').setResultsName('type')),
                             Optional(Suppress(',')) + Optional(Suppress('extra:') + Word(nums).setResultsName('extra_count'))
+        ])
 
         admin_inline = Group(
             identifier.setResultsName('id') + Optional(Suppress('(') + admin_inline_args + Suppress(')')))

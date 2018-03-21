@@ -4,7 +4,7 @@ from pyparsing import *
 
 identifier = Word(alphas + '_', alphanums + '_')
 
-uri_segment = OneOrMore(Word(alphanums + '-.') | (Literal('<') + SkipTo(Literal('>')) + Literal('>')))
+uri_segment = OneOrMore(Word(alphanums + '-._') | (Literal('<') + SkipTo(Literal('>')) + Literal('>')))
 uri_expr = Combine(Optional('$') + Literal('/') + Optional(delimitedList(uri_segment, delim='/', combine=True)) + Optional('/'))
 file_name = Word(alphanums + '-/_.')
 

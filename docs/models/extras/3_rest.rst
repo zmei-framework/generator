@@ -355,7 +355,7 @@ Also inlines may be writable, then special create method will be defined:
     @rest {
         fields: * [rw]
 
-        inline: dogs(
+        inline: owners(
             fields: * [rw]
         )
     }
@@ -363,12 +363,48 @@ Also inlines may be writable, then special create method will be defined:
     #man
     -----------
     age: int
-    dogs: many(#dog -> dogs)
+    dogs: many(#dog -> owners)
 
+Inlines may be nested:
+
+.. code-block:: col
+    :caption: views.py
+
+    #dog
+    --------------
+    name
+    age
+    alive: bool
+
+    @rest {
+        fields: *
+
+        inline: owners(
+            fields: *
+            inline: home_addresses(
+                fields: *
+            )
+        )
+    }
+
+    #man
+    -----------
+    age: int
+    dogs: many(#dog -> owners)
+
+
+    #address
+    --------------
+    man: one(#man -> home_addresses)
+    city
+    street
+    house
 
 
 Annotate
 -----------
+
+@rest support Count() annotation on fields. Later more annotations will be added:
 
 .. code-block:: col
     :caption: views.py

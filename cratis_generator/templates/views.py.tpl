@@ -1,4 +1,5 @@
 {{ imports }}
+{{ collection_set.page_imports }}
 {% for cname, col in collections %}
 {% with rest_conf=col.rest_conf %}
 {% include 'serializer.py.tpl' %}
@@ -23,7 +24,6 @@ class {{ col.class_name }}ViewSet({{ col.rest_conf.rest_class[1] }}):
         return {{ col.class_name }}.objects.{{ col.rest_conf.query }}{% if col.rest_conf.user_field %}.filter({{ col.rest_conf.user_field }}=self.request.user){% endif %}{% if col.rest_conf.annotations %}.annotate({{ col.rest_conf.annotations|join(", ") }}){% endif %}
 
 {% endfor %}
-{{ collection_set.page_imports }}
 {% for page in pages %}
 class {{ page.view_name }}({% if page.extra_bases %}{{ page.extra_bases|join(", ") }}, {% endif %}{{ page.parent_view_name }}):
     {% if page.options %}{% for key, option in page.options.items() %}{{ key }} = {{ option }}
