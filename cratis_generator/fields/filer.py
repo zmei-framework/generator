@@ -5,7 +5,7 @@ from cratis_generator.generator.utils import gen_args
 from pyparsing import *
 
 
-class FileFieldDef(FieldDef):
+class FilerFileFieldDef(FieldDef):
 
     """
     Image field
@@ -32,7 +32,7 @@ class FileFieldDef(FieldDef):
             'FileSerializer()'
         )
 
-class FileFolderDef(FieldDef):
+class FilerFileFolderDef(FieldDef):
 
     """
     Image field
@@ -60,7 +60,7 @@ class FileFolderDef(FieldDef):
 
 
 
-class ImageFieldDef(FieldDef):
+class FilerImageFieldDef(FieldDef):
 
     """
     Image field
@@ -129,7 +129,7 @@ class ImageFieldDef(FieldDef):
         """ % self.name
 
 
-class ImageFolderFieldDef(ImageFieldDef):
+class FilerImageFolderFieldDef(FilerImageFieldDef):
 
     def get_model_field(self, collection):
         args = self.prepare_field_arguemnts({

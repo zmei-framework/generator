@@ -2,10 +2,13 @@ from cratis_generator.config.domain import FieldDef
 from cratis_generator.fields.bool import BooleanFieldDef
 from cratis_generator.fields.date import DateFieldDef, DateTimeFieldDef, AutoNowDateTimeFieldDef, \
     AutoNowAddDateTimeFieldDef
+from cratis_generator.fields.filer import FilerFileFolderDef, FilerImageFolderFieldDef, FilerImageFieldDef, \
+    FilerFileFieldDef
+from cratis_generator.fields.image import ImageFieldDef
 from cratis_generator.fields.number import IntegerFieldDef, FloatFieldDef, DecimalFieldDef
 from cratis_generator.fields.relation import RelationOneDef, RelationManyDef, RelationOne2OneDef
 from cratis_generator.fields.text import TextFieldDef, LongTextFieldDef, RichTextFieldDef, SlugFieldDef
-from cratis_generator.fields.filer import ImageFieldDef, FileFieldDef, ImageFolderFieldDef, FileFolderDef
+
 
 field_type_map = {
     'text': TextFieldDef,
@@ -15,10 +18,11 @@ field_type_map = {
     'one': RelationOneDef,
     'many': RelationManyDef,
     'one2one': RelationOne2OneDef,
-    'image': ImageFieldDef,
-    'file': FileFieldDef,
-    'folder': FileFolderDef,
-    'image_folder': ImageFolderFieldDef,
+    'image_file': ImageFieldDef,
+    'filer_image': FilerImageFieldDef,
+    'filer_file': FilerFileFieldDef,
+    'folder': FilerFileFolderDef,
+    'image_folder': FilerImageFolderFieldDef,
 
     'date': DateFieldDef,
     'datetime': DateTimeFieldDef,

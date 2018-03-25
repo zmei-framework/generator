@@ -8,9 +8,12 @@ from cratis_generator.config.grammar import identifier
 url_expression = Group((Literal('url') | Literal('page') | Literal('reverse')).setResultsName('type') + \
                        QuotedString('(', endQuoteChar=')').setResultsName('expression')).setResultsName('target')
 
+arg = Group(identifier.setResultsName('key') + Suppress('=') + quotedString('"').setResultsName('val'))
+args = ZeroOrMore(arg).setResultsName('args')
+
 menu_item = Group(identifier.setResultsName('ref') + Suppress('=>') + \
             (Word(alphanums) | QuotedString('"') | QuotedString("'")).setResultsName('label') + \
-            Suppress(':') + url_expression)
+            Suppress(':') + url_expression + args)
 
 parser = OneOrMore(menu_item).setResultsName('items').ignore(cStyleComment)
 
@@ -57,7 +60,12 @@ class MenuPageExtra(PageExtra):
         menu_code = self.page.page_code or '\n'
         menu_code += f"data['menu_{self.menu_name}'] = {{\n"
         for item in self.items:
-            menu_code += f"'{item.ref}': {{'label': {repr(item.label)}, 'link': {self.render_url(item)} }},\n"
+
+            if item.args:
+                args = ', ' + ', '.join([f"'{x.key}': {x.val}" for x in item.args])
+            else:
+                args = ''
+            menu_code += f"'{item.ref}': {{'label': {repr(item.label)}, 'link': {self.render_url(item)}{args} }},\n"
         menu_code += "}\n"
         self.page.page_code = menu_code
 

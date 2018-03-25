@@ -9,9 +9,11 @@ from cratis_generator.extras.dates import DateTreeExtra
 from cratis_generator.extras.db_signals import DbSignalExtra, PreSaveExtra, PostSaveExtra, PreDeleteExtra, \
     PostDeleteExtra, M2mChangedExtra
 from cratis_generator.extras.document import DocumentExtra
+from cratis_generator.extras.page.auth import AuthExtra
 from cratis_generator.extras.page.blocks import BlocksPageExtra
 from cratis_generator.extras.page.crud import CrudPageExtra, CrudCreatePageExtra, CrudUpdatePageExtra, \
     CrudDeletePageExtra, CrudDetailPageExtra
+from cratis_generator.extras.page.form import FormExtra
 from cratis_generator.extras.page.menu import MenuPageExtra
 from cratis_generator.extras.page.merge import MergePageExtra
 from cratis_generator.extras.page.page_handlers import HandleErrorExtra
@@ -25,7 +27,6 @@ from pyparsing import ParseException
 
 from cratis_generator.extras.admin import AdminExtra
 from cratis_generator.extras.rest import RestExtra
-
 
 class ParseError(Exception):
     pass
@@ -122,6 +123,8 @@ class Parser(object):
 
     def get_page_extras_available(self):
         return {x.get_name(): x for x in (
+            FormExtra,
+            AuthExtra,
             CrudPageExtra,
             CrudCreatePageExtra,
             CrudUpdatePageExtra,

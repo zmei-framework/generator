@@ -41,6 +41,7 @@ class PageDef(object):
         self.collection_set = collection_set
 
         self.rss = None
+        self.auth = False
 
         self.extra_bases = []
 
@@ -149,7 +150,19 @@ class PageDef(object):
         return self.collection_set.pages[self.parent_name].view_name
 
     def get_imports(self):
-        return self.imports
+        imports = self.imports
+
+        if self.is_login_required():
+            imports += [
+                ('django.contrib.auth.decorators', 'login_required'),
+                ('django.utils.decorators', 'method_decorator')
+            ]
+
+        return imports
+
+    def is_login_required(self):
+        parent = self.get_parent()
+        return self.auth or (parent and parent.is_login_required())
 
     @property
     def has_sitemap(self):
@@ -164,7 +177,6 @@ class PageDef(object):
 
         uri = self.uri[1:] if self.uri.startswith('/') else self.uri
         return '^{}$'.format(uri)
-
 
     def render_method_headers(self, use_data=False, use_parent=False, use_url=False, use_request=False):
         code = ""

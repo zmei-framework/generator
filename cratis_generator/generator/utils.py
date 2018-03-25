@@ -173,7 +173,6 @@ def generate_urls_file(app_name, collection_set, pages, i18n=False):
     }
 
     filepath = os.path.join(package_to_path(app_name), 'urls_i18n.py' if i18n else 'urls.py')
-    print(filepath)
 
     generate_file(filepath, 'urls.py.tpl', context)
 

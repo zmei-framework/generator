@@ -56,8 +56,8 @@ class {{ col.class_name }}Admin({{ col.admin_class_declaration }}):
     prepopulated_fields = {{ col.prepopulated_fields |repr }}
     {% endif %}
 
-    {% if col.read_only_fields %}
-    readonly_fields = ({{ col.read_only_fields|field_names(admin=True) }},)
+    {% if col.admin_read_only %}
+    readonly_fields = ({{ col.admin_read_only|field_names(admin=True) }},)
     {% endif %}
 
     {% if col.date_hierarchy %}

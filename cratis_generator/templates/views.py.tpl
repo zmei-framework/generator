@@ -25,6 +25,7 @@ class {{ col.class_name }}ViewSet({{ col.rest_conf.rest_class[1] }}):
 
 {% endfor %}
 {% for page in pages %}
+{% if page.is_login_required() %}@method_decorator(login_required, name='dispatch'){% endif %}
 class {{ page.view_name }}({% if page.extra_bases %}{{ page.extra_bases|join(", ") }}, {% endif %}{{ page.parent_view_name }}):
     {% if page.options %}{% for key, option in page.options.items() %}{{ key }} = {{ option }}
     {% endfor %}{% endif %}{% if page.methods %}{% for key, method_code in page.methods.items() %}

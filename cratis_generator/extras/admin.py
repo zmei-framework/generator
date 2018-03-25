@@ -42,6 +42,7 @@ class AdminExtra(Extra):
                    Optional(Suppress('list_filter:') + Group(delimitedList(field_name_spec)).setResultsName('list_filter')) +
                    Optional(Suppress('list_search:') + Group(delimitedList(field_name_spec)).setResultsName('list_search')) +
                    Optional(Suppress('fields:') + Group(delimitedList(field_name_spec)).setResultsName('fields')) +
+                   Optional(Suppress('read_only:') + Group(delimitedList(field_name_spec)).setResultsName('read_only')) +
                    Optional(Suppress('inline:') + Group(delimitedList(admin_inline)).setResultsName('inlines')) +
                    Optional(Suppress('tabs:') + Group(delimitedList(admin_tab)).setResultsName('tabs')) +
                    Optional(Suppress('js:') + Group(delimitedList(file_name)).setResultsName('js')) +
@@ -54,6 +55,11 @@ class AdminExtra(Extra):
 
         if parsed_body.list:
             collection.admin_list = collection.filter_fields(parsed_body.list)
+
+        if parsed_body.read_only:
+            collection.admin_read_only = collection.filter_fields(parsed_body.read_only)
+        elif len(collection.read_only_fields):
+            collection.admin_read_only = collection.read_only_fields
 
         if parsed_body.list_editable:
             collection.admin_list_editable = collection.filter_fields(parsed_body.list_editable)

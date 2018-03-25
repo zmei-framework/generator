@@ -15,11 +15,12 @@ class_parser = Word(alphanums + '_.').setResultsName('model') + \
 parser = ((ref_parser | class_parser) +
           Each([
               Optional(Suppress('skip:') + Group(delimitedList(
-                  Literal('create') | Literal('update') | Literal('delete') | Literal('detail')
+                  Literal('create') | Literal('edit') | Literal('delete') | Literal('detail')
               )).setResultsName('skip')),
               Optional(Suppress('block:') + identifier.setResultsName('block_name')),
               Optional(Suppress('url_prefix:') + Word(alphanums + '-/').setResultsName('url_prefix')),
               Optional(Suppress('pk_param:') + Word(alphanums + '_').setResultsName('pk_param')),
+              Optional(Suppress('object_expr:') + restOfLine.setResultsName('object_expr')),
               Optional(Suppress('item_name:') + Word(alphanums + '_').setResultsName('item_name')),
               Optional(Suppress('link_extra:') + QuotedString('"').setResultsName('link_extra'))
           ]) +
@@ -44,8 +45,9 @@ class CrudPageExtra(PageExtra):
     model_cls = None
     fields = None
     formatted_query = None
+    object_expr = None
     query = None
-    next_page_args = None
+    next_page_expr = None
     item_name = None
 
     def __init__(self, parsed_result, page):
@@ -60,14 +62,18 @@ class CrudPageExtra(PageExtra):
         self.build_pages(page)
 
     def prepare_environment(self, crud, page):
-        self.next_page_args = crud.next_page or None
+        # next page
+        if crud.next_page:
+            self.next_page_expr = f"return reverse_lazy({crud.next_page})"
+        else:
+            self.next_page_expr = f"return self.request.get_full_path()"
 
         # appname, model_cls, fields
         if crud.model.startswith('#'):
             self.app_name = page.collection_set.app_name + '.models'
             collection = page.collection_set.collections[crud.model[1:]]
             self.model_cls = collection.class_name
-            self.fields = [field.name for field in collection.filter_fields(crud.fields or '*')]
+            self.fields = [field.name for field in collection.filter_fields(crud.fields or '*') if not field.read_only]
         else:
             parts = crud.model.split('.')
             self.app_name = '.'.join(parts[:-1]) + '.models'
@@ -126,6 +132,12 @@ class CrudPageExtra(PageExtra):
             self.pk_param = f'{self.descriptor}_pk'
         else:
             self.pk_param = 'pk'
+
+        # object
+        if crud.object_expr:
+            self.object_expr = 'self.object = ' + crud.object_expr
+        else:
+            self.object_expr = 'self.object = self.get_object()'
 
         # formated_query
         self.query = crud.query.strip()
@@ -222,7 +234,7 @@ class BaseCrudSubpageExtra(CrudPageExtra):
         if self.crud_page in ('edit', 'delete', 'create', 'detail'):
             page.imports.append(('django.urls', 'reverse_lazy'))
             page.options['pk_url_kwarg'] = f"'{self.pk_param}'"
-            page.methods['get_success_url'] = f"return reverse_lazy({self.next_page_args})"
+            page.methods['get_success_url'] = self.next_page_expr
 
         if self.crud_page in ('edit', 'delete', 'create', 'detail'):
             page.methods['get_queryset'] = "return " + self.model_cls + ".objects" + self.formatted_query
@@ -233,8 +245,10 @@ class BaseCrudSubpageExtra(CrudPageExtra):
             page.options['fields'] = repr(self.fields)
 
         if self.crud_page in ('edit', 'delete', 'detail'):
-            page.methods['get'] = \
-                "self.object = self.get_object()\nreturn super().get(request, *args, **kwargs)"
+            page.methods['get'] = self.object_expr + "\nreturn super().get(request, *args, **kwargs)"
+            page.methods['post'] = self.object_expr + "\nreturn super().post(request, *args, **kwargs)"
+            if 'get_object()' not in self.object_expr:
+                page.methods['get_object'] = self.object_expr + "\nreturn self.object"
 
         if self.crud_page in ('create',):
             page.methods['get'] = \
