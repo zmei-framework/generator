@@ -58,7 +58,7 @@ class MenuPageExtra(PageExtra):
     def post_process(self):
 
         menu_code = self.page.page_code or '\n'
-        menu_code += f"data['menu_{self.menu_name}'] = {{\n"
+        menu_code += f"data.menu_{self.menu_name} = {{\n"
         for item in self.items:
 
             if item.args:
@@ -70,9 +70,9 @@ class MenuPageExtra(PageExtra):
         self.page.page_code = menu_code
 
         for page_ref, item_ref, page in self.page_refs:
-            page.methods[f'activate_{self.menu_name}_menu'] = f"kwargs['menu_{self.menu_name}']['{item_ref}']['active'] = True\n"
+            page.methods[f'activate_{self.menu_name}_menu'] = f"self.get_data().menu_{self.menu_name}['{item_ref}']['active'] = True\n"
 
             code = page.page_code or '\n'
-            code += f'self.activate_{self.menu_name}_menu(**data)\n'
+            code += f'self.activate_{self.menu_name}_menu()\n'
 
             page.page_code = code

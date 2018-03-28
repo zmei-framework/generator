@@ -53,13 +53,32 @@ class FloatFieldDef(FieldDef):
 
 
 class DecimalFieldDef(FieldDef):
+
+    positive = False
+
+    def parse_options(self):
+        if isinstance(self.options, str) and self.options.strip() != '':
+            self.positive = self.options.strip() == '+'
+
     def get_model_field(self, collection):
-        args = self.prepare_field_arguemnts({
-            'max_digits': 15,
-            'decimal_places': 2,
-        })
+        imports = [('django.db', 'models')]
+
+        own_args = {'max_digits': 15, 'decimal_places': 2, }
+
+        if self.positive:
+            imports.append(
+                ('django.core.validators', 'MinValueValidator')
+            )
+            imports.append(
+                ('decimal', 'Decimal')
+            )
+            own_args['validators'] = '[MinValueValidator(Decimal("0.00"))]'
+
+        args = self.prepare_field_arguemnts(own_args)
+
+        args = ', '.join(['{}={}'.format(key, val) for key, val in args.items()])
 
         return FieldDeclaration(
-            [('django.db', 'models')],
-            'models.DecimalField({})'.format(gen_args(args))
+            imports,
+            'models.DecimalField({})'.format(args)
         )

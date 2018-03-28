@@ -90,6 +90,9 @@ class PageDef(object):
             uri = uri[1:]
             self.i18n = True
 
+        if not self.parent_name:
+            self.extra_bases.append('_View')
+
 
         self.uri = re.sub(r'<(\w+)(\s*:\s*([^\>]+))?>', find_params, uri)
 
@@ -158,6 +161,11 @@ class PageDef(object):
                 ('django.utils.decorators', 'method_decorator')
             ]
 
+        imports += [
+            ('django.contrib.auth.decorators', 'login_required'),
+            ('django.utils.decorators', 'method_decorator')
+        ]
+
         return imports
 
     def is_login_required(self):
@@ -180,8 +188,8 @@ class PageDef(object):
 
     def render_method_headers(self, use_data=False, use_parent=False, use_url=False, use_request=False):
         code = ""
-        if use_data:
-            code += "data = super().get_context_data(inherited=True, **self.kwargs)\n"
+        if use_data or use_parent:
+            code += "data = self.get_data()\n"
         if use_parent:
             code += "parent = type('parent', (object,), data)\n"
         if use_request:
@@ -210,9 +218,11 @@ class PageDef(object):
 
             if not item.or_404:
                 code += " " * indent + key + " = " + item.render_python_code() + "\n"
+                code += " " * indent + "data." + key + " = " + key + "\n"
             else:
                 code += " " * indent + "try:\n"
                 code += " " * indent + "   " + key + " = " + item.render_python_code() + "\n"
+                code += " " * indent + "   data." + key + " = " + key + "\n"
                 code += " " * indent + "except ObjectDoesNotExist:\n"
                 code += " " * indent + "   raise Http404\n"
             if inherited:
@@ -223,8 +233,8 @@ class PageDef(object):
 
         code = self.render_method_headers(
             use_data=False,
-            use_parent='parent' in code,
-            use_request='request' in code,
+            use_parent='parent.' in code,
+            use_request='request.' in code,
             use_url=True,
         ) + code
 
@@ -253,9 +263,9 @@ class PageDef(object):
             code = '"{tpl}"'.format(tpl=self.defined_template_name)
 
         code = self.render_method_headers(
-            use_data=False,
+            use_data='data.' in code,
             use_parent=False,
-            use_request='request' in code,
+            use_request='request.' in code,
             use_url='url' in code,
         ) + 'return [' + code + ']\n'
 
@@ -265,10 +275,10 @@ class PageDef(object):
         code = method_code
 
         code = self.render_method_headers(
-            use_data=False,
+            use_data='data.' in code,
             use_parent=False,
-            use_request='request' in code,
-            use_url='url' in code,
+            use_request='request.' in code,
+            use_url='url.' in code,
         ) + code + '\n'
 
         return code

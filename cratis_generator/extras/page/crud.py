@@ -9,11 +9,12 @@ ref_parser = Combine(Literal('#') + Word(alphanums + '_')).setResultsName('model
              Optional(Suppress('fields:') + Group(delimitedList(field_name_spec)).setResultsName('fields'))
 
 class_parser = Word(alphanums + '_.').setResultsName('model') + \
-               Optional(QuotedString('<', endQuoteChar='>').setResultsName('query')) + \
-               Optional(Suppress('fields:') + Group(delimitedList(Word(alphanums + '_'))).setResultsName('fields'))
+               Optional(QuotedString('<', endQuoteChar='>').setResultsName('query'))
+
 
 parser = ((ref_parser | class_parser) +
           Each([
+              Optional(Suppress('fields:') + Group(delimitedList(Word(alphanums + '_'))).setResultsName('fields')),
               Optional(Suppress('skip:') + Group(delimitedList(
                   Literal('create') | Literal('edit') | Literal('delete') | Literal('detail')
               )).setResultsName('skip')),
@@ -245,14 +246,14 @@ class BaseCrudSubpageExtra(CrudPageExtra):
             page.options['fields'] = repr(self.fields)
 
         if self.crud_page in ('edit', 'delete', 'detail'):
-            page.methods['get'] = self.object_expr + "\nreturn super().get(request, *args, **kwargs)"
-            page.methods['post'] = self.object_expr + "\nreturn super().post(request, *args, **kwargs)"
+            page.methods['get'] = self.object_expr + "\nreturn super().get(self.request, *args, **kwargs)"
+            page.methods['post'] = self.object_expr + "\nreturn super().post(self.request, *args, **kwargs)"
             if 'get_object()' not in self.object_expr:
                 page.methods['get_object'] = self.object_expr + "\nreturn self.object"
 
         if self.crud_page in ('create',):
             page.methods['get'] = \
-                "self.object = None\nreturn super().get(request, *args, **kwargs)"
+                "self.object = None\nreturn super().get(self.request, *args, **kwargs)"
 
             page.methods['get_initial'] = f"self.object = {self.model_cls}({self.query})\nreturn super().get_initial()"
 
