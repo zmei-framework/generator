@@ -1,12 +1,17 @@
+import re
+
 from cratis_generator.config.domain import PageExtra, ValidationException, PageExpression
 from cratis_generator.config.grammar import identifier, field_name_spec
 from pyparsing import *
 
 from cratis_generator.extras.page.blocks import PageBlock
 
+field_filter = Optional(QuotedString('<', endQuoteChar='>')).setResultsName('filter_expr')
+field = Group(field_name_spec.setResultsName('spec') + field_filter)
+
 ref_parser = Combine(Literal('#') + Word(alphanums + '_')).setResultsName('model') + \
              Optional(QuotedString('<', endQuoteChar='>').setResultsName('query')) + \
-             Optional(Suppress('fields:') + Group(delimitedList(field_name_spec)).setResultsName('fields'))
+             Optional(Suppress('fields:') + Group(delimitedList(field)).setResultsName('fields'))
 
 class_parser = Word(alphanums + '_.').setResultsName('model') + \
                Optional(QuotedString('<', endQuoteChar='>').setResultsName('query'))
@@ -14,7 +19,8 @@ class_parser = Word(alphanums + '_.').setResultsName('model') + \
 
 parser = ((ref_parser | class_parser) +
           Each([
-              Optional(Suppress('fields:') + Group(delimitedList(Word(alphanums + '_'))).setResultsName('fields')),
+              Optional(Suppress('fields:') + Group(delimitedList(
+                  Group(Word(alphanums + '_').setResultsName('spec') + field_filter))).setResultsName('fields')),
               Optional(Suppress('skip:') + Group(delimitedList(
                   Literal('create') | Literal('edit') | Literal('delete') | Literal('detail')
               )).setResultsName('skip')),
@@ -50,6 +56,7 @@ class CrudPageExtra(PageExtra):
     query = None
     next_page_expr = None
     item_name = None
+    field_filters = None
 
     def __init__(self, parsed_result, page):
         super().__init__(parsed_result, page)
@@ -68,6 +75,16 @@ class CrudPageExtra(PageExtra):
             self.next_page_expr = f"return reverse_lazy({crud.next_page})"
         else:
             self.next_page_expr = f"return self.request.get_full_path()"
+
+        self.field_filters = {}
+        if crud.fields:
+            all_fields = []
+            for field in crud.fields:
+                all_fields.append(field.spec)
+                if field.filter_expr and not field.spec.startswith('^'):
+                    self.field_filters[field.spec] = field.filter_expr
+
+            crud.fields = all_fields
 
         # appname, model_cls, fields
         if crud.model.startswith('#'):
@@ -90,7 +107,7 @@ class CrudPageExtra(PageExtra):
         if len(crud.link_extra):
             self.link_extra = crud.link_extra
             link_extra_params = []
-            for item in self.link_extra.split(','):
+            for item in re.split('\s+', self.link_extra):
                 key, val = item.split('=')
                 link_extra_params.append(f"'{key}': {val}")
             self.link_extra_params = ', '.join(link_extra_params)
@@ -231,6 +248,15 @@ class BaseCrudSubpageExtra(CrudPageExtra):
             page.imports.append(
                 ('django.views.generic.edit', self.get_view_class_name())
             )
+
+        if self.crud_page in ('edit', 'create') and len(self.field_filters):
+            code = "form = super().get_form(*args, **kwargs)\n"
+
+            for name, expr in self.field_filters.items():
+                code += "form.fields['{}'].queryset = {}\n".format(name, expr)
+            code += "return form\n"
+
+            page.methods['get_form'] = code
 
         if self.crud_page in ('edit', 'delete', 'create', 'detail'):
             page.imports.append(('django.urls', 'reverse_lazy'))

@@ -10,7 +10,7 @@ import tempfile
 from cratis_generator.config.domain import CollectionSetDef, CollectionDef, FieldDef, FieldDeclaration, NoModelField
 from cratis_generator.generator.imports import ImportSet
 from cratis_generator.generator.utils import generate_feature, generate_file, is_file_generated, \
-    generate_urls_file, generate_urls_rest, chdir
+    generate_urls_file, generate_urls_rest, chdir, fill_file
 
 
 def list_apps():
@@ -22,8 +22,7 @@ def list_apps():
             yield filename[0:-4]
 
 
-def generate(app_name: str, collection_set: CollectionSetDef, features=None):
-    features = features or []
+def generate_common_files(apps, features=None):
     features = type('features', (object,), {x: x in features for x in [
         'cratis', 'django'
     ]})
@@ -36,6 +35,61 @@ def generate(app_name: str, collection_set: CollectionSetDef, features=None):
         os.system('mv app tmp')
         os.system('mv tmp/* .')
         os.system('rm -rf tmp')
+
+        # urls
+        imports = set()
+        urls = ['urlpatterns = [']
+        urls += [
+            "    url(r'^admin/', admin.site.urls),",
+        ]
+        for app_name, collection_set in apps.items():
+            if collection_set.pages:
+                urls.append(f"    url(r'^', include({app_name}.urls)),")
+                imports.add(f'{app_name}.urls')
+
+            if collection_set.rest:
+                urls.append(f"    url(r'^', include({app_name}.urls_rest)),")
+                imports.add(f'{app_name}.urls_rest')
+
+        urls.append(']')
+
+        # urls
+        with open('app/urls.py', 'w') as f:
+            f.write('from django.conf.urls import url, include\n')
+            f.write('from django.contrib import admin\n')
+
+            f.write('\n')
+            f.write('\n'.join([f'import {app_name}' for app_name in imports]))
+            f.write('\n\n')
+            f.write('\n'.join(urls))
+
+        # settings
+        with open('app/settings.py', 'a') as f:
+            f.write('\nINSTALLED_APPS += [\n')
+            f.write("\n    'app',\n")
+            f.write('\n'.join([f"    '{app_name}'," for app_name in apps.keys()]))
+            f.write('\n]\n')# settings
+
+        # base template
+        generate_file('app/templates/base.html', template_name='theme/base.html')
+
+        has_rest = False
+        for app_name, collection_set in apps.items():
+            if collection_set.rest:
+                has_rest = True
+
+        # requirements
+        with open('requirements.txt', 'w') as f:
+            f.write('django\n')
+            if has_rest:
+                f.write('djangorestframework\n')
+
+
+def generate(app_name: str, collection_set: CollectionSetDef, features=None):
+    features = features or []
+    features = type('features', (object,), {x: x in features for x in [
+        'cratis', 'django'
+    ]})
 
     # urls
     pages_i18n = [page for page in collection_set.pages.values() if page.has_uri and page.i18n]

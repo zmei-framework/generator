@@ -18,7 +18,7 @@ class SortableExtra(Extra):
             raise ValidationException('@sortable: Field "{}" does not belong to collection #{}'.format(field_name, collection.ref))
 
         collection.sortable = True
-        collection.sortable_field = field_name
+        collection.sortable_field = [field_name]
 
 
 class OrderExtra(Extra):
@@ -33,5 +33,5 @@ class OrderExtra(Extra):
         if not len(field_name):
             raise ValidationException('@sortable: You should specify field name for sortable.')
 
-        collection.sortable_field = field_name
+        collection.sortable_field = [x.strip() for x in field_name.split(',')]
 

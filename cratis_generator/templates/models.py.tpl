@@ -3,6 +3,10 @@
 
 {{ collection_set.collection_imports }}
 
+if '_' not in locals():
+    _ = lambda s: s
+
+
 {% for cname, col in collections %}
 class {{ col.class_name }}({% for import_str, class_name, alias in col.mixin_classes %}{{ alias }}, {% endfor %}{{ col.model_class_declaration }}):
     """
@@ -43,11 +47,11 @@ class {{ col.class_name }}({% for import_str, class_name, alias in col.mixin_cla
     {% endif %}
 
     class Meta:
-        verbose_name = "{{ col.name }}"{% if col.name_plural %}
-        verbose_name_plural = "{{ col.name_plural }}"
+        verbose_name = _("{{ col.name }}"){% if col.name_plural %}
+        verbose_name_plural = _("{{ col.name_plural }}")
         {% endif %}
         {% if col.sortable_field %}
-        ordering = ['{{ col.sortable_field }}']
+        ordering = {{ col.sortable_field|repr }}
         {% endif %}
 
 {% for (pkg, signal), code in col.signal_handlers %}

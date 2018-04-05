@@ -65,7 +65,7 @@ class MenuPageExtra(PageExtra):
                 args = ', ' + ', '.join([f"'{x.key}': {x.val}" for x in item.args])
             else:
                 args = ''
-            menu_code += f"'{item.ref}': {{'label': {repr(item.label)}, 'link': {self.render_url(item)}{args} }},\n"
+            menu_code += f"'{item.ref}': {{'label': _({repr(item.label)}), 'link': {self.render_url(item)}{args} }},\n"
         menu_code += "}\n"
         self.page.page_code = menu_code
 

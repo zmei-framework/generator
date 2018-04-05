@@ -12,7 +12,7 @@ from dateutil.tz import tzlocal
 
 from .config.domain import ValidationException
 from .config.parser import Parser
-from .generator.collections import generate
+from .generator.collections import generate, generate_common_files
 from .generator.utils import StopGenerator, fill_file
 import subprocess
 
@@ -180,6 +180,7 @@ def handle(app='all', path='data', auto=False, uml=False, rebuild=None, remove=N
             else:
                 collections = [x.strip() for x in app.split(',')]
 
+            all_apps = {}
             for app_name in collections:
                 print('Application {}'.format(app_name))
 
@@ -194,6 +195,8 @@ def handle(app='all', path='data', auto=False, uml=False, rebuild=None, remove=N
 
                 generate(app_name, collection_set, features=['cratis'])
 
+                all_apps[app_name] = collection_set
+
                 if auto:
                     subprocess.run('{} makemigrations {}'.format(django_command, app_name), shell=True, check=True)
                     try:
@@ -203,6 +206,8 @@ def handle(app='all', path='data', auto=False, uml=False, rebuild=None, remove=N
 
                     if collection_set.translatable:
                         subprocess.run('{} sync_translation_fields_safe'.format(django_command), shell=True, check=True)
+
+            generate_common_files(apps=all_apps, features=['cratis'])
 
     except click.exceptions.Abort as e:
         print('Aborted.')

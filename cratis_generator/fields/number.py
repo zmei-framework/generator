@@ -76,9 +76,7 @@ class DecimalFieldDef(FieldDef):
 
         args = self.prepare_field_arguemnts(own_args)
 
-        args = ', '.join(['{}={}'.format(key, val) for key, val in args.items()])
-
         return FieldDeclaration(
             imports,
-            'models.DecimalField({})'.format(args)
+            'models.DecimalField({})'.format(gen_args(args, raw_args=['validators']))
         )

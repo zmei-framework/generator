@@ -1,5 +1,9 @@
 {{ imports }}
 {{ collection_set.page_imports }}
+
+if '_' not in locals():
+    _ = lambda s: s
+
 {% for cname, col in collections %}
 {% with rest_conf=col.rest_conf %}
 {% include 'serializer.py.tpl' %}

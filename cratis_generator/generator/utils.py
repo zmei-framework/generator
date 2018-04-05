@@ -247,5 +247,16 @@ def handle_parse_exception(e, parsed_string, subject):
     raise StopGenerator('\n'.join(out))
 
 
-def gen_args(args):
-    return ', '.join(['{}={}'.format(key, repr(val)) for key, val in args.items()])
+def gen_args(args, raw_args=None):
+    if not raw_args:
+        raw_args = []
+    _args = []
+    for key, val in args.items():
+        if key not in raw_args:
+            val = repr(val)
+        if key in ('verbose_name', 'help_text'):
+            val = '_({})'.format(val)
+
+        _args.append('{}={}'.format(key, val))
+
+    return ', '.join(_args)

@@ -904,6 +904,8 @@ class FieldDef(object):
 
         if self.verbose_name:
             args['verbose_name'] = self.verbose_name
+        else:
+            args['verbose_name'] = self.name.replace('_', ' ').capitalize()
 
         if self.help:
             args['help_text'] = self.help

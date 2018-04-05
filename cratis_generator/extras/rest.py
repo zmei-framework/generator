@@ -153,7 +153,7 @@ class RestSerializerConfig(object):
             self.read_only_fields = []
 
         for field in collection.filter_fields(fields, include_refs=True):
-            if self.parent_field and field.name == self.parent_field.source_field_name:
+            if self.parent_field and hasattr(self.parent_field, 'source_field_name') and field.name == self.parent_field.source_field_name:
                 continue
             if self.user_field and field.name == self.user_field:
                 continue
