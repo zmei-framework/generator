@@ -36,6 +36,10 @@ def generate_common_files(apps, features=None):
         os.system('mv tmp/* .')
         os.system('rm -rf tmp')
 
+        #config
+        has_rest = False
+        has_admin = False
+
         # urls
         imports = set()
         urls = ['urlpatterns = [']
@@ -47,8 +51,12 @@ def generate_common_files(apps, features=None):
                 urls.append(f"    url(r'^', include({app_name}.urls)),")
                 imports.add(f'{app_name}.urls')
 
+            if collection_set.admin:
+                has_admin = True
+
             if collection_set.rest:
-                urls.append(f"    url(r'^', include({app_name}.urls_rest)),")
+                has_rest = True
+                urls.append(f"    url(r'^api/', include({app_name}.urls_rest)),")
                 imports.add(f'{app_name}.urls_rest')
 
         urls.append(']')
@@ -64,25 +72,30 @@ def generate_common_files(apps, features=None):
             f.write('\n'.join(urls))
 
         # settings
+        installed_apps = list(apps.keys())
+        if has_rest:
+            installed_apps.append('rest_framework')
+        if has_admin:
+            if features.cratis:
+                installed_apps.append('django_select2')
+
         with open('app/settings.py', 'a') as f:
             f.write('\nINSTALLED_APPS += [\n')
             f.write("\n    'app',\n")
-            f.write('\n'.join([f"    '{app_name}'," for app_name in apps.keys()]))
+            f.write('\n'.join([f"    '{app_name}'," for app_name in installed_apps]))
             f.write('\n]\n')# settings
 
         # base template
         generate_file('app/templates/base.html', template_name='theme/base.html')
-
-        has_rest = False
-        for app_name, collection_set in apps.items():
-            if collection_set.rest:
-                has_rest = True
 
         # requirements
         with open('requirements.txt', 'w') as f:
             f.write('django\n')
             if has_rest:
                 f.write('djangorestframework\n')
+            if has_admin:
+                if features.cratis:
+                    f.write('django-select2\n')
 
 
 def generate(app_name: str, collection_set: CollectionSetDef, features=None):
@@ -90,6 +103,7 @@ def generate(app_name: str, collection_set: CollectionSetDef, features=None):
     features = type('features', (object,), {x: x in features for x in [
         'cratis', 'django'
     ]})
+    collection_set.features = features
 
     # urls
     pages_i18n = [page for page in collection_set.pages.values() if page.has_uri and page.i18n]

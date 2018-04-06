@@ -70,6 +70,8 @@ class RelationOneDef(RelationDef):
         )
 
     def get_admin_widget(self):
+        if not self.collection.collection_set.features.cratis:
+            return None
         return FieldDeclaration(
             [('django_select2.forms', 'Select2Widget')],
             'Select2Widget'
@@ -98,6 +100,8 @@ class RelationOne2OneDef(RelationDef):
         )
 
     def get_admin_widget(self):
+        if not self.collection.collection_set.features.cratis:
+            return None
         return FieldDeclaration(
             [('django_select2.forms', 'Select2Widget')],
             'Select2Widget'
@@ -129,6 +133,9 @@ class RelationManyDef(RelationDef):
         )
 
     def get_admin_widget(self):
+        if not self.collection.collection_set.features.cratis:
+            return None
+
         return FieldDeclaration(
             [('django_select2.forms', 'Select2MultipleWidget')],
             'Select2MultipleWidget'
