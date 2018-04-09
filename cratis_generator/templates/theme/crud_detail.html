@@ -1,10 +1,13 @@
 <div>
-    <a href="{% url <{ crud.list }> %}">&laquo; Back to list</a>
+    <a href="{% url <{ crud.list }> %}">&laquo;
+        {{ 'Back to list'|_ }}</a>
     <h2>{{ <{ meta }>.verbose_name }} "{{ <{ item }> }}"</h2>
 
     <p>
-        <% if crud.edit %><a href="{% url <{ crud.edit }> <{ by_id }> %}">[Edit]</a><% endif %>
+        <% if crud.edit %><a href="{% url <{ crud.edit }> <{ by_id }> %}">[
+        {{ 'Edit'|_ }}]</a><% endif %>
         |
-        <% if crud.delete %><a href="{% url <{ crud.delete }> <{ by_id }> %}">[Delete]</a><% endif %>
+        <% if crud.delete %><a href="{% url <{ crud.delete }> <{ by_id }> %}">[
+        {{ 'Delete'|_ }}]</a><% endif %>
     </p>
 </div>

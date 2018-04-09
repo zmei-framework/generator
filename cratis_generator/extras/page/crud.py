@@ -4,6 +4,7 @@ from cratis_generator.config.domain import PageExtra, ValidationException, PageE
 from cratis_generator.config.grammar import identifier, field_name_spec
 from pyparsing import *
 
+from cratis_generator.extras.page.auth import add_page_auth
 from cratis_generator.extras.page.blocks import PageBlock
 
 field_filter = Optional(QuotedString('<', endQuoteChar='>')).setResultsName('filter_expr')
@@ -28,6 +29,7 @@ parser = ((ref_parser | class_parser) +
               Optional(Suppress('url_prefix:') + Word(alphanums + '-/').setResultsName('url_prefix')),
               Optional(Suppress('pk_param:') + Word(alphanums + '_').setResultsName('pk_param')),
               Optional(Suppress('object_expr:') + restOfLine.setResultsName('object_expr')),
+              Optional(Suppress('edit_auth:') + restOfLine.setResultsName('edit_auth')),
               Optional(Suppress('item_name:') + Word(alphanums + '_').setResultsName('item_name')),
               Optional(Suppress('link_extra:') + QuotedString('"').setResultsName('link_extra'))
           ]) +
@@ -53,6 +55,7 @@ class CrudPageExtra(PageExtra):
     fields = None
     formatted_query = None
     object_expr = None
+    edit_auth = None
     query = None
     next_page_expr = None
     item_name = None
@@ -100,9 +103,6 @@ class CrudPageExtra(PageExtra):
             if not self.fields:
                 raise ValidationException('@crud -> fields for external models are required: {}'.format(crud.model))
 
-        # item name
-        self.item_name = crud.item_name or 'item'
-
         # link extra
         if len(crud.link_extra):
             self.link_extra = crud.link_extra
@@ -122,6 +122,12 @@ class CrudPageExtra(PageExtra):
         else:
             self.name_prefix = ''
             self.name_suffix = ''
+
+        # item name
+        if crud.item_name:
+            self.context_object_name = crud.item_name
+        else:
+            self.context_object_name = self.name_prefix + 'item'
 
         # block name
         if crud.block_name:
@@ -157,6 +163,10 @@ class CrudPageExtra(PageExtra):
         else:
             self.object_expr = 'self.object = self.get_object()'
 
+        # auth
+        if crud.edit_auth:
+            self.edit_auth = crud.edit_auth
+
         # formated_query
         self.query = crud.query.strip()
         if self.query != '':
@@ -174,14 +184,17 @@ class CrudPageExtra(PageExtra):
         if link_extra:
             link_extra = ' ' + link_extra
 
-        links = {x: f"'{page.collection_set.app_name}.{page.name}{self.name_suffix}_{x}'{link_extra}" for x in
-                 self.crud_pages}
-        links['list'] = f"'{page.collection_set.app_name}.{page.name}'{link_extra}"
+        if page:
+            links = {x: f"'{page.collection_set.app_name}.{page.name}{self.name_suffix}_{x}'{link_extra}" for x in
+                     self.crud_pages}
+            links['list'] = f"'{page.collection_set.app_name}.{page.name}'{link_extra}"
+        else:
+            links = {}
 
         return {
             'meta': f'{self.name_prefix}{self.item_name}_meta',
-            'item': f"{self.name_prefix}{self.item_name}",
-            'items': f"{self.name_prefix}{self.item_name}_list",
+            'item': f"{self.context_object_name}",
+            'items': f"{self.context_object_name}_list",
             'by_id': f"{self.pk_param}={self.name_prefix}item.pk",
             'crud_prefix': self.name_prefix,
             'crud': links
@@ -195,8 +208,8 @@ class CrudPageExtra(PageExtra):
         page.page_items[f'{self.name_prefix}{self.item_name}_meta'] = PageExpression(
             f'{self.name_prefix}{self.item_name}_meta', f"{self.model_cls}._meta", page)
 
-        page.page_items[f'_{self.name_prefix}{self.item_name}_list'] = PageExpression(
-            f'{self.name_prefix}{self.item_name}_list', f"{self.model_cls}.objects{self.formatted_query}", page)
+        page.page_items[f'_{self.context_object_name}_list'] = PageExpression(
+            f'{self.context_object_name}_list', f"{self.model_cls}.objects{self.formatted_query}", page)
 
         page.add_block(
             self.block_name,
@@ -263,10 +276,14 @@ class BaseCrudSubpageExtra(CrudPageExtra):
             page.options['pk_url_kwarg'] = f"'{self.pk_param}'"
             page.methods['get_success_url'] = self.next_page_expr
 
+        if self.crud_page in ('edit', 'delete', 'create'):
+            if self.edit_auth:
+                add_page_auth(self.edit_auth, page)
+
         if self.crud_page in ('edit', 'delete', 'create', 'detail'):
             page.methods['get_queryset'] = "return " + self.model_cls + ".objects" + self.formatted_query
             page.options['model'] = self.model_cls
-            page.options['context_object_name'] = f"'{self.name_prefix}item'"
+            page.options['context_object_name'] = f"'{self.context_object_name}'"
 
         if self.crud_page in ('edit', 'create'):
             page.options['fields'] = repr(self.fields)

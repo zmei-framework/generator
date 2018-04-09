@@ -28,7 +28,7 @@ extras = ZeroOrMore(Group(extra)).setResultsName('extras')
 
 
 # Page header
-file_name_expr = Literal('expr') + QuotedString("(", endQuoteChar=")").setResultsName('template_expr')
+file_name_expr = Literal('expr') + (QuotedString("(", endQuoteChar=")") | QuotedString("<", endQuoteChar=">")).setResultsName('template_expr')
 file_name_or_expr = file_name_expr | file_name.setResultsName('template_name')
 
 page_header = Suppress('[') + Optional(identifier.setResultsName('parent_name') + Suppress('->')) + \

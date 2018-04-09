@@ -28,33 +28,9 @@ class {{ col.class_name }}ViewSet({{ col.rest_conf.rest_class[1] }}):
         return {{ col.class_name }}.objects.{{ col.rest_conf.query }}{% if col.rest_conf.user_field %}.filter({{ col.rest_conf.user_field }}=self.request.user){% endif %}{% if col.rest_conf.annotations %}.annotate({{ col.rest_conf.annotations|join(", ") }}){% endif %}
 {% endfor %}
 
-def cached(func, suffix='data'):
-    def _wrap(self, *args, **kwargs):
-        if hasattr(self, '_' + suffix):
-            return getattr(self, '_' + suffix)
-        data = func(self, *args, **kwargs)
-        setattr(self, '_' + suffix, data)
-        return data
-    return _wrap
-
-class _Data(object):
-    def __init__(self, data=None):
-        self.__dict__.update(data or {})
-
-    def __add__(self, data):
-        return _Data({**self.__dict__, **data})
-
-
-class _View(object):
-    def get_data(self, inherited):
-        return _Data()
-
-    def get_context_data(self, **kwargs):
-        data = super().get_context_data(**self.kwargs)
-        return {**data, **self.get_data().__dict__}
+from . import _View, cached
 
 {% for page in pages %}
-{% if page.is_login_required() %}@method_decorator(login_required, name='dispatch'){% endif %}
 class {{ page.view_name }}({% if page.extra_bases %}{{ page.extra_bases|join(", ") }}, {% endif %}{{ page.parent_view_name }}):
     {% if page.options %}{% for key, option in page.options.items() %}{{ key }} = {{ option }}
     {% endfor %}{% endif %}{% if page.methods %}{% for key, method_code in page.methods.items() %}

@@ -40,10 +40,14 @@ class MenuPageExtra(PageExtra):
         if item.target.type == 'page':
             ref = item.target.expression
             if not re.match('^[a-z0-9_]+$', ref):
-                raise ValidationException(f'Invalid page reference: {ref} when parsing menu '
+                raise ValidationException(f'Invalid page reference: "#{ref}" when parsing menu '
                                           f'extra "{self.menu_name}" item "{item.ref}" for page {self.page}')
 
-            page = self.page.collection_set.pages[ref]
+            try:
+                page = self.page.collection_set.pages[ref]
+            except KeyError:
+                raise ValidationException(f'Invalid page reference, page do not exist: "#{ref}" when parsing menu '
+                                          f'extra "{self.menu_name}" item "{item.ref}" for page {self.page}')
 
             self.page_refs.append(
                 (ref, item.ref, page)

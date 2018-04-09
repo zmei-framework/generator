@@ -155,22 +155,7 @@ class PageDef(object):
     def get_imports(self):
         imports = self.imports
 
-        if self.is_login_required():
-            imports += [
-                ('django.contrib.auth.decorators', 'login_required'),
-                ('django.utils.decorators', 'method_decorator')
-            ]
-
-        imports += [
-            ('django.contrib.auth.decorators', 'login_required'),
-            ('django.utils.decorators', 'method_decorator')
-        ]
-
         return imports
-
-    def is_login_required(self):
-        parent = self.get_parent()
-        return self.auth or (parent and parent.is_login_required())
 
     @property
     def has_sitemap(self):

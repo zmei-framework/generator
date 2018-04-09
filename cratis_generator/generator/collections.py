@@ -172,6 +172,8 @@ def generate(app_name: str, collection_set: CollectionSetDef, features=None):
 
     # views
 
+    generate_file('{}/__init__.py'.format(app_name), 'init.py.tpl')
+
     if collection_set.rest or len(collection_set.pages.values()) > 0:
         generate_views_py(app_name, collection_set)
     else:

@@ -1,9 +1,10 @@
 
-<a href="{% url <{ crud.list }> %}">&laquo; Back to list</a>
+<a href="{% url <{ crud.list }> %}">&laquo;
+    {{ 'Back to list'|_ }}</a>
 <form action="" method="post">{% csrf_token %}
 
-    <h2>Remove {{ <{ meta }>.verbose_name|lower }}</h2>
+    <h2>{{ 'Remove'|_ }} {{ <{ meta }>.verbose_name|lower }}</h2>
 
-    <p>Are you sure you want to delete "{{ <{ item }> }}"?</p>
-    <input type="submit" value="Confirm" />
+    <p>{{ 'Are you sure you want to delete'|_ }} "{{ <{ item }> }}"?</p>
+    <input type="submit" value="{{ 'Confirm'|_ }}" />
 </form>

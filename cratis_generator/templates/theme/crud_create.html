@@ -1,9 +1,10 @@
 <a href="{% url <{ crud.list }> %}">&laquo; Back to list</a>
 <div>
-    <h2>New {{ <{ meta }>.verbose_name|lower }}</h2>
+    <h2>{{ 'New'|_ }} {{ <{ meta }>.verbose_name|lower }}</h2>
 
+    {{ form.media }}
     <form action="" method="post"{% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>{% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="Save" />
+        <input type="submit" value="{{ 'Save'|_ }}" />
     </form>
 </div>
