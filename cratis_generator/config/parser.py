@@ -88,7 +88,7 @@ class Parser(object):
                     glob_path = os.path.join(relative_path, import_expr.path)
 
                     count = 0
-                    for file_path in glob(glob_path):
+                    for file_path in sorted(glob(glob_path)):
                         count += 1
                         self.parse_collection_set(file_path, result)
 
