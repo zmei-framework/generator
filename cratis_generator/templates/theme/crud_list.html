@@ -6,8 +6,7 @@
         <li>
             <% if crud.detail %><a href="{% url <{ crud.detail }> <{ by_id }> %}">{{ <{ item }> }}</a><% endif %>
 
-            <% if crud.edit %><a href="{% url <{ crud.edit }> <{ by_id }> %}">[
-            {{ 'Edit'|_ }}]</a><% endif %>
+            <% if crud.edit %><a href="{% url <{ crud.edit }> <{ by_id }> %}">[{{ 'Edit'|_ }}]</a><% endif %>
             <% if crud.delete %><a href="{% url <{ crud.delete }> <{ by_id }> %}">[X]</a><% endif %>
         </li>
         {% endfor %}

@@ -10,7 +10,7 @@ from cratis_generator.extras.db_signals import DbSignalExtra, PreSaveExtra, Post
     PostDeleteExtra, M2mChangedExtra
 from cratis_generator.extras.document import DocumentExtra
 from cratis_generator.extras.page.auth import AuthExtra
-from cratis_generator.extras.page.blocks import BlocksPageExtra
+from cratis_generator.extras.page.block import BlocksPageExtra
 from cratis_generator.extras.page.crud import CrudPageExtra, CrudCreatePageExtra, CrudUpdatePageExtra, \
     CrudDeletePageExtra, CrudDetailPageExtra
 from cratis_generator.extras.page.form import FormExtra

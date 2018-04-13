@@ -20,7 +20,12 @@ def add_page_auth(auth_expr, page):
         ('django.core.exceptions', 'PermissionDenied'),
         ('django.contrib.auth.views', 'redirect_to_login')
     ]
-    page.extra_bases.append('AccessMixin')
+
+    if need_add_auth(page):
+        page.extra_bases.append('AccessMixin')
+
+    page.auth = True
+
     code = ""
     code += "if not self.request.user.is_authenticated:\n"
     code += "   return redirect_to_login(self.request.get_full_path(), self.get_login_url(), " \
@@ -30,6 +35,16 @@ def add_page_auth(auth_expr, page):
         code += "   raise PermissionDenied(self.get_permission_denied_message())\n"
     code += "return super().dispatch(request, *args, **kwargs)\n"
     page.methods['dispatch'] = code
+
+
+def need_add_auth(page):
+    if page.auth:
+        return False
+
+    if page.parent_name:
+        return need_add_auth(page.get_parent())
+
+    return True
 
 
 

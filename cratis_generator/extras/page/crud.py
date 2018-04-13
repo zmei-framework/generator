@@ -1,3 +1,5 @@
+from xml.etree import ElementTree
+
 import re
 
 from cratis_generator.config.domain import PageExtra, ValidationException, PageExpression
@@ -5,7 +7,7 @@ from cratis_generator.config.grammar import identifier, field_name_spec
 from pyparsing import *
 
 from cratis_generator.extras.page.auth import add_page_auth
-from cratis_generator.extras.page.blocks import PageBlock
+from cratis_generator.extras.page.block import PageBlock
 
 field_filter = Optional(QuotedString('<', endQuoteChar='>')).setResultsName('filter_expr')
 field = Group(field_name_spec.setResultsName('spec') + field_filter)
@@ -17,7 +19,6 @@ ref_parser = Combine(Literal('#') + Word(alphanums + '_')).setResultsName('model
 class_parser = Word(alphanums + '_.').setResultsName('model') + \
                Optional(QuotedString('<', endQuoteChar='>').setResultsName('query'))
 
-
 parser = ((ref_parser | class_parser) +
           Each([
               Optional(Suppress('fields:') + Group(delimitedList(
@@ -26,6 +27,7 @@ parser = ((ref_parser | class_parser) +
                   Literal('create') | Literal('edit') | Literal('delete') | Literal('detail')
               )).setResultsName('skip')),
               Optional(Suppress('block:') + identifier.setResultsName('block_name')),
+              Optional(Suppress('theme:') + identifier.setResultsName('theme')),
               Optional(Suppress('url_prefix:') + Word(alphanums + '-/').setResultsName('url_prefix')),
               Optional(Suppress('pk_param:') + Word(alphanums + '_').setResultsName('pk_param')),
               Optional(Suppress('object_expr:') + restOfLine.setResultsName('object_expr')),
@@ -47,6 +49,7 @@ class CrudPageExtra(PageExtra):
     name_prefix = None
     name_suffix = None
     block_name = None
+    theme = None
     url_prefix = None
     pk_param = None
     crud_pages = None
@@ -63,6 +66,8 @@ class CrudPageExtra(PageExtra):
 
     def __init__(self, parsed_result, page):
         super().__init__(parsed_result, page)
+
+        page.collection_set.crud = True
 
         self.raw_extra_body = parsed_result.extra_body
         self.descriptor = parsed_result.descriptor or None
@@ -137,6 +142,10 @@ class CrudPageExtra(PageExtra):
         else:
             self.block_name = 'content'
 
+        # crud theme
+        if crud.theme:
+            self.theme = crud.theme
+
         # url prefix
         if crud.url_prefix:
             self.url_prefix = crud.url_prefix
@@ -184,21 +193,23 @@ class CrudPageExtra(PageExtra):
         if link_extra:
             link_extra = ' ' + link_extra
 
-        if page:
-            links = {x: f"'{page.collection_set.app_name}.{page.name}{self.name_suffix}_{x}'{link_extra}" for x in
-                     self.crud_pages}
-            links['list'] = f"'{page.collection_set.app_name}.{page.name}'{link_extra}"
-        else:
-            links = {}
-
-        return {
+        ctx = {
             'meta': f'{self.name_prefix}{self.item_name}_meta',
             'item': f"{self.context_object_name}",
             'items': f"{self.context_object_name}_list",
-            'by_id': f"{self.pk_param}={self.name_prefix}item.pk",
-            'crud_prefix': self.name_prefix,
-            'crud': links
+            'by_id': f"{self.pk_param}={self.context_object_name}.pk",
+            'crud_prefix': str(self.name_prefix)
         }
+
+        if page:
+            links = {'crud_' + x: f"'{page.collection_set.app_name}.{page.name}{self.name_suffix}_{x}'{link_extra}" for
+                     x in
+                     self.crud_pages}
+            links['crud_list'] = f"'{page.collection_set.app_name}.{page.name}'{link_extra}"
+
+            ctx.update(links)
+
+        return ctx
 
     def build_pages(self, page):
         page.imports.append(
@@ -213,9 +224,11 @@ class CrudPageExtra(PageExtra):
 
         page.add_block(
             self.block_name,
+
             PageBlock(
-                name='crud_list',
-                fields=self.prepare_block_fields(page)
+                theme=self.theme,
+                root_el='crud_list',
+                fields=self.prepare_block_fields(page.get_parent())
             )
         )
 
@@ -236,7 +249,6 @@ class CrudPageExtra(PageExtra):
 """)
 
 
-
 class BaseCrudSubpageExtra(CrudPageExtra):
     crud_page = None
 
@@ -248,9 +260,11 @@ class BaseCrudSubpageExtra(CrudPageExtra):
         page.add_block(
             self.block_name,
             PageBlock(
-                name='crud_{}'.format(self.crud_page),
+                theme=self.theme,
+                root_el='crud_{}'.format(self.crud_page),
                 fields=self.prepare_block_fields(page.get_parent())
             )
+
         )
 
         if self.crud_page == 'detail':

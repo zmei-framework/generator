@@ -718,6 +718,7 @@ class CollectionSetDef(object):
     # collections: Dict[str, CollectionDef]
 
     rest = False
+    crud = False
 
     # translatable: False
 

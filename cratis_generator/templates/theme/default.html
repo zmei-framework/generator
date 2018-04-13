@@ -11,7 +11,7 @@
 {% if block.name == '..' -%}
 {{ super() }}
 {%- else -%}
-{{ include_block(block) }}
+{{ block.render() }}
 {%- endif %}
 {%- endfor %}
 {{ "{% endblock %}" }}
