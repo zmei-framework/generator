@@ -130,8 +130,6 @@ imports = OneOrMore(col_import).setResultsName('col_imports')
 
 collection_set = (Optional(imports) + Optional(page_imports) + Optional(pages) + Optional(collection_imports) + Optional(collections) + stringEnd).ignore(cStyleComment)
 
-field_name_spec = Literal('*') | (Combine(Optional('^') + identifier))
-
 
 
 #

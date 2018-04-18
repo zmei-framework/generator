@@ -19,8 +19,10 @@ field_type_map = {
     'many': RelationManyDef,
     'one2one': RelationOne2OneDef,
     'image_file': ImageFieldDef,
+    'image': FilerImageFieldDef,
     'filer_image': FilerImageFieldDef,
     'filer_file': FilerFileFieldDef,
+    'file': FilerFileFieldDef,
     'folder': FilerFileFolderDef,
     'image_folder': FilerImageFolderFieldDef,
 

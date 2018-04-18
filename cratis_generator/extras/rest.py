@@ -4,6 +4,50 @@ from pyparsing import *
 
 from cratis_generator.config.grammar import ref_or_class_name
 
+identifier = Word(alphas, alphanums + '_')
+
+field_name_spec = Literal('*') | (Combine(Optional('^') + identifier))
+
+extra_rest_gr = Forward()
+extra_rest_gr << (
+    Each([
+
+        Optional(Suppress('user_field:') + identifier.setResultsName('user_field')),
+        Optional(Suppress('fields:') + Group(delimitedList(field_name_spec).setResultsName('list') +
+                                             Optional(Suppress('[') + Word('rw').setResultsName('mode') + Suppress(
+                                                 ']'))).setResultsName('fields')),
+        Optional(Suppress('read_only:') + Group(delimitedList(field_name_spec).setResultsName('list')).setResultsName(
+            'read_only_fields')),
+
+        Optional(Suppress('inline:') + Group(delimitedList(Group(identifier.setResultsName('id') +
+                                                                 Optional(Suppress('(') + extra_rest_gr + Suppress(
+                                                                     ')')).setResultsName('sub')))).setResultsName(
+            'inline')),
+
+        Optional(Suppress('annotate:') + Group(delimitedList(Group(Literal('count').setResultsName('kind') +
+                                                                   Suppress('(') + identifier.setResultsName(
+            'field') + Suppress(')') +
+                                                                   Optional(
+                                                                       Suppress('as') + identifier.setResultsName(
+                                                                           'alias'))))).setResultsName(
+            'annotations'))
+    ])
+)
+
+auth_methods = \
+    Group(Literal('session').setResultsName('name')) | \
+    Group(Literal('basic').setResultsName('name')) | \
+    Group(Literal('token').setResultsName('name') + Suppress(':') + Group(ref_or_class_name).setResultsName(
+        'token_model'))
+
+rest = Each([
+    Optional(Group(Suppress('auth') + Suppress('(') + delimitedList(auth_methods) + Suppress(')')).setResultsName(
+        'auth_methods')),
+    Optional(Suppress('i18n:') + (Literal('true') | Literal('false')).setResultsName('i18n')),
+    Optional(Suppress('query:') + White() + restOfLine.setResultsName('query')),
+    Optional(Suppress('on_create:') + restOfLine.setResultsName('on_create')),
+
+]) + extra_rest_gr
 
 class RestExtra(Extra):
 
@@ -12,49 +56,6 @@ class RestExtra(Extra):
         return 'rest'
 
     def get_parser(self):
-        identifier = Word(alphas, alphanums + '_')
-
-        field_name_spec = Literal('*') | (Combine(Optional('^') + identifier))
-
-
-
-        extra_rest_gr = Forward()
-        extra_rest_gr << (
-            Each([
-
-            Optional(Suppress('user_field:') + identifier.setResultsName('user_field')),
-            Optional(Suppress('fields:') + Group(delimitedList(field_name_spec).setResultsName('list') +
-                                                 Optional(Suppress('[') + Word('rw').setResultsName('mode') + Suppress(
-                                                     ']'))).setResultsName('fields')),
-            Optional(Suppress('read_only:') + Group(delimitedList(field_name_spec).setResultsName('list')).setResultsName('read_only_fields')),
-
-            Optional(Suppress('inline:') + Group(delimitedList(Group(identifier.setResultsName('id') +
-                                                                     Optional(Suppress('(') + extra_rest_gr + Suppress(
-                                                                         ')')).setResultsName('sub')))).setResultsName(
-                'inline')),
-
-            Optional(Suppress('annotate:') + Group(delimitedList(Group(Literal('count').setResultsName('kind') +
-                                                                       Suppress('(') + identifier.setResultsName(
-                'field') + Suppress(')') +
-                                                                       Optional(
-                                                                           Suppress('as') + identifier.setResultsName(
-                                                                               'alias'))))).setResultsName(
-                'annotations'))
-             ])
-        )
-
-        auth_methods = \
-            Group(Literal('session').setResultsName('name')) | \
-            Group(Literal('basic').setResultsName('name')) | \
-            Group(Literal('token').setResultsName('name') + Suppress(':') + Group(ref_or_class_name).setResultsName('token_model'))
-
-        rest = Each([
-            Optional(Group(Suppress('auth') + Suppress('(') + delimitedList(auth_methods) + Suppress(')')).setResultsName('auth_methods')),
-            Optional(Suppress('i18n:') + (Literal('true') | Literal('false')).setResultsName('i18n')),
-            Optional(Suppress('query:') + White() + restOfLine.setResultsName('query')),
-            Optional(Suppress('on_create:') + restOfLine.setResultsName('on_create')),
-
-        ]) + extra_rest_gr
         return rest.ignore(cStyleComment) + stringEnd
 
     def parse(self, extra, collection):
@@ -69,7 +70,9 @@ class RestExtra(Extra):
 
 class RestSerializerConfig(object):
     def __init__(self, name, parse_result, collection, parent_field=None):
-
+        if isinstance(parse_result, str):
+            parse_result = extra_rest_gr.parseString('')
+        
         self.i18n = parse_result.i18n == 'true'
 
         self.serializer_name = name
