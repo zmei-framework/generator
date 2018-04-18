@@ -24,7 +24,7 @@ parser = ((ref_parser | class_parser) +
               Optional(Suppress('fields:') + Group(delimitedList(
                   Group(Word(alphanums + '_').setResultsName('spec') + field_filter))).setResultsName('fields')),
               Optional(Suppress('skip:') + Group(delimitedList(
-                  Literal('create') | Literal('edit') | Literal('delete') | Literal('detail')
+                  Literal('create') | Literal('edit') | Literal('delete') | Literal('detail') | Literal('list')
               )).setResultsName('skip')),
               Optional(Suppress('block:') + identifier.setResultsName('block_name')),
               Optional(Suppress('theme:') + identifier.setResultsName('theme')),
@@ -63,6 +63,7 @@ class CrudPageExtra(PageExtra):
     next_page_expr = None
     item_name = None
     field_filters = None
+    create_list = True
 
     def __init__(self, parsed_result, page):
         super().__init__(parsed_result, page)
@@ -183,6 +184,11 @@ class CrudPageExtra(PageExtra):
         else:
             self.formatted_query = '.all()'
 
+        if crud.skip:
+            self.create_list = 'list' not in list(crud.skip)
+        else:
+            self.create_list = True
+
         # pages that are not needed
         self.crud_pages = [
             x for x in ['detail', 'create', 'edit', 'delete'] if x not in list(crud.skip or [])
@@ -212,25 +218,27 @@ class CrudPageExtra(PageExtra):
         return ctx
 
     def build_pages(self, page):
-        page.imports.append(
-            (self.app_name, self.model_cls)
-        )
 
-        page.page_items[f'{self.name_prefix}{self.item_name}_meta'] = PageExpression(
-            f'{self.name_prefix}{self.item_name}_meta', f"{self.model_cls}._meta", page)
-
-        page.page_items[f'_{self.context_object_name}_list'] = PageExpression(
-            f'{self.context_object_name}_list', f"{self.model_cls}.objects{self.formatted_query}", page)
-
-        page.add_block(
-            self.block_name,
-
-            PageBlock(
-                theme=self.theme,
-                root_el='crud_list',
-                fields=self.prepare_block_fields(page.get_parent())
+        if self.create_list:
+            page.imports.append(
+                (self.app_name, self.model_cls)
             )
-        )
+
+            page.page_items[f'{self.name_prefix}{self.item_name}_meta'] = PageExpression(
+                f'{self.name_prefix}{self.item_name}_meta', f"{self.model_cls}._meta", page)
+
+            page.page_items[f'_{self.context_object_name}_list'] = PageExpression(
+                f'{self.context_object_name}_list', f"{self.model_cls}.objects{self.formatted_query}", page)
+
+            page.add_block(
+                self.block_name,
+
+                PageBlock(
+                    theme=self.theme,
+                    root_el='crud_list',
+                    fields=self.prepare_block_fields(page.get_parent())
+                )
+            )
 
         sub_descriptor = '.' + self.descriptor if self.descriptor else ''
 

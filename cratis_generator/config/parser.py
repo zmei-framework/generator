@@ -58,6 +58,9 @@ class Parser(object):
     def parse_collection_set(self, filename, result=None):
         with open(filename, 'r', encoding='utf8') as f:
             config = f.read()
+
+        config = config.replace(chr(8232), '')
+
         relative_path = os.path.dirname(filename)
 
         try:

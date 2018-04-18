@@ -42,8 +42,6 @@ class {{ feature_name }}(Feature):
 
     {% if collection_set.has_sitemap %}
     def sitemaps(self):
-        {{ url_imports|indent(8) }}
-
         sitemap_data = { {% for page in collection_set.pages.values() %}{% if page.has_sitemap %}
             '{{ package_name }}.{{ page.name }}': {{ page.view_name }}.get_sitemap(),{% endif %}{% endfor %}
         }

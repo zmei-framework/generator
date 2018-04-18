@@ -4,16 +4,16 @@
     <ul>
         {% for <{ item }> in <{ items }> %}
         <li>
-            <% if crud.detail %><a href="{% url <{ crud.detail }> <{ by_id }> %}">{{ <{ item }> }}</a><% endif %>
+            <% if crud_detail %><a href="{% url <{ crud_detail }> <{ by_id }> %}">{{ <{ item }> }}</a><% endif %>
 
-            <% if crud.edit %><a href="{% url <{ crud.edit }> <{ by_id }> %}">[{{ 'Edit'|_ }}]</a><% endif %>
-            <% if crud.delete %><a href="{% url <{ crud.delete }> <{ by_id }> %}">[X]</a><% endif %>
+            <% if crud_edit %><a href="{% url <{ crud_edit }> <{ by_id }> %}">[{{ 'Edit'|_ }}]</a><% endif %>
+            <% if crud_delete %><a href="{% url <{ crud_delete }> <{ by_id }> %}">[X]</a><% endif %>
         </li>
         {% endfor %}
     </ul>
 
     <p>
-        <% if crud.create %><a href="{% url <{ crud.create }> %}">[
+        <% if crud_create %><a href="{% url <{ crud_create }> %}">[
         {{ 'Create'|_ }}]</a><% endif %>
     </p>
 </div>

@@ -234,9 +234,15 @@ def handle_parse_exception(e, parsed_string, subject):
     out.append('-' * 100)
     for nr, line in enumerate(parsed_string.splitlines()):
         if (nr + 1) == e.lineno:
-            before = line[:e.col - 1]
-            char = line[e.col-1]
-            after = line[e.col:]
+            try:
+                before = line[:e.col - 1]
+                char = line[e.col-1]
+                after = line[e.col:]
+            except IndexError:
+                out.append(colored('{0:04d}| {1}'.format(nr + 1, line), 'white', 'on_red'))
+
+                continue
+
             line = before + colored(char, 'white', 'on_blue') + after
 
             out.append(colored('{0:04d}| {1}'.format(nr + 1, line), 'white', 'on_red'))

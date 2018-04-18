@@ -15,7 +15,7 @@ class {{ inline.class_name }}({{ inline.parent_classes|join(', ') }}):
     model  = {{ inline.target_collection.class_name }}{% if inline.tab %}
     suit_classes = 'suit-tab suit-tab-{{ inline.tab }}'
     {% endif %}{% if inline.target_collection.sortable %}
-    sortable = '{{ inline.target_collection.sortable_field }}'
+    sortable = {{ inline.target_collection.sortable_field|repr }}
     {% endif %}{% if not inline.inline_type == 'polymorphic' %}
     extra = {{ inline.extra_count }}
     fk_name = '{{ inline.source_field_name }}'
@@ -47,7 +47,7 @@ class {{ col.class_name }}Admin({{ col.admin_class_declaration }}):
     child_models = ({{ col.child_model_classes|join(', ') }},)
     {% endif %}
     {% if col.sortable %}
-    sortable = '{{ col.sortable_field }}'
+    sortable = {{ col.sortable_field[0]|repr }}
     {% endif %}
 
 
@@ -81,7 +81,7 @@ class {{ col.class_name }}Admin({{ col.admin_class_declaration }}):
 
     {{ col.render_tabs }}
     {% elif col.admin_fields %}
-    fields = [{{ col.admin_fields|field_names(admin=True) }}]
+    fields = [{{ col.admin_fields|field_names(admin=False) }}]
     {% endif %}
 
     {# ***** INLINES ********* #}
