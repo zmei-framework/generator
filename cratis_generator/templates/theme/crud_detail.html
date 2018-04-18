@@ -1,13 +1,22 @@
 <div>
-    <a href="{% url <{ crud_list }> %}">&laquo;
-        {{ 'Back to list'|_ }}</a>
+    <a href="{% url <{ crud_list }> %}<{ link_suffix }>">&laquo; Back to list</a>
+
     <h2>{{ <{ meta }>.verbose_name }} "{{ <{ item }> }}"</h2>
 
+    <table>
+        <tbody>
+            <% for field, field_name in fields.items() %>
+            <tr>
+                <td><{ field_name }></td>
+                <td>{{ <{ item }>.<{ field }> }}</td>
+            </tr>
+            <% endfor %>
+        </tbody>
+    </table>
+
     <p>
-        <% if crud_edit %><a href="{% url <{ crud_edit }> <{ by_id }> %}">[
-        {{ 'Edit'|_ }}]</a><% endif %>
+        <% if crud_edit %><a href="{% url <{ crud_edit }> <{ by_id }> %}<{ link_suffix }>">[Edit]</a><% endif %>
         |
-        <% if crud_delete %><a href="{% url <{ crud_delete }> <{ by_id }> %}">[
-        {{ 'Delete'|_ }}]</a><% endif %>
+        <% if crud_delete %><a href="{% url <{ crud_delete }> <{ by_id }> %}<{ link_suffix }>">[Delete]</a><% endif %>
     </p>
 </div>

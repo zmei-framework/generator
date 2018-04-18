@@ -23,6 +23,8 @@ parser = ((ref_parser | class_parser) +
           Each([
               Optional(Suppress('fields:') + Group(delimitedList(
                   Group(Word(alphanums + '_').setResultsName('spec') + field_filter))).setResultsName('fields')),
+              Optional(Suppress('list_fields:') + Group(delimitedList(
+                  Group(Word(alphanums + '_').setResultsName('spec') + field_filter))).setResultsName('list_fields')),
               Optional(Suppress('skip:') + Group(delimitedList(
                   Literal('create') | Literal('edit') | Literal('delete') | Literal('detail') | Literal('list')
               )).setResultsName('skip')),
@@ -33,7 +35,8 @@ parser = ((ref_parser | class_parser) +
               Optional(Suppress('object_expr:') + restOfLine.setResultsName('object_expr')),
               Optional(Suppress('edit_auth:') + restOfLine.setResultsName('edit_auth')),
               Optional(Suppress('item_name:') + Word(alphanums + '_').setResultsName('item_name')),
-              Optional(Suppress('link_extra:') + QuotedString('"').setResultsName('link_extra'))
+              Optional(Suppress('link_extra:') + QuotedString('"').setResultsName('link_extra')),
+              Optional(Suppress('link_suffix:') + QuotedString('"').setResultsName('link_suffix'))
           ]) +
           Optional(Suppress('=>') + restOfLine.setResultsName('next_page'))
           ).ignore(cStyleComment)
@@ -56,7 +59,9 @@ class CrudPageExtra(PageExtra):
     app_name = None
     model_cls = None
     fields = None
+    list_fields = None
     formatted_query = None
+    context_object_name = None
     object_expr = None
     edit_auth = None
     query = None
@@ -64,6 +69,7 @@ class CrudPageExtra(PageExtra):
     item_name = None
     field_filters = None
     create_list = True
+    link_suffix = ''
 
     def __init__(self, parsed_result, page):
         super().__init__(parsed_result, page)
@@ -81,9 +87,9 @@ class CrudPageExtra(PageExtra):
     def prepare_environment(self, crud, page):
         # next page
         if crud.next_page:
-            self.next_page_expr = f"return reverse_lazy({crud.next_page})"
+            self.next_page_expr = f"return reverse({crud.next_page})" + self.link_suffix
         else:
-            self.next_page_expr = f"return self.request.get_full_path()"
+            self.next_page_expr = f"return self.request.get_full_path()" + self.link_suffix
 
         self.field_filters = {}
         if crud.fields:
@@ -100,12 +106,14 @@ class CrudPageExtra(PageExtra):
             self.app_name = page.collection_set.app_name + '.models'
             collection = page.collection_set.collections[crud.model[1:]]
             self.model_cls = collection.class_name
-            self.fields = [field.name for field in collection.filter_fields(crud.fields or '*') if not field.read_only]
+            self.fields = {field.name: field.verbose_name or field.name.replace('_', ' ').capitalize() for field in collection.filter_fields(crud.fields or '*') if not field.read_only}
+            self.list_fields = {field.name: field.verbose_name or field.name.replace('_', ' ').capitalize() for field in collection.filter_fields(crud.list_fields or crud.fields or '*') if not field.read_only}
         else:
             parts = crud.model.split('.')
             self.app_name = '.'.join(parts[:-1]) + '.models'
             self.model_cls = parts[-1]
-            self.fields = crud.fields
+            self.fields = {field: field.replace('_', ' ').capitalize() for field in crud.fields}
+            self.list_fields = {field: field.replace('_', ' ').capitalize() for field in crud.list_fields} or crud.fields
             if not self.fields:
                 raise ValidationException('@crud -> fields for external models are required: {}'.format(crud.model))
 
@@ -120,6 +128,9 @@ class CrudPageExtra(PageExtra):
         else:
             self.link_extra = ''
             self.link_extra_params = ''
+
+        if crud.link_suffix:
+            self.link_suffix = crud.link_suffix
 
         # name_prefix
         if self.descriptor:
@@ -199,7 +210,21 @@ class CrudPageExtra(PageExtra):
         if link_extra:
             link_extra = ' ' + link_extra
 
+        # edit_auth = self.edit_auth or None
+        edit_auth = None
+        if edit_auth:
+            edit_auth = edit_auth.strip()
+            if len(edit_auth) == 0:
+                edit_auth = None
+
+            if edit_auth.startswith('data'):
+                edit_auth = edit_auth[5:]
+
         ctx = {
+            'link_suffix': '!' + repr(self.link_suffix),
+            'edit_auth': '!' + repr(edit_auth),
+            'fields': '!' + repr(self.fields),
+            'list_fields': '!' + repr(self.list_fields),
             'meta': f'{self.name_prefix}{self.item_name}_meta',
             'item': f"{self.context_object_name}",
             'items': f"{self.context_object_name}_list",
@@ -236,7 +261,7 @@ class CrudPageExtra(PageExtra):
                 PageBlock(
                     theme=self.theme,
                     root_el='crud_list',
-                    fields=self.prepare_block_fields(page.get_parent())
+                    fields=self.prepare_block_fields(page)
                 )
             )
 
@@ -294,7 +319,7 @@ class BaseCrudSubpageExtra(CrudPageExtra):
             page.methods['get_form'] = code
 
         if self.crud_page in ('edit', 'delete', 'create', 'detail'):
-            page.imports.append(('django.urls', 'reverse_lazy'))
+            page.imports.append(('django.urls', 'reverse'))
             page.options['pk_url_kwarg'] = f"'{self.pk_param}'"
             page.methods['get_success_url'] = self.next_page_expr
 
@@ -308,7 +333,7 @@ class BaseCrudSubpageExtra(CrudPageExtra):
             page.options['context_object_name'] = f"'{self.context_object_name}'"
 
         if self.crud_page in ('edit', 'create'):
-            page.options['fields'] = repr(self.fields)
+            page.options['fields'] = repr([key for key, val in self.fields.items()])
 
         if self.crud_page in ('edit', 'delete', 'detail'):
             page.methods['get'] = self.object_expr + "\nreturn super().get(self.request, *args, **kwargs)"

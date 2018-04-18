@@ -1,19 +1,41 @@
 <div>
     <h2>{{ <{ meta }>.verbose_name_plural }}</h2>
 
-    <ul>
-        {% for <{ item }> in <{ items }> %}
-        <li>
-            <% if crud_detail %><a href="{% url <{ crud_detail }> <{ by_id }> %}">{{ <{ item }> }}</a><% endif %>
+    {% if <{ items }> %}
+    <table>
+        <thead>
+        <tr><% for field_name in list_fields.values() %>
+            <th><{ field_name }></th><% endfor %>
+            <% if edit_auth -%>{% if <{ edit_auth }> %}<%- endif -%>
+            <th>
+            </th>
+            <%- if edit_auth -%>{% endif %}<%- endif %>
+        </tr>
+        </thead>
+        <tbody>
+            {% for <{ item }> in <{ items }> %}
+            <tr><% for field in list_fields %>
+                <td>{{ <{ item }>.<{ field }> }}</td><% endfor %>
+                <% if edit_auth -%>{% if <{ edit_auth }> %}<%- endif -%>
+                <td>
+                    <% if crud_detail %><a href="{% url <{ crud_detail }> <{ by_id }> %}<{ link_suffix }>">[Detail]</a><% endif %>
+                    <% if crud_edit %><a href="{% url <{ crud_edit }> <{ by_id }> %}<{ link_suffix }>">[Edit]</a><% endif %>
+                    <% if crud_delete %><a href="{% url <{ crud_delete }> <{ by_id }> %}<{ link_suffix }>">[X]</a><% endif %>
+                </td>
+                <%- if edit_auth -%>{% endif %}<%- endif %>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No {{ <{ meta }>.verbose_name_plural }} yet.</p>
+    {% endif %}
 
-            <% if crud_edit %><a href="{% url <{ crud_edit }> <{ by_id }> %}">[{{ 'Edit'|_ }}]</a><% endif %>
-            <% if crud_delete %><a href="{% url <{ crud_delete }> <{ by_id }> %}">[X]</a><% endif %>
-        </li>
-        {% endfor %}
-    </ul>
-
+    <% if crud_create %>
+    <% if edit_auth -%>{% if <{ edit_auth }> %}<%- endif -%>
     <p>
-        <% if crud_create %><a href="{% url <{ crud_create }> %}">[
-        {{ 'Create'|_ }}]</a><% endif %>
+        <a href="{% url <{ crud_create }> %}<{ link_suffix }>">Add new {{ <{ meta }>.verbose_name }}</a>
     </p>
+    <%- if edit_auth -%>{% endif %}<%- endif %>
+    <% endif %>
 </div>
