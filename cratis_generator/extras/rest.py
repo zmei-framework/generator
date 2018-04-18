@@ -72,7 +72,7 @@ class RestSerializerConfig(object):
     def __init__(self, name, parse_result, collection, parent_field=None):
         if isinstance(parse_result, str):
             parse_result = extra_rest_gr.parseString('')
-        
+
         self.i18n = parse_result.i18n == 'true'
 
         self.serializer_name = name
