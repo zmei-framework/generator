@@ -22,9 +22,9 @@ class_parser = Word(alphanums + '_.').setResultsName('model') + \
 parser = ((ref_parser | class_parser) +
           Each([
               Optional(Suppress('fields:') + Group(delimitedList(
-                  Group(Word(alphanums + '_').setResultsName('spec') + field_filter))).setResultsName('fields')),
+                  field_name_spec.setResultsName('spec') + field_filter)).setResultsName('fields')),
               Optional(Suppress('list_fields:') + Group(delimitedList(
-                  Group(Word(alphanums + '_').setResultsName('spec') + field_filter))).setResultsName('list_fields')),
+                  field_name_spec.setResultsName('spec') + field_filter)).setResultsName('list_fields')),
               Optional(Suppress('skip:') + Group(delimitedList(
                   Literal('create') | Literal('edit') | Literal('delete') | Literal('detail') | Literal('list')
               )).setResultsName('skip')),

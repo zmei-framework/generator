@@ -4,7 +4,7 @@ from cratis_generator.fields.date import DateFieldDef, DateTimeFieldDef, AutoNow
     AutoNowAddDateTimeFieldDef
 from cratis_generator.fields.filer import FilerFileFolderDef, FilerImageFolderFieldDef, FilerImageFieldDef, \
     FilerFileFieldDef
-from cratis_generator.fields.image import ImageFieldDef
+from cratis_generator.fields.image import ImageFieldDef, SimpleFieldDef
 from cratis_generator.fields.number import IntegerFieldDef, FloatFieldDef, DecimalFieldDef
 from cratis_generator.fields.relation import RelationOneDef, RelationManyDef, RelationOne2OneDef
 from cratis_generator.fields.text import TextFieldDef, LongTextFieldDef, RichTextFieldDef, SlugFieldDef
@@ -23,6 +23,7 @@ field_type_map = {
     'filer_image': FilerImageFieldDef,
     'filer_file': FilerFileFieldDef,
     'file': FilerFileFieldDef,
+    'simple_file': SimpleFieldDef,
     'folder': FilerFileFolderDef,
     'image_folder': FilerImageFolderFieldDef,
 

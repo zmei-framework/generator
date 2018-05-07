@@ -46,6 +46,17 @@ class {{ col.class_name }}({% for import_str, class_name, alias in col.mixin_cla
         return '{{ col.short_ref }}'
     {% endif %}
 
+    {% if col.validators %}
+    def clean(self):
+        {% for validator in col.validators -%}
+        def _clean():
+            {{ validator|indent(24) }}
+        errors = _clean()
+        if errors:
+            raise ValidationError(errors)
+        {%- endfor %}
+    {% endif %}
+
     class Meta:
         verbose_name = _("{{ col.name }}"){% if col.name_plural %}
         verbose_name_plural = _("{{ col.name_plural }}")

@@ -5,6 +5,7 @@ import os
 
 from cratis_generator.config.domain import ValidationException
 from cratis_generator.config.grammar import collection_set
+from cratis_generator.extras.clean import CleanExtra
 from cratis_generator.extras.dates import DateTreeExtra
 from cratis_generator.extras.db_signals import DbSignalExtra, PreSaveExtra, PostSaveExtra, PreDeleteExtra, \
     PostDeleteExtra, M2mChangedExtra
@@ -116,6 +117,7 @@ class Parser(object):
             DocumentExtra,
             DateTreeExtra,
             MixinExtra,
+            CleanExtra,
 
             PreSaveExtra,
             PostSaveExtra,

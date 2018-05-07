@@ -319,6 +319,9 @@ def generate_models_py(app_name, collection_set):
             if collection.tree:
                 imports.add('mptt.models', 'MPTTModel', 'TreeForeignKey')
 
+        if collection.validators:
+            imports.add('django.core.exceptions', 'ValidationError')
+
         if collection.mixin_classes:
             for import_decl in collection.mixin_classes:
                 pkg, cls, alias = import_decl

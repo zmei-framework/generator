@@ -393,6 +393,7 @@ class CollectionDef(object):
         self.child_collections = []
 
         self.mixin_classes = []
+        self.validators = []
         self.signal_handlers = []
 
         if parse_result.parent:
