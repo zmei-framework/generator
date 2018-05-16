@@ -2,11 +2,9 @@ from cratis_generator.config.domain import FieldDeclaration, ValidationException
 from cratis_generator.config.extras import Extra
 from pyparsing import *
 
-from cratis_generator.config.grammar import ref_or_class_name
+from cratis_generator.config.grammar import ref_or_class_name, field_name_spec
 
 identifier = Word(alphas, alphanums + '_')
-
-field_name_spec = Literal('*') | (Combine(Optional('^') + identifier))
 
 extra_rest_gr = Forward()
 extra_rest_gr << (
