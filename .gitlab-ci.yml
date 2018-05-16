@@ -1,0 +1,14 @@
+crate new package:
+  image: "python:3.6"
+  script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - 'which rsync || ( apt-get update -y && apt-get install rsync -y )'
+    - eval $(ssh-agent -s)
+    - echo "$PYPY_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan pypi.negative.ee > ~/.ssh/known_hosts
+    - python setup.py sdist
+    - rsync -rv dist/ deploy@pypi.negative.ee:/var/www/pypi/cratis-gen/
+  only:
+    - tags
