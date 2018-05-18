@@ -140,7 +140,7 @@ def generate(app_name: str, collection_set: CollectionSetDef, features=None):
 
     if features.cratis:
         # features
-        generate_feature(app_name, app_name.capitalize(), {
+        generate_feature(app_name, app_name.capitalize(), collection_set, {
             'collection_set': collection_set,
             'pages_i18n': pages_i18n,
             'pages': pages

@@ -132,7 +132,7 @@ def generate_file(filename, template_name, context=None):
 
 
 
-def generate_feature(package_name: str, feature_name: str, extra_context=None):
+def generate_feature(package_name: str, feature_name: str, collection_set, extra_context=None):
     """
     Generates new feature
 
@@ -142,6 +142,13 @@ def generate_feature(package_name: str, feature_name: str, extra_context=None):
     """
     assert feature_name
 
+    sitemap_imports = ImportSet()
+
+    for page in collection_set.pages.values():
+        if page.has_sitemap:
+            sitemap_imports.add(f'{package_name}.views', page.view_name)
+
+
     generate_package(package_name)
 
     filepath = os.path.join(package_to_path(package_name), 'features.py')
@@ -149,6 +156,7 @@ def generate_feature(package_name: str, feature_name: str, extra_context=None):
     context = {
         'feature_name': feature_name,
         'package_name': package_name,
+        'sitemap_imports': sitemap_imports.import_sting(),
         'collection_set': None,
     }
     if extra_context:
