@@ -1,3 +1,4 @@
+import hashlib
 from glob import glob
 from shutil import copytree, rmtree
 
@@ -22,7 +23,7 @@ def list_apps():
             yield filename[0:-4]
 
 
-def generate_common_files(apps, features=None):
+def generate_common_files(apps, features=None, build_name='local'):
     features = type('features', (object,), {x: x in features for x in [
         'cratis', 'django'
     ]})
@@ -97,11 +98,10 @@ def generate_common_files(apps, features=None):
                 if features.cratis:
                     f.write('django-select2\n')
 
-
         # react
         generate_react_configs(apps)
 
-
+        # build_react(apps, build_name=build_name)
 
 
 def generate(app_name: str, collection_set: CollectionSetDef, features=None):
@@ -195,6 +195,13 @@ def generate(app_name: str, collection_set: CollectionSetDef, features=None):
         generate_react_jsx(app_name, collection_set)
 
 
+def build_react(apps, build_name):
+    if os.path.exists('react/package.json'):
+        image_name = f'genius-image-{build_name}'
+        os.system(f'docker build -t {image_name} react/')
+        os.system(f'docker run -v `pwd`:/app -t {image_name} webpack')
+
+
 def generate_react_configs(apps):
     entries = {}
 
@@ -211,6 +218,12 @@ def generate_react_configs(apps):
     })
     generate_file('react/webpack.config.js', 'webpack.config.js.tpl', {
         'entries': entries
+    })
+    generate_file('react/Dockerfile', 'Dockerfile.tpl', {
+
+    })
+    generate_file('react/.dockerignore', 'dockerignore.tpl', {
+
     })
 
 
