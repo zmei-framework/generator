@@ -98,6 +98,12 @@ def generate_common_files(apps, features=None):
                     f.write('django-select2\n')
 
 
+        # react
+        generate_react_configs(apps)
+
+
+
+
 def generate(app_name: str, collection_set: CollectionSetDef, features=None):
     features = features or []
     features = type('features', (object,), {x: x in features for x in [
@@ -180,6 +186,70 @@ def generate(app_name: str, collection_set: CollectionSetDef, features=None):
         if os.path.exists('{}/views.py'.format(app_name)):
             os.unlink('{}/views.py'.format(app_name))
 
+    generate_file('{}/templates/{}/base.html'.format(app_name, app_name), template_name='theme/base_app.html', context={
+        'collection_set': collection_set,
+    })
+
+    # react templates
+    if collection_set.react:
+        generate_react_jsx(app_name, collection_set)
+
+
+def generate_react_configs(apps):
+    entries = {}
+
+    for app_name, collection_set in apps.items():
+        if collection_set.react:
+            entries[app_name] = f'./src/{app_name.capitalize()}/index.js'
+            entries[f"{app_name}_server"] = f'./src/{app_name.capitalize()}/index_server.js'
+
+    generate_file('react/package.json', 'package.json.tpl', {
+
+    })
+    generate_file('react/.babelrc', '.babelrc.tpl', {
+
+    })
+    generate_file('react/webpack.config.js', 'webpack.config.js.tpl', {
+        'entries': entries
+    })
+
+
+def generate_react_jsx(app_name, collection_set):
+    index_imports = ImportSet()
+
+    react_pages = []
+
+    for page in collection_set.pages.values():
+        if page.react:
+            for name, (imports, body, source) in page.react_components.items():
+
+                generate_file('react/src/{}/Components/{}.jsx'.format(app_name.capitalize(), name), 'react.jsx.tpl', {
+                    'imports': imports.import_sting_js(),
+                    'name': name,
+                    'body': body,
+                    'source': source
+                })
+
+            for name, (imports, body, source) in page.react_pages.items():
+                index_imports.add(f'./Pages/{name}', name)
+                react_pages.append(name)
+
+                generate_file('react/src/{}/Pages/{}.jsx'.format(app_name.capitalize(), name), 'react.jsx.tpl', {
+                    'imports': imports.import_sting_js(),
+                    'name': name,
+                    'body': body,
+                    'source': source
+                })
+
+    generate_file('react/src/{}/index.js'.format(app_name.capitalize()), 'react.index.js.tpl', {
+        'imports': index_imports.import_sting_js(),
+        'pages': react_pages
+    })
+
+    generate_file('react/src/{}/index_server.js'.format(app_name.capitalize()), 'react.index_server.js.tpl', {
+        'imports': index_imports.import_sting_js(),
+        'pages': react_pages
+    })
 
 
 def generate_admin_py(app_name, collection_set):
@@ -245,6 +315,7 @@ def generate_translation_py(app_name, collection_set):
     })
 
 
+
 def generate_views_py(app_name, collection_set):
     imports = ImportSet()
 
@@ -281,6 +352,7 @@ def generate_views_py(app_name, collection_set):
                 template_name = '{app_name}/templates/{template}'.format(app_name=app_name, template=template, )
 
                 generate_file(template_name, 'theme/default.html', {
+                    'app_name': app_name,
                     'page': page,
                     'parent': collection_set.pages[page.parent_name] if page.parent_name else None
                 })

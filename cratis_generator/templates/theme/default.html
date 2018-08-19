@@ -1,8 +1,7 @@
-{{ "{# generated #}" }}
 {% if parent.defined_template_name -%}
 {{ "{% extends '" }}{{ parent.defined_template_name }}{{ "' %}" }}
 {%- else -%}
-{{ "{% extends 'base.html' %}" }}
+{{ "{% extends '" + app_name + "/base.html' %}" }}
 {%- endif %}
 
 {% for area, blocks in page.blocks.items() -%}
@@ -11,8 +10,18 @@
 {% if block.name == '..' -%}
 {{ super() }}
 {%- else -%}
-{{ block.render() }}
+{{ block.render(area=area, index=loop.index) }}
 {%- endif %}
 {%- endfor %}
 {{ "{% endblock %}" }}
 {%- endfor %}
+
+{% if page.react %}
+{{ "{% block js %}{{ block.super }}" }}
+<script>
+{% for page in page.react_pages.keys() -%}
+R.ReactDOM.hydrate(R.React.createElement(R.{{ page }}, {{ '{{ react_state|safe }}' }}), document.getElementById('reactEl-{{ page }}'));
+{%- endfor %}
+</script>
+{{ "{% endblock %}" }}
+{% endif %}

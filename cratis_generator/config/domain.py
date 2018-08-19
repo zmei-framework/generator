@@ -71,6 +71,9 @@ class PageDef(object):
         self.options = {}
         self.methods = {}
         self.blocks = {}
+        self.react_components = {}
+        self.react_pages = {}
+        self.react = False
 
 
         def find_params(match):
@@ -117,7 +120,28 @@ class PageDef(object):
                     handle_parse_exception(e, extra.extra_body,
                                            '@{} expression for page "{}"'.format(extra.extra_name, self.name))
             except KeyError as e:
-                raise ValidationException('Extra not found: {}, reason: {}'.format(extra.extra_name, e))
+                raise ValidationException('Page extra not found: {}, reason: {}'.format(extra.extra_name, e))
+
+
+        if parse_result.html:
+            parts = list(parse_result.html)
+
+            if len(parts[1]) == 1:
+                tag_name = parts[1][0]
+                area = 'content'
+            else:
+                tag_name = parts[1][2]
+                area = parts[1][0]
+
+            parts[1] = tag_name
+
+            html = ''.join(parts)
+
+            from cratis_generator.extras.page.block import ReactPageBlock
+            self.add_block(area, ReactPageBlock(self, html))
+
+
+
 
     def add_block(self, area, block):
         if area not in self.blocks:
@@ -135,6 +159,14 @@ class PageDef(object):
                 self.blocks[area] = blocks + self.blocks[area]
             else:
                 self.blocks[area] = blocks
+
+    @property
+    def page_item_names_with_parents(self):
+        names = self.page_item_names
+        parent = self.get_parent()
+        if parent:
+            names += parent.page_item_names_with_parents
+        return set(names)
 
     @property
     def page_item_names(self):
@@ -728,6 +760,7 @@ class CollectionSetDef(object):
         self.app_name = app_name
         self.translatable = False
         self.admin = False
+        self.react = False
         self.collections = {}
         self.pages = {}
 

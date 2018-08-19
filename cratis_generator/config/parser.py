@@ -19,6 +19,7 @@ from cratis_generator.extras.page.menu import MenuPageExtra
 from cratis_generator.extras.page.merge import MergePageExtra
 from cratis_generator.extras.page.page_handlers import HandleErrorExtra
 from cratis_generator.extras.page.post import PostPageExtra
+from cratis_generator.extras.page.react import ReactPageExtra
 from cratis_generator.extras.page.rss import RssPageExtra
 from cratis_generator.extras.sortable import SortableExtra, OrderExtra
 from cratis_generator.extras.tree import TreeExtra
@@ -140,6 +141,8 @@ class Parser(object):
             PostPageExtra,
             MergePageExtra,
             RssPageExtra,
-            HandleErrorExtra
+            HandleErrorExtra,
+
+            ReactPageExtra,
         )}
 

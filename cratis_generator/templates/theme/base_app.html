@@ -1,0 +1,5 @@
+{{ "{% extends 'base.html' %}}" }}
+
+{% if collection_set.react %}
+{{ '{% block js %}' }}<script type="text/javascript" src="/static/react/{{ collection_set.app_name }}.bundle.js"></script>{{ '{% endblock %}' }}
+{% endif %}

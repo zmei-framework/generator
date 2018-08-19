@@ -32,6 +32,7 @@ setup(
         'wheel',
         'click',
         'jinja2',
+        'defusedxml'
     ],
 
     entry_points={

@@ -28,7 +28,21 @@ class {{ col.class_name }}ViewSet({{ col.rest_conf.rest_class[1] }}):
         return {{ col.class_name }}.objects.{{ col.rest_conf.query }}{% if col.rest_conf.user_field %}.filter({{ col.rest_conf.user_field }}=self.request.user){% endif %}{% if col.rest_conf.annotations %}.annotate({{ col.rest_conf.annotations|join(", ") }}){% endif %}
 {% endfor %}
 
-from . import _View, cached
+from . import _View, cached, to_react_json
+
+{% if collection_set.react %}
+from dukpy import JSInterpreter
+from django.conf import settings
+import json
+jsi = JSInterpreter()
+jsi.started = False
+def evaljs(source):
+    if not jsi.started:
+        with open(settings.BASE_DIR + '/app/static/react/{{ collection_set.app_name }}_server.bundle.js') as f:
+            jsi.evaljs(f)
+        jsi.started = True
+    return jsi.evaljs(source)
+{% endif %}
 
 {% for page in pages %}
 class {{ page.view_name }}({% if page.extra_bases %}{{ page.extra_bases|join(", ") }}, {% endif %}{{ page.parent_view_name }}):
@@ -51,10 +65,18 @@ class {{ page.view_name }}({% if page.extra_bases %}{{ page.extra_bases|join(", 
         data = super().get_data(inherited=True)
         {{ code|indent(8) }}
         {% if page.page_item_names %}
-        return data + { {% for key in (page.page_item_names) %}'{{ key }}': {{ key }}{% if not loop.last %}, {% endif %}{% endfor %} }
-        {% else %}
-        return data
+        data += { {% for key in (page.page_item_names) %}'{{ key }}': {{ key }}{% if not loop.last %}, {% endif %}{% endfor %} }
         {% endif %}
+        {% if page.react %}
+        state = to_react_json(self, data)
+        data += {
+            'react_state': state,
+            {% for rpage in page.react_pages.keys() -%}
+            'react_page_{{ rpage }}': evaljs(f"R.ReactDOM.renderToString(R.React.createElement(R.{{ rpage }}, {state}), null);")
+            {%- endfor %}
+        }
+        {% endif %}
+        return data
     {% endif %}
 
     {% if page.allow_post %}

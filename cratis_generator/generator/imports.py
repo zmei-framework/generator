@@ -16,3 +16,17 @@ class ImportSet(object):
     def import_sting(self):
         items = sorted(self.imports.items())
         return '\n'.join(['from {} import {}'.format(source, ', '.join(what)) for source, what in items])
+
+    def import_sting_js(self):
+        items = sorted(self.imports.items())
+
+        stm = []
+
+        for source, what in items:
+            if len(what) == 1:
+                what = what[0]
+            else:
+                what = '{' + ', '.join(what) + '}'
+            stm.append("import {} from '{}';".format(what, source))
+
+        return '\n'.join(stm)

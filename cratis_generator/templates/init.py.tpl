@@ -1,3 +1,4 @@
+import json
 
 def cached(func, suffix='data'):
     def _wrap(self, *args, **kwargs):
@@ -21,5 +22,20 @@ class _View(object):
         return _Data()
 
     def get_context_data(self, **kwargs):
-        data = super().get_context_data(**self.kwargs)
-        return {**data, **self.get_data().__dict__}
+        context_data = super().get_context_data(**self.kwargs)
+        data = self.get_data().__dict__
+
+        all_data = {**context_data, **data}
+
+        return all_data
+
+def to_react_json(view, data):
+    state = {}
+
+    for key, val in data.__dict__.items():
+        if key == 'url':
+            state['url'] = view.kwargs
+        else:
+            state[key] = val
+
+    return json.dumps(state)

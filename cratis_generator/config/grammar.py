@@ -27,21 +27,6 @@ extra = (LineStart() +
 extras = ZeroOrMore(Group(extra)).setResultsName('extras')
 
 
-# Page header
-file_name_expr = Literal('expr') + (QuotedString("(", endQuoteChar=")") | QuotedString("<", endQuoteChar=">")).setResultsName('template_expr')
-file_name_or_expr = file_name_expr | file_name.setResultsName('template_name')
-
-page_header = Suppress('[') + Optional(identifier.setResultsName('parent_name') + Suppress('->')) + \
-              identifier.setResultsName('page_name') + \
-              Optional(Suppress('as') + identifier.setResultsName('url_alias')) + \
-              Optional(Suppress(':') + uri_expr.setResultsName('uri') +
-                                                                Optional(Suppress(':') + file_name_or_expr)) + Suppress(']')
-page_item = Group(identifier.setResultsName('key') + Suppress(':') + restOfLine.setResultsName('expression'))
-
-page_code = Optional(QuotedString('{', endQuoteChar='}', multiline=True).setResultsName('page_code'))
-
-page = Group(page_header + Each([ZeroOrMore(page_item).setResultsName('page_items'), extras]) + page_code)
-
 # Collection header
 
 field_name_spec = Literal('*') | Literal('.*') | (Combine(Optional('^') + Optional('.') + Optional('*') + identifier + Optional('*')))
@@ -123,7 +108,29 @@ collection_imports = Literal('%%') + SkipTo(Literal('%%')).setResultsName('colle
 
 
 collections = OneOrMore(collection).setResultsName('collections')
-pages = OneOrMore(page).setResultsName('pages')
+
+
+
+
+# Page header
+file_name_expr = Literal('expr') + (QuotedString("(", endQuoteChar=")") | QuotedString("<", endQuoteChar=">")).setResultsName('template_expr')
+file_name_or_expr = file_name_expr | file_name.setResultsName('template_name')
+
+page_header = Suppress('[') + Optional(identifier.setResultsName('parent_name') + Suppress('->')) + \
+              identifier.setResultsName('page_name') + \
+              Optional(Suppress('as') + identifier.setResultsName('url_alias')) + \
+              Optional(Suppress(':') + uri_expr.setResultsName('uri') +
+                                                                Optional(Suppress(':') + file_name_or_expr)) + Suppress(']')
+page_item = Group(identifier.setResultsName('key') + Suppress(':') + restOfLine.setResultsName('expression'))
+
+page_code = Optional(QuotedString('{', endQuoteChar='}', multiline=True).setResultsName('page_code'))
+
+html = Optional(LineStart() + Literal('<') + Group(Optional(identifier + Literal(':')) + identifier) + SkipTo(page_header | collection_header | Literal('%%'))).setResultsName('html')
+
+page = Group(page_header + Each([ZeroOrMore(page_item).setResultsName('page_items'), extras]) + page_code + html)
+
+
+pages = Optional(extras).setResultsName('pages_global_extras') + OneOrMore(page).setResultsName('pages')
 
 col_import = Group(LineStart() + Literal('%include') + QuotedString('"').setResultsName('path'))
 imports = OneOrMore(col_import).setResultsName('col_imports')
