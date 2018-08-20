@@ -3,7 +3,7 @@ import re
 from cratis_generator.config.domain import FieldDef, FieldDeclaration
 from cratis_generator.config.grammar import choices
 from cratis_generator.generator.utils import gen_args, handle_parse_exception
-from pyparsing import *
+from cPyparsing import *
 
 
 class IntegerFieldDef(FieldDef):

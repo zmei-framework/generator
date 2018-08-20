@@ -1,6 +1,6 @@
 from cratis_generator.config.domain import FieldDeclaration, ValidationException
 from cratis_generator.config.extras import Extra
-from pyparsing import *
+from cPyparsing import *
 
 from cratis_generator.config.grammar import ref_or_class_name, field_name_spec
 

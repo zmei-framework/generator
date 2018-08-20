@@ -1,6 +1,6 @@
 from cratis_generator.config.domain import PageExtra, ValidationException
 
-from pyparsing import *
+from cPyparsing import *
 
 from cratis_generator.config.grammar import identifier
 from cratis_generator.generator.utils import handle_parse_exception

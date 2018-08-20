@@ -2,7 +2,7 @@ from cratis_generator.config.domain import FieldDef, CollectionDef, FieldDeclara
     ReferenceField
 from cratis_generator.config.grammar import ref, class_name, ref_or_class_name, identifier
 from cratis_generator.generator.utils import gen_args
-from pyparsing import *
+from cPyparsing import *
 
 
 class RelationDef(FieldDef):

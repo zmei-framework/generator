@@ -1,6 +1,6 @@
 from cratis_generator.config.domain import PageExtra
 
-from pyparsing import *
+from cPyparsing import *
 
 from cratis_generator.config.grammar import class_name, identifier
 

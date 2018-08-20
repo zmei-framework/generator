@@ -25,7 +25,7 @@ from cratis_generator.extras.sortable import SortableExtra, OrderExtra
 from cratis_generator.extras.tree import TreeExtra
 from cratis_generator.extras.mixin import MixinExtra
 from cratis_generator.generator.utils import handle_parse_exception
-from pyparsing import ParseException
+from cPyparsing import ParseException
 
 from cratis_generator.extras.admin import AdminExtra
 from cratis_generator.extras.rest import RestExtra

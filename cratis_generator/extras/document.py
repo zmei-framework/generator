@@ -1,6 +1,6 @@
 from cratis_generator.config.domain import CollectionDef
 from cratis_generator.config.extras import Extra
-from pyparsing import *
+from cPyparsing import *
 
 
 class DocumentExtra(Extra):

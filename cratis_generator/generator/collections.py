@@ -196,10 +196,11 @@ def generate(app_name: str, collection_set: CollectionSetDef, features=None):
 
 
 def build_react(apps, build_name):
-    if os.path.exists('react/package.json'):
-        image_name = f'genius-image-{build_name}'
-        os.system(f'docker build -t {image_name} react/')
-        os.system(f'docker run -v `pwd`:/app -t {image_name} webpack')
+    pass
+    # if os.path.exists('react/package.json'):
+    #     image_name = f'genius-image-{build_name}'
+    #     os.system(f'docker build -t {image_name} react/')
+    #     os.system(f'docker run -v `pwd`:/app -t {image_name} webpack')
 
 
 def generate_react_configs(apps):

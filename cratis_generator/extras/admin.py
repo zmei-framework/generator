@@ -2,7 +2,7 @@ import re
 
 from cratis_generator.config.domain import ValidationException, ReferenceField, FieldDeclaration
 from cratis_generator.config.extras import Extra
-from pyparsing import *
+from cPyparsing import *
 
 from cratis_generator.config.grammar import field_name_spec
 

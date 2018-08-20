@@ -1,7 +1,7 @@
 import re
 
 from cratis_generator.config.domain import PageExtra, PageExpression, ValidationException
-from pyparsing import *
+from cPyparsing import *
 
 from cratis_generator.config.grammar import identifier
 

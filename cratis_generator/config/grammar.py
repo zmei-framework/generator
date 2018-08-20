@@ -1,6 +1,6 @@
 import re
 
-from pyparsing import *
+from cPyparsing import *
 
 identifier = Word(alphas + '_', alphanums + '_')
 

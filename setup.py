@@ -22,7 +22,7 @@ setup(
     },
 
     install_requires=[
-        "pyparsing",
+        "cpyparsing",
         "termcolor",
         "autopep8",
         "django<1.11",
@@ -32,7 +32,7 @@ setup(
         'wheel',
         'click',
         'jinja2',
-        'defusedxml'
+        'defusedxml',
     ],
 
     entry_points={

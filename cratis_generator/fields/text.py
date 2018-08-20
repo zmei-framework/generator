@@ -5,7 +5,7 @@ from cratis_generator.config.domain import FieldDef, FieldDeclaration, Validatio
 from cratis_generator.generator.utils import gen_args, handle_parse_exception
 from cratis_generator.config.grammar import choices, choices_or_glob
 
-from pyparsing import *
+from cPyparsing import *
 
 
 class DefaultTextMixin(FieldDef):

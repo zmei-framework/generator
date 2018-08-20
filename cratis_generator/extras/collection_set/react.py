@@ -1,6 +1,6 @@
 import re
 
-from pyparsing import *
+from cPyparsing import *
 
 from cratis_generator.config.domain import CollectionSetExtra
 

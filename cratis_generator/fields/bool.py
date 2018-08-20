@@ -1,6 +1,6 @@
 from cratis_generator.config.domain import FieldDef, FieldDeclaration
 from cratis_generator.generator.utils import gen_args
-from pyparsing import *
+from cPyparsing import *
 
 class BooleanFieldDef(FieldDef):
     """

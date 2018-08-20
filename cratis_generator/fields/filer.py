@@ -2,7 +2,7 @@ from cratis_generator.config.domain import FieldDef, FieldDeclaration, Validatio
 from cratis_generator.config.grammar import identifier
 from cratis_generator.generator.utils import gen_args
 
-from pyparsing import *
+from cPyparsing import *
 
 
 class FilerFileFieldDef(FieldDef):

@@ -1,7 +1,7 @@
 import re
 from abc import abstractmethod
 from collections import namedtuple
-from pyparsing import ParseException
+from cPyparsing import ParseException
 from termcolor import colored
 
 from cratis_generator.config.grammar import page as page_parser
