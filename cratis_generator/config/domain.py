@@ -5,6 +5,7 @@ from pyparsing import ParseException
 from termcolor import colored
 
 from cratis_generator.config.grammar import page as page_parser
+from cratis_generator.generator.imports import ImportSet
 from cratis_generator.generator.utils import handle_parse_exception
 
 
@@ -73,6 +74,7 @@ class PageDef(object):
         self.blocks = {}
         self.react_components = {}
         self.react_pages = {}
+
         self.react = False
 
 
@@ -746,6 +748,12 @@ class CollectionDef(object):
         return [field for field in self.own_fields if isinstance(field, RelationDef)]
 
 
+class CollectionSetExtra(object):
+
+    def __init__(self, parsed_result, collection_set):
+        self.collection_set = collection_set
+
+
 class CollectionSetDef(object):
     # app_name: str
     # collections: Dict[str, CollectionDef]
@@ -756,6 +764,7 @@ class CollectionSetDef(object):
     # translatable: False
 
     def __init__(self, parse_result, parser, app_name: str) -> None:
+
         self.parser = parser
         self.app_name = app_name
         self.translatable = False
@@ -764,11 +773,31 @@ class CollectionSetDef(object):
         self.collections = {}
         self.pages = {}
 
+        self.react_deps = {}
+        self.react_imports = ImportSet()
+
         self.deps = []
         self._apps = [app_name]
 
         self.page_imports = parse_result.page_imports
         self.collection_imports = parse_result.collection_imports
+
+        extras = self.parser.get_collection_extras_available()
+        self.extras = []
+
+        for extra in parse_result.col_extras:
+
+            try:
+                extra_cls = extras[extra.extra_name]
+                try:
+                    extra_instance = extra_cls(extra, self)
+                    self.extras.append(extra_instance)
+
+                except ParseException as e:
+                    handle_parse_exception(e, extra.extra_body,
+                                           '@{} expression for collections set "{}"'.format(extra.extra_name, self.app_name))
+            except KeyError as e:
+                raise ValidationException('CollectionSet extra not found: {}, reason: {}'.format(extra.extra_name, e))
 
         for col in parse_result.collections:
             collection_def = CollectionDef(col, self)

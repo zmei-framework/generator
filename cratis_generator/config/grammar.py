@@ -129,13 +129,14 @@ html = Optional(LineStart() + Literal('<') + Group(Optional(identifier + Literal
 
 page = Group(page_header + Each([ZeroOrMore(page_item).setResultsName('page_items'), extras]) + page_code + html)
 
+collection_set_extras = ZeroOrMore(Group(extra)).setResultsName('col_extras')
 
-pages = Optional(extras).setResultsName('pages_global_extras') + OneOrMore(page).setResultsName('pages')
+pages = OneOrMore(page).setResultsName('pages')
 
 col_import = Group(LineStart() + Literal('%include') + QuotedString('"').setResultsName('path'))
 imports = OneOrMore(col_import).setResultsName('col_imports')
 
-collection_set = (Optional(imports) + Optional(page_imports) + Optional(pages) + Optional(collection_imports) + Optional(collections) + stringEnd).ignore(cStyleComment)
+collection_set = (Optional(imports) + Optional(page_imports) + Optional(collection_set_extras) + Optional(pages) + Optional(collection_imports) + Optional(collections) + stringEnd).ignore(cStyleComment)
 
 
 

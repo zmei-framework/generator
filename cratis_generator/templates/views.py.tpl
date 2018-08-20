@@ -38,6 +38,8 @@ jsi = JSInterpreter()
 jsi.started = False
 def evaljs(source):
     if not jsi.started:
+        # prevent *Timeout functions to crash server in compile-time
+        jsi.evaljs("clearTimeout=setTimeout=function(){};");
         with open(settings.BASE_DIR + '/app/static/react/{{ collection_set.app_name }}_server.bundle.js') as f:
             jsi.evaljs(f)
         jsi.started = True

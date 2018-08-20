@@ -18,12 +18,19 @@ class ReactPageBlock(object):
 
     def collect_components(self, el):
         if re.match('^[A-Z][a-z0-9]+', el.tag):
-            self.react_components_imports.add(f'../Components/{el.tag}', el.tag)
 
-            imports = ImportSet()
-            imports.add('react', 'React')
+            import_source, what = self.page.collection_set.react_imports.find_import_source(el.tag)
 
-            self.react_components[el.tag] = (imports, '', '<div>\n    {this.props.children}\n</div>')
+            if import_source:
+                self.react_components_imports.add(import_source, what)
+
+            else:
+                self.react_components_imports.add(f'../Components/{el.tag}', '*' + el.tag)
+
+                imports = ImportSet()
+                imports.add('react', 'React')
+
+                self.react_components[el.tag] = (imports, '', '<div>\n    {this.props.children}\n</div>')
 
         for child in el:
             self.collect_components(child)

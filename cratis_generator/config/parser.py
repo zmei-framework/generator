@@ -6,6 +6,7 @@ import os
 from cratis_generator.config.domain import ValidationException
 from cratis_generator.config.grammar import collection_set
 from cratis_generator.extras.clean import CleanExtra
+from cratis_generator.extras.collection_set.react import ReactCollectionSetExtra
 from cratis_generator.extras.dates import DateTreeExtra
 from cratis_generator.extras.db_signals import DbSignalExtra, PreSaveExtra, PostSaveExtra, PreDeleteExtra, \
     PostDeleteExtra, M2mChangedExtra
@@ -19,7 +20,6 @@ from cratis_generator.extras.page.menu import MenuPageExtra
 from cratis_generator.extras.page.merge import MergePageExtra
 from cratis_generator.extras.page.page_handlers import HandleErrorExtra
 from cratis_generator.extras.page.post import PostPageExtra
-from cratis_generator.extras.page.react import ReactPageExtra
 from cratis_generator.extras.page.rss import RssPageExtra
 from cratis_generator.extras.sortable import SortableExtra, OrderExtra
 from cratis_generator.extras.tree import TreeExtra
@@ -61,14 +61,14 @@ class Parser(object):
         with open(filename, 'r', encoding='utf8') as f:
             config = f.read()
 
-        config = config.replace(chr(8232), '')
+        config = config.replace(chr(8232), '')  # some wired windows-only utf new line?
 
         relative_path = os.path.dirname(filename)
 
         try:
             parse_result = collection_set.parseString(config)
 
-            all_attrs = ['page_imports', 'collection_imports', 'collections', 'pages']
+            all_attrs = ['page_imports', 'collection_imports', 'col_extras', 'col_imports', 'collections', 'pages']
             parse_result_dict = {}
             for attr in all_attrs:
                 val = getattr(parse_result, attr)
@@ -142,7 +142,10 @@ class Parser(object):
             MergePageExtra,
             RssPageExtra,
             HandleErrorExtra,
+        )}
 
-            ReactPageExtra,
+    def get_collection_extras_available(self):
+        return {x.get_name(): x for x in (
+            ReactCollectionSetExtra,
         )}
 

@@ -101,7 +101,7 @@ def generate_common_files(apps, features=None, build_name='local'):
         # react
         generate_react_configs(apps)
 
-        # build_react(apps, build_name=build_name)
+        build_react(apps, build_name=build_name)
 
 
 def generate(app_name: str, collection_set: CollectionSetDef, features=None):
@@ -207,11 +207,17 @@ def generate_react_configs(apps):
 
     for app_name, collection_set in apps.items():
         if collection_set.react:
-            entries[app_name] = f'./src/{app_name.capitalize()}/index.js'
-            entries[f"{app_name}_server"] = f'./src/{app_name.capitalize()}/index_server.js'
+            entries[app_name] = ["babel-polyfill", f'./src/{app_name.capitalize()}/index.js']
+            entries[f"{app_name}_server"] = ["babel-polyfill", f'./src/{app_name.capitalize()}/index_server.js']
+
+    packages = {}
+
+    for app_name, collection_set in apps.items():
+        packages.update(collection_set.react_deps)
+
 
     generate_file('react/package.json', 'package.json.tpl', {
-
+        'packages': packages
     })
     generate_file('react/.babelrc', '.babelrc.tpl', {
 
@@ -244,7 +250,7 @@ def generate_react_jsx(app_name, collection_set):
                 })
 
             for name, (imports, body, source) in page.react_pages.items():
-                index_imports.add(f'./Pages/{name}', name)
+                index_imports.add(f'./Pages/{name}', '*' + name)
                 react_pages.append(name)
 
                 generate_file('react/src/{}/Pages/{}.jsx'.format(app_name.capitalize(), name), 'react.jsx.tpl', {

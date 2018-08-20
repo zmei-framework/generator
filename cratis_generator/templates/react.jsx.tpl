@@ -1,6 +1,6 @@
 {{ imports }}
 
-export default class {{ name }} extends React.Component {
+export class {{ name }} extends React.Component {
     render() {
         {{ body|indent(8) }}
         return (
