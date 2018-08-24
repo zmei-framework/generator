@@ -314,7 +314,8 @@ def generate_views_py(target_path, app_name, collection_set):
 
         imports.add('{}.models'.format(app_name), col.class_name)
 
-        col.rest_conf.configure_imports(imports)
+        for rest_conf in col.rest_conf.values():
+            rest_conf.configure_imports(imports)
 
     generated_templates = []
     if len(collection_set.pages.items()) > 0:

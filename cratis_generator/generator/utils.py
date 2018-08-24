@@ -177,7 +177,8 @@ def generate_urls_rest(target_path, app_name, collection_set):
 
     for name, collection in collection_set.collections.items():
         if collection.rest:
-            url_imports.add('.views', f'{collection.class_name}ViewSet')
+            for rest_conf in collection.rest_conf.values():
+                url_imports.add('.views', f'{rest_conf.serializer_name}ViewSet')
 
     context = {
         'package_name': app_name,

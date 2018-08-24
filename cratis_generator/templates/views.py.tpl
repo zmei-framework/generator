@@ -5,27 +5,27 @@ if '_' not in locals():
     _ = lambda s: s
 
 {% for cname, col in collections %}
-{% with rest_conf=col.rest_conf %}
+{% for rest_conf in col.rest_conf.values() %}
 {% include 'serializer.py.tpl' %}
-{% endwith %}
 
-{% if col.rest_conf.auth_methods.token %}
+{% if rest_conf.auth_methods.token %}
 class {{ col.class_name }}TokenAuthentication(TokenAuthentication):
-    model = {{ col.rest_conf.auth_methods.token.model }}
+    model = {{ rest_conf.auth_methods.token.model }}
 {% endif %}
 
-class {{ col.class_name }}ViewSet({{ col.rest_conf.rest_class[1] }}):
+class {{ rest_conf.serializer_name }}ViewSet({{ rest_conf.rest_class[1] }}):
     """
     {{ col.class_name }} API
     """
 
-    filter_fields = ['{{ col.rest_conf.field_names|join("','") }}']
-    serializer_class = {{ col.class_name }}Serializer
-    permission_classes = [{% if col.rest_conf.auth_methods %}IsAuthenticated{% else %}AllowAny{% endif %}]
-    authentication_classes = [{{ col.rest_conf.auth_method_classes|join(', ') }}]
+    filter_fields = ['{{ rest_conf.field_names|join("','") }}']
+    serializer_class = {{ rest_conf.serializer_name }}Serializer
+    permission_classes = [{% if rest_conf.auth_methods %}IsAuthenticated{% else %}AllowAny{% endif %}]
+    authentication_classes = [{{ rest_conf.auth_method_classes|join(', ') }}]
 
     def get_queryset(self):
-        return {{ col.class_name }}.objects.{{ col.rest_conf.query }}{% if col.rest_conf.user_field %}.filter({{ col.rest_conf.user_field }}=self.request.user){% endif %}{% if col.rest_conf.annotations %}.annotate({{ col.rest_conf.annotations|join(", ") }}){% endif %}
+        return {{ col.class_name }}.objects.{{ rest_conf.query }}{% if rest_conf.user_field %}.filter({{ rest_conf.user_field }}=self.request.user){% endif %}{% if rest_conf.annotations %}.annotate({{ rest_conf.annotations|join(", ") }}){% endif %}
+{% endfor %}
 {% endfor %}
 {%- if collection_set.react %}
 rs = ZmeiReactServer()

@@ -92,6 +92,8 @@ class CollectionDef(object):
         self.admin_tabs = []
         self.tab_names = {}
 
+        self.rest_conf = {}
+
         self.rest_mode = None
         self.rest = False
 

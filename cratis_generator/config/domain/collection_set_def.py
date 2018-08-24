@@ -27,7 +27,6 @@ class CollectionSetDef(object):
         self.react = False
         self.collections = {}
         self.pages = {}
-
         self.react_deps = {}
         self.react_imports = ImportSet()
 

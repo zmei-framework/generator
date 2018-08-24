@@ -61,18 +61,25 @@ class RestExtra(Extra):
 
         parsed_body = self.get_parser().parseString(extra.extra_body)
 
-        collection.rest_conf = RestSerializerConfig(collection.class_name, parsed_body, collection)
+        descriptor = extra.descriptor or '_'
+        collection.rest_conf[descriptor] = \
+            RestSerializerConfig(descriptor, collection.class_name, parsed_body, collection)
 
         collection.collection_set.rest = True
         collection.rest = True
 
 
 class RestSerializerConfig(object):
-    def __init__(self, name, parse_result, collection, parent_field=None):
+    def __init__(self, descriptor, name, parse_result, collection, parent_field=None):
+        self.descriptor = descriptor
+
         if isinstance(parse_result, str):
             parse_result = extra_rest_gr.parseString('')
 
         self.i18n = parse_result.i18n == 'true'
+
+        if descriptor != '_':
+            name = f'{name}{descriptor.capitalize()}'
 
         self.serializer_name = name
         self.collection = collection
@@ -197,6 +204,12 @@ class RestSerializerConfig(object):
                     self.field_imports.append(FieldDeclaration('django.db.models', 'Count'))
                 else:
                     raise ValidationException('Unknown annotation type: {}'.format(ant.kind))
+
+    @property
+    def descriptor_suffix(self):
+        if self.descriptor == '_':
+            return ''
+        return '_' + self.descriptor
 
     @property
     def rest_class(self):

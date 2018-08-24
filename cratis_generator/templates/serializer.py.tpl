@@ -1,4 +1,3 @@
-
 {% for extra in rest_conf.extra_serializers  %}
 {% with rest_conf=extra %}
 {% include 'serializer.py.tpl' %}
