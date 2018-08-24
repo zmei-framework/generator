@@ -165,6 +165,9 @@ def generate(target_path, app_name: str, collection_set: CollectionSetDef, featu
     # views
     generate_file(target_path, '{}/__init__.py'.format(app_name), 'init.py.tpl')
 
+    if collection_set.rest:
+        generate_serializers_py(target_path, app_name, collection_set)
+
     if collection_set.rest or len(collection_set.pages.values()) > 0:
         generate_views_py(target_path, app_name, collection_set)
 
@@ -300,13 +303,23 @@ def generate_translation_py(target_path, app_name, collection_set):
     })
 
 
+def generate_serializers_py(target_path, app_name, collection_set):
+    imports = ImportSet()
+    imports.add('rest_framework', 'serializers')
+
+    for col in collection_set.collections.values():
+        if col.rest:
+            imports.add('.models', col.class_name)
+
+    generate_file(target_path, '{}/serializers.py'.format(app_name), 'serializers.py.tpl', {
+        'imports': imports.import_sting(),
+        'collection_set': collection_set,
+        'collections': [(name, col) for name, col in collection_set.collections.items() if col.rest],
+    })
+
+
 def generate_views_py(target_path, app_name, collection_set):
     imports = ImportSet()
-
-    if collection_set.rest:
-        imports.add('rest_framework', 'serializers')
-        # imports.add('cratis_api.api_filter', 'AnyFilterBackend')
-        # imports.add('cratis_api.views', 'Pagination')
 
     for col in collection_set.collections.values():
         if not col.rest:

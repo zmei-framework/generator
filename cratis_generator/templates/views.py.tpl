@@ -6,7 +6,6 @@ if '_' not in locals():
 
 {% for cname, col in collections %}
 {% for rest_conf in col.rest_conf.values() %}
-{% include 'serializer.py.tpl' %}
 
 {% if rest_conf.auth_methods.token %}
 class {{ col.class_name }}TokenAuthentication(TokenAuthentication):

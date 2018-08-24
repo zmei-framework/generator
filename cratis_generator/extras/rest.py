@@ -232,6 +232,8 @@ class RestSerializerConfig(object):
 
         imports.add(*self.rest_class)
 
+        imports.add('.serializers', f'{self.serializer_name}Serializer')
+
         for import_line in self.field_imports:
             imports.add(*import_line)
 
