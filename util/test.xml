@@ -1,0 +1,9 @@
+
+<foo title="@123">
+    <list items="[1,2,3]" as="var">
+        ho: {{ var }}
+    </list>
+</foo>
+
+
+

@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  entry: {{ entries|tojson|safe }},
+  entry: {{ entries|tojson(2)|safe }},
 
   mode: "development",
   module: {
@@ -10,7 +10,7 @@ module.exports = {
         test: /\.(js|jsx)$/,
         exclude: /(node_modules|bower_components)/,
         loader: 'babel-loader',
-        options: { presets: ['env'] }
+        options: { presets: ['env', 'react'] }
       }
     ]
   },

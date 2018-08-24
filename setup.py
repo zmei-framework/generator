@@ -33,11 +33,18 @@ setup(
         'click',
         'jinja2',
         'defusedxml',
+        'sanic',
+        'cpyparsing',
+        'termcolor==1.1.0',
+        'autopep8',
+        'jinja2',
+        'defusedxml',
+        'django',
     ],
 
     entry_points={
         'console_scripts': [
-            'django-gen = cratis_generator.cli:django_gen',
+            'zmei = cratis_generator.cli:django_gen',
         ]
     },
 )

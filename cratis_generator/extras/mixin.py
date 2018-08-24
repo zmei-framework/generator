@@ -1,7 +1,5 @@
 from cratis_generator.config.domain import CollectionDef, ValidationException
 from cratis_generator.config.extras import Extra
-from django.db import models
-from django.utils.module_loading import import_string
 
 
 class MixinExtra(Extra):

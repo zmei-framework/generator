@@ -1,0 +1,15 @@
+
+
+[hello: /hello/<name>]
+messages: Message.objects.all() @stream
+
+def add_message(text):
+    Message.objects.create(user=session.user, text=text)
+
+<div>
+    <Chat messages={messages} />
+
+    <HelloMessage onClick="{add_message('Bro!')}">
+        <h1>Hello, {url.name}!</h1>
+    </HelloMessage>
+</div>

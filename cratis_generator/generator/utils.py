@@ -1,28 +1,18 @@
 import os
+import re
+
 import autopep8
 import jinja2
-import os
-import re
-from jinja2 import Environment
+from jinja2 import Environment, FileSystemBytecodeCache
 from jinja2 import PackageLoader
 from termcolor import colored
 
 from cratis_generator.generator.imports import ImportSet
-from contextlib import contextmanager
-
-
-@contextmanager
-def chdir(path):
-    cwd = os.getcwd()
-    os.chdir(path)
-    yield
-    os.chdir(cwd)
 
 
 def indent_text(nr, text):
     inds = (' ' * nr)
     return inds + ('\n' + inds).join(text.splitlines())
-
 
 
 def package_to_path(package_name):
@@ -44,7 +34,7 @@ def render_local_template(tpl_path, context):
 
 def fill_file(file_path, context, template=None):
     data = render_local_template(template or file_path, context)
-    
+
     with open(file_path, 'w') as f:
         f.write(data)
 
@@ -54,7 +44,55 @@ def is_file_generated(filename):
         return re.match('^\s*{#\s*generated\s*#}\s*', f.read(20))
 
 
-def generate_file(filename, template_name, context=None):
+def field_names(fields, admin=False):
+    names = []
+    for field in fields:
+        if admin and field.admin_list_renderer:
+            names.append('get_{}'.format(field.name))
+        else:
+            names.append(field.name)
+
+    return format_names(names)
+
+
+def format_names(names):
+    if not names:
+        return ''
+    return "'{}'".format("', '".join(names))
+
+
+def to_name(ref):
+    return ' '.join([x.capitalize() for x in ref.split('_')])
+
+
+def include_block(block):
+    template = block_env.get_template(block.template_name)
+    return template.render(**block.fields)
+
+
+loader = PackageLoader('cratis_generator', 'templates')
+
+block_env = Environment(loader=loader,
+                        variable_start_string='<{',
+                        variable_end_string='}>',
+                        block_start_string='<%',
+                        block_end_string='%>'
+                        )
+
+bcc = FileSystemBytecodeCache()
+
+env = Environment(
+    loader=loader,
+    bytecode_cache=bcc
+)
+env.filters['field_names'] = field_names
+env.filters['format_names'] = format_names
+env.filters['to_name'] = to_name
+env.filters['repr'] = repr
+env.globals['include_block'] = include_block
+
+
+def generate_file(target_path, filename, template_name, context=None):
     """
     Generates a new file using Jinja2 template
 
@@ -63,52 +101,13 @@ def generate_file(filename, template_name, context=None):
     :param context:
     :return:
     """
+    filename = os.path.join(target_path, filename)
+
     dirname = os.path.dirname(filename)
     if len(dirname) and not os.path.exists(dirname):
         os.makedirs(dirname)
 
-    if os.path.exists(filename):
-        return
-
     context = context or {}
-
-    def field_names(fields, admin=False):
-        names = []
-        for field in fields:
-            if admin and field.admin_list_renderer:
-                names.append('get_{}'.format(field.name))
-            else:
-                names.append(field.name)
-
-        return format_names(names)
-
-    def format_names(names):
-        if not names:
-            return ''
-        return "'{}'".format("', '".join(names))
-
-    def to_name(ref):
-        return ' '.join([x.capitalize() for x in ref.split('_')])
-
-    def include_block(block):
-        template = block_env.get_template(block.template_name)
-        return template.render(**block.fields)
-
-    loader = PackageLoader('cratis_generator', 'templates')
-
-    block_env = Environment(loader=loader,
-                            variable_start_string='<{',
-                            variable_end_string='}>',
-                            block_start_string='<%',
-                            block_end_string='%>'
-                            )
-
-    env = Environment(loader=loader)
-    env.filters['field_names'] = field_names
-    env.filters['format_names'] = format_names
-    env.filters['to_name'] = to_name
-    env.filters['repr'] = repr
-    env.globals['include_block'] = include_block
 
     template = env.get_template(template_name)
 
@@ -119,8 +118,7 @@ def generate_file(filename, template_name, context=None):
         f.write(rendered)
 
 
-
-def generate_feature(package_name: str, feature_name: str, collection_set, extra_context=None):
+def generate_feature(target_path, package_name: str, feature_name: str, collection_set, extra_context=None):
     """
     Generates new feature
 
@@ -136,8 +134,7 @@ def generate_feature(package_name: str, feature_name: str, collection_set, extra
         if page.has_sitemap:
             sitemap_imports.add(f'{package_name}.views', page.view_name)
 
-
-    generate_package(package_name)
+    generate_package(package_name, path=target_path)
 
     filepath = os.path.join(package_to_path(package_name), 'features.py')
 
@@ -150,11 +147,10 @@ def generate_feature(package_name: str, feature_name: str, collection_set, extra
     if extra_context:
         context.update(extra_context)
 
-    generate_file(filepath, 'cratis/feature.py.tpl', context)
+    generate_file(target_path, filepath, 'cratis/feature.py.tpl', context)
 
 
-def generate_urls_file(app_name, collection_set, pages, i18n=False):
-
+def generate_urls_file(target_path, app_name, collection_set, pages, i18n=False):
     url_imports = ImportSet()
     url_imports.add('django.conf.urls', 'url')
 
@@ -170,11 +166,10 @@ def generate_urls_file(app_name, collection_set, pages, i18n=False):
 
     filepath = os.path.join(package_to_path(app_name), 'urls_i18n.py' if i18n else 'urls.py')
 
-    generate_file(filepath, 'urls.py.tpl', context)
+    generate_file(target_path, filepath, 'urls.py.tpl', context)
 
 
-def generate_urls_rest(app_name, collection_set):
-
+def generate_urls_rest(target_path, app_name, collection_set):
     url_imports = ImportSet()
     url_imports.add('django.conf.urls', 'url')
     url_imports.add('django.conf.urls', 'include')
@@ -190,7 +185,7 @@ def generate_urls_rest(app_name, collection_set):
         'url_imports': url_imports.import_sting(),
     }
 
-    filepath = os.path.join(package_to_path(app_name), 'urls_rest.py')
+    filepath = os.path.join(target_path, package_to_path(app_name), 'urls_rest.py')
     generate_file(filepath, 'urls_rest.py.tpl', context)
 
 
@@ -225,14 +220,14 @@ class StopGenerator(Exception):
 
 def handle_parse_exception(e, parsed_string, subject):
     out = []
-    out.append(str(type(e)))
-    out.append('Cannot parse {}, error: {}'.format(subject, e))
+    # out.append(str(type(e)))
+    out.append(colored('{}, error: {}'.format(subject, e), 'white', 'on_red'))
     out.append('-' * 100)
     for nr, line in enumerate(parsed_string.splitlines()):
         if (nr + 1) == e.lineno:
             try:
                 before = line[:e.col - 1]
-                char = line[e.col-1]
+                char = line[e.col - 1]
                 after = line[e.col:]
             except IndexError:
                 out.append(colored('{0:04d}| {1}'.format(nr + 1, line), 'white', 'on_red'))
