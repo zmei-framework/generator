@@ -16,6 +16,19 @@ class ReactPageBlock(object):
         self.react_components = {}
         self.react_components_imports = ImportSet()
 
+
+        # make react's <foo messages={} /> => <foo messages="" /> to allow xml parsing.
+        xml_safe_source = self.source.replace('{', '"').replace('}', '"')
+
+        xml = fromstring(f'<root>{xml_safe_source}</root>')
+        self.collect_components(xml)
+
+        self.xml = xml
+
+        if len(self.react_components) > 0:
+            self.page.react = True
+            self.page.collection_set.react = True
+
     def collect_components(self, el):
         if re.match('^[A-Z][a-z0-9]+', el.tag):
 
@@ -36,19 +49,13 @@ class ReactPageBlock(object):
             self.collect_components(child)
 
     def render(self, area=None, index=None):
-        xml = fromstring(f'<root>{self.source}</root>')
-        self.collect_components(xml)
-
-        if len(xml) > 1:
+        if len(self.xml) > 1:
             source = f'<div>{self.source}</div>'
         else:
             source = self.source
 
         if len(self.react_components) == 0:
             return self.source  # no react components inside
-
-        self.page.react = True
-        self.page.collection_set.react = True
 
         cmp_name = f'Page{self.page.name.capitalize()}{area.capitalize()}{index}'
 

@@ -1,3 +1,4 @@
+import json
 import re
 from abc import abstractmethod
 from collections import namedtuple
@@ -95,10 +96,6 @@ class PageDef(object):
             uri = uri[1:]
             self.i18n = True
 
-        if not self.parent_name:
-            self.extra_bases.append('_View')
-
-
         self.uri = re.sub(r'<(\w+)(\s*:\s*([^\>]+))?>', find_params, uri)
 
         self.page_items = {x.key: PageExpression(x.key, x.expression, self) for x in parse_result.page_items}
@@ -142,8 +139,11 @@ class PageDef(object):
             from cratis_generator.extras.page.block import ReactPageBlock
             self.add_block(area, ReactPageBlock(self, html))
 
-
-
+        if not self.parent_name:
+            if self.react:
+                self.extra_bases.append('ZmeiReactViewMixin')
+            else:
+                self.extra_bases.append('ZmeiDataViewMixin')
 
     def add_block(self, area, block):
         if area not in self.blocks:
@@ -161,6 +161,10 @@ class PageDef(object):
                 self.blocks[area] = blocks + self.blocks[area]
             else:
                 self.blocks[area] = blocks
+
+    @property
+    def react_component_names(self):
+        return list(self.react_pages.keys())
 
     @property
     def page_item_names_with_parents(self):
@@ -189,6 +193,13 @@ class PageDef(object):
     def get_imports(self):
         imports = self.imports
 
+        if self.react:
+            imports.append(('django.conf', 'settings'))
+            imports.append(('zmei.react', 'ZmeiReactServer'))
+            imports.append(('zmei.views', 'ZmeiReactViewMixin'))
+        else:
+            imports.append(('zmei.views', 'ZmeiDataViewMixin'))
+
         return imports
 
     @property
@@ -209,12 +220,6 @@ class PageDef(object):
         code = ""
         if use_data or use_parent:
             code += "data = self.get_data()\n"
-        if use_parent:
-            code += "parent = type('parent', (object,), data)\n"
-        if use_request:
-            code += "request = self.request\n"
-        if use_url:
-            code += "url = type('url', (object,), self.kwargs)\n"
 
         if len(code) > 0:
             code += "\n"
@@ -276,12 +281,11 @@ class PageDef(object):
 
     def render_template_name_expr(self):
 
-        if self.parsed_template_expr:
-            code = self.parsed_template_expr
-        else:
-            code = '"{tpl}"'.format(tpl=self.defined_template_name)
+        if not self.parsed_template_expr:
+            return 'template_name = "{tpl}"'.format(tpl=self.defined_template_name)
 
-        code = self.render_method_headers(
+        code = self.parsed_template_expr
+        code = "def get_template_names(self):\n" + self.render_method_headers(
             use_data='data.' in code,
             use_parent=False,
             use_request='request.' in code,

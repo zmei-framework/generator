@@ -125,7 +125,7 @@ page_item = Group(identifier.setResultsName('key') + Suppress(':') + restOfLine.
 
 page_code = Optional(QuotedString('{', endQuoteChar='}', multiline=True).setResultsName('page_code'))
 
-html = Optional(LineStart() + Literal('<') + Group(Optional(identifier + Literal(':')) + identifier) + SkipTo(page_header | collection_header | Literal('%%'))).setResultsName('html')
+html = Optional(LineStart() + Literal('<') + Group(Optional(identifier + Literal(':')) + identifier) + SkipTo(page_header | collection_header | Literal('%%') | stringEnd)).setResultsName('html')
 
 page = Group(page_header + Each([ZeroOrMore(page_item).setResultsName('page_items'), extras]) + page_code + html)
 
@@ -138,26 +138,3 @@ imports = OneOrMore(col_import).setResultsName('col_imports')
 
 collection_set = (Optional(imports) + Optional(page_imports) + Optional(collection_set_extras) + Optional(pages) + Optional(collection_imports) + Optional(collections) + stringEnd).ignore(cStyleComment)
 
-
-
-#
-# # print(result.collections)
-# # result.name
-#
-# for collection in result.collections:
-#     print('Collection {} ({})'.format(collection.ref, collection.name))
-#
-#     for field in collection.fields:
-#         print(' - {} (required: {}, translatable: {}, type: {} <{}>)'.format(
-#             field.name,
-#             field.required,
-#             field.translatable,
-#             field.type_name,
-#             field.type_opts,
-#         ))
-#
-#     print()
-#
-# # for field in result.fields:
-# #     print(' -- {}'.format(field.name))
-# #     print(field.type_name, field.translatable, field.required)
