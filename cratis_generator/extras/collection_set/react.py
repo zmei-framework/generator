@@ -2,7 +2,7 @@ import re
 
 from cPyparsing import *
 
-from cratis_generator.config.domain import CollectionSetExtra
+from cratis_generator.config.domain.collection_set_extra import CollectionSetExtra
 
 identifier = Word(alphas + '*', alphanums + '_')
 package_name = Word(alphanums + '_@/-')

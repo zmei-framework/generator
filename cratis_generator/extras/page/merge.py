@@ -1,4 +1,4 @@
-from cratis_generator.config.domain import PageExtra
+from cratis_generator.config.domain.page_extra import PageExtra
 
 
 class MergePageExtra(PageExtra):

@@ -3,7 +3,8 @@ import re
 from os import unlink
 from shutil import copytree, copyfile, rmtree
 
-from cratis_generator.config.domain import CollectionSetDef, CollectionDef, FieldDef, FieldDeclaration
+from cratis_generator.config.domain.collection_set_def import FieldDeclaration, CollectionSetDef
+from cratis_generator.config.domain.field_def import FieldDef
 from cratis_generator.generator.imports import ImportSet
 from cratis_generator.generator.utils import generate_feature, generate_file, generate_urls_file, generate_urls_rest
 

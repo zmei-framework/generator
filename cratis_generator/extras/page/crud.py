@@ -1,11 +1,10 @@
-from xml.etree import ElementTree
-
 import re
-
-from cratis_generator.config.domain import PageExtra, ValidationException, PageExpression
-from cratis_generator.config.grammar import identifier, field_name_spec
 from cPyparsing import *
 
+from cratis_generator.config.domain.exceptions import ValidationException
+from cratis_generator.config.domain.page_expression import PageExpression
+from cratis_generator.config.domain.page_extra import PageExtra
+from cratis_generator.config.grammar import identifier, field_name_spec
 from cratis_generator.extras.page.auth import add_page_auth
 from cratis_generator.extras.page.block import PageBlock
 

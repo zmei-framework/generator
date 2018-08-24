@@ -1,5 +1,8 @@
-from cratis_generator.config.domain import FieldDef, CollectionDef, FieldDeclaration, ValidationException, \
-    ReferenceField
+from cratis_generator.config.domain.collection_def import CollectionDef
+from cratis_generator.config.domain.collection_set_def import FieldDeclaration
+from cratis_generator.config.domain.exceptions import ValidationException
+from cratis_generator.config.domain.field_def import FieldDef
+from cratis_generator.config.domain.reference_field import ReferenceField
 from cratis_generator.config.grammar import ref, class_name, ref_or_class_name, identifier
 from cratis_generator.generator.utils import gen_args
 from cPyparsing import *

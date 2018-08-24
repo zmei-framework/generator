@@ -1,7 +1,9 @@
 import glob
 import re
 
-from cratis_generator.config.domain import FieldDef, FieldDeclaration, ValidationException
+from cratis_generator.config.domain.collection_set_def import FieldDeclaration
+from cratis_generator.config.domain.exceptions import ValidationException
+from cratis_generator.config.domain.field_def import FieldDef
 from cratis_generator.generator.utils import gen_args, handle_parse_exception
 from cratis_generator.config.grammar import choices, choices_or_glob
 

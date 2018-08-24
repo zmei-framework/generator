@@ -1,0 +1,79 @@
+from cratis_generator.config.domain.collection_def import CollectionDef
+
+
+class FieldDef(object):
+    def __init__(self, collection: CollectionDef, field) -> None:
+        super().__init__()
+
+        self.type_name = field.type_name
+        self.name = field.name
+        self.verbose_name = field.verbose_name
+        self.help = field.field_help
+
+        self.collection = collection
+        self.required = field.required
+        self.not_null = field.not_null
+        self.unique = field.unique
+        self.index = field.index
+        self.display_field = field.display_field
+        self.translatable = field.translatable
+        self.comment = field.comment.strip() if field.comment else None
+
+        self.read_only = False
+
+        self.inline = False
+
+        if self.translatable:
+            collection.translatable = True
+            collection.collection_set.translatable = True
+
+        self.options = field.type_opts
+
+    def prepare_field_arguemnts(self, own_args=None):
+        args = {}
+
+        if self.verbose_name:
+            args['verbose_name'] = self.verbose_name
+        else:
+            args['verbose_name'] = self.name.replace('_', ' ').capitalize()
+
+        if self.help:
+            args['help_text'] = self.help
+
+        if not self.not_null:
+            args['null'] = True
+
+        args['blank'] = not self.required
+
+        if self.unique:
+            args['unique'] = True
+
+        if self.index:
+            args['db_index'] = True
+
+        if own_args:
+            args.update(own_args)
+
+        return args
+
+    def parse_options(self):
+        self.options = {}
+
+    def get_model_field(self, collection: CollectionDef):
+        raise NotImplementedError('Field "{}" ({}) is not yet implemented.'.format(self.type_name, type(self)))
+
+    def get_admin_widget(self):
+        return None
+
+    def get_prepopulated_from(self):
+        return None
+
+    def get_rest_field(self):
+        return None
+
+    def get_rest_inline_collection(self):
+        return None
+
+    @property
+    def admin_list_renderer(self):
+        return None

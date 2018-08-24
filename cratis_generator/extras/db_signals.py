@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from cratis_generator.config.domain import CollectionDef
+from cratis_generator.config.domain.collection_def import CollectionDef
 from cratis_generator.config.extras import Extra
 
 

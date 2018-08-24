@@ -1,4 +1,6 @@
-from cratis_generator.config.domain import FieldDef, FieldDeclaration, ValidationException, CollectionDef
+from cratis_generator.config.domain.collection_set_def import FieldDeclaration
+from cratis_generator.config.domain.exceptions import ValidationException
+from cratis_generator.config.domain.field_def import FieldDef
 from cratis_generator.config.grammar import identifier
 from cratis_generator.generator.utils import gen_args
 

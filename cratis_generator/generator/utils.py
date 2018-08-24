@@ -185,8 +185,8 @@ def generate_urls_rest(target_path, app_name, collection_set):
         'url_imports': url_imports.import_sting(),
     }
 
-    filepath = os.path.join(target_path, package_to_path(app_name), 'urls_rest.py')
-    generate_file(filepath, 'urls_rest.py.tpl', context)
+    filepath = os.path.join(package_to_path(app_name), 'urls_rest.py')
+    generate_file(target_path, filepath, 'urls_rest.py.tpl', context)
 
 
 def generate_package(package_name, path=None):

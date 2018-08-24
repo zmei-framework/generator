@@ -1,4 +1,5 @@
-from cratis_generator.config.domain import PageExtra, ValidationException
+from cratis_generator.config.domain.page_extra import PageExtra
+from cratis_generator.config.domain.exceptions import ValidationException
 
 
 class HandleErrorExtra(PageExtra):

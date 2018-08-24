@@ -1,0 +1,4 @@
+class NoModelField(Exception):
+    pass
+
+

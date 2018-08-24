@@ -1,16 +1,16 @@
-import re
+import os
+from cPyparsing import ParseException
 from glob import glob
 
-import os
-
-from cratis_generator.config.domain import ValidationException
+from cratis_generator.config.domain.exceptions import ValidationException
 from cratis_generator.config.grammar import collection_set
+from cratis_generator.extras.admin import AdminExtra
 from cratis_generator.extras.clean import CleanExtra
 from cratis_generator.extras.collection_set.react import ReactCollectionSetExtra
 from cratis_generator.extras.dates import DateTreeExtra
-from cratis_generator.extras.db_signals import DbSignalExtra, PreSaveExtra, PostSaveExtra, PreDeleteExtra, \
+from cratis_generator.extras.db_signals import PreSaveExtra, PostSaveExtra, PreDeleteExtra, \
     PostDeleteExtra, M2mChangedExtra
-from cratis_generator.extras.document import DocumentExtra
+from cratis_generator.extras.mixin import MixinExtra
 from cratis_generator.extras.page.auth import AuthExtra
 from cratis_generator.extras.page.block import BlocksPageExtra
 from cratis_generator.extras.page.crud import CrudPageExtra, CrudCreatePageExtra, CrudUpdatePageExtra, \
@@ -21,14 +21,11 @@ from cratis_generator.extras.page.merge import MergePageExtra
 from cratis_generator.extras.page.page_handlers import HandleErrorExtra
 from cratis_generator.extras.page.post import PostPageExtra
 from cratis_generator.extras.page.rss import RssPageExtra
+from cratis_generator.extras.rest import RestExtra
 from cratis_generator.extras.sortable import SortableExtra, OrderExtra
 from cratis_generator.extras.tree import TreeExtra
-from cratis_generator.extras.mixin import MixinExtra
 from cratis_generator.generator.utils import handle_parse_exception
-from cPyparsing import ParseException
 
-from cratis_generator.extras.admin import AdminExtra
-from cratis_generator.extras.rest import RestExtra
 
 class ParseError(Exception):
     pass
@@ -47,7 +44,7 @@ class Parser(object):
             raise NotImplementedError('Unknown field type: ' + type_name)
 
     def parse_file(self, filename, app_name):
-        from cratis_generator.config.domain import CollectionSetDef
+        from cratis_generator.config.domain.collection_set_def import CollectionSetDef
 
         parse_result = self.parse_collection_set(filename)
         parse_result['page_imports'] = '\n'.join(parse_result['page_imports'])
@@ -115,7 +112,6 @@ class Parser(object):
             TreeExtra,
             SortableExtra,
             OrderExtra,
-            DocumentExtra,
             DateTreeExtra,
             MixinExtra,
             CleanExtra,

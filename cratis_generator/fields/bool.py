@@ -1,4 +1,5 @@
-from cratis_generator.config.domain import FieldDef, FieldDeclaration
+from cratis_generator.config.domain.collection_set_def import FieldDeclaration
+from cratis_generator.config.domain.field_def import FieldDef
 from cratis_generator.generator.utils import gen_args
 from cPyparsing import *
 

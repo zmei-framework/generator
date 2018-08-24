@@ -1,4 +1,5 @@
-from cratis_generator.config.domain import FieldDef, CollectionDef
+from cratis_generator.config.domain.collection_def import CollectionDef
+from cratis_generator.config.domain.field_def import FieldDef
 
 
 class ExpressionFieldDef(FieldDef):

@@ -9,7 +9,7 @@ from glob import glob
 from io import BytesIO
 from os.path import dirname
 
-from cratis_generator.config.domain import ValidationException
+from cratis_generator.config.domain.exceptions import ValidationException
 from cratis_generator.config.parser import Parser
 from cratis_generator.generator.collections import generate, generate_common_files
 from cratis_generator.generator.utils import StopGenerator

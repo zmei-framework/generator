@@ -1,4 +1,3 @@
-from cratis_generator.config.domain import FieldDef
 from cratis_generator.fields.bool import BooleanFieldDef
 from cratis_generator.fields.date import DateFieldDef, DateTimeFieldDef, AutoNowDateTimeFieldDef, \
     AutoNowAddDateTimeFieldDef

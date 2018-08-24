@@ -1,4 +1,5 @@
-from cratis_generator.config.domain import FieldDeclaration, ValidationException
+from cratis_generator.config.domain.collection_set_def import FieldDeclaration
+from cratis_generator.config.domain.exceptions import ValidationException
 from cratis_generator.config.extras import Extra
 from cPyparsing import *
 

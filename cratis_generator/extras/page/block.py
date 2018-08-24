@@ -1,7 +1,7 @@
 import re
 from xml.etree import ElementTree
 
-from cratis_generator.config.domain import PageExtra
+from cratis_generator.config.domain.page_extra import PageExtra
 from defusedxml.ElementTree import fromstring, tostring
 
 from cratis_generator.generator.imports import ImportSet

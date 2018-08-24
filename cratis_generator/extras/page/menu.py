@@ -1,6 +1,10 @@
 import re
 
-from cratis_generator.config.domain import PageExtra, PageExpression, ValidationException
+
+from cratis_generator.config.domain.page_extra import PageExtra
+from cratis_generator.config.domain.page_expression import PageExpression
+from cratis_generator.config.domain.exceptions import ValidationException
+
 from cPyparsing import *
 
 from cratis_generator.config.grammar import identifier
