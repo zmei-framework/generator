@@ -16,6 +16,8 @@ class PageExpression(object):
         self.cache_type = None
         self.cache_expr = None
 
+        self.serialize = False
+
         if '@cached_as' in self.expression:
             self.cache_type = 'cached_as'
         elif '@cached' in self.expression:
@@ -41,6 +43,19 @@ class PageExpression(object):
         if '@or_404' in self.expression:
             self.expression = self.expression.replace('@or_404', '')
             self.or_404 = True
+
+        # @rest.xxx
+        m = re.search('@rest(\.([_a-zA-Z0-9]+))?', self.expression)
+        if m:
+            self.expression = self.expression.replace(m.group(0), '')
+            self.serialize = True
+            descriptor = m.group(2)
+
+            if descriptor:
+                self.expression = f'serialize({self.expression}, "{descriptor}")'
+            else:
+                self.expression = f'serialize({self.expression})'
+
 
     def find_collection_by_ref(self, ref):
         try:
@@ -74,6 +89,9 @@ class PageExpression(object):
 
         if 'thumb(' in self.expression:
             imports.append(('cratis_filer.utils', 'thumb'))
+
+        if self.serialize:
+            imports.append(('zmei.serializer', 'serialize'))
 
         return imports
 
