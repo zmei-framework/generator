@@ -243,7 +243,8 @@ def npm_install():
         print(colored('> ', 'white', 'on_blue'), 'Installing nodejs dependencies ...')
         cmd = 'npm install'
         print(cmd)
-        return subprocess.run('{}'.format(cmd), shell=True, cwd='react', check=True)
+        if subprocess.run('{}'.format(cmd), shell=True, cwd='react', check=True):
+            mark_req_file_installed('react/package.json')
 
 
 def remove_db(apps, features=None):
@@ -279,6 +280,12 @@ def is_req_file_changed(filename):
             stored_hash = f.read()
             if stored_hash == hash:
                 return False
+    return True
+
+
+def mark_req_file_installed(filename):
+    hash = files_hash([filename])
+    cache_filename = f'.zmei-cache/{filename}'
 
     dirname = os.path.dirname(cache_filename)
     if not os.path.exists(dirname):
@@ -287,13 +294,12 @@ def is_req_file_changed(filename):
     with open(cache_filename, 'w') as f:
         f.write(hash)
 
-    return True
-
 
 def install_deps():
     if is_req_file_changed('requirements.txt'):
         print(colored('> ', 'white', 'on_blue'), 'Installing pip dependencies...')
-        subprocess.run('pip install -r requirements.txt', shell=True, check=True)
+        if subprocess.run('pip install -r requirements.txt', shell=True, check=True):
+            mark_req_file_installed('requirements.txt')
 
 
 def wait_for_file_changes(paths, initial=True, watch=True):
