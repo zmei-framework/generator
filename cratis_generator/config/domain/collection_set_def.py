@@ -121,6 +121,30 @@ class CollectionSetDef(object):
         app_names = self._apps
         return app_names
 
+    def get_required_apps(self):
+        all_apps = []
+        for col in self.collections.values():
+            all_apps.extend(col.get_required_apps())
+        return list(set(all_apps))
+
+    def get_required_deps(self):
+        all_deps = []
+        for col in self.collections.values():
+            all_deps.extend(col.get_required_deps())
+        return list(set(all_deps))
+
+    def get_required_urls(self):
+        all_urls = []
+        for col in self.collections.values():
+            all_urls.extend(col.get_required_urls())
+        return all_urls
+
+    def get_required_settings(self):
+        all_settings = {}
+        for col in self.collections.values():
+            all_settings.update(col.get_required_settings())
+        return all_settings
+
 
 FieldDeclaration = namedtuple('FieldDeclaration', ['import_def', 'declaration'])
 

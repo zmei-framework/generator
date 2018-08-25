@@ -363,4 +363,28 @@ class CollectionDef(object):
         from cratis_generator.fields.relation import RelationDef
         return [field for field in self.own_fields if isinstance(field, RelationDef)]
 
+    def get_required_apps(self):
+        all_apps = []
+        for field in self.all_fields:
+            all_apps.extend(field.get_required_apps())
+        return all_apps
+
+    def get_required_deps(self):
+        all_deps = []
+        for field in self.all_fields:
+            all_deps.extend(field.get_required_deps())
+        return all_deps
+
+    def get_required_urls(self):
+        all_urls = []
+        for field in self.all_fields:
+            all_urls.extend(field.get_required_urls())
+        return all_urls
+
+    def get_required_settings(self):
+        all_settings = {}
+        for field in self.all_fields:
+            all_settings.update(field.get_required_settings())
+        return all_settings
+
 

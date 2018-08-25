@@ -22,7 +22,7 @@ def run():
         sys.exit(1)
 
     genius = GeniusClient(
-        api_url=os.environ.get('GENIUS_URL', 'http://ng.genius-project.io:9000/api/'),
+        api_url=os.environ.get('ZMEI_URL', 'http://ng.genius-project.io:9000/api/'),
         token=api_token,
     )
 

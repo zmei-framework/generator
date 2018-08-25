@@ -143,7 +143,48 @@ class RichTextFieldDef(DefaultTextMixin, FieldDef):
         args = self.prepare_field_arguemnts()
 
         return FieldDeclaration(
+            [('ckeditor.fields', 'RichTextField')],
+            'RichTextField({})'.format(gen_args(args))
+        )
+
+    def get_required_deps(self):
+        return ['django-ckeditor']
+
+    def get_required_apps(self):
+        return ['ckeditor']
+
+    def get_required_settings(self):
+        return {
+            'CKEDITOR_UPLOAD_PATH': 'uploads/'
+        }
+
+
+class RichTextFieldWithUploadDef(DefaultTextMixin, FieldDef):
+    def get_model_field(self, collection):
+        args = self.prepare_field_arguemnts()
+
+        return FieldDeclaration(
             [('ckeditor_uploader.fields', 'RichTextUploadingField')],
             'RichTextUploadingField({})'.format(gen_args(args))
         )
+
+    def get_required_deps(self):
+        return ['django-ckeditor', 'Pillow']
+
+    def get_required_apps(self):
+        return ['ckeditor', 'ckeditor_uploader']
+
+    def get_required_settings(self):
+        return {
+            'CKEDITOR_UPLOAD_PATH': 'uploads/'
+        }
+
+    def get_required_urls(self):
+        return [
+            (None, "url(r'^ckeditor/', include('ckeditor_uploader.urls')),")
+        ]
+
+
+
+
 

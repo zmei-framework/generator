@@ -6,14 +6,15 @@ from cratis_generator.fields.filer import FilerFileFolderDef, FilerImageFolderFi
 from cratis_generator.fields.image import ImageFieldDef, SimpleFieldDef
 from cratis_generator.fields.number import IntegerFieldDef, FloatFieldDef, DecimalFieldDef
 from cratis_generator.fields.relation import RelationOneDef, RelationManyDef, RelationOne2OneDef
-from cratis_generator.fields.text import TextFieldDef, LongTextFieldDef, RichTextFieldDef, SlugFieldDef
-
+from cratis_generator.fields.text import TextFieldDef, LongTextFieldDef, RichTextFieldDef, SlugFieldDef, \
+    RichTextFieldWithUploadDef
 
 field_type_map = {
     'text': TextFieldDef,
     'slug': SlugFieldDef,
     'longtext': LongTextFieldDef,
     'html': RichTextFieldDef,
+    'html_media': RichTextFieldWithUploadDef,
     'one': RelationOneDef,
     'many': RelationManyDef,
     'one2one': RelationOne2OneDef,

@@ -74,6 +74,18 @@ class FieldDef(object):
     def get_rest_inline_collection(self):
         return None
 
+    def get_required_apps(self):
+        return []
+
+    def get_required_deps(self):
+        return []
+
+    def get_required_settings(self):
+        return {}
+
+    def get_required_urls(self):
+        return []
+
     @property
     def admin_list_renderer(self):
         return None

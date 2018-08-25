@@ -36,6 +36,7 @@ def generate_common_files(target_path, skeleton_dir, apps, features=None):
     copyfile(os.path.join(skeleton_dir, 'manage.py'), manage_py)
 
     #config
+    has_react = False
     has_rest = False
     has_admin = False
 
@@ -50,12 +51,20 @@ def generate_common_files(target_path, skeleton_dir, apps, features=None):
         if collection_set.react:
             react = True
 
+        for import_def, url_def in collection_set.get_required_urls():
+            urls.append(url_def)
+            if import_def:
+                imports.add(import_def)
+
         if collection_set.pages:
             urls.append(f"    url(r'^', include({app_name}.urls)),")
             imports.add(f'{app_name}.urls')
 
         if collection_set.admin:
             has_admin = True
+
+        if collection_set.react:
+            has_react = True
 
         if collection_set.api:
             has_rest = True
@@ -75,33 +84,51 @@ def generate_common_files(target_path, skeleton_dir, apps, features=None):
         f.write('\n'.join(urls))
 
     # settings
+    req_settings = {}
     installed_apps = list(apps.keys())
     if has_rest:
         installed_apps.append('rest_framework')
-    if has_admin:
-        if features.cratis:
-            installed_apps.append('django_select2')
+
+    for collection_set in apps.values():
+        installed_apps.extend(collection_set.get_required_apps())
+        req_settings.update(collection_set.get_required_settings())
+
+    installed_apps = list(set(installed_apps))
+
 
     with open(os.path.join(target_path, 'app/settings.py'), 'a') as f:
         f.write('\nINSTALLED_APPS += [\n')
         f.write("\n    'app',\n")
         f.write('\n'.join([f"    '{app_name}'," for app_name in installed_apps]))
-        f.write('\n]\n')# settings
+        f.write('\n]\n\n')# settings
+
+        for key, val in req_settings.items():
+            f.write(f'{key} = {repr(val)}\n')
+
 
     # base template
     generate_file(target_path, 'app/templates/base.html', template_name='theme/base.html')
 
+    requirements = [
+        'zmei==0.1.2',
+        'wheel',
+        'django',
+    ]
+
+    if has_rest:
+        requirements.append('djangorestframework')
+
+    if has_react:
+        requirements.append('dukpy')
+
+    for collection_set in apps.values():
+        requirements.extend(collection_set.get_required_deps())
+
+    requirements = list(set(requirements))
+
     # requirements
     with open(os.path.join(target_path, 'requirements.txt'), 'w') as f:
-        f.write('zmei==0.1.2\n')
-        f.write('wheel\n')
-        f.write('django\n')
-        f.write('dukpy\n')
-        if has_rest:
-            f.write('djangorestframework\n')
-        if has_admin:
-            if features.cratis:
-                f.write('django-select2\n')
+        f.write('\n'.join(requirements))
 
     # react
     if react:
