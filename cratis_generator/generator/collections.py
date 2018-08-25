@@ -93,7 +93,7 @@ def generate_common_files(target_path, skeleton_dir, apps, features=None):
 
     # requirements
     with open(os.path.join(target_path, 'requirements.txt'), 'w') as f:
-        f.write('zmei==0.1.0\n')
+        f.write('zmei==0.1.1\n')
         f.write('wheel\n')
         f.write('django\n')
         f.write('dukpy\n')
