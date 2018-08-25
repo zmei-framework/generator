@@ -13,6 +13,7 @@ class CollectionSetDef(object):
     # app_name: str
     # collections: Dict[str, CollectionDef]
 
+    api = False
     rest = False
     crud = False
 

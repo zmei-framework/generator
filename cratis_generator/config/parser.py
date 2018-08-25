@@ -5,6 +5,7 @@ from glob import glob
 from cratis_generator.config.domain.exceptions import ValidationException
 from cratis_generator.config.grammar import collection_set
 from cratis_generator.extras.admin import AdminExtra
+from cratis_generator.extras.api import ApiExtra
 from cratis_generator.extras.clean import CleanExtra
 from cratis_generator.extras.collection_set.react import ReactCollectionSetExtra
 from cratis_generator.extras.dates import DateTreeExtra
@@ -109,6 +110,7 @@ class Parser(object):
         return {x.get_name(): x for x in (
             AdminExtra,
             RestExtra,
+            ApiExtra,
             TreeExtra,
             SortableExtra,
             OrderExtra,

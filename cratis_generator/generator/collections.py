@@ -57,7 +57,7 @@ def generate_common_files(target_path, skeleton_dir, apps, features=None):
         if collection_set.admin:
             has_admin = True
 
-        if collection_set.rest:
+        if collection_set.api:
             has_rest = True
             urls.append(f"    url(r'^api/', include({app_name}.urls_rest)),")
             imports.add(f'{app_name}.urls_rest')
@@ -138,7 +138,7 @@ def generate(target_path, app_name: str, collection_set: CollectionSetDef, featu
         )
 
     # urls rest
-    if collection_set.rest:
+    if collection_set.api:
         generate_urls_rest(target_path, app_name, collection_set)
 
     if features.cratis:

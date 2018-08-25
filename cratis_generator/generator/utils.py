@@ -176,8 +176,8 @@ def generate_urls_rest(target_path, app_name, collection_set):
     url_imports.add('rest_framework', 'routers')
 
     for name, collection in collection_set.collections.items():
-        if collection.rest:
-            for rest_conf in collection.rest_conf.values():
+        if collection.api:
+            for rest_conf in collection.published_apis.values():
                 url_imports.add('.views', f'{rest_conf.serializer_name}ViewSet')
 
     context = {

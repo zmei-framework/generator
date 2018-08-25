@@ -12,3 +12,6 @@ class Extra(object):
     def parse(self, extra, collection):  # pragma: no cover
         pass
 
+    def post_process(self):
+        pass
+

@@ -93,9 +93,11 @@ class CollectionDef(object):
         self.tab_names = {}
 
         self.rest_conf = {}
+        self.published_apis = {}
 
         self.rest_mode = None
         self.rest = False
+        self.api = False
 
     def parse_extras(self):
 
@@ -108,6 +110,7 @@ class CollectionDef(object):
 
         extras = self.collection_set.parser.get_extras_available()
 
+        loaded_extras = []
         for extra in self.raw_.extras:
 
             try:
@@ -115,12 +118,16 @@ class CollectionDef(object):
                 try:
                     extra_instance = extra_cls()
                     extra_instance.parse(extra, self)
+                    loaded_extras.append(extra_instance)
 
                 except ParseException as e:
                     handle_parse_exception(e, extra.extra_body,
                                            '@{} expression for collection "{}"'.format(extra.extra_name, self.name))
             except KeyError as e:
                 raise ValidationException('Extra not found: {}, reason: {}'.format(extra.extra_name, e))
+
+        for extra in loaded_extras:
+            extra.post_process()
 
     @property
     def model_class_declaration(self):

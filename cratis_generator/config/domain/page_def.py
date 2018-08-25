@@ -215,11 +215,9 @@ class PageDef(object):
 
             if not item.or_404:
                 code += " " * indent + key + " = " + item.render_python_code() + "\n"
-                code += " " * indent + "data." + key + " = " + key + "\n"
             else:
                 code += " " * indent + "try:\n"
                 code += " " * indent + "   " + key + " = " + item.render_python_code() + "\n"
-                code += " " * indent + "   data." + key + " = " + key + "\n"
                 code += " " * indent + "except ObjectDoesNotExist:\n"
                 code += " " * indent + "   raise Http404\n"
             if inherited:

@@ -5,7 +5,7 @@ if '_' not in locals():
     _ = lambda s: s
 
 {% for cname, col in collections %}
-{% for rest_conf in col.rest_conf.values() %}
+{% for rest_conf in col.published_apis.values() %}
 
 {% if rest_conf.auth_methods.token %}
 class {{ col.class_name }}TokenAuthentication(TokenAuthentication):
