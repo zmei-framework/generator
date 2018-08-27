@@ -28,7 +28,7 @@ class {{ rest_conf.serializer_name }}ViewSet({{ rest_conf.rest_class[1] }}):
 {% endfor %}
 {%- if collection_set.react %}
 rs = ZmeiReactServer()
-rs.load(settings.BASE_DIR + '/app/static/react/{{ collection_set.app_name }}_server.bundle.js')
+rs.load(settings.BASE_DIR + '/app/static/react/{{ collection_set.app_name }}.bundle.js')
 {% endif -%}
 {% for page in pages %}
 class {{ page.view_name }}({% if page.extra_bases %}{{ page.extra_bases|join(", ") }}, {% endif %}{{ page.parent_view_name }}):

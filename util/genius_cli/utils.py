@@ -66,7 +66,7 @@ def write_generated_file(path, source):
 
         if generated:
             if changed:
-                print(colored(' ~ ', 'red', 'on_yellow'), ' ', path)
+                print(colored(' ! ', 'red', 'on_yellow'), ' ', path)
                 return  # checksum failed. Changed by hands?
             else:
                 if file_checksum == chksum:
@@ -77,6 +77,8 @@ def write_generated_file(path, source):
 
     if not os.path.exists(path):
         print(colored(' + ', 'blue', 'on_green'), ' ', path)
+    else:
+        print(colored(' ~ ', 'blue', 'on_cyan'), ' ', path)
     with open(path, 'w') as f:
         if source_prefix:
             f.write(source_prefix)
@@ -148,8 +150,6 @@ def clean_up_generated_files(path, file_list, remove_root=False):
                         print(colored(' - ', 'white', 'on_red'), ' ', fullpath)
                         os.unlink(fullpath)
 
-
-
     if len(os.listdir(path)) == 0 and remove_root:
         os.rmdir(path)
         print(colored('delete:', 'white', 'on_red'), ' ', path)
@@ -171,7 +171,7 @@ def collect_files(src):
         f = io.BytesIO()
         files = zipfile.ZipFile(f, mode='w', compression=zipfile.ZIP_LZMA)
 
-        for path in get_user_paths():
+        for path in get_collect_paths():
             generated, changed, checksum = is_generated_file(path)
 
             if not generated or changed:
@@ -183,13 +183,24 @@ def collect_files(src):
     return f
 
 
-def get_user_paths():
+def get_collect_paths():
     paths = []
     paths += list(glob('*.col'))
     # paths += list(glob('react/src/**/*.js', recursive=True))
     # paths += list(glob('react/src/**/*.jsx', recursive=True))
     # paths += list(glob('react/*.js'))
     # paths += list(glob('react/*.json'))
+
+    return set(paths)
+
+
+def get_watch_paths():
+    paths = []
+    paths += list(glob('*.col'))
+    # paths += list(glob('react/src/**/*.js', recursive=True))
+    # paths += list(glob('react/src/**/*.jsx', recursive=True))
+    # paths += list(glob('react/*.js'))
+    paths += list(glob('react/*.json'))
 
     return set(paths)
 

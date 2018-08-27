@@ -1,6 +1,7 @@
 {{ imports }}
+{% if connect %}import {connect} from "react-redux";{% endif %}
 
-export class {{ name }} extends React.Component {
+{% if not connect %}export {% endif %}class {{ name }} extends React.Component {
     render() {
         {{ body|indent(8) }}
         return (
@@ -8,3 +9,14 @@ export class {{ name }} extends React.Component {
         );
     }
 }
+{% if connect %}
+{{ name }} = connect(
+    store => {
+        return {store}
+    },
+    dispatch => {
+        return {dispatch}
+    },
+)({{ name }});
+export { {{ name }} };
+{% endif %}

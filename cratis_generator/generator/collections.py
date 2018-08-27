@@ -110,7 +110,7 @@ def generate_common_files(target_path, skeleton_dir, apps, features=None):
     generate_file(target_path, 'app/templates/base.html', template_name='theme/base.html')
 
     requirements = [
-        'zmei==0.1.3',
+        'zmei==0.1.4',
         'wheel',
         'django',
     ]
@@ -213,7 +213,6 @@ def generate_react_configs(target_path, apps):
     for app_name, collection_set in apps.items():
         if collection_set.react:
             entries[app_name] = ["babel-polyfill", f'./src/{app_name.capitalize()}/index.js']
-            entries[f"{app_name}_server"] = ["babel-polyfill", f'./src/{app_name.capitalize()}/index_server.js']
 
     packages = {}
 
@@ -252,15 +251,14 @@ def generate_react_jsx(target_path, app_name, collection_set):
                     'imports': imports.import_sting_js(),
                     'name': name,
                     'body': body,
+                    'connect': True,
                     'source': source
                 })
 
-    generate_file(target_path, 'react/src/{}/index.js'.format(app_name.capitalize()), 'react.index.js.tpl', {
-        'imports': index_imports.import_sting_js(),
+    generate_file(target_path, 'react/src/{}/index.scss'.format(app_name.capitalize()), 'react.index.scss.tpl', {
         'pages': react_pages
     })
-
-    generate_file(target_path, 'react/src/{}/index_server.js'.format(app_name.capitalize()), 'react.index_server.js.tpl', {
+    generate_file(target_path, 'react/src/{}/index.js'.format(app_name.capitalize()), 'react.index.js.tpl', {
         'imports': index_imports.import_sting_js(),
         'pages': react_pages
     })

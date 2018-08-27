@@ -2,15 +2,14 @@ import atexit
 import os
 import signal
 import sys
-
-from termcolor import colored
-from time import sleep
+from glob import glob
 
 import click
+from termcolor import colored
 
 from genius_cli.client import GeniusClient, ApiError
 from genius_cli.utils import collect_files, extract_files, collect_app_names, migrate_db, install_deps, remove_db, \
-    wait_for_file_changes, run_django, get_user_paths, run_webpack, npm_install
+    wait_for_file_changes, run_django, run_webpack, npm_install, get_watch_paths
 
 
 def run():
@@ -42,12 +41,16 @@ def run():
     @click.option('--host', default=None, help='Django host:port to run on')
     @click.option('--rebuild', help='Rebuild application migrations')
     @click.option('--remove', help='Remove application migrations')
+    @click.option('--full-clean', is_flag=True, help='Remove everything except col files')
     @click.option('--src', default='.', help='Sources path')
     @click.option('--dst', default='.', help='Target path')
     @click.option('--name', help='Request name (for debug purposes)')
     @click.option('--with', default='', help='Extra features to use (coma separated)')
     @click.argument('app', nargs=-1)
-    def gen(auto, src, dst, name, install, rebuild, remove, app, run, webpack, nodejs, host, port, watch, up, **kwargs):
+    def gen(auto, src, dst, name, install, rebuild, remove, app, run, webpack, nodejs, host, port, watch, up,
+            full_clean,
+            **kwargs):
+
         if not host:
             host = '127.0.0.1:{}'.format(port)
 
@@ -76,28 +79,20 @@ def run():
         def emergency_stop():
             if django_process:
                 os.killpg(os.getpgid(django_process.pid), signal.SIGTERM)
+            if webpack_process:
                 os.killpg(os.getpgid(webpack_process.pid), signal.SIGTERM)
 
         atexit.register(emergency_stop)
 
-        for i in wait_for_file_changes(get_user_paths(), watch=watch):
+        for i in wait_for_file_changes(get_watch_paths(), watch=watch):
             print('--------------------------------------------')
             print('Generating ...')
             print('--------------------------------------------')
 
             files = collect_files(src)
 
-
             try:
                 files = genius.generate(files, name=name, collections=app, features=features)
-
-                # if django_process:
-                #     print('Terminating django...')
-                #     django_process.terminate()
-                #
-                # if webpack_process:
-                #     print('Terminating webpack...')
-                #     webpack_process.terminate()
 
                 extract_files(dst, files)
 

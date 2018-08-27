@@ -20,7 +20,7 @@
 {{ "{% block js %}{{ block.super }}" }}
 <script>
 {% for page in page.react_pages.keys() -%}
-R.ReactDOM.hydrate(R.React.createElement(R.{{ page }}, {{ '{{ react_state|safe }}' }}), document.getElementById('reactEl-{{ page }}'));
+R.renderClient(R.{{ page }}, {{ '{{ react_state|safe }}' }}, document.getElementById('reactEl-{{ page }}'));
 {%- endfor %}
 </script>
 {{ "{% endblock %}" }}

@@ -4,7 +4,7 @@ from cratis_generator.config.domain.collection_set_extra import CollectionSetExt
 
 identifier = Word(alphas + '*', alphanums + '_')
 package_name = Word(alphanums + '_@/-')
-import_from = Word(alphanums + '_@/-')
+import_from = Word(alphanums + '_@/-:.')
 
 use_expr = Group(Suppress('use(') +
                  import_from.setResultsName('import_from') +
@@ -12,7 +12,7 @@ use_expr = Group(Suppress('use(') +
 
 install_expr = Group(Suppress('install(') +
            import_from.setResultsName('package_name') +
-           Suppress(':') + Word(alphanums + '.@~-_').setResultsName('version') + Suppress(')'))
+             Optional(Suppress(',') + Word(alphanums + '.@~-_').setResultsName('version'), default='latest') + Suppress(')'))
 
 react_extra_parser = Group(ZeroOrMore(install_expr)).setResultsName('install') + \
                      Group(ZeroOrMore(use_expr)).setResultsName('use') + StringEnd()

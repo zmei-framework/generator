@@ -11,6 +11,7 @@ class PageDef(object):
         super().__init__()
 
         self.raw_ = parse_result
+        self._parent = None
 
         """:type: CollectionSetDef"""
         self.collection_set = collection_set
@@ -47,6 +48,7 @@ class PageDef(object):
         self.methods = {}
         self.blocks = {}
         self.react_components = {}
+        self.page_component_name = None
         self.react_pages = {}
 
         self.react = False
@@ -110,7 +112,7 @@ class PageDef(object):
             html = ''.join(parts)
 
             from cratis_generator.extras.page.block import ReactPageBlock
-            self.add_block(area, ReactPageBlock(self, html))
+            self.add_block(area, ReactPageBlock(self, html, area_name=area))
 
         if not self.parent_name:
             if self.react:
@@ -126,7 +128,9 @@ class PageDef(object):
 
     def get_parent(self):
         if self.parent_name:
-            return self.collection_set.pages[self.parent_name]
+            if not self._parent:
+                self._parent = self.collection_set.pages[self.parent_name]
+            return self._parent
 
     def merge(self, page):
         for area, blocks in page.blocks.items():
