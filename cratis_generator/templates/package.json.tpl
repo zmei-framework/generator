@@ -1,4 +1,3 @@
-{
   "name": "zmei-react-app-1",
   "version": "1.0.0",
   "description": "New zmei app",
@@ -9,6 +8,7 @@
   "author": "John Doe",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.18.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
@@ -25,6 +25,7 @@
     "redux": "^4.0.0",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.21.0",
+    "django-channels": "^1.1.6",
     "webpack": "^4.12.0",
     "webpack-cli": "^3.0.8"{% if packages|length > 0 %},{% endif %}
     {% for package, version in packages.items() -%}

@@ -54,7 +54,7 @@ class ReactPageBlock(object):
                 imports = ImportSet()
                 imports.add('react', 'React')
 
-                self.react_components[el.tag] = (imports, '', '<div>\n    {children}\n</div>')
+                self.react_components[el.tag] = (imports, '', '<div>\n    {this.props.children}\n</div>')
 
         for child in el:
             self.collect_components(child)
@@ -84,7 +84,7 @@ class ReactPageBlock(object):
 
         self.react_components_imports.add('react', 'React')
         if self.parent_component:
-            self.react_components_imports.add(f'./{self.parent_component}', f'{self.parent_component}')
+            self.react_components_imports.add(f'./{self.parent_component}', f'{{{self.parent_component}}}')
 
         var_names = ', '.join(self.page.page_item_names_with_parents)
         body = '\nconst {store, dispatch, children} = this.props;' \

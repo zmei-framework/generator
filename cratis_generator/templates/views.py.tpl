@@ -46,6 +46,10 @@ class {{ page.view_name }}({% if page.extra_bases %}{{ page.extra_bases|join(", 
         return {{ page.sitemap_expr.render_python_code() }}
     {% endif %}
     {{ page.render_template_name_expr()|indent(4) }}
+    {% for func in page.functions %}
+    def {{ func.python_name }}(self, url, request{% if func.args %}, {{ func.render_python_args() }}{% endif %}):
+        {{ func.body|indent(8) }}
+    {% endfor %}
     {% set code=page.render_page_code() %}{% if code or page.page_item_names %}
     def get_data(self, url, request, inherited):
         {%- if page.parent_name %}

@@ -110,16 +110,13 @@ def generate_common_files(target_path, skeleton_dir, apps, features=None):
     generate_file(target_path, 'app/templates/base.html', template_name='theme/base.html')
 
     requirements = [
-        'zmei==0.1.4',
+        'zmei==0.1.5',
         'wheel',
         'django',
     ]
 
     if has_rest:
         requirements.append('djangorestframework')
-
-    if has_react:
-        requirements.append('dukpy')
 
     for collection_set in apps.values():
         requirements.extend(collection_set.get_required_deps())

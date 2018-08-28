@@ -244,7 +244,7 @@ def run_django(features=None, run_host='127.0.0.1:8000'):
 def run_webpack():
     print(colored('> ', 'white', 'on_blue'), 'Starting webpack')
 
-    webpack_command = 'npx webpack -w'
+    webpack_command = './node_modules/.bin/webpack -w'
     print(webpack_command)
     return subprocess.Popen('{}'.format(webpack_command), shell=True, cwd='react', preexec_fn=os.setsid)
 

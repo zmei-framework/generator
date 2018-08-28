@@ -1,10 +1,28 @@
 import re
 from cPyparsing import ParseException
+from textwrap import dedent
 
 from cratis_generator.config.domain.exceptions import ValidationException
 from cratis_generator.config.domain.page_expression import PageExpression
 from cratis_generator.generator.utils import handle_parse_exception
 
+
+class PageFunction(object):
+
+    def __init__(self, function) -> None:
+        super().__init__()
+
+        self.name = function.name
+        self.args = function.args
+
+        self.body = dedent(function.body.strip('\n'))
+
+    def render_python_args(self):
+        return ', '.join(self.args)
+
+    @property
+    def python_name(self):
+        return f'_remote__{self.name}'
 
 class PageDef(object):
     def __init__(self, parse_result, collection_set) -> None:
@@ -26,7 +44,9 @@ class PageDef(object):
         self.parent_name = parse_result.parent_name
         self.parsed_template_name = parse_result.template_name
         self.parsed_template_expr = parse_result.template_expr
-        self.page_code = '\n'.join([x.strip() for x in parse_result.page_code.split('\n')])
+
+        self.page_code = dedent(parse_result.page_code)
+        self.functions = [PageFunction(x) for x in parse_result.functions]
 
         self.allow_merge = False
 
@@ -52,7 +72,6 @@ class PageDef(object):
         self.react_pages = {}
 
         self.react = False
-
 
         def find_params(match):
             param = match.group(1)
@@ -95,7 +114,6 @@ class PageDef(object):
                                            '@{} expression for page "{}"'.format(extra.extra_name, self.name))
             except KeyError as e:
                 raise ValidationException('Page extra not found: {}, reason: {}'.format(extra.extra_name, e))
-
 
         if parse_result.html:
             parts = list(parse_result.html)
@@ -280,6 +298,3 @@ class PageDef(object):
         ) + code + '\n'
 
         return code
-
-
-

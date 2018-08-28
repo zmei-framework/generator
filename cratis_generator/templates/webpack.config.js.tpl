@@ -14,7 +14,6 @@ module.exports = {
                 loader: 'babel-loader',
                 options: {presets: ['env', 'react']}
             },
-
             {
                 test: /\.(sa|sc|c)ss$/,
                 use: [
@@ -22,7 +21,16 @@ module.exports = {
                     'css-loader',
                     'sass-loader',
                 ],
-            }
+            },
+            {
+                test: /\.(svg|jpg|gif|png|jpeg)$/,
+                loader: 'file-loader',
+                options: {
+                    name: '[name].[hash].[ext]',
+                    outputPath: 'images/',
+                    publicPath: 'static/react/images/'
+                }
+            },
 
         ]
     },

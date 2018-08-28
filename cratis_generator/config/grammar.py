@@ -125,9 +125,16 @@ page_item = Group(identifier.setResultsName('key') + Suppress(':') + restOfLine.
 
 page_code = Optional(QuotedString('{', endQuoteChar='}', multiline=True).setResultsName('page_code'))
 
+function = Group(identifier.setResultsName('name') + Suppress('(') +
+                 Optional(delimitedList(identifier)).setResultsName('args') + Suppress(')') + \
+    QuotedString('{', endQuoteChar='}', multiline=True).setResultsName('body'))
+
+functions = ZeroOrMore(function).setResultsName('functions')
+
+
 html = Optional(LineStart() + Literal('<') + Group(Optional(identifier + Literal(':')) + identifier) + SkipTo(page_header | collection_header | Literal('%%') | stringEnd)).setResultsName('html')
 
-page = Group(page_header + Each([ZeroOrMore(page_item).setResultsName('page_items'), extras]) + page_code + html)
+page = Group(page_header + Each([ZeroOrMore(page_item).setResultsName('page_items'), extras]) + functions + page_code + html)
 
 collection_set_extras = ZeroOrMore(Group(extra)).setResultsName('col_extras')
 
