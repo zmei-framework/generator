@@ -1,5 +1,6 @@
 import hashlib
 import io
+import json
 import os
 import re
 import sys
@@ -25,8 +26,10 @@ def chdir(path):
     os.chdir(cwd)
 
 
-def write_generated_file(path, source):
+PACKAGE_JSON_TOKEN = '__generated__'
 
+
+def write_generated_file(path, source):
     # special hack for settings.py->SECRET_KEY
     if path.endswith('app/settings.py'):
         if os.path.exists(path):
@@ -45,21 +48,20 @@ def write_generated_file(path, source):
 
     tag = f"generated: {chksum}"
 
-    # print('---')
-    # print(path)
+    source_prefix = ''
+
     if path.endswith('.py') or path.endswith('requirements.txt') or path.endswith('Dockerfile'):
         source_prefix = f"# {tag}\n\n"
 
     elif path.endswith('.js') or path.endswith('.jsx'):
         source_prefix = f"//# {tag}\n\n"
-        # print('js!')
+
+    elif path.endswith('package.json'):
+        chksum = source_hash(json.dumps(json.loads(source), indent=4))
+        source = json.dumps({**json.loads(source), **{PACKAGE_JSON_TOKEN: chksum}}, indent=4)
 
     elif ('/templates/' in path or '/themes/' in path) and path.endswith('.html'):
         source_prefix = f"{{# {tag} #}}\n\n"
-
-    else:
-        source_prefix = ''
-    #     print('exists: ', path)
 
     if os.path.exists(path):
         generated, changed, file_checksum = is_generated_file(path)
@@ -95,18 +97,38 @@ def is_generated_file(path):
     """
     with open(path, 'r') as f:
         content = f.read()
-        match = re.match('^({|//)?# generated: ([a-f0-9]{32})( #})?\n\n', content)
-        if match:
-            file_chk_expected = match.group(2)
-            real_source = content[len(match.group(0)):]
-            file_chk_real = source_hash(real_source)
 
-            if file_chk_expected != file_chk_real:
-                return True, True, file_chk_real  # checksum failed. Changed by hands?
-            else:
-                return True, False, file_chk_real
-        else:
+    if path.endswith('package.json'):
+        try:
+            data = json.loads(content)
+        except Exception as e:
+            print('Can not read package.json. That\'s shouldn\'t happen as file is auto-generated.', e)
+            data = {}
+
+        try:
+            file_chk_expected = data.get(PACKAGE_JSON_TOKEN)
+        except KeyError:
             return False, False, None
+
+        data = json.loads(content)
+        if PACKAGE_JSON_TOKEN in data:
+            del data[PACKAGE_JSON_TOKEN]
+        real_source = json.dumps(data, indent=4)
+
+    else:
+        match = re.match('^({|//)?# generated: ([a-f0-9]{32})( #})?\n\n', content)
+        if not match:
+            return False, False, None
+
+        file_chk_expected = match.group(2)
+        real_source = content[len(match.group(0)):]
+
+    file_chk_real = source_hash(real_source)
+
+    if file_chk_expected != file_chk_real:
+        return True, True, file_chk_real  # checksum failed. Changed by hands?
+    else:
+        return True, False, file_chk_real
 
 
 def source_hash(source):
@@ -235,7 +257,7 @@ def migrate_db(apps, features=None):
 
 def run_django(features=None, run_host='127.0.0.1:8000'):
     print(colored('> ', 'white', 'on_blue'), 'Starting django')
-    django_command = get_django_command(features,)
+    django_command = get_django_command(features, )
     full_command = '{} runserver {}'.format(django_command, run_host)
     print(full_command)
     return subprocess.Popen(full_command, preexec_fn=os.setsid, shell=True)

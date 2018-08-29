@@ -1,3 +1,4 @@
+{
   "name": "zmei-react-app-1",
   "version": "1.0.0",
   "description": "New zmei app",
