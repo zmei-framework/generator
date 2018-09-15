@@ -3,7 +3,11 @@ const path = require('path');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
-    entry: {{ entries|tojson(4)|safe }},
+    entry: {
+        "blog": [
+            "./src/Blog/index.jsx"
+        ]
+    },
 
     mode: "development",
     module: {
@@ -12,8 +16,17 @@ module.exports = {
                 test: /\.(js|jsx)$/,
                 exclude: /(node_modules|bower_components)/,
                 loader: 'babel-loader',
-                options: {presets: ['env', 'react']}
+                options: {
+                    presets: [
+                        '@babel/preset-env', '@babel/preset-react'
+                    ],
+                    plugins: [
+                        '@babel/plugin-proposal-class-properties',
+                    ]
+                },
+
             },
+
             {
                 test: /\.(sa|sc|c)ss$/,
                 use: [
@@ -26,9 +39,9 @@ module.exports = {
                 test: /\.(svg|jpg|gif|png|jpeg)$/,
                 loader: 'file-loader',
                 options: {
-                    name: '[name].[hash].[ext]',
+                    name: '[name].[ext]',
                     outputPath: 'images/',
-                    publicPath: 'static/react/images/'
+                    publicPath: '/static/react/images/'
                 }
             },
 

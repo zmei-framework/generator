@@ -1,0 +1,62 @@
+lexer grammar ZmeiLanguage;
+fragment ID : [a-zA-Z_] [a-zA-Z_0-9]*;
+fragment NL : ('\r'? '\n' | '\r');
+
+
+PAGE_HDR_START : '[' -> mode(PAGE_HDR);
+COL_HDR_START : '#' -> mode(COL_HDR);
+
+NEWLINE: NL;
+
+WHITESPACE : ' ' -> channel(HIDDEN) ;
+ERRCHAR:	.	-> channel(HIDDEN);
+
+
+/*********************
+ * Collections
+ *********************/
+
+/** Collection header **/
+mode COL_HDR;
+
+COL_NAME: ID;
+COL_HDR_SEPARATOR: NEWLINE '-' '-'* -> mode(COL);
+
+/** Collection body **/
+mode COL;
+COL_NEWLINE: NL -> type(NEWLINE);
+
+COL_FIELD: NEWLINE ID;
+COL_FIELD_SEPARATOR:
+    WHITESPACE* ':' WHITESPACE* -> pushMode(PYTHON_LINE);
+
+COL__PAGE_HDR_START : '[' -> type(PAGE_HDR_START), mode(PAGE_HDR);
+COL__COL_HDR_START : '#' -> type(COL_HDR_START), mode(COL_HDR);
+
+
+/*********************
+ * Pages
+ *********************/
+
+/** Page header **/
+mode PAGE_HDR;
+
+PAGE_NAME: ID;
+PAGE_HDR_END: ']' -> mode(PAGE);
+
+/** Page body **/
+mode PAGE;
+PAGE_NEWLINE: NL -> type(NEWLINE);
+
+PAGE_FIELD: NEWLINE ID;
+PAGE_FIELD_SEPARATOR:
+    WHITESPACE* ':' WHITESPACE* -> pushMode(PYTHON_LINE);
+
+PAGE__PAGE_HDR_START : '[' -> type(PAGE_HDR_START), mode(PAGE_HDR);
+PAGE__COL_HDR_START : '#' -> type(COL_HDR_START), mode(COL_HDR);
+
+
+
+/** Python rest of line **/
+mode PYTHON_LINE;
+PYTHON_EXPR: (~'\n')+ -> popMode;

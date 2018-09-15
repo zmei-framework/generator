@@ -40,6 +40,7 @@ setup(
         'jinja2',
         'defusedxml',
         'django',
+        'antlr4-python3-runtime'
     ],
 
     entry_points={

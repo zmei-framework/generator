@@ -209,7 +209,7 @@ def generate_react_configs(target_path, apps):
 
     for app_name, collection_set in apps.items():
         if collection_set.react:
-            entries[app_name] = ["babel-polyfill", f'./src/{app_name.capitalize()}/index.js']
+            entries[app_name] = ["babel-polyfill", f'./src/{app_name.capitalize()}/index.jsx']
 
     packages = {}
 
@@ -242,20 +242,24 @@ def generate_react_jsx(target_path, app_name, collection_set):
 
             for name, (imports, body, source) in page.react_pages.items():
                 index_imports.add(f'./Pages/{name}', '*' + name)
+                index_imports.add(f'./Reducers/{name}Reducers', '*' + name + 'Reducer')
                 react_pages.append(name)
 
-                generate_file(target_path, 'react/src/{}/Pages/{}.jsx'.format(app_name.capitalize(), name), 'react.jsx.tpl', {
+                generate_file(target_path, 'react/src/{}/Reducers/{}Reducers.js'.format(app_name.capitalize(), name), 'react_reducer.js.tpl', {
+                    'name': name,
+                })
+
+                generate_file(target_path, 'react/src/{}/Pages/{}.jsx'.format(app_name.capitalize(), name), 'react_page.jsx.tpl', {
                     'imports': imports.import_sting_js(),
                     'name': name,
                     'body': body,
-                    'connect': True,
                     'source': source
                 })
 
     generate_file(target_path, 'react/src/{}/index.scss'.format(app_name.capitalize()), 'react.index.scss.tpl', {
         'pages': react_pages
     })
-    generate_file(target_path, 'react/src/{}/index.js'.format(app_name.capitalize()), 'react.index.js.tpl', {
+    generate_file(target_path, 'react/src/{}/index.jsx'.format(app_name.capitalize()), 'react.index.js.tpl', {
         'imports': index_imports.import_sting_js(),
         'pages': react_pages
     })

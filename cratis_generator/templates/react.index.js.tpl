@@ -1,6 +1,7 @@
 {{ imports }}
 
 export { {% for page in pages %}{{ page }}{{ "," if not loop.last }}{% endfor %} };
+export { {% for page in pages %}{{ page }}Reducer{{ "," if not loop.last }}{% endfor %} };
 
 import './index.scss';
 
@@ -11,12 +12,7 @@ import ReactDOMServer from 'react-dom/server';
 import {createStore} from 'redux'
 import {Provider} from 'react-redux'
 
-const rootReducer = (state, action) => {
-    console.log(state, action);
-    return state
-};
-
-const renderElement = (component, state) => {
+const renderElement = (rootReducer, component, state) => {
 
     const store = createStore(rootReducer, state);
 
@@ -27,10 +23,10 @@ const renderElement = (component, state) => {
     </Provider>
 };
 
-export const renderClient = (component, state, targetElement) => {
-    return ReactDOM.hydrate(renderElement(component, state), targetElement);
+export const renderClient = (rootReducer, component, state, targetElement) => {
+    return ReactDOM.hydrate(renderElement(rootReducer, component, state), targetElement);
 };
 
-export const renderServer = (component, state) => {
-    return ReactDOMServer.renderToString(renderElement(component, state), null);
+export const renderServer = (rootReducer, component, state) => {
+    return ReactDOMServer.renderToString(renderElement(rootReducer, component, state), null);
 };

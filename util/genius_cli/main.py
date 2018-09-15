@@ -16,9 +16,9 @@ def run():
     api_token = os.environ.get('GENIUS_TOKEN', None)
     features_env = os.environ.get('GENIUS_FEATURES', None)
 
-    if not api_token:
-        print('No genius api token. Add GENIUS_TOKEN variable to your profile.')
-        sys.exit(1)
+    # if not api_token:
+    #     print('No genius api token. Add GENIUS_TOKEN variable to your profile.')
+    #     sys.exit(1)
 
     genius = GeniusClient(
         api_url=os.environ.get('ZMEI_URL', 'http://ng.genius-project.io:9000/api/'),

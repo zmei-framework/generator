@@ -83,7 +83,10 @@ class ReactPageBlock(object):
             return self.source  # no react components inside
 
         self.react_components_imports.add('react', 'React')
+        self.react_components_imports.add(f'../Reducers/{self.page.page_component_name}Reducers', f'*reloadPageDataAction')
+
         if self.parent_component:
+
             self.react_components_imports.add(f'./{self.parent_component}', f'{{{self.parent_component}}}')
 
         var_names = ', '.join(self.page.page_item_names_with_parents)

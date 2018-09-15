@@ -1,0 +1,36 @@
+kdjslkjdkls
+
+%%
+
+#page
+-------------
+=*$title
+~$slug: slug(title)
+$url
+
+cover_image: image
+cover_image_by: longtext
+
+$text: html
+$aside: longtext
+
+top_menu_only: bool
+
+template: text(?, choices: <glob:"templates/{page*.html}">)
+
+@admin {
+    list: title, slug, url, top_menu_only
+    tabs:
+        general(title, slug, url),
+        text(text, aside),
+        cover(cover_image, cover_image_by, top_menu_only)
+}
+@tree
+@mixin(pages.mixins.PageDeepUrl)
+
+
+%%
+
+lololdsokodso
+
+%%

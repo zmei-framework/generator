@@ -1,0 +1,9 @@
+
+[index: /]
+boo: 123
+
+<Foo>
+    test
+
+    <Fooo />
+</Foo>
