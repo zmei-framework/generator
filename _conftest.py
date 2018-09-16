@@ -9,8 +9,8 @@ import pytest
 # from django.core.management import call_command
 # from pytest_forked import forked_run_report
 
-from cratis_generator.config.parser import Parser
-from cratis_generator.generator.collections import generate
+from zmei_generator.config.parser import Parser
+from zmei_generator.generator.collections import generate
 
 samples_dir = os.path.join(os.path.dirname(__file__), 'tests/samples')
 work_dir_prefix = os.path.join(os.path.dirname(__file__), 'tests/gen_result')

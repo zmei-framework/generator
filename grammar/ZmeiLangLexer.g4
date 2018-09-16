@@ -55,7 +55,7 @@ COL_HDR_WS: WS+ -> type(WS), channel(HIDDEN);
 
 fragment COL_HDR_ANY_TEXT: ~[\n/]+;
 
-COL_BASE: ID WS* '->';
+COL_BASE: ID WS* ('->'|'~>');
 COL_NAME: ID;
 COL_VNAME: ':' COL_HDR_ANY_TEXT ('/' COL_HDR_ANY_TEXT)?;
 
@@ -103,26 +103,37 @@ COL_FIELD_DECL_WS: WS+ -> type(WS), channel(HIDDEN);
 
 COL_FIELD_CALCULATED: ('<<'|'<@') -> pushMode(PYTHON_EXPR);
 
-COL_FIELD_TYPE: 'text'
-              | 'longtext'
-              | 'html'
-              | 'slug'
-              | 'int'
-              | 'float'
-              | 'decimal'
-              | 'bool'
-              | 'date'
-              | 'datetime'
-              | 'create_time'
-              | 'update_time'
-              | 'file'
-              | 'folder'
-              | 'image'
-              | 'one'
-              | 'many'
-              ;
+COL_FIELD_TYPE_LONGTEXT: 'longtext';
+COL_FIELD_TYPE_HTML: 'html';
+COL_FIELD_TYPE_HTML_MEDIA: 'html_media';
+COL_FIELD_TYPE_FLOAT: 'float';
+COL_FIELD_TYPE_DECIMAL: 'decimal';
+COL_FIELD_TYPE_DATE: 'date';
+COL_FIELD_TYPE_DATETIME: 'datetime';
+COL_FIELD_TYPE_CREATE_TIME: 'create_time';
+COL_FIELD_TYPE_UPDATE_TIME: 'update_time';
 
-COL_FIELD_ARGS: '(' .*? ')';
+COL_FIELD_TYPE_IMAGE_FILE: 'image_file';
+COL_FIELD_TYPE_IMAGE: 'image';
+COL_FIELD_TYPE_FILER_IMAGE: 'filer_image';
+COL_FIELD_TYPE_FILER_FILE: 'filer_file';
+COL_FIELD_TYPE_FILE: 'file';
+COL_FIELD_TYPE_SIMPLE_FILE: 'simple_file';
+COL_FIELD_TYPE_FOLDER: 'folder';
+COL_FIELD_TYPE_IMAGE_FOLDER: 'image_folder';
+
+
+COL_FIELD_TYPE_TEXT: 'text';
+COL_FIELD_TYPE_INT: 'int';
+COL_FIELD_TYPE_SLUG: 'slug';
+COL_FIELD_TYPE_BOOL: 'bool';
+
+COL_FIELD_TYPE_ONE: 'one';
+COL_FIELD_TYPE_ONE2ONE: 'one2one';
+COL_FIELD_TYPE_MANY: 'many';
+
+
+FIELD_START: '(' -> pushMode(FIELD);
 
 FIELD_DECL__COL_FIELD_HELP: COL_FIELD_HELP -> type(COL_FIELD_HELP);
 FIELD_DECL__COL_FIELD_VNAME: COL_FIELD_VNAME -> type(COL_FIELD_VNAME);
@@ -132,6 +143,28 @@ FIELD_DECL_NL: NL -> type(NL), popMode;
 FIELD_DECL_ERRCHAR:	ERR;
 
 
+mode FIELD;
+FIELD_SIZE: [0-9]+ 'x' [0-9]+;
+FILED_REF: '#' ID;
+FILED_CLASS: ID '.' ID;
+FILED_RELATED_NAME: '->' WS* ID;
+FILED_FILTER: '|' ID;
+FIELD_BOOL: ('true'|'false');
+FIELD_QUSETION_MARK: '?';
+FIELD_QUOTED: '"' .*? '"';
+FILED_KEY_STR: ID '/';
+FILED_KEY_NUM: [0-9]+ '/';
+FILED_DIGIT: [0-9]+;
+FILED_ARG_CHOICES: 'choices' WS* '=' WS*;
+FILED_ARG_ANY: ID WS* '=' WS*;
+FILED_LITERAL: ID;
+FILED_COMA: ',';
+
+FIELD_END: ')' -> popMode;
+
+FIELD_WS : ' ' -> channel(HIDDEN);
+FIELD_ERRCHAR:	ERR;
+
 /*********************
  * Pages
  *********************/
@@ -140,16 +173,24 @@ FIELD_DECL_ERRCHAR:	ERR;
 mode PAGE_HDR;
 
 PAGE_BASE: ID '->';
-PAGE_NAME: ID -> mode(PAGE_HDR_PARTS);
+PAGE_NAME: ID -> mode(PAGE_WAIT_ALIAS);
 PAGE_HDR_WS : ' ' -> channel(HIDDEN);
 PAGE_HDR_ERRCHAR:	ERR;
+
+mode PAGE_WAIT_ALIAS;
+PAGE_ALIAS_MARKER: WS+ 'as' WS+;
+PAGE_ALIAS_ID: ID;
+PAGE_WAIT_ALIAS__HDR_END: ']' (NL+|EOF) -> type(PAGE_HDR_END), mode(PAGE);
+PAGE_WAIT_ALIAS_TERM: ':' -> type(PAGE_HDR_SEPARATOR), mode(PAGE_HDR_PARTS);
+PAGE_WAIT_ALIAS_WS : ' ' -> channel(HIDDEN);
+PAGE_WAIT_ALIAS_ERRCHAR:	ERR	-> channel(HIDDEN);
 
 mode PAGE_HDR_PARTS;
 PAGE_HDR_SEPARATOR: ':';
 PAGE_HDR_PART: ~[:\]]+;
 PAGE_HDR_END: ']' (NL+|EOF) -> mode(PAGE);
 PAGE_HDR_PARTS_WS : ' ' -> channel(HIDDEN);
-PAGE_HDR_PARTS_ERRCHAR:	.	-> channel(HIDDEN);
+PAGE_HDR_PARTS_ERRCHAR:	ERR	-> channel(HIDDEN);
 
 
 /** Page body **/

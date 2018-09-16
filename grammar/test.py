@@ -4,9 +4,9 @@ from time import perf_counter
 from antlr4 import *
 from antlr4.xpath.XPath import XPath
 
-from cratis_generator.parser.ZmeiLanguage import ZmeiLanguage
+from zmei_generator.parser.ZmeiLanguage import ZmeiLanguage
 
-from cratis_generator.parser.ZmeiLanguageLexerRules import ZmeiLanguageLexerRules
+from zmei_generator.parser.ZmeiLanguageLexerRules import ZmeiLanguageLexerRules
 
 start = perf_counter()
 # input = FileStream('test.col')

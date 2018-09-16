@@ -13,7 +13,7 @@ setup(
     long_description='',
 
     package_data={
-        'cratis_generator': [
+        'zmei_generator': [
             'templates/*.tpl',
             'templates/cratis/*.tpl',
             'templates/django/*.tpl',
@@ -45,7 +45,7 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'zmei = cratis_generator.cli:django_gen',
+            'zmei = zmei_generator.cli:django_gen',
         ]
     },
 )

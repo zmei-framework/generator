@@ -61,3 +61,7 @@ _build
 .test_envs/
 .DS_Store
 .pytest_cache/
+
+
+# Antlr output
+/gen

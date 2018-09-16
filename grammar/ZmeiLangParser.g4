@@ -2,6 +2,9 @@ parser grammar ZmeiLangParser;
 
 options { tokenVocab=ZmeiLangLexer; }
 
+import FieldsParser;
+
+
 col_file:
     page_imports?
     NL*
@@ -23,8 +26,9 @@ model_imports : NL* MODEL_IMPORTS NL*;
 
 page:
     PAGE_HDR_START
-    PAGE_BASE?
+    page_base?
     page_name
+    page_alias?
     (PAGE_HDR_SEPARATOR page_url (PAGE_HDR_SEPARATOR page_template)?)?
     PAGE_HDR_END
 
@@ -40,6 +44,11 @@ page:
 
     NL*
     ;
+
+page_base : PAGE_BASE ;
+page_alias : PAGE_ALIAS_MARKER page_alias_name;
+
+page_alias_name : PAGE_ALIAS_ID ;
 
 page_element : xml_element ;
 
@@ -112,11 +121,6 @@ col_field_help_text : COL_FIELD_HELP ;
 col_field_vrebose_name : COL_FIELD_VNAME ;
 
 col_field_name : COL_FIELD ;
-
-col_field_def:
-    COL_FIELD_TYPE
-    COL_FIELD_ARGS?
-    ;
 
 col_field_expr:
     COL_FIELD_CALCULATED

@@ -1,9 +1,3 @@
-
-[index: /]
-boo: 123
-
-<Foo>
-    test
-
-    <Fooo />
-</Foo>
+#foo
+-----
+boo: text(25510, choices=Monday, Tuesday)
