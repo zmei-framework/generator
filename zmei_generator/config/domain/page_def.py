@@ -68,6 +68,7 @@ class PageDef(object):
         self.react_components = {}
         self.page_component_name = None
         self.react_pages = {}
+        self.functions = []
 
         self.react = False
 
@@ -235,7 +236,7 @@ class PageDef(object):
                 code += "else:\n"
                 code += " " * indent + key + " = None\n"
 
-        code += self.page_code
+        code += self.page_code or ''
 
         code = self.render_method_headers(
             use_data=False,
