@@ -25,7 +25,6 @@ col_field_def: field_longtext
              | field_file
              | field_simple_file
              | field_folder
-             | field_image_folder
              ;
 
 
@@ -46,7 +45,6 @@ field_filer_file: COL_FIELD_TYPE_FILER_FILE;
 field_file: COL_FIELD_TYPE_FILE;
 field_simple_file: COL_FIELD_TYPE_SIMPLE_FILE;
 field_folder: COL_FIELD_TYPE_FOLDER;
-field_image_folder: COL_FIELD_TYPE_IMAGE_FOLDER;
 
 // Text
 
@@ -108,12 +106,20 @@ field_bool_default: FIELD_BOOL;
 // Image
 
 field_image:
-            COL_FIELD_TYPE_IMAGE
-            (FIELD_START field_image_sizes field_image_filters* FIELD_END)?;
+            filer_image_type
+            (FIELD_START field_image_sizes  FIELD_END)?;
+
+filer_image_type : (COL_FIELD_TYPE_IMAGE|COL_FIELD_TYPE_IMAGE_FOLDER) ;
 
 field_image_sizes: field_image_size (FILED_COMA field_image_size)*;
-field_image_size: FILED_ARG_ANY FIELD_SIZE;
-field_image_filters: FILED_FILTER;
+field_image_size: field_image_size_name field_image_size_dimensions field_image_filters;
+
+field_image_size_dimensions : FIELD_SIZE ;
+
+field_image_size_name : FILED_ARG_ANY ;
+
+field_image_filters: field_image_filter*;
+field_image_filter : FILED_FILTER ;
 
 // Relation
 

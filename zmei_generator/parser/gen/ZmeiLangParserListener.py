@@ -521,15 +521,6 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ZmeiLangParser#field_image_folder.
-    def enterField_image_folder(self, ctx:ZmeiLangParser.Field_image_folderContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#field_image_folder.
-    def exitField_image_folder(self, ctx:ZmeiLangParser.Field_image_folderContext):
-        pass
-
-
     # Enter a parse tree produced by ZmeiLangParser#field_text.
     def enterField_text(self, ctx:ZmeiLangParser.Field_textContext):
         pass
@@ -683,6 +674,15 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#filer_image_type.
+    def enterFiler_image_type(self, ctx:ZmeiLangParser.Filer_image_typeContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#filer_image_type.
+    def exitFiler_image_type(self, ctx:ZmeiLangParser.Filer_image_typeContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#field_image_sizes.
     def enterField_image_sizes(self, ctx:ZmeiLangParser.Field_image_sizesContext):
         pass
@@ -701,12 +701,39 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#field_image_size_dimensions.
+    def enterField_image_size_dimensions(self, ctx:ZmeiLangParser.Field_image_size_dimensionsContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#field_image_size_dimensions.
+    def exitField_image_size_dimensions(self, ctx:ZmeiLangParser.Field_image_size_dimensionsContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#field_image_size_name.
+    def enterField_image_size_name(self, ctx:ZmeiLangParser.Field_image_size_nameContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#field_image_size_name.
+    def exitField_image_size_name(self, ctx:ZmeiLangParser.Field_image_size_nameContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#field_image_filters.
     def enterField_image_filters(self, ctx:ZmeiLangParser.Field_image_filtersContext):
         pass
 
     # Exit a parse tree produced by ZmeiLangParser#field_image_filters.
     def exitField_image_filters(self, ctx:ZmeiLangParser.Field_image_filtersContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#field_image_filter.
+    def enterField_image_filter(self, ctx:ZmeiLangParser.Field_image_filterContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#field_image_filter.
+    def exitField_image_filter(self, ctx:ZmeiLangParser.Field_image_filterContext):
         pass
 
 

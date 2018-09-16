@@ -34,12 +34,21 @@ def test_image_field():
 
         #boo
         ----------
-        a: image
+        a: image(default=300x300|crop|upscale, foo=1024x600|crop)
     """)
 
     a = cs.collections['boo'].fields['a']
 
     assert isinstance(a, FilerImageFieldDef)
+    assert len(a.sizes) == 2
+
+    assert a.sizes[0].width == 300
+    assert a.sizes[0].height == 300
+    assert a.sizes[0].filters == ['crop', 'upscale']
+
+    assert a.sizes[1].width == 1024
+    assert a.sizes[1].height == 600
+    assert a.sizes[1].filters == ['crop']
 
 
 def test_filer_image_field():
@@ -112,10 +121,19 @@ def test_image_folder_field():
 
         #boo
         ----------
-        a: image_folder
+        a: image_folder(default=300x300|crop|upscale, foo=1024x600|crop)
     """)
 
     a = cs.collections['boo'].fields['a']
 
     assert isinstance(a, FilerImageFolderFieldDef)
+    assert len(a.sizes) == 2
+
+    assert a.sizes[0].width == 300
+    assert a.sizes[0].height == 300
+    assert a.sizes[0].filters == ['crop', 'upscale']
+
+    assert a.sizes[1].width == 1024
+    assert a.sizes[1].height == 600
+    assert a.sizes[1].filters == ['crop']
 

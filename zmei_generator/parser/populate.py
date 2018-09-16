@@ -9,7 +9,7 @@ from zmei_generator.fields.bool import BooleanFieldDef
 from zmei_generator.fields.date import DateFieldDef, DateTimeFieldDef, AutoNowDateTimeFieldDef, \
     AutoNowAddDateTimeFieldDef
 from zmei_generator.fields.filer import FilerImageFieldDef, FilerFileFieldDef, FilerFileFolderDef, \
-    FilerImageFolderFieldDef
+    FilerImageFolderFieldDef, ImageSize
 from zmei_generator.fields.image import ImageFieldDef, SimpleFieldDef
 from zmei_generator.fields.number import IntegerFieldDef, FloatFieldDef, DecimalFieldDef
 from zmei_generator.fields.relation import RelationOneDef, RelationOne2OneDef, RelationManyDef
@@ -31,6 +31,7 @@ class PartsCollectorListener(ZmeiLangParserListener):
 
         self.field = None  # type
         self.field_config = None  # type: FieldConfig
+        self.image_size = None  # type: ImageSize
 
     ############################################
     # Page
@@ -265,10 +266,35 @@ class PartsCollectorListener(ZmeiLangParserListener):
     def enterField_image_file(self, ctx: ZmeiLangParser.Field_image_fileContext):
         self.field = ImageFieldDef(self.model, self.field_config)
 
-    # image  field
+    # image and image_folder field
 
     def enterField_image(self, ctx: ZmeiLangParser.Field_imageContext):
-        self.field = FilerImageFieldDef(self.model, self.field_config)
+        type_name = ctx.filer_image_type().getText()
+        if type_name == 'image_folder':
+            self.field = FilerImageFolderFieldDef(self.model, self.field_config)
+        else:
+            self.field = FilerImageFieldDef(self.model, self.field_config)
+
+        self.field.sizes = []
+
+    def enterField_image_size(self, ctx: ZmeiLangParser.Field_image_sizeContext):
+        self.image_size = ImageSize()
+        self.image_size.filters = []
+
+    def enterField_image_size_name(self, ctx: ZmeiLangParser.Field_image_size_nameContext):
+        self.image_size.name = ctx.getText().strip()
+
+    def enterField_image_size_dimensions(self, ctx: ZmeiLangParser.Field_image_size_dimensionsContext):
+        width, height = ctx.getText().strip().split('x')
+        self.image_size.width = int(width)
+        self.image_size.height = int(height)
+
+    def enterField_image_filter(self, ctx: ZmeiLangParser.Field_image_filterContext):
+        self.image_size.filters.append(ctx.getText()[1:])
+
+    def exitField_image_size(self, ctx: ZmeiLangParser.Field_image_sizeContext):
+        self.field.sizes.append(self.image_size)
+        self.image_size = None
 
     # filer_image  field
 
@@ -295,10 +321,6 @@ class PartsCollectorListener(ZmeiLangParserListener):
     def enterField_folder(self, ctx: ZmeiLangParser.Field_folderContext):
         self.field = FilerFileFolderDef(self.model, self.field_config)
 
-    # image_folder  field
-
-    def enterField_image_folder(self, ctx: ZmeiLangParser.Field_image_folderContext):
-        self.field = FilerImageFolderFieldDef(self.model, self.field_config)
 
     # Relation field
 

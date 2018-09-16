@@ -12,16 +12,6 @@ class BooleanFieldDef(FieldDef):
 
     default = False
 
-    def parse_options(self):
-        if self.options:
-            options_grammar = oneOf('true false').setResultsName('default') + stringEnd
-
-            result = options_grammar.parseString(self.options)
-
-            if result.default:
-                self.default = result.default
-
-
     def get_model_field(self, collection):
         args = self.prepare_field_arguemnts({'default': self.default == 'true'})
 

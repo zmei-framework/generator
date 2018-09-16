@@ -60,6 +60,11 @@ class FilerFileFolderDef(FieldDef):
     #     )
 
 
+class ImageSize(object):
+    name = None
+    width = None
+    height = None
+    filters = None
 
 
 class FilerImageFieldDef(FieldDef):
@@ -70,35 +75,6 @@ class FilerImageFieldDef(FieldDef):
     """
 
     sizes = None
-
-    def parse_options(self):
-
-        filter = Group(Suppress('|') + identifier.setResultsName('name'))
-
-        size_grammar = Group(identifier.setResultsName('name') + Suppress(':') + \
-                          Word(nums).setResultsName('width') + Suppress('x') + \
-                          Word(nums).setResultsName('height') + Group(ZeroOrMore(filter)).setResultsName('filters'))
-
-        options_grammar = delimitedList(size_grammar).setResultsName('sizes') + stringEnd
-
-        sizes = []
-
-        if self.options and self.options != '':
-            for size in options_grammar.parseString(self.options).sizes:
-
-                filters = []
-
-                for filter in size.filters:
-                    if filter.name not in ('crop', 'upscale'):
-                        raise ValidationException('Unknown image filter: {}'.format(filter.name))
-                    filters.append(filter.name)
-
-                sizes.append('"{}": Size({}, {}, crop={}, upscale={})'.format(
-                    size.name, size.width, size.height, 'crop' in filters, 'upscale' in filters
-                ))
-
-            self.sizes = '{\n%s\n}' % (', \n'.join(sizes))
-
 
     def get_model_field(self, collection):
         args = self.prepare_field_arguemnts({
@@ -111,12 +87,29 @@ class FilerImageFieldDef(FieldDef):
         )
 
     def get_rest_field(self):
+        sizes_prepared = []
+
+        for size in self.sizes:
+
+            filters = []
+
+            for filter in size.filters:
+                if filter.name not in ('crop', 'upscale'):
+                    raise ValidationException('Unknown image filter: {}'.format(filter.name))
+                filters.append(filter.name)
+
+                sizes_prepared.append('"{}": Size({}, {}, crop={}, upscale={})'.format(
+                size.name, size.width, size.height, 'crop' in filters, 'upscale' in filters
+            ))
+
+        sizes_prepared = '{\n%s\n}' % (', \n'.join(sizes_prepared))
+
         return FieldDeclaration(
             [
                 ('cratis_filer.serializers', 'ThumbnailImageField'),
                 ('cratis_filer.utils', 'Size')
              ],
-            'ThumbnailImageField({})'.format(self.sizes)
+            'ThumbnailImageField({})'.format(sizes_prepared)
         )
 
     @property
