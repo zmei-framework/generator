@@ -8,6 +8,7 @@ from zmei_generator.config.domain.reference_field import ReferenceField
 from zmei_generator.fields.bool import BooleanFieldDef
 from zmei_generator.fields.date import DateFieldDef, DateTimeFieldDef, AutoNowDateTimeFieldDef, \
     AutoNowAddDateTimeFieldDef
+from zmei_generator.fields.expression import ExpressionFieldDef
 from zmei_generator.fields.filer import FilerImageFieldDef, FilerFileFieldDef, FilerFileFolderDef, \
     FilerImageFolderFieldDef, ImageSize
 from zmei_generator.fields.image import ImageFieldDef, SimpleFieldDef
@@ -145,6 +146,25 @@ class PartsCollectorListener(ZmeiLangParserListener):
         self.field = None
         self.field_config = None
 
+    # Calculated field
+
+    def enterCol_field_expr(self, ctx:ZmeiLangParser.Col_field_exprContext):
+        self.field = ExpressionFieldDef(self.model, self.field_config)
+
+    def enterCol_field_expr_marker(self, ctx:ZmeiLangParser.Col_field_expr_markerContext):
+        marker = ctx.getText().strip()
+        if marker == '<@':
+            self.field.static = True
+
+    def enterCol_feild_expr_code(self, ctx:ZmeiLangParser.Col_feild_expr_codeContext):
+        expr = ctx.getText().strip()
+
+        if expr[0] == '!':
+            expr = expr[1:].strip()
+            self.field.boolean = True
+
+        self.field.expression = expr
+
     # Text
 
     def enterField_text(self, ctx: ZmeiLangParser.Field_textContext):
@@ -161,11 +181,15 @@ class PartsCollectorListener(ZmeiLangParserListener):
         self.field.choices = {}
 
     def enterField_text_choice(self, ctx: ZmeiLangParser.Field_text_choiceContext):
-        key = ctx.field_text_choice_key().getText()[:-1]
+        choice_key = ctx.field_text_choice_key()
+
         val = ctx.field_text_choice_val().getText()
         if val[0] == '"':
             val = val[1:-1]
-        if not key:
+
+        if choice_key:
+            key = choice_key.getText()[:-1]
+        else:
             key = val
 
         self.field.choices[key] = val
@@ -186,14 +210,15 @@ class PartsCollectorListener(ZmeiLangParserListener):
         self.field.choices = {}
 
     def enterField_int_choice(self, ctx: ZmeiLangParser.Field_int_choiceContext):
-        key = ctx.field_int_choice_key().getText()[:-1]
+        choice_key = ctx.field_int_choice_key()
+        if choice_key:
+            key = int(choice_key.getText()[:-1])
+        else:
+            key = len(self.field.choices)
+
         val = ctx.field_int_choice_val().getText()
         if val[0] == '"':
             val = val[1:-1]
-        if not key:
-            key = len(self.field.choices) - 1
-        else:
-            key = int(key)
 
         self.field.choices[key] = val
 

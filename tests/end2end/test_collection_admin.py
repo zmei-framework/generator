@@ -2,8 +2,8 @@ import os
 
 import pytest
 
-
-@pytest.mark.django_gen('sample', """
+@pytest.mark.skip
+@pytest.mark.zmei('sample', """
 
 #car
 -------
@@ -17,7 +17,7 @@ painted: bool
 @admin {list: *}
 
 """)
-@pytest.mark.django_gen_before('install', 'migrate')
+@pytest.mark.zmei_before('install', 'migrate')
 def test_admin_simple():
     from sample.admin import CarAdmin
     from django.contrib.admin import ModelAdmin
@@ -26,9 +26,9 @@ def test_admin_simple():
 
     assert CarAdmin.list_display == ['nr', 'mark', 'model', 'weight', 'crashed', 'painted']
 
-
-@pytest.mark.django_gen_before('install', 'migrate')
-@pytest.mark.django_gen('sample', """
+@pytest.mark.skip
+@pytest.mark.zmei_before('install', 'migrate')
+@pytest.mark.zmei('sample', """
 #car
 -------
 nr
@@ -81,8 +81,8 @@ def test_admin_more_options():
 
 
 @pytest.mark.skip
-@pytest.mark.django_gen_before('install', 'migrate')
-@pytest.mark.django_gen('sample', """
+@pytest.mark.zmei_before('install', 'migrate')
+@pytest.mark.zmei('sample', """
 #car
 -------
 nr
@@ -119,8 +119,8 @@ def test_admin_more_options_no_weight():
 
 
 @pytest.mark.skip
-@pytest.mark.django_gen_before('install', 'migrate')
-@pytest.mark.django_gen('sample', """
+@pytest.mark.zmei_before('install', 'migrate')
+@pytest.mark.zmei('sample', """
 
 #wehicle
 ---------
@@ -166,9 +166,9 @@ def test_admin_more_options_no_weight_and_parent():
             'fields': ['crashed', 'painted']
         }),)
 
-
-@pytest.mark.django_gen_before('install', 'migrate')
-@pytest.mark.django_gen('admin_inline')
+@pytest.mark.skip
+@pytest.mark.zmei_before('install', 'migrate')
+@pytest.mark.zmei('admin_inline')
 def test_admin_inlines():
     from admin_inline.admin import CarAdmin, CarServiceHistoryInline
     from admin_inline.models import Car, Service

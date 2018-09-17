@@ -35,7 +35,7 @@ class PageDef(object):
         self.rss = None
         self.auth = False
 
-        self.extra_bases = []
+        self.extra_bases = ['ZmeiDataViewMixin']
 
         self.name = None
         self.url_alias = None
@@ -98,17 +98,15 @@ class PageDef(object):
         #     except KeyError as e:
         #         raise ValidationException('Page extra not found: {}, reason: {}'.format(extra.extra_name, e))
 
-        # TODO: detect extra base in render process?
-        # if not self.parent_name:
-        #     if self.react:
-        #         self.extra_bases.append('ZmeiReactViewMixin')
-        #     else:
-        #         self.extra_bases.append('ZmeiDataViewMixin')
 
     def set_html(self, html):
         from zmei_generator.extras.page.block import ReactPageBlock
         area = 'content'
         self.add_block(area, ReactPageBlock(self, html, area_name=area))
+
+        if self.react:
+            self.extra_bases.remove('ZmeiDataViewMixin')
+            self.extra_bases.append('ZmeiReactViewMixin')
 
     def add_block(self, area, block):
         if area not in self.blocks:

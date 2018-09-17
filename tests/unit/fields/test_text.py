@@ -19,6 +19,7 @@ def test_text_field():
         a
         b: text(255)
         c: text(?, choices=ab/Cda,abcd/Cda1,abcdef/"Яба яба")
+        d: text(?, choices=foo,bar,baz)
     """)
 
     a = cs.collections['boo'].fields['a']
@@ -41,6 +42,14 @@ def test_text_field():
         ('abcdef', 'Яба яба'),
     )
 
+    d = cs.collections['boo'].fields['d']
+
+    assert isinstance(d, TextFieldDef)
+    assert d.choices == (
+        ('foo', 'foo'),
+        ('bar', 'bar'),
+        ('baz', 'baz'),
+    )
 
 def test_longtext_field():
     cs = _("""

@@ -1,5 +1,6 @@
 pytest
 pytest-cov==2.5.0
 pytest-forked
+pytest-xdist
 
-antlr4-python3-runtime
+django-polymorphic

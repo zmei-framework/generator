@@ -65,3 +65,5 @@ _build
 
 # Antlr output
 /gen
+/htmlcov
+tests/gen_result/

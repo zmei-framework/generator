@@ -18,6 +18,7 @@ def test_int_field():
         ----------
         b: int
         c: int(choices=2/Cda, 4/Cda1, 5/"Яба яба")
+        d: int(choices=foo,bar,baz)
     """)
 
     b = cs.collections['boo'].fields['b']
@@ -31,6 +32,15 @@ def test_int_field():
         (2, 'Cda'),
         (4, 'Cda1'),
         (5, 'Яба яба'),
+    )
+
+    d = cs.collections['boo'].fields['d']
+
+    assert isinstance(d, IntegerFieldDef)
+    assert d.choices == (
+        (0, 'foo'),
+        (1, 'bar'),
+        (2, 'baz'),
     )
 
 

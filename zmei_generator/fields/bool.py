@@ -13,7 +13,7 @@ class BooleanFieldDef(FieldDef):
     default = False
 
     def get_model_field(self, collection):
-        args = self.prepare_field_arguemnts({'default': self.default == 'true'})
+        args = self.prepare_field_arguemnts({'default': self.default})
 
         if 'null' in args:
             del args['null']

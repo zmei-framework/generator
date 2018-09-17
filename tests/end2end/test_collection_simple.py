@@ -3,7 +3,7 @@ import os
 import pytest
 
 
-@pytest.mark.django_gen('sample', """
+@pytest.mark.zmei('sample', """
 
 #car
 -------
@@ -15,7 +15,7 @@ crashed: bool(true)
 painted: bool
 
 """)
-@pytest.mark.django_gen_before('migrate')
+@pytest.mark.zmei_before('migrate')
 def test_simple():
     from sample.models import Car
 
@@ -32,14 +32,14 @@ def test_simple():
     assert not bmw.painted
 
 
-@pytest.mark.django_gen('sample', """
+@pytest.mark.zmei('sample', """
 
 #dog
 -------
 sound: << 'Bark!';
 
 """)
-@pytest.mark.django_gen_before('migrate')
+@pytest.mark.zmei_before('migrate')
 def test_expression():
     from sample.models import Dog
 

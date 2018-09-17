@@ -18,11 +18,7 @@ def list_apps():
             yield filename[0:-4]
 
 
-def generate_common_files(target_path, skeleton_dir, apps, features=None):
-    features = type('features', (object,), {x: x in features for x in [
-        'cratis', 'django', 'react'
-    ]})
-
+def generate_common_files(target_path, skeleton_dir, apps):
     app_dir = os.path.join(target_path, 'app')
     manage_py = os.path.join(target_path, 'manage.py')
 
@@ -32,7 +28,9 @@ def generate_common_files(target_path, skeleton_dir, apps, features=None):
     if os.path.exists(manage_py):
         unlink(manage_py)
 
+    print('copy', os.path.join(skeleton_dir, 'app'), app_dir)
     copytree(os.path.join(skeleton_dir, 'app'), app_dir)
+    print('copy', os.path.join(skeleton_dir, 'manage.py'), manage_py)
     copyfile(os.path.join(skeleton_dir, 'manage.py'), manage_py)
 
     #config
@@ -134,10 +132,12 @@ def generate_common_files(target_path, skeleton_dir, apps, features=None):
 
 def generate(target_path, app_name: str, collection_set: CollectionSetDef, features=None):
     features = features or []
+
     features = type('features', (object,), {x: x in features for x in [
         'cratis', 'django'
     ]})
     collection_set.features = features
+
 
     # urls
     pages_i18n = [page for page in collection_set.pages.values() if page.has_uri and page.i18n]

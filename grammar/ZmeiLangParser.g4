@@ -123,10 +123,14 @@ col_field_vrebose_name : COL_FIELD_VNAME ;
 col_field_name : COL_FIELD ;
 
 col_field_expr:
-    COL_FIELD_CALCULATED
-    PYTHON_LINE_CODE
+    col_field_expr_marker
+    col_feild_expr_code
     PYTHON_LINE_END
     ;
+
+col_feild_expr_code : PYTHON_LINE_CODE ;
+
+col_field_expr_marker : COL_FIELD_CALCULATED ;
 
 col_modifier: COL_MODIFIER__STR
              | COL_MODIFIER__LOC

@@ -70,6 +70,25 @@ def test_page_html():
 
     assert boo.name == 'boo'
     assert boo.blocks['content'][0].source == "<h1>test</h1>"
+    assert boo.react is False
+    assert boo.extra_bases == ['ZmeiDataViewMixin']
+
+
+def test_page_react():
+    cs = _("""
+
+        [boo]
+        <Foo>test</Foo>
+    """)
+
+    assert len(cs.pages) == 1
+
+    boo = cs.pages['boo']
+
+    assert boo.name == 'boo'
+    assert boo.blocks['content'][0].source == "<Foo>test</Foo>"
+    assert boo.react is True
+    assert boo.extra_bases == ['ZmeiReactViewMixin']
 
 
 def test_page_items():
