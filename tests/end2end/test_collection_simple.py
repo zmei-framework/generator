@@ -36,7 +36,7 @@ def test_simple():
 
 #dog
 -------
-sound: << 'Bark!';
+sound:= 'Bark!'
 
 """)
 @pytest.mark.zmei_before('migrate')

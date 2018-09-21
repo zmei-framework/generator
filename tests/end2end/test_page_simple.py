@@ -7,7 +7,7 @@ from django.http import HttpRequest
 # @pytest.mark.skip
 @pytest.mark.zmei('page1', """
 [home]
-message: 'Hello'
+message:= 'Hello'
 
 """)
 def test_simple_page():
