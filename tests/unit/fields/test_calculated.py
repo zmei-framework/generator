@@ -17,9 +17,9 @@ def test_calculated_field():
     
         #boo
         ----------
-        a: << 3 + 2;
-        b: <@ 3 + 2;
-        c: << !3 + 2;
+        a:= 3 + 2
+        b@= 3 + 2
+        c:= !3 + 2
     """)
 
     a = cs.collections['boo'].fields['a']

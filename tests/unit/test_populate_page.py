@@ -15,7 +15,7 @@ def test_pages():
     
         [boo: /lala/foo : foo/mytpl.html]
         [bar as yoo]
-        [boo->foo : : <some_expr>]
+        [boo->foo : : {some_expr}]
     
     """)
 
@@ -95,9 +95,9 @@ def test_page_items():
     cs = _("""
 
         [boo]
-        lala: 123
-        boo: a + lala
-        sitemap: 321
+        lala:= 123
+        boo:= a + lala
+        sitemap:= 321
     """)
 
     assert len(cs.pages) == 1

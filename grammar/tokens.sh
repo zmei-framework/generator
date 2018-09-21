@@ -1,12 +1,12 @@
 #!/bin/bash
 
-cd .antlr
+#cd .antlr
 
 clear
 echo '--------'
 #antlr4 -o `pwd` -Xexact-output-dir ../ZmeiLanguage.g4
-javac *.java
-grun ZmeiLanguage tokens -tokens ../test.col
+javac grammar/ZmeiLangSimpleLexer.java
+grun grammar.ZmeiLangSimpleLexer tokens -tokens ../grammar/test.col
 
 echo
 echo

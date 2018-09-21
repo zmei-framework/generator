@@ -17,7 +17,7 @@ def test_int_field():
         #boo
         ----------
         b: int
-        c: int(choices=2/Cda, 4/Cda1, 5/"Яба яба")
+        c: int(choices=2:Cda, 4:Cda1, 5:"Яба яба")
         d: int(choices=foo,bar,baz)
     """)
 

@@ -16,8 +16,8 @@ def test_slug_field():
     
         #boo
         ----------
-        a: text(15)
-        b: text(10)
+        a: str(15)
+        b: str(10)
         c: slug(a,b)
     """)
 

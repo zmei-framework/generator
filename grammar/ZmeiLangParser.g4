@@ -1,9 +1,8 @@
 parser grammar ZmeiLangParser;
 
-options { tokenVocab=ZmeiLangLexer; }
+options { tokenVocab=ZmeiLangSimpleLexer; }
 
 import FieldsParser;
-
 
 col_file:
     page_imports?
@@ -16,8 +15,23 @@ col_file:
     EOF
     ;
 
-page_imports : PAGE_IMPORTS;
-model_imports : NL* MODEL_IMPORTS NL*;
+page_imports : KW_IMPORT import_source;
+model_imports : KW_IMPORT import_source;
+
+import_source : code_block;
+
+
+code_block:
+    CODE_BLOCK_START
+    (CODE_BLOCK_LINE)*
+    CODE_BLOCK_END
+    ;
+
+//code_line:
+//    CODE_LINE_START
+//    CODE_LINE_CONTENT
+//    CODE_LINE_END
+//    ;
 
 
 /**************************
@@ -25,12 +39,13 @@ model_imports : NL* MODEL_IMPORTS NL*;
  **************************/
 
 page:
-    PAGE_HDR_START
+    SQ_BRACE_OPEN
     page_base?
     page_name
     page_alias?
-    (PAGE_HDR_SEPARATOR page_url (PAGE_HDR_SEPARATOR page_template)?)?
-    PAGE_HDR_END
+    (COLON page_url? (COLON page_template)?)?
+    SQ_BRACE_CLOSE
+    NL
 
     page_field*
 
@@ -45,35 +60,29 @@ page:
     NL*
     ;
 
-page_base : PAGE_BASE ;
-page_alias : PAGE_ALIAS_MARKER page_alias_name;
+page_base : ID RELATED;
+page_alias : KW_AS page_alias_name;
 
-page_alias_name : PAGE_ALIAS_ID ;
+page_alias_name : ID ;
 
 page_element : xml_element ;
 
-page_template : PAGE_HDR_PART;
+page_template : CLASSNAME | TEMPLATE_NAME | INLINE_CODE_BLOCK;
 
-page_url : PAGE_HDR_PART;
+page_url : (ID|URL_SEGMENTS);
 
-page_code :
-    PAGE_CODE_BLOCK_START
-    page_code_source
-    PAGE_CODE_BLOCK_END
-    ;
+page_code: code_block;
 
-page_code_source : PAGE_CODE_BLOCK_CODE;
-
-page_name: PAGE_NAME ;
+page_name: ID;
 
 page_field:
     page_field_name
-    PAGE_FIELD_SEPARATOR
+    ASSIGN
     page_field_code
     (NL+|EOF)
     ;
 
-page_field_name : PAGE_FIELD ;
+page_field_name : ID ;
 
 page_field_code : PYTHON_LINE_CODE ;
 
@@ -89,55 +98,64 @@ col:
     annotation*
     ;
 
+
 col_str_expr :
-    COL_STR_EXPR
+    EQUALS (STRING_DQ | STRING_SQ)
     (NL+|EOF)
     ;
 
 col_header :
-    COL_HDR_START
+    REF_SIGN
     col_base_name?
     col_name
     col_verbose_name?
-    COL_HDR_SEPARATOR
+    LINE_SEPARATOR
+    NL
     ;
 
-col_verbose_name : COL_VNAME ;
+col_verbose_name : COLON verbose_name_part (SLASH verbose_name_part)?;
 
-col_base_name : COL_BASE;
-col_name : COL_NAME;
+verbose_name_part : (ID | STRING_DQ | STRING_SQ) ;
+
+col_base_name : ID (RELATED | RELATED_EXTEND);
+col_name : ID;
 
 col_field:
     col_modifier*
     col_field_name
-    (COL_FIELD_SEPARATOR (col_field_def|col_field_expr))?
+    (
+        (COLON col_field_def) |
+        col_field_expr
+    )?
     col_field_vrebose_name?
     col_field_help_text?
     (NL+|EOF)
     ;
 
-col_field_help_text : COL_FIELD_HELP ;
+col_field_expr :
+        col_field_expr_marker
+        col_feild_expr_code
+        ;
 
-col_field_vrebose_name : COL_FIELD_VNAME ;
-
-col_field_name : COL_FIELD ;
-
-col_field_expr:
-    col_field_expr_marker
-    col_feild_expr_code
-    PYTHON_LINE_END
-    ;
+col_field_expr_marker : ASSIGN | ASSIGN_STATIC;
 
 col_feild_expr_code : PYTHON_LINE_CODE ;
 
-col_field_expr_marker : COL_FIELD_CALCULATED ;
+string_or_quoted : (ID+ | STRING_DQ | STRING_SQ) ;
 
-col_modifier: COL_MODIFIER__STR
-             | COL_MODIFIER__LOC
-             | COL_MODIFIER__UNQ
-             | COL_MODIFIER__IDX
-             | COL_MODIFIER__REQ
-             | COL_MODIFIER__NNL
+col_field_help_text : QUESTION_MARK string_or_quoted;
+
+col_field_vrebose_name : SLASH string_or_quoted;
+
+col_field_name : ID ;
+
+
+col_modifier: EQUALS
+             | DOLLAR
+             | AMP
+             | EXCLAM
+             | STAR
+             | APPROX
              ;
 
 /**************************
@@ -147,20 +165,20 @@ col_modifier: COL_MODIFIER__STR
 
 annotation:
     ANNOTATION
-    ANNOT_DESCR?
-    annotation_block?
+    annotation_descr?
+    annotation_code?
     NL*
     ;
 
-annotation_block :
-    ANNOT_BLOCK_START
-    annotation_code
-    ANNOT_BLOCK_END
-    ;
+annotation_descr : (DOT ID) ;
 
-annotation_code:
-    ANNOT_BLOCK
-    ;
+//annotation_block :
+//    ANNOT_BLOCK_START
+//    annotation_code
+//    ANNOT_BLOCK_END
+//    ;
+
+annotation_code: code_block;
 
 
 /**************************

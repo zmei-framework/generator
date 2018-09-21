@@ -244,16 +244,21 @@ ANNOT_COMMENT_BLOCK: COMMENT_BLOCK -> type(COMMENT_BLOCK), channel(HIDDEN);
 
 ANNOT_DESCR: '.' ID;
 ANNOT_WS: WS -> type(WS), channel(HIDDEN);
-ANNOT_BLOCK_START: '{' -> pushMode(ANB_CURLY);
+ANNOT_CODE_BLOCK: '{' .*? NL '}' NL -> popMode;
+//ANNOT_BLOCK_START: '(' -> pushMode(ANB_BLOCK);
 
 ANNOT_EOF: EOF -> type(EOF), popMode;
 ANNOT_NL: NL -> type(NL), popMode;
 
 ANNOT_ERRCHAR:	ERR;
+//
+//mode ANB_BLOCK;
+//ANNOT_BLOCK_END: NL ')' NL -> popMode;
+//ANNOT_BLOCK: (~'>>')+;
 
-mode ANB_CURLY;
-ANNOT_BLOCK_END: '}' -> popMode;
-ANNOT_BLOCK: (~'}')+;
+mode ANB_CODE;
+ANB_CODE_END: '}' -> popMode;
+ANB_CODE_SOURCE: (~'}')+;
 
 
 /*********************
@@ -335,6 +340,7 @@ XML_NameStartChar
                 |   '\uF900'..'\uFDCF'
                 |   '\uFDF0'..'\uFFFD'
                 ;
+
 
 
 

@@ -58,13 +58,13 @@ class PartsCollectorListener(ZmeiLangParserListener):
     def enterPage_template(self, ctx: ZmeiLangParser.Page_templateContext):
         tpl = ctx.getText().strip()
 
-        if '<' in tpl or '(' in tpl:
-            self.page.parsed_template_expr = tpl.strip('<>()')
+        if '{' in tpl:
+            self.page.parsed_template_expr = tpl.strip('{}')
         else:
             self.page.parsed_template_name = tpl
 
-    def enterPage_code_source(self, ctx: ZmeiLangParser.Page_code_sourceContext):
-        self.page.page_code = ctx.getText().strip()
+    def enterPage_code(self, ctx: ZmeiLangParser.Page_codeContext):
+        self.page.page_code = ctx.getText().strip('{} \n')
 
     def enterPage_field(self, ctx: ZmeiLangParser.Page_fieldContext):
         field = ctx.page_field_name().getText()
@@ -114,12 +114,12 @@ class PartsCollectorListener(ZmeiLangParserListener):
         name = ctx.getText()[1:].strip()
         if '/' in name:
             name, plural = name.split('/')
-            name = name.strip()
-            plural = plural.strip()
+            name = name.strip(' "\'')
+            plural = plural.strip(' "\'')
 
             self.model.name_plural = plural
 
-        self.model.name = name
+        self.model.name = name.strip(' "\'')
 
     def enterCol_str_expr(self, ctx: ZmeiLangParser.Col_str_exprContext):
         self.model.to_string = ctx.getText().strip()[2:-1].strip()
@@ -148,15 +148,15 @@ class PartsCollectorListener(ZmeiLangParserListener):
 
     # Calculated field
 
-    def enterCol_field_expr(self, ctx:ZmeiLangParser.Col_field_exprContext):
+    def enterCol_field_expr(self, ctx: ZmeiLangParser.Col_field_exprContext):
         self.field = ExpressionFieldDef(self.model, self.field_config)
 
-    def enterCol_field_expr_marker(self, ctx:ZmeiLangParser.Col_field_expr_markerContext):
+    def enterCol_field_expr_marker(self, ctx: ZmeiLangParser.Col_field_expr_markerContext):
         marker = ctx.getText().strip()
-        if marker == '<@':
+        if marker == '@=':
             self.field.static = True
 
-    def enterCol_feild_expr_code(self, ctx:ZmeiLangParser.Col_feild_expr_codeContext):
+    def enterCol_feild_expr_code(self, ctx: ZmeiLangParser.Col_feild_expr_codeContext):
         expr = ctx.getText().strip()
 
         if expr[0] == '!':
@@ -183,12 +183,9 @@ class PartsCollectorListener(ZmeiLangParserListener):
     def enterField_text_choice(self, ctx: ZmeiLangParser.Field_text_choiceContext):
         choice_key = ctx.field_text_choice_key()
 
-        val = ctx.field_text_choice_val().getText()
-        if val[0] == '"':
-            val = val[1:-1]
-
+        val = ctx.field_text_choice_val().getText().strip('"\' ')
         if choice_key:
-            key = choice_key.getText()[:-1]
+            key = choice_key.getText().strip(': ')
         else:
             key = val
 
@@ -212,13 +209,11 @@ class PartsCollectorListener(ZmeiLangParserListener):
     def enterField_int_choice(self, ctx: ZmeiLangParser.Field_int_choiceContext):
         choice_key = ctx.field_int_choice_key()
         if choice_key:
-            key = int(choice_key.getText()[:-1])
+            key = int(choice_key.getText().strip(': '))
         else:
             key = len(self.field.choices)
 
-        val = ctx.field_int_choice_val().getText()
-        if val[0] == '"':
-            val = val[1:-1]
+        val = ctx.field_int_choice_val().getText().strip('"\' ')
 
         self.field.choices[key] = val
 
@@ -345,7 +340,6 @@ class PartsCollectorListener(ZmeiLangParserListener):
 
     def enterField_folder(self, ctx: ZmeiLangParser.Field_folderContext):
         self.field = FilerFileFolderDef(self.model, self.field_config)
-
 
     # Relation field
 

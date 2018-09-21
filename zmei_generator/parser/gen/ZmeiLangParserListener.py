@@ -35,6 +35,24 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#import_source.
+    def enterImport_source(self, ctx:ZmeiLangParser.Import_sourceContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#import_source.
+    def exitImport_source(self, ctx:ZmeiLangParser.Import_sourceContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#code_block.
+    def enterCode_block(self, ctx:ZmeiLangParser.Code_blockContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#code_block.
+    def exitCode_block(self, ctx:ZmeiLangParser.Code_blockContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#page.
     def enterPage(self, ctx:ZmeiLangParser.PageContext):
         pass
@@ -104,15 +122,6 @@ class ZmeiLangParserListener(ParseTreeListener):
 
     # Exit a parse tree produced by ZmeiLangParser#page_code.
     def exitPage_code(self, ctx:ZmeiLangParser.Page_codeContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#page_code_source.
-    def enterPage_code_source(self, ctx:ZmeiLangParser.Page_code_sourceContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#page_code_source.
-    def exitPage_code_source(self, ctx:ZmeiLangParser.Page_code_sourceContext):
         pass
 
 
@@ -188,6 +197,15 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#verbose_name_part.
+    def enterVerbose_name_part(self, ctx:ZmeiLangParser.Verbose_name_partContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#verbose_name_part.
+    def exitVerbose_name_part(self, ctx:ZmeiLangParser.Verbose_name_partContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#col_base_name.
     def enterCol_base_name(self, ctx:ZmeiLangParser.Col_base_nameContext):
         pass
@@ -212,6 +230,42 @@ class ZmeiLangParserListener(ParseTreeListener):
 
     # Exit a parse tree produced by ZmeiLangParser#col_field.
     def exitCol_field(self, ctx:ZmeiLangParser.Col_fieldContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#col_field_expr.
+    def enterCol_field_expr(self, ctx:ZmeiLangParser.Col_field_exprContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#col_field_expr.
+    def exitCol_field_expr(self, ctx:ZmeiLangParser.Col_field_exprContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#col_field_expr_marker.
+    def enterCol_field_expr_marker(self, ctx:ZmeiLangParser.Col_field_expr_markerContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#col_field_expr_marker.
+    def exitCol_field_expr_marker(self, ctx:ZmeiLangParser.Col_field_expr_markerContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#col_feild_expr_code.
+    def enterCol_feild_expr_code(self, ctx:ZmeiLangParser.Col_feild_expr_codeContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#col_feild_expr_code.
+    def exitCol_feild_expr_code(self, ctx:ZmeiLangParser.Col_feild_expr_codeContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#string_or_quoted.
+    def enterString_or_quoted(self, ctx:ZmeiLangParser.String_or_quotedContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#string_or_quoted.
+    def exitString_or_quoted(self, ctx:ZmeiLangParser.String_or_quotedContext):
         pass
 
 
@@ -242,33 +296,6 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ZmeiLangParser#col_field_expr.
-    def enterCol_field_expr(self, ctx:ZmeiLangParser.Col_field_exprContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#col_field_expr.
-    def exitCol_field_expr(self, ctx:ZmeiLangParser.Col_field_exprContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#col_feild_expr_code.
-    def enterCol_feild_expr_code(self, ctx:ZmeiLangParser.Col_feild_expr_codeContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#col_feild_expr_code.
-    def exitCol_feild_expr_code(self, ctx:ZmeiLangParser.Col_feild_expr_codeContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#col_field_expr_marker.
-    def enterCol_field_expr_marker(self, ctx:ZmeiLangParser.Col_field_expr_markerContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#col_field_expr_marker.
-    def exitCol_field_expr_marker(self, ctx:ZmeiLangParser.Col_field_expr_markerContext):
-        pass
-
-
     # Enter a parse tree produced by ZmeiLangParser#col_modifier.
     def enterCol_modifier(self, ctx:ZmeiLangParser.Col_modifierContext):
         pass
@@ -287,12 +314,12 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ZmeiLangParser#annotation_block.
-    def enterAnnotation_block(self, ctx:ZmeiLangParser.Annotation_blockContext):
+    # Enter a parse tree produced by ZmeiLangParser#annotation_descr.
+    def enterAnnotation_descr(self, ctx:ZmeiLangParser.Annotation_descrContext):
         pass
 
-    # Exit a parse tree produced by ZmeiLangParser#annotation_block.
-    def exitAnnotation_block(self, ctx:ZmeiLangParser.Annotation_blockContext):
+    # Exit a parse tree produced by ZmeiLangParser#annotation_descr.
+    def exitAnnotation_descr(self, ctx:ZmeiLangParser.Annotation_descrContext):
         pass
 
 

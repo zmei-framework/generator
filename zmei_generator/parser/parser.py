@@ -1,6 +1,6 @@
 from antlr4 import *
 
-from .gen.ZmeiLangLexer import ZmeiLangLexer
+from .gen.ZmeiLangSimpleLexer import ZmeiLangSimpleLexer
 from .gen.ZmeiLangParser import ZmeiLangParser
 
 
@@ -13,7 +13,7 @@ def parse_string(string):
 
 
 def parse(stream):
-    lexer = ZmeiLangLexer(stream)
+    lexer = ZmeiLangSimpleLexer(stream)
     stream = CommonTokenStream(lexer)
     parser = ZmeiLangParser(stream)
     return parser.col_file()

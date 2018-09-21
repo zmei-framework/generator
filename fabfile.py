@@ -18,7 +18,7 @@ def deploy():
 
 def gen():
     lib = os.path.realpath('grammar')
-    lexerSrc = '{lib}/ZmeiLangLexer.g4'.format(**locals())
+    lexerSrc = '{lib}/ZmeiLangSimpleLexer.g4'.format(**locals())
     parserSrc = '{lib}/ZmeiLangParser.g4'.format(**locals())
 
     dst = 'zmei_generator/parser/gen'

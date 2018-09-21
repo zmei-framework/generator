@@ -17,9 +17,9 @@ def test_text_field():
         #boo
         ----------
         a
-        b: text(255)
-        c: text(?, choices=ab/Cda,abcd/Cda1,abcdef/"Яба яба")
-        d: text(?, choices=foo,bar,baz)
+        b: str(255)
+        c: str(?, choices=ab:Cda,abcd:Cda1,abcdef:"Яба яба")
+        d: str(?, choices=foo,bar,baz)
     """)
 
     a = cs.collections['boo'].fields['a']
@@ -56,7 +56,7 @@ def test_longtext_field():
     
         #boo
         ----------
-        a: longtext
+        a: text
     """)
 
     a = cs.collections['boo'].fields['a']

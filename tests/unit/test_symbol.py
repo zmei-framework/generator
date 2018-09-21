@@ -27,9 +27,9 @@ def test_page_fields():
     assert _("""
     
         [boo]
-        lala: 123
-        lolo: 123
-        lele: 123
+        lala:= 123
+        lolo:= 123
+        lele:= 123
         
         [bar]
         [foo]

@@ -1,6 +1,6 @@
 parser grammar FieldsParser;
 
-options { tokenVocab=ZmeiLangLexer; }
+options { tokenVocab=ZmeiLangSimpleLexer; }
 
 
 col_field_def: field_longtext
@@ -50,88 +50,87 @@ field_folder: COL_FIELD_TYPE_FOLDER;
 
 field_text:
             COL_FIELD_TYPE_TEXT
-            (FIELD_START
+            (BRACE_OPEN
             field_text_size
-            (FILED_COMA field_text_choices)?
-            FIELD_END)?;
+            (COMA field_text_choices)?
+            BRACE_CLOSE)?;
 
-field_text_size : (FILED_DIGIT | FIELD_QUSETION_MARK);
+field_text_size : (DIGIT | QUESTION_MARK);
 
 field_text_choices:
-            FILED_ARG_CHOICES
-            field_text_choice (FILED_COMA field_text_choice)*;
+            COL_FIELD_CHOICES EQUALS
+            field_text_choice (COMA field_text_choice)*;
 
 field_text_choice: field_text_choice_key? field_text_choice_val;
 
-field_text_choice_val : (FIELD_QUOTED | FILED_LITERAL) ;
+field_text_choice_val : (ID | STRING_DQ | STRING_SQ) ;
 
-field_text_choice_key : FILED_KEY_STR ;
+field_text_choice_key : ID COLON;
 
 // Int
 
 field_int:
             COL_FIELD_TYPE_INT
-            (FIELD_START field_int_choices FIELD_END)?
+            (BRACE_OPEN field_int_choices BRACE_CLOSE)?
             ;
 
 field_int_choices:
-            FILED_ARG_CHOICES
-            field_int_choice (FILED_COMA field_int_choice)*;
+            COL_FIELD_CHOICES EQUALS
+            field_int_choice (COMA field_int_choice)*;
 
 field_int_choice: field_int_choice_key? field_int_choice_val;
 
-field_int_choice_val : (FIELD_QUOTED | FILED_LITERAL) ;
+field_int_choice_val : (ID | STRING_DQ | STRING_SQ) ;
 
-field_int_choice_key : FILED_KEY_NUM ;
+field_int_choice_key : DIGIT COLON;
 
 // Slug
 
 field_slug:
             COL_FIELD_TYPE_SLUG
-            FIELD_START
+            BRACE_OPEN
             field_slug_ref_field
-            FIELD_END;
+            BRACE_CLOSE;
 
-field_slug_ref_field: field_slug_ref_field_id (FILED_COMA field_slug_ref_field_id)*;
-field_slug_ref_field_id: FILED_LITERAL;
+field_slug_ref_field: field_slug_ref_field_id (COMA field_slug_ref_field_id)*;
+field_slug_ref_field_id: ID;
 
 // Bool
-
 field_bool:
             COL_FIELD_TYPE_BOOL
-            (FIELD_START field_bool_default FIELD_END)?;
+            (BRACE_OPEN field_bool_default BRACE_CLOSE)?;
 
-field_bool_default: FIELD_BOOL;
+field_bool_default: BOOL;
 
 // Image
 
 field_image:
             filer_image_type
-            (FIELD_START field_image_sizes  FIELD_END)?;
+            (BRACE_OPEN field_image_sizes  BRACE_CLOSE)?;
 
 filer_image_type : (COL_FIELD_TYPE_IMAGE|COL_FIELD_TYPE_IMAGE_FOLDER) ;
 
-field_image_sizes: field_image_size (FILED_COMA field_image_size)*;
+field_image_sizes: field_image_size (COMA field_image_size)*;
 field_image_size: field_image_size_name field_image_size_dimensions field_image_filters;
 
-field_image_size_dimensions : FIELD_SIZE ;
+field_image_size_dimensions : SIZE2D;
 
-field_image_size_name : FILED_ARG_ANY ;
+field_image_size_name : ID EQUALS;
 
 field_image_filters: field_image_filter*;
-field_image_filter : FILED_FILTER ;
+field_image_filter : FILTER ;
 
 // Relation
 
 field_relation:
             field_relation_type
-            FIELD_START
+            BRACE_OPEN
             (field_relation_target_ref | field_relation_target_class)
             field_relation_related_name?
-            FIELD_END;
+            BRACE_CLOSE;
 
 field_relation_type : COL_FIELD_TYPE_ONE | COL_FIELD_TYPE_ONE2ONE | COL_FIELD_TYPE_MANY;
 
-field_relation_target_ref: FILED_REF;
-field_relation_target_class: FILED_CLASS;
-field_relation_related_name: FILED_RELATED_NAME;
+field_relation_target_ref: REF_SIGN ID;
+field_relation_target_class: CLASSNAME;
+field_relation_related_name: RELATED ID;
