@@ -14,6 +14,31 @@ class CollectionDef(object):
     # rest: False
     # translatable: False
 
+
+    @property
+    def admin_list(self):
+        return self.admin.admin_list
+
+    @property
+    def admin_read_only(self):
+        return self.admin.read_only
+
+    @property
+    def admin_list_editable(self):
+        return self.admin.list_editable
+
+    @property
+    def admin_list_filter(self):
+        return self.admin.list_filter
+
+    @property
+    def admin_list_search(self):
+        return self.admin.list_search
+
+    @property
+    def admin_fields(self):
+        return self.admin.fields
+
     def __init__(self, collection_set) -> None:
         super().__init__()
 
@@ -38,7 +63,7 @@ class CollectionDef(object):
         self.signal_handlers = []
 
         self.translatable = False
-        self.admin = False
+        self.admin = None
 
         self.tree = False
         self.tree_polymorphic_list = False
@@ -46,24 +71,9 @@ class CollectionDef(object):
         self.sortable_field = None
 
         self.fields = {}
-        # TODO: parse fields
-        # for field in parse_result.fields:
-        #     if field.calculated_expression or field.calculated_static_expression:
-        #         from zmei_generator.fields.expression import ExpressionFieldDef
-        #         field_cls = ExpressionFieldDef
-        #     else:
-        #         field_cls = self.collection_set.parser.get_field_class(field.type_name)
-        #
-        #     self.fields[field.name] = field_cls(self, field)
 
-        self.admin_list = None
         self.admin_js = []
         self.admin_css = []
-        self.admin_list_editable = None
-        self.admin_list_filter = None
-        self.admin_list_search = None
-        self.admin_list = None
-        self.admin_fields = None
         self.admin_inlines = []
         self.admin_has_polymorphic_inlines = False
 
@@ -275,7 +285,7 @@ class CollectionDef(object):
             return [field for field in fields if field.name not in exclude_list]
 
         else:
-            inlcude_list = []
+            include_list = []
             for item in filter_spec:
                 if item == '*':
                     raise ValidationException('* maybe used only as first item in field list')
@@ -287,9 +297,9 @@ class CollectionDef(object):
                     raise ValidationException(
                         'Field name specified for include: "{}" does not exist'.format(item))
 
-                inlcude_list += new_fields
+                include_list += new_fields
 
-            return [field for field in fields if field.name in inlcude_list]
+            return [field for field in fields if field.name in include_list]
 
     @property
     def class_name(self):

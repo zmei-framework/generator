@@ -305,6 +305,96 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#model_annotation.
+    def enterModel_annotation(self, ctx:ZmeiLangParser.Model_annotationContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#model_annotation.
+    def exitModel_annotation(self, ctx:ZmeiLangParser.Model_annotationContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_admin.
+    def enterAn_admin(self, ctx:ZmeiLangParser.An_adminContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_admin.
+    def exitAn_admin(self, ctx:ZmeiLangParser.An_adminContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_admin_list.
+    def enterAn_admin_list(self, ctx:ZmeiLangParser.An_admin_listContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_admin_list.
+    def exitAn_admin_list(self, ctx:ZmeiLangParser.An_admin_listContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_admin_read_only.
+    def enterAn_admin_read_only(self, ctx:ZmeiLangParser.An_admin_read_onlyContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_admin_read_only.
+    def exitAn_admin_read_only(self, ctx:ZmeiLangParser.An_admin_read_onlyContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_admin_list_editable.
+    def enterAn_admin_list_editable(self, ctx:ZmeiLangParser.An_admin_list_editableContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_admin_list_editable.
+    def exitAn_admin_list_editable(self, ctx:ZmeiLangParser.An_admin_list_editableContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_admin_list_filter.
+    def enterAn_admin_list_filter(self, ctx:ZmeiLangParser.An_admin_list_filterContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_admin_list_filter.
+    def exitAn_admin_list_filter(self, ctx:ZmeiLangParser.An_admin_list_filterContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_admin_list_search.
+    def enterAn_admin_list_search(self, ctx:ZmeiLangParser.An_admin_list_searchContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_admin_list_search.
+    def exitAn_admin_list_search(self, ctx:ZmeiLangParser.An_admin_list_searchContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_admin_fields.
+    def enterAn_admin_fields(self, ctx:ZmeiLangParser.An_admin_fieldsContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_admin_fields.
+    def exitAn_admin_fields(self, ctx:ZmeiLangParser.An_admin_fieldsContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#field_list_expr.
+    def enterField_list_expr(self, ctx:ZmeiLangParser.Field_list_exprContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#field_list_expr.
+    def exitField_list_expr(self, ctx:ZmeiLangParser.Field_list_exprContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#field_list_expr_field.
+    def enterField_list_expr_field(self, ctx:ZmeiLangParser.Field_list_expr_fieldContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#field_list_expr_field.
+    def exitField_list_expr_field(self, ctx:ZmeiLangParser.Field_list_expr_fieldContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#annotation.
     def enterAnnotation(self, ctx:ZmeiLangParser.AnnotationContext):
         pass
@@ -419,6 +509,15 @@ class ZmeiLangParserListener(ParseTreeListener):
 
     # Exit a parse tree produced by ZmeiLangParser#xml_misc.
     def exitXml_misc(self, ctx:ZmeiLangParser.Xml_miscContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#id_or_kw.
+    def enterId_or_kw(self, ctx:ZmeiLangParser.Id_or_kwContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#id_or_kw.
+    def exitId_or_kw(self, ctx:ZmeiLangParser.Id_or_kwContext):
         pass
 
 

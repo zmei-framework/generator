@@ -5,6 +5,7 @@ from zmei_generator.config.domain.field_def import FieldConfig, FieldDef
 from zmei_generator.config.domain.page_def import PageDef
 from zmei_generator.config.domain.page_expression import PageExpression
 from zmei_generator.config.domain.reference_field import ReferenceField
+from zmei_generator.extras.admin import AdminExtra
 from zmei_generator.fields.bool import BooleanFieldDef
 from zmei_generator.fields.date import DateFieldDef, DateTimeFieldDef, AutoNowDateTimeFieldDef, \
     AutoNowAddDateTimeFieldDef
@@ -377,6 +378,35 @@ class PartsCollectorListener(ZmeiLangParserListener):
         if self.field.ref_collection:
             self.field.ref_collection.fields[related_name] = \
                 ReferenceField(self.field.ref_collection, self.model, related_name, self.field)
+
+    ############################################
+    # Admin
+    ############################################
+
+    def enterAn_admin(self, ctx: ZmeiLangParser.An_adminContext):
+        self.model.admin = AdminExtra()
+        self.collection_set.admin = True
+
+    def enterAn_admin_list(self, ctx: ZmeiLangParser.An_admin_listContext):
+        self.model.admin.admin_list = self.model.filter_fields(self._get_admin_fields(ctx))
+
+    def enterAn_admin_read_only(self, ctx: ZmeiLangParser.An_admin_read_onlyContext):
+        self.model.admin.read_only = self.model.filter_fields(self._get_admin_fields(ctx))
+
+    def enterAn_admin_list_editable(self, ctx: ZmeiLangParser.An_admin_list_editableContext):
+        self.model.admin.list_editable  = self.model.filter_fields(self._get_admin_fields(ctx))
+
+    def enterAn_admin_list_filter(self, ctx: ZmeiLangParser.An_admin_list_filterContext):
+        self.model.admin.list_filter  = self.model.filter_fields(self._get_admin_fields(ctx))
+
+    def enterAn_admin_list_search(self, ctx: ZmeiLangParser.An_admin_list_searchContext):
+        self.model.admin.list_search  = self.model.filter_fields(self._get_admin_fields(ctx))
+
+    def enterAn_admin_fields(self, ctx: ZmeiLangParser.An_admin_fieldsContext):
+        self.model.admin.fields  = self.model.filter_fields(self._get_admin_fields(ctx))
+
+    def _get_admin_fields(self, ctx):
+        return [x.strip() for x in ctx.field_list_expr().getText().split(',')]
 
 
 def populate_collection_set(tree, app_name='noname'):

@@ -90,7 +90,7 @@ async def do_generate(executor, request, target_path):
     all_apps = {app_name: cs for app_name, cs in await asyncio.gather(*all_apps)}
 
     skeleton_dir = os.path.join(os.path.realpath(dirname(__file__)), 'skeleton')
-    await app.loop.run_in_executor(executor, generate_common_files, target_path, skeleton_dir, all_apps, features)
+    await app.loop.run_in_executor(executor, generate_common_files, target_path, skeleton_dir, all_apps)
 
     if 'react' in features and os.path.exists(os.path.join(target_path, 'react/package.json')):
         webpack_home = os.path.join(os.path.realpath(dirname(__file__)), 'webpack')

@@ -2,7 +2,6 @@ import os
 
 import pytest
 
-@pytest.mark.skip
 @pytest.mark.zmei('sample', """
 
 #car
@@ -14,7 +13,7 @@ weight: int
 crashed: bool(true)
 painted: bool
 
-@admin {list: *}
+@admin(list: *)
 
 """)
 @pytest.mark.zmei_before('install', 'migrate')
@@ -38,14 +37,14 @@ weight: int
 crashed: bool(true)
 painted: bool
 
-@admin {
+@admin(
     list: *, ^crashed
     list_editable: painted
     list_filter: mark, model
     list_search: nr
     
     tabs: main(*, ^weight), options(crashed, painted)
-}
+)
 
 """)
 def test_admin_more_options():

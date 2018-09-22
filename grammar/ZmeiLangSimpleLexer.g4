@@ -1,9 +1,16 @@
 lexer grammar ZmeiLangSimpleLexer;
 
 // Field types
-
+AN_ADMIN: '@admin';
 
 BOOL: 'true' | 'false';
+
+KW_LIST: 'list';
+KW_READ_ONLY: 'read_only';
+KW_LIST_EDITABLE: 'list_editable';
+KW_LIST_FILTER: 'list_filter';
+KW_LIST_SEARCH: 'list_search';
+KW_FIELDS: 'fields';
 
 
 KW_IMPORT: 'import';
@@ -59,6 +66,7 @@ FILTER: '|' ID;
 
 
 COLON: ':';
+EXCLUDE: '^';
 BRACE_OPEN: '(';
 BRACE_CLOSE: ')';
 SQ_BRACE_OPEN: '[';
@@ -146,7 +154,7 @@ XML_CharRef     :   '&#' XML_DIGIT+ ';'
             |   '&#x' XML_HEXDIGIT+ ';'
             ;
 
-XML_TAG_OPEN    :   '<'                 -> pushMode(XML_INSIDE) ;
+XML_TAG_OPEN    :   '<'                 -> type(XML_OPEN), pushMode(XML_INSIDE) ;
 XML_TEXT        :   ~[<&[#%]+ ;        // match any 16 bit char other than < and &
 
 XML_ERRCHAR     :	ERR;
