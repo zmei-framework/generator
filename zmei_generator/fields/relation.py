@@ -65,7 +65,7 @@ class RelationDef(FieldDef):
 
 
 class RelationOneDef(RelationDef):
-    def get_model_field(self, collection):
+    def get_model_field(self):
         args = self.prepare_field_arguemnts({'related_name': self.related_name or '+'})
 
         return FieldDeclaration(
@@ -95,7 +95,7 @@ class RelationOneDef(RelationDef):
 
 
 class RelationOne2OneDef(RelationDef):
-    def get_model_field(self, collection):
+    def get_model_field(self):
         args = self.prepare_field_arguemnts({'related_name': self.related_name or '+'})
 
         return FieldDeclaration(
@@ -125,7 +125,7 @@ class RelationOne2OneDef(RelationDef):
 
 
 class RelationManyDef(RelationDef):
-    def get_model_field(self, collection):
+    def get_model_field(self):
         args = self.prepare_field_arguemnts({'related_name': self.related_name or '+'})
 
         if 'null' in args:

@@ -79,7 +79,7 @@ class TextFieldDef(DefaultTextMixin, FieldDef):
 
         return choices
 
-    def get_model_field(self, collection):
+    def get_model_field(self):
         args = self.prepare_field_arguemnts({'max_length': self.max_length})
 
         if self.choices:
@@ -102,7 +102,7 @@ class SlugFieldDef(DefaultTextMixin, FieldDef):
                 'Slug field "{}" argument should be names of another fields in same collection separated by ","'.format(
                     self.name))
 
-    def get_model_field(self, collection):
+    def get_model_field(self):
         max_len = 0
 
         for field_name in self.field_names:
@@ -130,7 +130,7 @@ class SlugFieldDef(DefaultTextMixin, FieldDef):
 
 
 class LongTextFieldDef(DefaultTextMixin, FieldDef):
-    def get_model_field(self, collection):
+    def get_model_field(self):
         args = self.prepare_field_arguemnts()
 
         return FieldDeclaration(
@@ -140,7 +140,7 @@ class LongTextFieldDef(DefaultTextMixin, FieldDef):
 
 
 class RichTextFieldDef(DefaultTextMixin, FieldDef):
-    def get_model_field(self, collection):
+    def get_model_field(self):
         args = self.prepare_field_arguemnts()
 
         return FieldDeclaration(
@@ -161,7 +161,7 @@ class RichTextFieldDef(DefaultTextMixin, FieldDef):
 
 
 class RichTextFieldWithUploadDef(DefaultTextMixin, FieldDef):
-    def get_model_field(self, collection):
+    def get_model_field(self):
         args = self.prepare_field_arguemnts()
 
         return FieldDeclaration(

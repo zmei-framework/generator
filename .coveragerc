@@ -1,0 +1,2 @@
+[report]
+omit: zmei_generator/parser/gen/*, zmei_generator/config/grammar.py

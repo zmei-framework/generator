@@ -40,3 +40,6 @@ def test_calculated_field():
     assert c.expression == '3 + 2'
     assert c.static is False
     assert c.boolean is True
+
+    assert a.get_model_field() is None
+    assert a.admin_list_renderer.strip() == "return obj.a"

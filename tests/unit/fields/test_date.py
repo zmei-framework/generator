@@ -25,6 +25,8 @@ def test_date_field():
 
     assert isinstance(a, DateFieldDef)
 
+    assert "models.DateField" in a.get_model_field()[1]
+
 
 def test_datetime_field():
     cs = _("""
@@ -37,6 +39,8 @@ def test_datetime_field():
     a = cs.collections['boo'].fields['a']
 
     assert isinstance(a, DateTimeFieldDef)
+
+    assert "models.DateTimeField" in a.get_model_field()[1]
 
 
 def test_update_time_field():
@@ -51,6 +55,9 @@ def test_update_time_field():
 
     assert isinstance(a, AutoNowDateTimeFieldDef)
 
+    assert "models.DateTimeField" in a.get_model_field()[1]
+    assert "auto_now=True" in a.get_model_field()[1]
+
 
 def test_create_time_field():
     cs = _("""
@@ -63,3 +70,6 @@ def test_create_time_field():
     a = cs.collections['boo'].fields['a']
 
     assert isinstance(a, AutoNowAddDateTimeFieldDef)
+
+    assert "models.DateTimeField" in a.get_model_field()[1]
+    assert "auto_now_add=True" in a.get_model_field()[1]

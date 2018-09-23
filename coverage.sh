@@ -1,2 +1,2 @@
 #!/bin/bash
-py.test --cov zmei_generator/ --cov-report html
+py.test tests/unit --cov zmei_generator/ --cov-report html

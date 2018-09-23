@@ -74,7 +74,7 @@ class FieldDef(object):
     def parse_options(self):
         self.options = {}
 
-    def get_model_field(self, collection: CollectionDef):
+    def get_model_field(self):
         raise NotImplementedError('Field "{}" ({}) is not yet implemented.'.format(self.type_name, type(self)))
 
     def get_admin_widget(self):

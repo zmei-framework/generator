@@ -19,7 +19,7 @@ def test_bool_field():
         ----------
         a: bool
         b: bool(true)
-        c: bool(false)
+        ~c: bool(false)
     """)
 
     a = cs.collections['boo'].fields['a']
@@ -33,3 +33,7 @@ def test_bool_field():
     assert a.default is False
     assert b.default is True
     assert c.default is False
+
+    assert "default=False" in a.get_model_field()[1]
+    assert "default=True" in b.get_model_field()[1]
+    assert "default=False" in c.get_model_field()[1]

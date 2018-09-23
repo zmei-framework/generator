@@ -14,8 +14,7 @@ class ExpressionFieldDef(FieldDef):
 
         self.boolean = False
 
-
-    def get_model_field(self, collection: CollectionDef):
+    def get_model_field(self):
         return None
 
     @property

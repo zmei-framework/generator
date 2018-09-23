@@ -16,7 +16,7 @@ class FilerFileFieldDef(FieldDef):
 
     sizes = None
 
-    def get_model_field(self, collection):
+    def get_model_field(self):
         args = self.prepare_field_arguemnts({
             'related_name': '+'
         })
@@ -41,7 +41,7 @@ class FilerFileFolderDef(FieldDef):
 
     """
 
-    def get_model_field(self, collection):
+    def get_model_field(self):
         args = self.prepare_field_arguemnts({
             'related_name': '+'
         })
@@ -76,7 +76,7 @@ class FilerImageFieldDef(FieldDef):
 
     sizes = None
 
-    def get_model_field(self, collection):
+    def get_model_field(self):
         args = self.prepare_field_arguemnts({
             'related_name': '+'
         })
@@ -126,7 +126,7 @@ class FilerImageFieldDef(FieldDef):
 
 class FilerImageFolderFieldDef(FilerImageFieldDef):
 
-    def get_model_field(self, collection):
+    def get_model_field(self):
         args = self.prepare_field_arguemnts({
             'related_name': '+'
         })

@@ -20,7 +20,7 @@ class {{ col.class_name }}({% for import_str, class_name, alias in col.mixin_cla
     {% endif %}
 
     {% for field in col.own_fields %}{% if not field.read_only %}
-    {{ field.name }} = {{ field.get_model_field(col).declaration }}{% endif %}{% endfor %}
+    {{ field.name }} = {{ field.get_model_field().declaration }}{% endif %}{% endfor %}
     {% for field in col.expression_fields %}
     {% if field.static %}
     @classmethod

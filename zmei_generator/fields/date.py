@@ -4,7 +4,7 @@ from zmei_generator.generator.utils import gen_args
 
 
 class DateFieldDef(FieldDef):
-    def get_model_field(self, collection):
+    def get_model_field(self):
         args = self.prepare_field_arguemnts()
 
         return FieldDeclaration(
@@ -14,7 +14,7 @@ class DateFieldDef(FieldDef):
 
 
 class DateTimeFieldDef(FieldDef):
-    def get_model_field(self, collection):
+    def get_model_field(self):
         args = self.prepare_field_arguemnts()
 
         return FieldDeclaration(

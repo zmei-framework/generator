@@ -31,7 +31,7 @@ class IntegerFieldDef(FieldDef):
                 handle_parse_exception(e, self.options,
                                        'Can not parse options for field "{}" for collection "{}"'.format(self.name, self.collection.ref))
 
-    def get_model_field(self, collection):
+    def get_model_field(self):
         args = self.prepare_field_arguemnts()
 
         if self.choices:
@@ -44,7 +44,7 @@ class IntegerFieldDef(FieldDef):
 
 
 class FloatFieldDef(FieldDef):
-    def get_model_field(self, collection):
+    def get_model_field(self):
         args = self.prepare_field_arguemnts()
 
         return FieldDeclaration(
@@ -61,7 +61,7 @@ class DecimalFieldDef(FieldDef):
         if isinstance(self.options, str) and self.options.strip() != '':
             self.positive = self.options.strip() == '+'
 
-    def get_model_field(self, collection):
+    def get_model_field(self):
         imports = [('django.db', 'models')]
 
         own_args = {'max_digits': 15, 'decimal_places': 2, }

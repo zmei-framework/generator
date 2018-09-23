@@ -4,7 +4,7 @@ from zmei_generator.generator.utils import gen_args
 
 
 class ImageFieldDef(FieldDef):
-    def get_model_field(self, collection):
+    def get_model_field(self):
         args = self.prepare_field_arguemnts({
             'upload_to': self.options or f'image_upload/{self.collection.ref}/{self.name}',
         })
@@ -16,7 +16,7 @@ class ImageFieldDef(FieldDef):
 
 
 class SimpleFieldDef(FieldDef):
-    def get_model_field(self, collection):
+    def get_model_field(self):
         args = self.prepare_field_arguemnts({
             'upload_to': self.options or f'image_upload/{self.collection.ref}/{self.name}',
         })

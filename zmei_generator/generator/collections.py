@@ -417,7 +417,7 @@ def generate_models_py(target_path, app_name, collection_set):
                 imports.add(*(pkg, cls))
 
         for field in collection.own_fields:  # type: FieldDef
-            model_field = field.get_model_field(collection)
+            model_field = field.get_model_field()
             if model_field:
                 import_data, model_field = model_field  # type: FieldDeclaration
 
