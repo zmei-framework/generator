@@ -5,6 +5,8 @@ AN_ADMIN: '@admin';
 
 BOOL: 'true' | 'false';
 
+KW_CSS: 'css';
+KW_JS: 'js';
 KW_INLINE_TYPE: 'tabular' | 'stacked' | 'polymorphic';
 KW_INLINE: 'inline';
 KW_TYPE: 'type';

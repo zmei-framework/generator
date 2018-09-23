@@ -437,11 +437,19 @@ class PartsCollectorListener(ZmeiLangParserListener):
     def enterInline_extra(self, ctx: ZmeiLangParser.Inline_extraContext):
         self.inline.extra_count = int(ctx.DIGIT().getText())
 
+    def enterAn_admin_css_file_name(self, ctx: ZmeiLangParser.An_admin_css_file_nameContext):
+        self.model.admin.css.append(ctx.getText().strip('"\''))
+
+    def enterAn_admin_js_file_name(self, ctx: ZmeiLangParser.An_admin_js_file_nameContext):
+        self.model.admin.js.append(ctx.getText().strip('"\''))
+
     def exitAn_admin_inline(self, ctx:ZmeiLangParser.An_admin_inlineContext):
         self.model.admin.inlines.append(
             self.inline
         )
         self.inline = None
+
+
 
 
 def populate_collection_set(tree, app_name='noname'):

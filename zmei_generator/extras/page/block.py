@@ -133,8 +133,6 @@ class BlocksPageExtra(PageExtra):
 
         area_name = parsed_result.descriptor or 'content'
 
-        print('Loading blocks for ', page)
-
         blocks = [PageBlock(source=parsed_result.extra_body, area_name=area_name)]
 
         if area_name not in page.blocks:

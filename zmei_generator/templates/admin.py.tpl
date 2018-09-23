@@ -10,7 +10,7 @@ class {{ col.class_name }}ModelForm(forms.ModelForm):
     {% for field in col.fields.values() %}{% if field.get_admin_widget() %}'{{ field.name }}': {{ field.get_admin_widget().declaration }},{% endif %}{% endfor %}
     }
 
-{% for inline in col.admin_inlines %}
+{% for inline in col.admin.inlines %}
 class {{ inline.class_name }}({{ inline.parent_classes|join(', ') }}):
     model  = {{ inline.target_collection.class_name }}{% if inline.tab %}
     suit_classes = 'suit-tab suit-tab-{{ inline.tab }}'
@@ -30,7 +30,7 @@ class {{ inline.class_name }}({{ inline.parent_classes|join(', ') }}):
     {% endif %}
 {% endfor %}
 
-class {{ col.class_name }}Admin({{ col.admin_class_declaration }}):
+class {{ col.class_name }}Admin({{ col.admin.class_declaration }}):
     """
     {{ col.class_name }} Admin
     """
@@ -56,8 +56,8 @@ class {{ col.class_name }}Admin({{ col.admin_class_declaration }}):
     prepopulated_fields = {{ col.prepopulated_fields |repr }}
     {% endif %}
 
-    {% if col.admin_read_only %}
-    readonly_fields = ({{ col.admin_read_only|field_names(admin=True) }},)
+    {% if col.admin.read_only %}
+    readonly_fields = ({{ col.admin.read_only|field_names(admin=True) }},)
     {% endif %}
 
     {% if col.date_hierarchy %}
@@ -68,42 +68,42 @@ class {{ col.class_name }}Admin({{ col.admin_class_declaration }}):
 {% if not col.polymorphic %}
     form = {{ col.class_name }}ModelForm
 
-    {% if col.admin_tabs %}
-    suit_form_tabs = ({% for tab in col.admin_tabs %}
-        ('{{ tab }}', '{{ col.tab_names.get(tab)|to_name }}'),{% endfor %}
+    {% if col.admin.tabs %}
+    suit_form_tabs = ({% for tab in col.admin.tabs %}
+        ('{{ tab }}', '{{ col.admin.tab_names.get(tab)|to_name }}'),{% endfor %}
     )
 
-    fieldsets = ({% for tab in col.admin_tabs %}{% if col.fields_for_tab(tab) %}
+    fieldsets = ({% for tab in col.admin.tabs %}{% if col.admin.fields_for_tab(tab) %}
         (None, {
             'classes': ('suit-tab', 'suit-tab-{{ tab }}',),
-            'fields': [{{ col.fields_for_tab(tab)|field_names(admin=False) }}]
+            'fields': [{{ col.admin.fields_for_tab(tab)|field_names(admin=False) }}]
         }),{% endif %}{% endfor %})
 
     {{ col.render_tabs }}
-    {% elif col.admin_fields %}
-    fields = [{{ col.admin_fields|field_names(admin=False) }}]
+    {% elif col.admin.fields %}
+    fields = [{{ col.admin.fields|field_names(admin=False) }}]
     {% endif %}
 
     {# ***** INLINES ********* #}
-    {% if col.admin_inlines %}
-    inlines = [{{ col.admin_inline_classes|join(', ') }}]
+    {% if col.admin.inlines %}
+    inlines = [{{ col.admin.inline_classes|join(', ') }}]
     {% endif %}
 
 {% endif %}
 
-{% if col.admin_list %}
-    list_display = [{% if col.tree %}'tree_actions', 'indented_title',{% else %}{% endif %}{{ col.admin_list|field_names(admin=True) }}]
-    {% if col.admin_list_editable %}
-    list_editable = [{{ col.admin_list_editable|field_names(admin=False) }}]
+{% if col.admin.admin_list %}
+    list_display = [{% if col.tree %}'tree_actions', 'indented_title',{% else %}{% endif %}{{ col.admin.admin_list|field_names(admin=True) }}]
+    {% if col.admin.list_editable %}
+    list_editable = [{{ col.admin.list_editable|field_names(admin=False) }}]
     {% endif %}
-    {% if col.admin_list_filter %}
-    list_filter = [{{ col.admin_list_filter|field_names(admin=False) }}]
+    {% if col.admin.list_filter %}
+    list_filter = [{{ col.admin.list_filter|field_names(admin=False) }}]
     {% endif %}
-    {% if col.admin_list_search %}
-    search_fields = [{{ col.admin_list_search|field_names(admin=False) }}]
+    {% if col.admin.list_search %}
+    search_fields = [{{ col.admin.list_search|field_names(admin=False) }}]
     {% endif %}
 
-    {% for field in col.admin_list %}
+    {% for field in col.admin.list %}
     {% if field.admin_list_renderer %}
     def get_{{ field.name }}(self, obj):
         {{ field.admin_list_renderer }}
@@ -124,11 +124,11 @@ class {{ col.class_name }}Admin({{ col.admin_class_declaration }}):
     {% endif %}
     {% endfor %}
 
-    {% if col.admin_js or col.admin_css %}
-    class Media:{% if col.admin_css %}
-        css = {"all": {{ col.admin_css|repr }} }
-        {% endif %}{% if col.admin_js %}
-        js = {{ col.admin_js|repr }}
+    {% if col.admin.js or col.admin.css %}
+    class Media:{% if col.admin.css %}
+        css = {"all": {{ col.admin.css|repr }} }
+        {% endif %}{% if col.admin.js %}
+        js = {{ col.admin.js|repr }}
         {% endif %}
     {% endif %}
 

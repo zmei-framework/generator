@@ -14,51 +14,6 @@ class CollectionDef(object):
     # rest: False
     # translatable: False
 
-
-    @property
-    def admin_list(self):
-        return self.admin.admin_list
-
-    @property
-    def admin_read_only(self):
-        return self.admin.read_only
-
-    @property
-    def admin_list_editable(self):
-        return self.admin.list_editable
-
-    @property
-    def admin_list_filter(self):
-        return self.admin.list_filter
-
-    @property
-    def admin_list_search(self):
-        return self.admin.list_search
-
-    @property
-    def admin_fields(self):
-        return self.admin.fields
-
-    @property
-    def admin_tab_fields(self):
-        return self.admin.tab_fields
-
-    @property
-    def admin_tabs(self):
-        return self.admin.tabs
-
-    @property
-    def tab_names(self):
-        return self.admin.tab_names
-
-    @property
-    def admin_inlines(self):
-        return self.admin.inlines
-
-    @property
-    def admin_has_polymorphic_inlines(self):
-        return self.admin.has_polymorphic_inlines
-
     def __init__(self, collection_set) -> None:
         super().__init__()
 
@@ -91,10 +46,6 @@ class CollectionDef(object):
         self.sortable_field = None
 
         self.fields = {}
-
-        self.admin_js = []
-        self.admin_css = []
-
 
         self.rest_conf = {}
         self.published_apis = {}
@@ -132,29 +83,6 @@ class CollectionDef(object):
 
             self.translatable = self.parent.translatable or self.translatable
 
-        extras = self.collection_set.parser.get_extras_available()
-
-        loaded_extras = []
-
-        # TODO: process extras
-        # for extra in self.raw_.extras:
-        #
-        #     try:
-        #         extra_cls = extras[extra.extra_name]
-        #         try:
-        #             extra_instance = extra_cls()
-        #             extra_instance.parse(extra, self)
-        #             loaded_extras.append(extra_instance)
-        #
-        #         except ParseException as e:
-        #             handle_parse_exception(e, extra.extra_body,
-        #                                    '@{} expression for collection "{}"'.format(extra.extra_name, self.name))
-        #     except KeyError as e:
-        #         raise ValidationException('Extra not found: {}, reason: {}'.format(extra.extra_name, e))
-
-        for extra in loaded_extras:
-            extra.post_process()
-
     @property
     def model_class_declaration(self):
         classes = []
@@ -180,63 +108,6 @@ class CollectionDef(object):
             return []
 
         return [x.class_name for x in self.child_collections]
-
-    @property
-    def admin_class_declaration(self):
-        return ', '.join([x[1] for x in self.admin_classes])
-
-    @property
-    def admin_classes(self):
-        classes = []
-
-        model_admin_added = False
-
-        if self.admin_has_polymorphic_inlines:
-            classes.append(('polymorphic.admin', 'PolymorphicInlineSupportMixin'))
-
-        if self.parent:
-            classes.append(('polymorphic.admin', 'PolymorphicChildModelAdmin'))
-            model_admin_added = True
-        elif self.polymorphic:
-            classes.append(('polymorphic.admin', 'PolymorphicParentModelAdmin'))
-            model_admin_added = True
-
-        if self.sortable:
-            classes.append(('suit.admin', 'SortableModelAdmin'))
-            model_admin_added = True
-
-        if self.tree:
-            classes.append(('mptt.admin', 'DraggableMPTTAdmin'))
-            model_admin_added = True
-
-        if self.translatable:
-            classes.append(('cratis_i18n.admin', 'TranslatableModelAdmin'))
-            model_admin_added = True
-
-        if not model_admin_added:
-            classes.append(('django.contrib.admin', 'ModelAdmin'))
-
-        return classes
-
-    @property
-    def admin_inline_classes(self):
-        return [x.class_name for x in self.admin_inlines]
-
-    def fields_for_tab(self, tab):
-        fields = []
-        for name, tab_name in self.admin_tab_fields.items():
-            # skip references
-            if isinstance(self.all_and_inherited_fields_map[name], ReferenceField):
-                continue
-
-            if tab_name == tab:
-                fields.append(self.all_and_inherited_fields_map[name])
-
-        return fields
-
-    @property
-    def empty_admin(self):
-        return not (self.admin_fields or self.admin_list)
 
     def check_field_exists(self, field_name):
         fields = self.expand_field_pattern(field_name)
@@ -392,12 +263,20 @@ class CollectionDef(object):
         all_apps = []
         for field in self.all_fields:
             all_apps.extend(field.get_required_apps())
+
+        if self.polymorphic:
+            all_apps.append('polymorphic')
+
         return all_apps
 
     def get_required_deps(self):
         all_deps = []
         for field in self.all_fields:
             all_deps.extend(field.get_required_deps())
+
+        if self.polymorphic:
+            all_deps.append('django-polymorphic')
+
         return all_deps
 
     def get_required_urls(self):

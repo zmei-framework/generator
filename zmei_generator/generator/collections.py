@@ -28,9 +28,7 @@ def generate_common_files(target_path, skeleton_dir, apps):
     if os.path.exists(manage_py):
         unlink(manage_py)
 
-    print('copy', os.path.join(skeleton_dir, 'app'), app_dir)
     copytree(os.path.join(skeleton_dir, 'app'), app_dir)
-    print('copy', os.path.join(skeleton_dir, 'manage.py'), manage_py)
     copyfile(os.path.join(skeleton_dir, 'manage.py'), manage_py)
 
     #config
@@ -276,7 +274,7 @@ def generate_admin_py(target_path, app_name, collection_set):
 
         imports.add('{}.models'.format(app_name), col.class_name)
 
-        for class_import in col.admin_classes:
+        for class_import in col.admin.classes:
             imports.add(*class_import)
 
         if col.polymorphic:
@@ -284,7 +282,7 @@ def generate_admin_py(target_path, app_name, collection_set):
                 imports.add('{}.models'.format(app_name), child.class_name)
 
         # inlines
-        for inline in col.admin_inlines:
+        for inline in col.admin.inlines:
             for declaration in inline.type_declarations:
                 imports.add(*declaration)
 

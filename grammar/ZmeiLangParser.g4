@@ -176,15 +176,22 @@ an_admin:
         |an_admin_list_filter
         |an_admin_list_search
         |an_admin_fields
+        |an_admin_tabs
         |an_admin_inlines
+        |an_admin_css
+        |an_admin_js
         |NL
         |COMA
     )*
-    an_admin_tabs?
     NL*
     BRACE_CLOSE)?
     NL*
     ;
+
+an_admin_js: KW_JS COLON NL* an_admin_js_file_name (COMA NL* an_admin_js_file_name)*;
+an_admin_css: KW_CSS COLON an_admin_css_file_name (COMA an_admin_css_file_name)*;
+an_admin_css_file_name: STRING_DQ | STRING_SQ;
+an_admin_js_file_name: STRING_DQ | STRING_SQ;
 
 an_admin_inlines: KW_INLINE COLON an_admin_inline (COMA an_admin_inline)*;
 an_admin_inline:
@@ -284,6 +291,8 @@ xml_misc        :   WS | NL ;
  */
 id_or_kw: ID
    |BOOL
+   |KW_CSS
+   |KW_JS
    |KW_INLINE_TYPE
    |KW_INLINE
    |KW_TYPE

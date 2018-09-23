@@ -205,3 +205,30 @@ def test_admin_inlines():
     assert CarServiceHistoryInline.model == Service
     assert CarServiceHistoryInline.fields == ['date', 'details']
     assert CarAdmin.inlines == [CarServiceHistoryInline]
+
+@pytest.mark.zmei_before('install', 'migrate')
+@pytest.mark.zmei('sample', """
+
+#car
+-------
+nr
+
+@admin(
+    css: "foo.css", "another/boo.css"
+    js: 
+        "foo.js", 
+        "another/boo.js"    
+)
+
+
+""")
+def test_admin_css_js():
+    from sample.admin import CarAdmin
+
+    assert CarAdmin.Media.css['all'] == [
+        "foo.css", "another/boo.css"
+    ]
+
+    assert CarAdmin.Media.js == [
+        "foo.js", "another/boo.js"
+    ]

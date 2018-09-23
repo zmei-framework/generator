@@ -220,13 +220,6 @@ def test_admin_list():
     assert [x.name for x in boo.admin.list_search] == ['abc', 'cda']
     assert [x.name for x in boo.admin.fields] == ['abc', 'cda']
 
-    assert boo.admin_list == boo.admin.admin_list
-    assert boo.admin_read_only == boo.admin.read_only
-    assert boo.admin_list_editable == boo.admin.list_editable
-    assert boo.admin_list_filter == boo.admin.list_filter
-    assert boo.admin_list_search == boo.admin.list_search
-    assert boo.admin_fields == boo.admin.fields
-
 
 def test_admin_tabs_all():
     cs = _("""
@@ -252,11 +245,6 @@ def test_admin_tabs_all():
         'b': 'foo',
         'c': 'foo',
     }
-
-    assert boo.admin_tab_fields == boo.admin.tab_fields
-    assert boo.admin_tabs == boo.admin.tabs
-    assert boo.tab_names == boo.admin.tab_names
-
 
 def test_admin_tabs_all_but_some():
     cs = _("""
@@ -284,10 +272,6 @@ def test_admin_tabs_all_but_some():
         'c': 'foo',
         'd': 'lolo',
     }
-
-    assert boo.admin_tab_fields == boo.admin.tab_fields
-    assert boo.admin_tabs == boo.admin.tabs
-    assert boo.tab_names == boo.admin.tab_names
 
 
 def test_admin_tabs_verbose_name():
@@ -355,8 +339,8 @@ def test_admin_tabs_with_fields():
     painted: bool
 
     @admin(
-        fields: *, ^weight
         tabs: main(*), options(crashed, painted)
+        fields: *, ^weight
     )
 
     """)
@@ -483,3 +467,29 @@ def test_admin_inline_tab():
         'b': 'main',
         'lala': 'other',
     }
+
+
+def test_admin_js_css():
+    cs = _("""
+
+    #foo
+    -------
+    a
+
+    @admin(
+        css: "foo.css", "another/boo.css"
+        js: 
+            "foo.js", 
+            "another/boo.js"
+    )
+
+    """)
+
+    foo = cs.collections['foo']
+
+    assert foo.admin.css == [
+        "foo.css", "another/boo.css"
+    ]
+    assert foo.admin.js == [
+        "foo.js", "another/boo.js"
+    ]

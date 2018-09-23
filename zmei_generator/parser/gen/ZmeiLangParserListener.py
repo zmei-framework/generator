@@ -323,6 +323,42 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#an_admin_js.
+    def enterAn_admin_js(self, ctx:ZmeiLangParser.An_admin_jsContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_admin_js.
+    def exitAn_admin_js(self, ctx:ZmeiLangParser.An_admin_jsContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_admin_css.
+    def enterAn_admin_css(self, ctx:ZmeiLangParser.An_admin_cssContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_admin_css.
+    def exitAn_admin_css(self, ctx:ZmeiLangParser.An_admin_cssContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_admin_css_file_name.
+    def enterAn_admin_css_file_name(self, ctx:ZmeiLangParser.An_admin_css_file_nameContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_admin_css_file_name.
+    def exitAn_admin_css_file_name(self, ctx:ZmeiLangParser.An_admin_css_file_nameContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_admin_js_file_name.
+    def enterAn_admin_js_file_name(self, ctx:ZmeiLangParser.An_admin_js_file_nameContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_admin_js_file_name.
+    def exitAn_admin_js_file_name(self, ctx:ZmeiLangParser.An_admin_js_file_nameContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#an_admin_inlines.
     def enterAn_admin_inlines(self, ctx:ZmeiLangParser.An_admin_inlinesContext):
         pass

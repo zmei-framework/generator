@@ -38,52 +38,13 @@ class AdminExtra(Extra):
 
         self.tabs_raw = []
 
+        # media files
+        self.css = []
+        self.js = []
+
     @classmethod
     def get_name(cls):
         return 'admin'
-
-    # def get_parser(self):
-    #
-    #     identifier = Word(alphas, alphanums + '_')
-    #
-    #     admin_inline_args = Each([
-    #                         Optional(Suppress('fields:') + Group(delimitedList(field_name_spec)).setResultsName('fields')),
-    #                         Optional(Suppress(',')) + Optional(Suppress('type:') + oneOf('tabular stacked polymorphic').setResultsName('type')),
-    #                         Optional(Suppress(',')) + Optional(Suppress('extra:') + Word(nums).setResultsName('extra_count'))
-    #     ])
-    #
-    #     admin_inline = Group(
-    #         identifier.setResultsName('id') + Optional(Suppress('(') + admin_inline_args + Suppress(')')))
-    #
-    #     tab_verbose_name = Suppress('/') + OneOrMore(Regex(r"\w+", re.UNICODE)) \
-    #         .setParseAction(lambda tokens: " ".join(tokens)) \
-    #         .setResultsName("verbose_name")
-    #
-    #     admin_tab = Group(
-    #         identifier.setResultsName('id') + Optional(tab_verbose_name) + Suppress('(') + Group(delimitedList(field_name_spec)).setResultsName(
-    #             'fields') + Suppress(')'))
-    #
-    #     file_name = QuotedString('"')
-    #
-    #     return Each([
-    #                Optional(Suppress('list:') + Group(delimitedList(field_name_spec)).setResultsName('list')) +
-    #                Optional(Suppress('list_editable:') + Group(delimitedList(field_name_spec)).setResultsName('list_editable')) +
-    #                Optional(Suppress('list_filter:') + Group(delimitedList(field_name_spec)).setResultsName('list_filter')) +
-    #                Optional(Suppress('list_search:') + Group(delimitedList(field_name_spec)).setResultsName('list_search')) +
-    #                Optional(Suppress('fields:') + Group(delimitedList(field_name_spec)).setResultsName('fields')) +
-    #                Optional(Suppress('read_only:') + Group(delimitedList(field_name_spec)).setResultsName('read_only')) +
-    #                Optional(Suppress('inline:') + Group(delimitedList(admin_inline)).setResultsName('inlines')) +
-    #                Optional(Suppress('tabs:') + Group(delimitedList(admin_tab)).setResultsName('tabs')) +
-    #                Optional(Suppress('js:') + Group(delimitedList(file_name)).setResultsName('js')) +
-    #                Optional(Suppress('css:') + Group(delimitedList(file_name)).setResultsName('css'))
-    #            ]).ignore(cStyleComment) + stringEnd
-
-    def parse(self, extra, collection):
-        if parsed_body.js:
-            collection.admin_js = list(parsed_body.js)
-
-        if parsed_body.css:
-            collection.admin_css = list(parsed_body.css)
 
     def register_tab(self, name, verbose_name, fields_expr, prepend=False):
 
@@ -130,13 +91,68 @@ class AdminExtra(Extra):
 
         # set tabs to inlines
         inline_map = {x.inline_name: x for x in self.inlines}
-        print(self.tab_fields)
+
         for field_name, tab in self.tab_fields.items():
             if field_name in inline_map:
                 inline_map[field_name].tab = tab
 
         for inline in self.inlines:
             inline.post_process()
+
+    def fields_for_tab(self, tab):
+        fields = []
+        for name, tab_name in self.tab_fields.items():
+            # skip references
+            if isinstance(self.collection.all_and_inherited_fields_map[name], ReferenceField):
+                continue
+
+            if tab_name == tab:
+                fields.append(self.collection.all_and_inherited_fields_map[name])
+
+        return fields
+
+
+    @property
+    def class_declaration(self):
+        return ', '.join([x[1] for x in self.classes])
+
+    @property
+    def classes(self):
+        classes = []
+
+        model_admin_added = False
+
+        if self.has_polymorphic_inlines:
+            classes.append(('polymorphic.admin', 'PolymorphicInlineSupportMixin'))
+
+        if self.collection.parent:
+            classes.append(('polymorphic.admin', 'PolymorphicChildModelAdmin'))
+            model_admin_added = True
+
+        elif self.collection.polymorphic:
+            classes.append(('polymorphic.admin', 'PolymorphicParentModelAdmin'))
+            model_admin_added = True
+
+        if self.collection.sortable:
+            classes.append(('suit.admin', 'SortableModelAdmin'))
+            model_admin_added = True
+
+        if self.collection.tree:
+            classes.append(('mptt.admin', 'DraggableMPTTAdmin'))
+            model_admin_added = True
+
+        if self.collection.translatable:
+            classes.append(('cratis_i18n.admin', 'TranslatableModelAdmin'))
+            model_admin_added = True
+
+        if not model_admin_added:
+            classes.append(('django.contrib.admin', 'ModelAdmin'))
+
+        return classes
+
+    @property
+    def inline_classes(self):
+        return [x.class_name for x in self.inlines]
 
 
 class AdminInlineConfig(object):
