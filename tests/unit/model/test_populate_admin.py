@@ -249,6 +249,40 @@ def test_admin_tabs_all():
         'c': 'foo',
     }
 
+
+def test_admin_tabs_inherited():
+    cs = _("""
+        @suit
+        
+        #boo
+        ----------
+        a
+        b
+        c
+
+        @admin(
+            tabs: foo(*)
+        )
+        
+        #boo->foo
+        --------
+        d
+        
+        @admin
+
+    """)
+
+    foo = cs.collections['foo']
+
+    assert foo.admin.tabs == ['general', 'foo']
+    assert foo.admin.tab_names == {'general': 'General', 'foo': 'Foo'}
+    assert foo.admin.tab_fields == {
+        'a': 'foo',
+        'b': 'foo',
+        'c': 'foo',
+        'd': 'general',
+    }
+
 def test_admin_tabs_all_but_some():
     cs = _("""
         @suit

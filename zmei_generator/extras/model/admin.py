@@ -1,13 +1,7 @@
-import re
-
 from zmei_generator.config.domain.collection_set_def import FieldDeclaration
 from zmei_generator.config.domain.exceptions import ValidationException
 from zmei_generator.config.domain.reference_field import ReferenceField
 from zmei_generator.config.extras import Extra
-from cPyparsing import *
-
-from zmei_generator.config.grammar import field_name_spec
-from zmei_generator.parser.errors import TabsSuitRequiredValidationError
 
 
 class AdminExtra(Extra):
@@ -42,6 +36,7 @@ class AdminExtra(Extra):
         # media files
         self.css = []
         self.js = []
+
 
     @classmethod
     def get_name(cls):
@@ -86,6 +81,11 @@ class AdminExtra(Extra):
             self.add_tab_fieldset('general', 'General', general_fields, prepend=True)
 
     def post_process(self):
+        if self.collection.parent and self.collection.parent.admin:
+            self.tab_fields = self.collection.parent.admin.tab_fields.copy()
+            self.tabs = self.collection.parent.admin.tabs.copy()
+            self.tab_names = self.collection.parent.admin.tab_names.copy()
+
         for tab in self.tabs_raw:
             self.add_tab(*tab)
 

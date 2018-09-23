@@ -73,15 +73,8 @@ class CollectionDef(object):
         self.parent.polymorphic = True
         self.parent.child_collections.append(self)
 
-    def parse_extras(self):
-
-        # TODO: handle parent
-        if self.parent:
-            self.admin_tab_fields = self.parent.admin_tab_fields.copy()
-            self.admin_tabs = self.parent.admin_tabs.copy()
-            self.tab_names = self.parent.tab_names.copy()
-
-            self.translatable = self.parent.translatable or self.translatable
+        if self.parent.translatable:
+            self.translatable = True
 
     @property
     def model_class_declaration(self):

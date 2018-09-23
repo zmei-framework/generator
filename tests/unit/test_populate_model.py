@@ -153,9 +153,39 @@ def test_modifiers_all():
 
     foo = cs.collections['foo']
 
+    assert foo.translatable is True
+
     assert foo.fields['a'].translatable is True
     assert foo.fields['a'].display_field is True
     assert foo.fields['a'].unique is True
     assert foo.fields['a'].index is True
     assert foo.fields['a'].required is True
     assert foo.fields['a'].not_null is True
+
+
+def test_translatable_parent():
+    cs = _("""
+
+        #foo
+        ------
+        $a
+        
+        #foo->boo
+        ----------
+        b
+        
+        #zoo
+        ----------
+        c
+
+    """)
+
+    assert len(cs.collections) == 3
+
+    foo = cs.collections['foo']
+    boo = cs.collections['boo']
+    zoo = cs.collections['zoo']
+
+    assert foo.translatable is True
+    assert boo.translatable is True
+    assert zoo.translatable is False
