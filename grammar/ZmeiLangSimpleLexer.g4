@@ -5,6 +5,11 @@ AN_ADMIN: '@admin';
 
 BOOL: 'true' | 'false';
 
+KW_INLINE_TYPE: 'tabular' | 'stacked' | 'polymorphic';
+KW_INLINE: 'inline';
+KW_TYPE: 'type';
+KW_EXTRA: 'extra';
+KW_TABS: 'tabs';
 KW_LIST: 'list';
 KW_READ_ONLY: 'read_only';
 KW_LIST_EDITABLE: 'list_editable';

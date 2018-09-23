@@ -25,7 +25,6 @@ def test_admin_simple():
 
     assert CarAdmin.list_display == ['nr', 'mark', 'model', 'weight', 'crashed', 'painted']
 
-@pytest.mark.skip
 @pytest.mark.zmei_before('install', 'migrate')
 @pytest.mark.zmei('sample', """
 #car
@@ -79,7 +78,6 @@ def test_admin_more_options():
         }),)
 
 
-@pytest.mark.skip
 @pytest.mark.zmei_before('install', 'migrate')
 @pytest.mark.zmei('sample', """
 #car
@@ -91,10 +89,10 @@ weight: int
 crashed: bool(true)
 painted: bool
 
-@admin {
+@admin(
     fields: *, ^weight
     tabs: main(*), options(crashed, painted)
-}
+)
 
 """)
 def test_admin_more_options_no_weight():
@@ -117,7 +115,6 @@ def test_admin_more_options_no_weight():
         }),)
 
 
-@pytest.mark.skip
 @pytest.mark.zmei_before('install', 'migrate')
 @pytest.mark.zmei('sample', """
 
@@ -126,7 +123,7 @@ def test_admin_more_options_no_weight():
 length: int
 height: int
 
-#car
+#wehicle->car
 -------
 nr
 mark
@@ -135,10 +132,10 @@ weight: int
 crashed: bool(true)
 painted: bool
 
-@admin {
+@admin(
     fields: *, ^weight
     tabs: general(*), main(.*), options(crashed, painted)
-}
+)
 
 """)
 def test_admin_more_options_no_weight_and_parent():
@@ -165,9 +162,33 @@ def test_admin_more_options_no_weight_and_parent():
             'fields': ['crashed', 'painted']
         }),)
 
-@pytest.mark.skip
+
 @pytest.mark.zmei_before('install', 'migrate')
-@pytest.mark.zmei('admin_inline')
+@pytest.mark.zmei('admin_inline', """
+
+#car
+-------
+nr
+mark
+model
+weight: int
+crashed: bool(true)
+painted: bool
+
+@admin(
+    fields: *
+    inline: service_history
+    tabs: main(*), service(service_history)
+)
+
+#service
+--------
+car: one(#car -> service_history)
+date: date
+details: text
+
+
+""")
 def test_admin_inlines():
     from admin_inline.admin import CarAdmin, CarServiceHistoryInline
     from admin_inline.models import Car, Service
@@ -182,5 +203,5 @@ def test_admin_inlines():
     )
 
     assert CarServiceHistoryInline.model == Service
-    assert CarServiceHistoryInline.fields == ['car', 'date', 'details']
+    assert CarServiceHistoryInline.fields == ['date', 'details']
     assert CarAdmin.inlines == [CarServiceHistoryInline]

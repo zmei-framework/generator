@@ -19,7 +19,7 @@ class {{ inline.class_name }}({{ inline.parent_classes|join(', ') }}):
     {% endif %}{% if not inline.inline_type == 'polymorphic' %}
     extra = {{ inline.extra_count }}
     fk_name = '{{ inline.source_field_name }}'
-    fields = [{{ inline.field_names|field_names() }}]
+    fields = [{{ inline.field_set|field_names() }}]
     {% else %}{% for col in inline.target_collection.child_collections %}
     class {{ col.class_name }}{{ inline.class_name }}({% if col.translatable %}TranslatableInlineModelAdmin, {% endif %}{{ inline.parent_classes[0] }}.Child):
         model = {{ col.class_name }}{% endfor %}

@@ -38,6 +38,18 @@ class ReferenceField(object):
     def get_rest_inline_collection(self):
         return self.target_collection
 
+    def get_required_apps(self):
+        return []
+
+    def get_required_deps(self):
+        return []
+
+    def get_required_settings(self):
+        return {}
+
+    def get_required_urls(self):
+        return []
+
     @property
     def is_many(self):
         return self.source_field.is_many_reverse

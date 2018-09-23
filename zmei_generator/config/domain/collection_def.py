@@ -39,6 +39,26 @@ class CollectionDef(object):
     def admin_fields(self):
         return self.admin.fields
 
+    @property
+    def admin_tab_fields(self):
+        return self.admin.tab_fields
+
+    @property
+    def admin_tabs(self):
+        return self.admin.tabs
+
+    @property
+    def tab_names(self):
+        return self.admin.tab_names
+
+    @property
+    def admin_inlines(self):
+        return self.admin.inlines
+
+    @property
+    def admin_has_polymorphic_inlines(self):
+        return self.admin.has_polymorphic_inlines
+
     def __init__(self, collection_set) -> None:
         super().__init__()
 
@@ -74,12 +94,7 @@ class CollectionDef(object):
 
         self.admin_js = []
         self.admin_css = []
-        self.admin_inlines = []
-        self.admin_has_polymorphic_inlines = False
 
-        self.admin_tab_fields = {}
-        self.admin_tabs = []
-        self.tab_names = {}
 
         self.rest_conf = {}
         self.published_apis = {}
@@ -109,6 +124,7 @@ class CollectionDef(object):
 
     def parse_extras(self):
 
+        # TODO: handle parent
         if self.parent:
             self.admin_tab_fields = self.parent.admin_tab_fields.copy()
             self.admin_tabs = self.parent.admin_tabs.copy()

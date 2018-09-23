@@ -10,12 +10,33 @@ from zmei_generator.config.grammar import field_name_spec
 
 
 class AdminExtra(Extra):
-    admin_list = None
-    read_only = None
-    list_editable = None
-    list_filter = None
-    list_search = None
-    fields = None
+
+    def __init__(self, collection) -> None:
+        super().__init__()
+
+        self.collection = collection
+
+        # fields for different purposes
+        self.admin_list = None
+        self.read_only = None
+        self.list_editable = None
+        self.list_filter = None
+        self.list_search = None
+        self.fields = None
+        self.inlines = []
+
+        # mapping of field.name => tab.id
+        self.tab_fields = {}
+
+        # id of tabs
+        self.tabs = []
+
+        # mapping of tab.id => Verbose name of tab
+        self.tab_names = {}
+
+        self.has_polymorphic_inlines = False
+
+        self.tabs_raw = []
 
     @classmethod
     def get_name(cls):
@@ -64,52 +85,77 @@ class AdminExtra(Extra):
         if parsed_body.css:
             collection.admin_css = list(parsed_body.css)
 
-        if parsed_body.inlines:
-            inlines = []
-            for inline in parsed_body.inlines:
-                inlines.append(
-                    AdminInlineConfig(inline, collection)
-                )
-            collection.admin_inlines = inlines
+    def register_tab(self, name, verbose_name, fields_expr, prepend=False):
 
-        tab_names = {}
-        if parsed_body.tabs:
-            for tab in parsed_body.tabs:
+        self.tabs_raw.append(
+            (name, verbose_name, fields_expr, prepend)
+        )
 
-                tab_names[tab.id] = tab.verbose_name or tab.id
+    def add_tab(self, name, verbose_name, fields_expr, prepend):
+        """
+        Do delayed field calculation as we need to wait
+        until all Reference fields are created
+        """
+        fields = self.collection.filter_fields(fields_expr, include_refs=True)
 
-                for field in collection.filter_fields(tab.fields):
-                    collection.admin_tab_fields[field.name] = tab.id
+        self.add_tab_fieldset(name, verbose_name, fields, prepend)
 
-                collection.admin_tabs.append(tab.id)
+    def add_tab_fieldset(self, name, verbose_name, fields, prepend):
+        # filter out fields that are not meant to be rendered
+        if self.fields:
+            fields = [f for f in fields if f in self.fields or isinstance(f, ReferenceField)]
+        self.tab_names[name] = verbose_name or name.capitalize()
+        for field in fields:
+            self.tab_fields[field.name] = name
+        if prepend:
+            self.tabs = [name] + self.tabs
+        else:
+            self.tabs.append(name)
 
-        if len(collection.admin_tabs):
-            collection.tab_names.update(tab_names)
+    def check_tab_consistency(self):
+        general_fields = []
+        for field in (self.fields or self.collection.all_fields):
 
-            general_fields = []
-            for field in (collection.admin_fields or collection.all_fields):
-                if field.name not in collection.admin_tab_fields:
-                    general_fields.append(field.name)
-                    collection.admin_tab_fields[field.name] = 'general'
+            if field.name not in self.tab_fields:
+                general_fields.append(field)
 
-                    if 'general' not in collection.admin_tabs:
-                        collection.admin_tabs = ['general'] + collection.admin_tabs
-                        collection.tab_names.update({'general': 'General'})
+        if len(general_fields) > 0:
+            self.add_tab_fieldset('general', 'General', general_fields, prepend=True)
 
-            # set tabs to inlines
-            inline_map = {x.inline_name: x for x in collection.admin_inlines}
-            for field_name, tab in collection.admin_tab_fields.items():
-                if field_name in inline_map:
-                    inline_map[field_name].tab = tab
+    def post_process(self):
+        for tab in self.tabs_raw:
+            self.add_tab(*tab)
 
-        collection.collection_set.admin = True
-        collection.admin = True
+        self.check_tab_consistency()
+
+        # set tabs to inlines
+        inline_map = {x.inline_name: x for x in self.inlines}
+        print(self.tab_fields)
+        for field_name, tab in self.tab_fields.items():
+            if field_name in inline_map:
+                inline_map[field_name].tab = tab
+
+        for inline in self.inlines:
+            inline.post_process()
 
 
 class AdminInlineConfig(object):
-    def __init__(self, parse_result, collection):
-        self.collection = collection
-        self.inline_name = parse_result.id
+    def __init__(self, admin, name):
+        self.admin = admin
+        self.collection = admin.collection
+        self.inline_name = name
+        self.fields_expr = ['*']
+        self.extra_count = 0
+        self.inline_type = 'tabular'
+
+        self.field = None
+        self.source_field_name = None
+        self.target_collection = None
+        self.field_set = None
+        self.tab = None
+
+    def post_process(self):
+        collection = self.admin.collection
 
         if not collection.check_field_exists(self.inline_name):
             raise ValidationException(
@@ -126,23 +172,18 @@ class AdminInlineConfig(object):
         self.source_field_name = field.source_field_name
         self.target_collection = field.target_collection
 
-        self.field_names = field.target_collection.filter_fields(parse_result.fields or ['*'])
+        self.field_set = [f for f in field.target_collection.filter_fields(self.fields_expr) if f.name != self.source_field_name]
 
-        self.inline_type = parse_result.type or 'tabular'
-        self.tab = None
-
-        self.extra_count = 0
-        if parse_result.extra_count:
-            self.extra_count = int(parse_result.extra_count)
-
+        if self.extra_count:
             if self.extra_count > 0 and self.inline_type == 'polymorphic':
                 raise ValidationException('{}->{}: When using inline type "polymorphic" extra must be 0'.format(
                     self.collection.name,
                     self.inline_name
                 ))
 
-        if self.inline_type == 'polymorphic':
-            collection.admin_has_polymorphic_inlines = True
+    @property
+    def field_names(self):
+        return [f.name for f in self.field_set]
 
     @property
     def class_name(self):

@@ -169,7 +169,6 @@ model_annotation:
 an_admin:
     AN_ADMIN
     (BRACE_OPEN
-    NL*
     (
          an_admin_list
         |an_admin_read_only
@@ -177,11 +176,40 @@ an_admin:
         |an_admin_list_filter
         |an_admin_list_search
         |an_admin_fields
+        |an_admin_inlines
+        |NL
+        |COMA
     )*
+    an_admin_tabs?
     NL*
     BRACE_CLOSE)?
     NL*
     ;
+
+an_admin_inlines: KW_INLINE COLON an_admin_inline (COMA an_admin_inline)*;
+an_admin_inline:
+        inline_name
+        (BRACE_OPEN
+        (
+             inline_type
+            |inline_extra
+            |inline_fields
+            |NL
+            |COMA
+        )*
+        BRACE_CLOSE)?;
+
+inline_name: id_or_kw;
+inline_type: KW_TYPE COLON KW_INLINE_TYPE;
+inline_extra: KW_EXTRA COLON DIGIT;
+inline_fields: KW_FIELDS COLON field_list_expr;
+
+an_admin_tabs: KW_TABS COLON an_admin_tab (COMA an_admin_tab)*;
+
+an_admin_tab: tab_name tab_verbose_name? BRACE_OPEN field_list_expr BRACE_CLOSE;
+
+tab_name : id_or_kw;
+tab_verbose_name : STRING_DQ | STRING_SQ;
 
 an_admin_list: KW_LIST COLON field_list_expr NL*;
 an_admin_read_only: KW_READ_ONLY COLON field_list_expr NL*;
@@ -191,7 +219,7 @@ an_admin_list_search: KW_LIST_SEARCH COLON field_list_expr NL*;
 an_admin_fields: KW_FIELDS COLON field_list_expr NL*;
 
 field_list_expr:
-    STAR (COMA EXCLUDE field_list_expr_field)*
+    DOT? STAR (COMA EXCLUDE field_list_expr_field)*
     | id_or_kw (COMA EXCLUDE? field_list_expr_field)*
     ;
 
@@ -256,6 +284,11 @@ xml_misc        :   WS | NL ;
  */
 id_or_kw: ID
    |BOOL
+   |KW_INLINE_TYPE
+   |KW_INLINE
+   |KW_TYPE
+   |KW_EXTRA
+   |KW_TABS
    |KW_LIST
    |KW_READ_ONLY
    |KW_LIST_EDITABLE

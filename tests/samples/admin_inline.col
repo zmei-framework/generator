@@ -8,15 +8,15 @@ weight: int
 crashed: bool(true)
 painted: bool
 
-@admin {
+@admin(
     fields: *
     inline: service_history
     tabs: main(*), service(service_history)
-}
+)
 
 #service
 --------
 car: one(#car -> service_history)
 date: date
-details: longtext
+details: text
 

@@ -5,7 +5,7 @@ from zmei_generator.config.domain.field_def import FieldConfig, FieldDef
 from zmei_generator.config.domain.page_def import PageDef
 from zmei_generator.config.domain.page_expression import PageExpression
 from zmei_generator.config.domain.reference_field import ReferenceField
-from zmei_generator.extras.admin import AdminExtra
+from zmei_generator.extras.admin import AdminExtra, AdminInlineConfig
 from zmei_generator.fields.bool import BooleanFieldDef
 from zmei_generator.fields.date import DateFieldDef, DateTimeFieldDef, AutoNowDateTimeFieldDef, \
     AutoNowAddDateTimeFieldDef
@@ -30,6 +30,8 @@ class PartsCollectorListener(ZmeiLangParserListener):
 
         self.page = None  # type: PageDef
         self.model = None  # type: CollectionDef
+
+        self.inline = None  # type
 
         self.field = None  # type
         self.field_config = None  # type: FieldConfig
@@ -384,37 +386,72 @@ class PartsCollectorListener(ZmeiLangParserListener):
     ############################################
 
     def enterAn_admin(self, ctx: ZmeiLangParser.An_adminContext):
-        self.model.admin = AdminExtra()
+        self.model.admin = AdminExtra(self.model)
         self.collection_set.admin = True
 
     def enterAn_admin_list(self, ctx: ZmeiLangParser.An_admin_listContext):
-        self.model.admin.admin_list = self.model.filter_fields(self._get_admin_fields(ctx))
+        self.model.admin.admin_list = self.model.filter_fields(self._get_fields(ctx))
 
     def enterAn_admin_read_only(self, ctx: ZmeiLangParser.An_admin_read_onlyContext):
-        self.model.admin.read_only = self.model.filter_fields(self._get_admin_fields(ctx))
+        self.model.admin.read_only = self.model.filter_fields(self._get_fields(ctx))
 
     def enterAn_admin_list_editable(self, ctx: ZmeiLangParser.An_admin_list_editableContext):
-        self.model.admin.list_editable  = self.model.filter_fields(self._get_admin_fields(ctx))
+        self.model.admin.list_editable = self.model.filter_fields(self._get_fields(ctx))
 
     def enterAn_admin_list_filter(self, ctx: ZmeiLangParser.An_admin_list_filterContext):
-        self.model.admin.list_filter  = self.model.filter_fields(self._get_admin_fields(ctx))
+        self.model.admin.list_filter = self.model.filter_fields(self._get_fields(ctx))
 
     def enterAn_admin_list_search(self, ctx: ZmeiLangParser.An_admin_list_searchContext):
-        self.model.admin.list_search  = self.model.filter_fields(self._get_admin_fields(ctx))
+        self.model.admin.list_search = self.model.filter_fields(self._get_fields(ctx))
 
     def enterAn_admin_fields(self, ctx: ZmeiLangParser.An_admin_fieldsContext):
-        self.model.admin.fields  = self.model.filter_fields(self._get_admin_fields(ctx))
+        self.model.admin.fields = self.model.filter_fields(self._get_fields(ctx))
 
-    def _get_admin_fields(self, ctx):
+    def _get_fields(self, ctx):
         return [x.strip() for x in ctx.field_list_expr().getText().split(',')]
+
+    def enterAn_admin_tab(self, ctx: ZmeiLangParser.An_admin_tabContext):
+        fields = self._get_fields(ctx)
+        name = ctx.tab_name().getText()
+        vname = ctx.tab_verbose_name()
+        if vname:
+            vname = vname.getText().strip('"\' ')
+        else:
+            vname = None
+        self.model.admin.register_tab(name, vname, fields)
+
+    def enterAn_admin_inline(self, ctx: ZmeiLangParser.An_admin_inlineContext):
+        self.inline = AdminInlineConfig(self.model.admin, ctx.inline_name().getText())
+
+    def enterInline_type(self, ctx: ZmeiLangParser.Inline_typeContext):
+        type_name = ctx.KW_INLINE_TYPE().getText()
+
+        if type_name == 'polymorphic':
+            self.model.admin.has_polymorphic_inlines = True
+
+        self.inline.inline_type = type_name
+
+    def enterInline_fields(self, ctx: ZmeiLangParser.Inline_fieldsContext):
+        self.inline.fields_expr = self._get_fields(ctx)
+
+    def enterInline_extra(self, ctx: ZmeiLangParser.Inline_extraContext):
+        self.inline.extra_count = int(ctx.DIGIT().getText())
+
+    def exitAn_admin_inline(self, ctx:ZmeiLangParser.An_admin_inlineContext):
+        self.model.admin.inlines.append(
+            self.inline
+        )
+        self.inline = None
 
 
 def populate_collection_set(tree, app_name='noname'):
     cs = CollectionSetDef(app_name)
 
-    validator = PartsCollectorListener(cs)
+    listener = PartsCollectorListener(cs)
 
     walker = ParseTreeWalker()
-    walker.walk(validator, tree)
+    walker.walk(listener, tree)
+
+    cs.post_process()
 
     return cs

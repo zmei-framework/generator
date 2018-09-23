@@ -155,6 +155,11 @@ class CollectionSetDef(object):
     def page_list(self):
         return list(self.pages.values())
 
+    def post_process(self):
+        for col in self.collections.values():
+            if col.admin:
+                col.admin.post_process()
+
 
 FieldDeclaration = namedtuple('FieldDeclaration', ['import_def', 'declaration'])
 
