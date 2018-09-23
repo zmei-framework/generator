@@ -1,6 +1,6 @@
 from textwrap import dedent
 
-from zmei_generator.extras.admin import AdminExtra, AdminInlineConfig
+from zmei_generator.extras.model.admin import AdminExtra, AdminInlineConfig
 from zmei_generator.parser.parser import parse_string
 from zmei_generator.parser.populate import populate_collection_set
 

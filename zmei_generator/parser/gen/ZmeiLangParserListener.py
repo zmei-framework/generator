@@ -44,6 +44,33 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#id_or_kw.
+    def enterId_or_kw(self, ctx:ZmeiLangParser.Id_or_kwContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#id_or_kw.
+    def exitId_or_kw(self, ctx:ZmeiLangParser.Id_or_kwContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#field_list_expr.
+    def enterField_list_expr(self, ctx:ZmeiLangParser.Field_list_exprContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#field_list_expr.
+    def exitField_list_expr(self, ctx:ZmeiLangParser.Field_list_exprContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#field_list_expr_field.
+    def enterField_list_expr_field(self, ctx:ZmeiLangParser.Field_list_expr_fieldContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#field_list_expr_field.
+    def exitField_list_expr_field(self, ctx:ZmeiLangParser.Field_list_expr_fieldContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#code_block.
     def enterCode_block(self, ctx:ZmeiLangParser.Code_blockContext):
         pass
@@ -53,111 +80,111 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ZmeiLangParser#page.
-    def enterPage(self, ctx:ZmeiLangParser.PageContext):
+    # Enter a parse tree produced by ZmeiLangParser#xml_content.
+    def enterXml_content(self, ctx:ZmeiLangParser.Xml_contentContext):
         pass
 
-    # Exit a parse tree produced by ZmeiLangParser#page.
-    def exitPage(self, ctx:ZmeiLangParser.PageContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#page_base.
-    def enterPage_base(self, ctx:ZmeiLangParser.Page_baseContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#page_base.
-    def exitPage_base(self, ctx:ZmeiLangParser.Page_baseContext):
+    # Exit a parse tree produced by ZmeiLangParser#xml_content.
+    def exitXml_content(self, ctx:ZmeiLangParser.Xml_contentContext):
         pass
 
 
-    # Enter a parse tree produced by ZmeiLangParser#page_alias.
-    def enterPage_alias(self, ctx:ZmeiLangParser.Page_aliasContext):
+    # Enter a parse tree produced by ZmeiLangParser#xml_element.
+    def enterXml_element(self, ctx:ZmeiLangParser.Xml_elementContext):
         pass
 
-    # Exit a parse tree produced by ZmeiLangParser#page_alias.
-    def exitPage_alias(self, ctx:ZmeiLangParser.Page_aliasContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#page_alias_name.
-    def enterPage_alias_name(self, ctx:ZmeiLangParser.Page_alias_nameContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#page_alias_name.
-    def exitPage_alias_name(self, ctx:ZmeiLangParser.Page_alias_nameContext):
+    # Exit a parse tree produced by ZmeiLangParser#xml_element.
+    def exitXml_element(self, ctx:ZmeiLangParser.Xml_elementContext):
         pass
 
 
-    # Enter a parse tree produced by ZmeiLangParser#page_element.
-    def enterPage_element(self, ctx:ZmeiLangParser.Page_elementContext):
+    # Enter a parse tree produced by ZmeiLangParser#xml_name.
+    def enterXml_name(self, ctx:ZmeiLangParser.Xml_nameContext):
         pass
 
-    # Exit a parse tree produced by ZmeiLangParser#page_element.
-    def exitPage_element(self, ctx:ZmeiLangParser.Page_elementContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#page_template.
-    def enterPage_template(self, ctx:ZmeiLangParser.Page_templateContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#page_template.
-    def exitPage_template(self, ctx:ZmeiLangParser.Page_templateContext):
+    # Exit a parse tree produced by ZmeiLangParser#xml_name.
+    def exitXml_name(self, ctx:ZmeiLangParser.Xml_nameContext):
         pass
 
 
-    # Enter a parse tree produced by ZmeiLangParser#page_url.
-    def enterPage_url(self, ctx:ZmeiLangParser.Page_urlContext):
+    # Enter a parse tree produced by ZmeiLangParser#xml_name_end.
+    def enterXml_name_end(self, ctx:ZmeiLangParser.Xml_name_endContext):
         pass
 
-    # Exit a parse tree produced by ZmeiLangParser#page_url.
-    def exitPage_url(self, ctx:ZmeiLangParser.Page_urlContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#page_code.
-    def enterPage_code(self, ctx:ZmeiLangParser.Page_codeContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#page_code.
-    def exitPage_code(self, ctx:ZmeiLangParser.Page_codeContext):
+    # Exit a parse tree produced by ZmeiLangParser#xml_name_end.
+    def exitXml_name_end(self, ctx:ZmeiLangParser.Xml_name_endContext):
         pass
 
 
-    # Enter a parse tree produced by ZmeiLangParser#page_name.
-    def enterPage_name(self, ctx:ZmeiLangParser.Page_nameContext):
+    # Enter a parse tree produced by ZmeiLangParser#xml_tag_name.
+    def enterXml_tag_name(self, ctx:ZmeiLangParser.Xml_tag_nameContext):
         pass
 
-    # Exit a parse tree produced by ZmeiLangParser#page_name.
-    def exitPage_name(self, ctx:ZmeiLangParser.Page_nameContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#page_field.
-    def enterPage_field(self, ctx:ZmeiLangParser.Page_fieldContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#page_field.
-    def exitPage_field(self, ctx:ZmeiLangParser.Page_fieldContext):
+    # Exit a parse tree produced by ZmeiLangParser#xml_tag_name.
+    def exitXml_tag_name(self, ctx:ZmeiLangParser.Xml_tag_nameContext):
         pass
 
 
-    # Enter a parse tree produced by ZmeiLangParser#page_field_name.
-    def enterPage_field_name(self, ctx:ZmeiLangParser.Page_field_nameContext):
+    # Enter a parse tree produced by ZmeiLangParser#xml_component_name.
+    def enterXml_component_name(self, ctx:ZmeiLangParser.Xml_component_nameContext):
         pass
 
-    # Exit a parse tree produced by ZmeiLangParser#page_field_name.
-    def exitPage_field_name(self, ctx:ZmeiLangParser.Page_field_nameContext):
+    # Exit a parse tree produced by ZmeiLangParser#xml_component_name.
+    def exitXml_component_name(self, ctx:ZmeiLangParser.Xml_component_nameContext):
         pass
 
 
-    # Enter a parse tree produced by ZmeiLangParser#page_field_code.
-    def enterPage_field_code(self, ctx:ZmeiLangParser.Page_field_codeContext):
+    # Enter a parse tree produced by ZmeiLangParser#xml_reference.
+    def enterXml_reference(self, ctx:ZmeiLangParser.Xml_referenceContext):
         pass
 
-    # Exit a parse tree produced by ZmeiLangParser#page_field_code.
-    def exitPage_field_code(self, ctx:ZmeiLangParser.Page_field_codeContext):
+    # Exit a parse tree produced by ZmeiLangParser#xml_reference.
+    def exitXml_reference(self, ctx:ZmeiLangParser.Xml_referenceContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#xml_attribute.
+    def enterXml_attribute(self, ctx:ZmeiLangParser.Xml_attributeContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#xml_attribute.
+    def exitXml_attribute(self, ctx:ZmeiLangParser.Xml_attributeContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#xml_chardata.
+    def enterXml_chardata(self, ctx:ZmeiLangParser.Xml_chardataContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#xml_chardata.
+    def exitXml_chardata(self, ctx:ZmeiLangParser.Xml_chardataContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#xml_misc.
+    def enterXml_misc(self, ctx:ZmeiLangParser.Xml_miscContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#xml_misc.
+    def exitXml_misc(self, ctx:ZmeiLangParser.Xml_miscContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#cs_annotation.
+    def enterCs_annotation(self, ctx:ZmeiLangParser.Cs_annotationContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#cs_annotation.
+    def exitCs_annotation(self, ctx:ZmeiLangParser.Cs_annotationContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_suit.
+    def enterAn_suit(self, ctx:ZmeiLangParser.An_suitContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_suit.
+    def exitAn_suit(self, ctx:ZmeiLangParser.An_suitContext):
         pass
 
 
@@ -302,348 +329,6 @@ class ZmeiLangParserListener(ParseTreeListener):
 
     # Exit a parse tree produced by ZmeiLangParser#col_modifier.
     def exitCol_modifier(self, ctx:ZmeiLangParser.Col_modifierContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#model_annotation.
-    def enterModel_annotation(self, ctx:ZmeiLangParser.Model_annotationContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#model_annotation.
-    def exitModel_annotation(self, ctx:ZmeiLangParser.Model_annotationContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#an_admin.
-    def enterAn_admin(self, ctx:ZmeiLangParser.An_adminContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#an_admin.
-    def exitAn_admin(self, ctx:ZmeiLangParser.An_adminContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#an_admin_js.
-    def enterAn_admin_js(self, ctx:ZmeiLangParser.An_admin_jsContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#an_admin_js.
-    def exitAn_admin_js(self, ctx:ZmeiLangParser.An_admin_jsContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#an_admin_css.
-    def enterAn_admin_css(self, ctx:ZmeiLangParser.An_admin_cssContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#an_admin_css.
-    def exitAn_admin_css(self, ctx:ZmeiLangParser.An_admin_cssContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#an_admin_css_file_name.
-    def enterAn_admin_css_file_name(self, ctx:ZmeiLangParser.An_admin_css_file_nameContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#an_admin_css_file_name.
-    def exitAn_admin_css_file_name(self, ctx:ZmeiLangParser.An_admin_css_file_nameContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#an_admin_js_file_name.
-    def enterAn_admin_js_file_name(self, ctx:ZmeiLangParser.An_admin_js_file_nameContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#an_admin_js_file_name.
-    def exitAn_admin_js_file_name(self, ctx:ZmeiLangParser.An_admin_js_file_nameContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#an_admin_inlines.
-    def enterAn_admin_inlines(self, ctx:ZmeiLangParser.An_admin_inlinesContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#an_admin_inlines.
-    def exitAn_admin_inlines(self, ctx:ZmeiLangParser.An_admin_inlinesContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#an_admin_inline.
-    def enterAn_admin_inline(self, ctx:ZmeiLangParser.An_admin_inlineContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#an_admin_inline.
-    def exitAn_admin_inline(self, ctx:ZmeiLangParser.An_admin_inlineContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#inline_name.
-    def enterInline_name(self, ctx:ZmeiLangParser.Inline_nameContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#inline_name.
-    def exitInline_name(self, ctx:ZmeiLangParser.Inline_nameContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#inline_type.
-    def enterInline_type(self, ctx:ZmeiLangParser.Inline_typeContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#inline_type.
-    def exitInline_type(self, ctx:ZmeiLangParser.Inline_typeContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#inline_extra.
-    def enterInline_extra(self, ctx:ZmeiLangParser.Inline_extraContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#inline_extra.
-    def exitInline_extra(self, ctx:ZmeiLangParser.Inline_extraContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#inline_fields.
-    def enterInline_fields(self, ctx:ZmeiLangParser.Inline_fieldsContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#inline_fields.
-    def exitInline_fields(self, ctx:ZmeiLangParser.Inline_fieldsContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#an_admin_tabs.
-    def enterAn_admin_tabs(self, ctx:ZmeiLangParser.An_admin_tabsContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#an_admin_tabs.
-    def exitAn_admin_tabs(self, ctx:ZmeiLangParser.An_admin_tabsContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#an_admin_tab.
-    def enterAn_admin_tab(self, ctx:ZmeiLangParser.An_admin_tabContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#an_admin_tab.
-    def exitAn_admin_tab(self, ctx:ZmeiLangParser.An_admin_tabContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#tab_name.
-    def enterTab_name(self, ctx:ZmeiLangParser.Tab_nameContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#tab_name.
-    def exitTab_name(self, ctx:ZmeiLangParser.Tab_nameContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#tab_verbose_name.
-    def enterTab_verbose_name(self, ctx:ZmeiLangParser.Tab_verbose_nameContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#tab_verbose_name.
-    def exitTab_verbose_name(self, ctx:ZmeiLangParser.Tab_verbose_nameContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#an_admin_list.
-    def enterAn_admin_list(self, ctx:ZmeiLangParser.An_admin_listContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#an_admin_list.
-    def exitAn_admin_list(self, ctx:ZmeiLangParser.An_admin_listContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#an_admin_read_only.
-    def enterAn_admin_read_only(self, ctx:ZmeiLangParser.An_admin_read_onlyContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#an_admin_read_only.
-    def exitAn_admin_read_only(self, ctx:ZmeiLangParser.An_admin_read_onlyContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#an_admin_list_editable.
-    def enterAn_admin_list_editable(self, ctx:ZmeiLangParser.An_admin_list_editableContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#an_admin_list_editable.
-    def exitAn_admin_list_editable(self, ctx:ZmeiLangParser.An_admin_list_editableContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#an_admin_list_filter.
-    def enterAn_admin_list_filter(self, ctx:ZmeiLangParser.An_admin_list_filterContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#an_admin_list_filter.
-    def exitAn_admin_list_filter(self, ctx:ZmeiLangParser.An_admin_list_filterContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#an_admin_list_search.
-    def enterAn_admin_list_search(self, ctx:ZmeiLangParser.An_admin_list_searchContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#an_admin_list_search.
-    def exitAn_admin_list_search(self, ctx:ZmeiLangParser.An_admin_list_searchContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#an_admin_fields.
-    def enterAn_admin_fields(self, ctx:ZmeiLangParser.An_admin_fieldsContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#an_admin_fields.
-    def exitAn_admin_fields(self, ctx:ZmeiLangParser.An_admin_fieldsContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#field_list_expr.
-    def enterField_list_expr(self, ctx:ZmeiLangParser.Field_list_exprContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#field_list_expr.
-    def exitField_list_expr(self, ctx:ZmeiLangParser.Field_list_exprContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#field_list_expr_field.
-    def enterField_list_expr_field(self, ctx:ZmeiLangParser.Field_list_expr_fieldContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#field_list_expr_field.
-    def exitField_list_expr_field(self, ctx:ZmeiLangParser.Field_list_expr_fieldContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#annotation.
-    def enterAnnotation(self, ctx:ZmeiLangParser.AnnotationContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#annotation.
-    def exitAnnotation(self, ctx:ZmeiLangParser.AnnotationContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#annotation_descr.
-    def enterAnnotation_descr(self, ctx:ZmeiLangParser.Annotation_descrContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#annotation_descr.
-    def exitAnnotation_descr(self, ctx:ZmeiLangParser.Annotation_descrContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#annotation_code.
-    def enterAnnotation_code(self, ctx:ZmeiLangParser.Annotation_codeContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#annotation_code.
-    def exitAnnotation_code(self, ctx:ZmeiLangParser.Annotation_codeContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#xml_content.
-    def enterXml_content(self, ctx:ZmeiLangParser.Xml_contentContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#xml_content.
-    def exitXml_content(self, ctx:ZmeiLangParser.Xml_contentContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#xml_element.
-    def enterXml_element(self, ctx:ZmeiLangParser.Xml_elementContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#xml_element.
-    def exitXml_element(self, ctx:ZmeiLangParser.Xml_elementContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#xml_name.
-    def enterXml_name(self, ctx:ZmeiLangParser.Xml_nameContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#xml_name.
-    def exitXml_name(self, ctx:ZmeiLangParser.Xml_nameContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#xml_name_end.
-    def enterXml_name_end(self, ctx:ZmeiLangParser.Xml_name_endContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#xml_name_end.
-    def exitXml_name_end(self, ctx:ZmeiLangParser.Xml_name_endContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#xml_tag_name.
-    def enterXml_tag_name(self, ctx:ZmeiLangParser.Xml_tag_nameContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#xml_tag_name.
-    def exitXml_tag_name(self, ctx:ZmeiLangParser.Xml_tag_nameContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#xml_component_name.
-    def enterXml_component_name(self, ctx:ZmeiLangParser.Xml_component_nameContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#xml_component_name.
-    def exitXml_component_name(self, ctx:ZmeiLangParser.Xml_component_nameContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#xml_reference.
-    def enterXml_reference(self, ctx:ZmeiLangParser.Xml_referenceContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#xml_reference.
-    def exitXml_reference(self, ctx:ZmeiLangParser.Xml_referenceContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#xml_attribute.
-    def enterXml_attribute(self, ctx:ZmeiLangParser.Xml_attributeContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#xml_attribute.
-    def exitXml_attribute(self, ctx:ZmeiLangParser.Xml_attributeContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#xml_chardata.
-    def enterXml_chardata(self, ctx:ZmeiLangParser.Xml_chardataContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#xml_chardata.
-    def exitXml_chardata(self, ctx:ZmeiLangParser.Xml_chardataContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#xml_misc.
-    def enterXml_misc(self, ctx:ZmeiLangParser.Xml_miscContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#xml_misc.
-    def exitXml_misc(self, ctx:ZmeiLangParser.Xml_miscContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#id_or_kw.
-    def enterId_or_kw(self, ctx:ZmeiLangParser.Id_or_kwContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#id_or_kw.
-    def exitId_or_kw(self, ctx:ZmeiLangParser.Id_or_kwContext):
         pass
 
 
@@ -1049,6 +734,312 @@ class ZmeiLangParserListener(ParseTreeListener):
 
     # Exit a parse tree produced by ZmeiLangParser#field_relation_related_name.
     def exitField_relation_related_name(self, ctx:ZmeiLangParser.Field_relation_related_nameContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#model_annotation.
+    def enterModel_annotation(self, ctx:ZmeiLangParser.Model_annotationContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#model_annotation.
+    def exitModel_annotation(self, ctx:ZmeiLangParser.Model_annotationContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_admin.
+    def enterAn_admin(self, ctx:ZmeiLangParser.An_adminContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_admin.
+    def exitAn_admin(self, ctx:ZmeiLangParser.An_adminContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_admin_js.
+    def enterAn_admin_js(self, ctx:ZmeiLangParser.An_admin_jsContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_admin_js.
+    def exitAn_admin_js(self, ctx:ZmeiLangParser.An_admin_jsContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_admin_css.
+    def enterAn_admin_css(self, ctx:ZmeiLangParser.An_admin_cssContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_admin_css.
+    def exitAn_admin_css(self, ctx:ZmeiLangParser.An_admin_cssContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_admin_css_file_name.
+    def enterAn_admin_css_file_name(self, ctx:ZmeiLangParser.An_admin_css_file_nameContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_admin_css_file_name.
+    def exitAn_admin_css_file_name(self, ctx:ZmeiLangParser.An_admin_css_file_nameContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_admin_js_file_name.
+    def enterAn_admin_js_file_name(self, ctx:ZmeiLangParser.An_admin_js_file_nameContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_admin_js_file_name.
+    def exitAn_admin_js_file_name(self, ctx:ZmeiLangParser.An_admin_js_file_nameContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_admin_inlines.
+    def enterAn_admin_inlines(self, ctx:ZmeiLangParser.An_admin_inlinesContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_admin_inlines.
+    def exitAn_admin_inlines(self, ctx:ZmeiLangParser.An_admin_inlinesContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_admin_inline.
+    def enterAn_admin_inline(self, ctx:ZmeiLangParser.An_admin_inlineContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_admin_inline.
+    def exitAn_admin_inline(self, ctx:ZmeiLangParser.An_admin_inlineContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#inline_name.
+    def enterInline_name(self, ctx:ZmeiLangParser.Inline_nameContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#inline_name.
+    def exitInline_name(self, ctx:ZmeiLangParser.Inline_nameContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#inline_type.
+    def enterInline_type(self, ctx:ZmeiLangParser.Inline_typeContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#inline_type.
+    def exitInline_type(self, ctx:ZmeiLangParser.Inline_typeContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#inline_extra.
+    def enterInline_extra(self, ctx:ZmeiLangParser.Inline_extraContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#inline_extra.
+    def exitInline_extra(self, ctx:ZmeiLangParser.Inline_extraContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#inline_fields.
+    def enterInline_fields(self, ctx:ZmeiLangParser.Inline_fieldsContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#inline_fields.
+    def exitInline_fields(self, ctx:ZmeiLangParser.Inline_fieldsContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_admin_tabs.
+    def enterAn_admin_tabs(self, ctx:ZmeiLangParser.An_admin_tabsContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_admin_tabs.
+    def exitAn_admin_tabs(self, ctx:ZmeiLangParser.An_admin_tabsContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_admin_tab.
+    def enterAn_admin_tab(self, ctx:ZmeiLangParser.An_admin_tabContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_admin_tab.
+    def exitAn_admin_tab(self, ctx:ZmeiLangParser.An_admin_tabContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#tab_name.
+    def enterTab_name(self, ctx:ZmeiLangParser.Tab_nameContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#tab_name.
+    def exitTab_name(self, ctx:ZmeiLangParser.Tab_nameContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#tab_verbose_name.
+    def enterTab_verbose_name(self, ctx:ZmeiLangParser.Tab_verbose_nameContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#tab_verbose_name.
+    def exitTab_verbose_name(self, ctx:ZmeiLangParser.Tab_verbose_nameContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_admin_list.
+    def enterAn_admin_list(self, ctx:ZmeiLangParser.An_admin_listContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_admin_list.
+    def exitAn_admin_list(self, ctx:ZmeiLangParser.An_admin_listContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_admin_read_only.
+    def enterAn_admin_read_only(self, ctx:ZmeiLangParser.An_admin_read_onlyContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_admin_read_only.
+    def exitAn_admin_read_only(self, ctx:ZmeiLangParser.An_admin_read_onlyContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_admin_list_editable.
+    def enterAn_admin_list_editable(self, ctx:ZmeiLangParser.An_admin_list_editableContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_admin_list_editable.
+    def exitAn_admin_list_editable(self, ctx:ZmeiLangParser.An_admin_list_editableContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_admin_list_filter.
+    def enterAn_admin_list_filter(self, ctx:ZmeiLangParser.An_admin_list_filterContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_admin_list_filter.
+    def exitAn_admin_list_filter(self, ctx:ZmeiLangParser.An_admin_list_filterContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_admin_list_search.
+    def enterAn_admin_list_search(self, ctx:ZmeiLangParser.An_admin_list_searchContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_admin_list_search.
+    def exitAn_admin_list_search(self, ctx:ZmeiLangParser.An_admin_list_searchContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_admin_fields.
+    def enterAn_admin_fields(self, ctx:ZmeiLangParser.An_admin_fieldsContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_admin_fields.
+    def exitAn_admin_fields(self, ctx:ZmeiLangParser.An_admin_fieldsContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#page.
+    def enterPage(self, ctx:ZmeiLangParser.PageContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#page.
+    def exitPage(self, ctx:ZmeiLangParser.PageContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#page_base.
+    def enterPage_base(self, ctx:ZmeiLangParser.Page_baseContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#page_base.
+    def exitPage_base(self, ctx:ZmeiLangParser.Page_baseContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#page_alias.
+    def enterPage_alias(self, ctx:ZmeiLangParser.Page_aliasContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#page_alias.
+    def exitPage_alias(self, ctx:ZmeiLangParser.Page_aliasContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#page_alias_name.
+    def enterPage_alias_name(self, ctx:ZmeiLangParser.Page_alias_nameContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#page_alias_name.
+    def exitPage_alias_name(self, ctx:ZmeiLangParser.Page_alias_nameContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#page_element.
+    def enterPage_element(self, ctx:ZmeiLangParser.Page_elementContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#page_element.
+    def exitPage_element(self, ctx:ZmeiLangParser.Page_elementContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#page_template.
+    def enterPage_template(self, ctx:ZmeiLangParser.Page_templateContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#page_template.
+    def exitPage_template(self, ctx:ZmeiLangParser.Page_templateContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#page_url.
+    def enterPage_url(self, ctx:ZmeiLangParser.Page_urlContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#page_url.
+    def exitPage_url(self, ctx:ZmeiLangParser.Page_urlContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#page_code.
+    def enterPage_code(self, ctx:ZmeiLangParser.Page_codeContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#page_code.
+    def exitPage_code(self, ctx:ZmeiLangParser.Page_codeContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#page_name.
+    def enterPage_name(self, ctx:ZmeiLangParser.Page_nameContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#page_name.
+    def exitPage_name(self, ctx:ZmeiLangParser.Page_nameContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#page_field.
+    def enterPage_field(self, ctx:ZmeiLangParser.Page_fieldContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#page_field.
+    def exitPage_field(self, ctx:ZmeiLangParser.Page_fieldContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#page_field_name.
+    def enterPage_field_name(self, ctx:ZmeiLangParser.Page_field_nameContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#page_field_name.
+    def exitPage_field_name(self, ctx:ZmeiLangParser.Page_field_nameContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#page_field_code.
+    def enterPage_field_code(self, ctx:ZmeiLangParser.Page_field_codeContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#page_field_code.
+    def exitPage_field_code(self, ctx:ZmeiLangParser.Page_field_codeContext):
         pass
 
 

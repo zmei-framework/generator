@@ -1,11 +1,13 @@
 from zmei_generator.config.domain.collection_def import CollectionDef
 from zmei_generator.config.domain.collection_set_def import CollectionSetDef
+from zmei_generator.config.domain.collection_set_extra import CollectionSetExtra
 from zmei_generator.config.domain.exceptions import ValidationException
 from zmei_generator.config.domain.field_def import FieldConfig, FieldDef
 from zmei_generator.config.domain.page_def import PageDef
 from zmei_generator.config.domain.page_expression import PageExpression
 from zmei_generator.config.domain.reference_field import ReferenceField
-from zmei_generator.extras.admin import AdminExtra, AdminInlineConfig
+from zmei_generator.extras.collection_set.suit import SuitCsExtra
+from zmei_generator.extras.model.admin import AdminExtra, AdminInlineConfig
 from zmei_generator.fields.bool import BooleanFieldDef
 from zmei_generator.fields.date import DateFieldDef, DateTimeFieldDef, AutoNowDateTimeFieldDef, \
     AutoNowAddDateTimeFieldDef
@@ -17,6 +19,7 @@ from zmei_generator.fields.number import IntegerFieldDef, FloatFieldDef, Decimal
 from zmei_generator.fields.relation import RelationOneDef, RelationOne2OneDef, RelationManyDef
 from zmei_generator.fields.text import TextFieldDef, SlugFieldDef, LongTextFieldDef, RichTextFieldDef, \
     RichTextFieldWithUploadDef
+from zmei_generator.parser.errors import TabsSuitRequiredValidationError
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser, ParseTreeWalker
 from zmei_generator.parser.gen.ZmeiLangParserListener import ZmeiLangParserListener
 
@@ -403,6 +406,7 @@ class PartsCollectorListener(ZmeiLangParserListener):
     def enterAn_admin(self, ctx: ZmeiLangParser.An_adminContext):
         self.model.admin = AdminExtra(self.model)
         self.collection_set.admin = True
+        self.collection_set.extras.append(self.model.admin)
 
     def enterAn_admin_list(self, ctx: ZmeiLangParser.An_admin_listContext):
         self.model.admin.admin_list = self.model.filter_fields(self._get_fields(ctx))
@@ -424,6 +428,10 @@ class PartsCollectorListener(ZmeiLangParserListener):
 
     def _get_fields(self, ctx):
         return [x.strip() for x in ctx.field_list_expr().getText().split(',')]
+
+    def enterAn_admin_tabs(self, ctx: ZmeiLangParser.An_admin_tabsContext):
+        if not self.collection_set.suit:
+            raise TabsSuitRequiredValidationError(ctx.KW_TABS())
 
     def enterAn_admin_tab(self, ctx: ZmeiLangParser.An_admin_tabContext):
         fields = self._get_fields(ctx)
@@ -464,7 +472,10 @@ class PartsCollectorListener(ZmeiLangParserListener):
         )
         self.inline = None
 
-
+    def enterAn_suit(self, ctx: ZmeiLangParser.An_suitContext):
+        suit = SuitCsExtra(self.collection_set)
+        self.collection_set.extras.append(suit)
+        self.collection_set.suit = suit
 
 
 def populate_collection_set(tree, app_name='noname'):

@@ -1,6 +1,6 @@
 
 
-class ValidationError(object):
+class ValidationError(Exception):
 
     def __init__(self, token, message) -> None:
         super().__init__()
@@ -18,3 +18,8 @@ class PageParentValidationError(ValidationError):
         self.parent_page_name = parent_page_name
         super().__init__(token, f"Parent page is not defined: \"{parent_page_name}\"")
 
+
+class TabsSuitRequiredValidationError(ValidationError):
+    def __init__(self, token) -> None:
+        super().__init__(token, f"@admin->tabs requires @suit feature enabled. Add \"@suit\""
+                                f"to the beginning of the col file.")

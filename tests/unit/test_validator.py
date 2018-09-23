@@ -3,7 +3,7 @@ from textwrap import dedent
 
 import pytest
 
-from zmei_generator.parser.errors import PageParentValidationError
+from zmei_generator.parser.errors import PageParentValidationError, TabsSuitRequiredValidationError
 from zmei_generator.parser.parser import parse_string
 from zmei_generator.parser.symbols import SymbolTable
 from zmei_generator.parser.validator import validate
@@ -40,3 +40,4 @@ def test_validate_page_base_name_fail():
     assert len(errors) == 1
     assert isinstance(errors[0], PageParentValidationError)
     assert errors[0].parent_page_name == 'foo'
+

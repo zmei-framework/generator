@@ -25,6 +25,7 @@ class CollectionSetDef(object):
         self.api = False
         self.rest = False
         self.crud = False
+        self.suit = False
         self.admin = False
         self.react = False
         self.collections = {}
@@ -128,37 +129,49 @@ class CollectionSetDef(object):
         app_names = self._apps
         return app_names
 
+    def page_list(self):
+        return list(self.pages.values())
+
+    def post_process(self):
+        for extra in self.extras:
+            extra.post_process()
+
     def get_required_apps(self):
         all_apps = []
         for col in self.collections.values():
             all_apps.extend(col.get_required_apps())
+
+        for extra in self.extras:
+            all_apps.extend(extra.get_required_apps())
+
         return list(set(all_apps))
 
     def get_required_deps(self):
         all_deps = []
         for col in self.collections.values():
             all_deps.extend(col.get_required_deps())
+
+        for extra in self.extras:
+            all_deps.extend(extra.get_required_deps())
         return list(set(all_deps))
 
     def get_required_urls(self):
         all_urls = []
         for col in self.collections.values():
             all_urls.extend(col.get_required_urls())
+
+        for extra in self.extras:
+            all_urls.extend(extra.get_required_urls())
         return all_urls
 
     def get_required_settings(self):
         all_settings = {}
         for col in self.collections.values():
             all_settings.update(col.get_required_settings())
+
+        for extra in self.extras:
+            all_settings.update(extra.get_required_settings())
         return all_settings
-
-    def page_list(self):
-        return list(self.pages.values())
-
-    def post_process(self):
-        for col in self.collections.values():
-            if col.admin:
-                col.admin.post_process()
 
 
 FieldDeclaration = namedtuple('FieldDeclaration', ['import_def', 'declaration'])

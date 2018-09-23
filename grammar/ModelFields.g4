@@ -1,7 +1,6 @@
-parser grammar FieldsParser;
+parser grammar ModelFields;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
-
 
 col_field_def: field_longtext
              | field_html_media

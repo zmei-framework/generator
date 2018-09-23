@@ -1,6 +1,6 @@
 from textwrap import dedent
 
-from zmei_generator.extras.admin import AdminExtra, AdminInlineConfig
+from zmei_generator.extras.model.admin import AdminExtra, AdminInlineConfig
 from zmei_generator.parser.parser import parse_string
 from zmei_generator.parser.populate import populate_collection_set
 
@@ -27,6 +27,8 @@ def test_admin_empty():
 
     assert isinstance(boo.admin, AdminExtra)
     assert cs.admin is True
+
+    assert boo.admin in cs.extras
 
 
 def test_admin_one_line():
@@ -223,7 +225,8 @@ def test_admin_list():
 
 def test_admin_tabs_all():
     cs = _("""
-
+        @suit
+        
         #boo
         ----------
         a
@@ -248,7 +251,8 @@ def test_admin_tabs_all():
 
 def test_admin_tabs_all_but_some():
     cs = _("""
-
+        @suit
+        
         #boo
         ----------
         a
@@ -276,7 +280,8 @@ def test_admin_tabs_all_but_some():
 
 def test_admin_tabs_verbose_name():
     cs = _("""
-
+        @suit
+        
         #boo
         ----------
         a
@@ -302,7 +307,8 @@ def test_admin_tabs_verbose_name():
 
 def test_admin_tabs_left_to_general():
     cs = _("""
-
+        @suit
+        
         #boo
         ----------
         a
@@ -328,7 +334,8 @@ def test_admin_tabs_left_to_general():
 
 def test_admin_tabs_with_fields():
     cs = _("""
-
+    @suit
+    
     #car
     -------
     nr
@@ -359,7 +366,6 @@ def test_admin_tabs_with_fields():
 
 def test_admin_inline_simple():
     cs = _("""
-    
     #foo
     -------
     a
@@ -431,6 +437,7 @@ def test_admin_inline_details():
 
 def test_admin_inline_tab():
     cs = _("""
+    @suit
     
     #foo
     -------

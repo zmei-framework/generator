@@ -12,6 +12,8 @@ class ValidationListener(ZmeiLangParserListener):
 
         self.errors = []
 
+        self.suit = False
+
     # Pages
 
     def enterPage_base(self, ctx: ZmeiLangParser.Page_baseContext):

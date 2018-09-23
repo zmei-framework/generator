@@ -15,3 +15,15 @@ class Extra(object):
     def post_process(self):
         pass
 
+    def get_required_apps(self):
+        return []
+
+    def get_required_deps(self):
+        return []
+
+    def get_required_settings(self):
+        return {}
+
+    def get_required_urls(self):
+        return []
+

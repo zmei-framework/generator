@@ -2,6 +2,7 @@ lexer grammar ZmeiLangSimpleLexer;
 
 // Field types
 AN_ADMIN: '@admin';
+AN_SUIT: '@suit';
 
 BOOL: 'true' | 'false';
 

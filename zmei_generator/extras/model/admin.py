@@ -7,6 +7,7 @@ from zmei_generator.config.extras import Extra
 from cPyparsing import *
 
 from zmei_generator.config.grammar import field_name_spec
+from zmei_generator.parser.errors import TabsSuitRequiredValidationError
 
 
 class AdminExtra(Extra):
@@ -57,6 +58,7 @@ class AdminExtra(Extra):
         Do delayed field calculation as we need to wait
         until all Reference fields are created
         """
+
         fields = self.collection.filter_fields(fields_expr, include_refs=True)
 
         self.add_tab_fieldset(name, verbose_name, fields, prepend)

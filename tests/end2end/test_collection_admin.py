@@ -27,6 +27,8 @@ def test_admin_simple():
 
 @pytest.mark.zmei_before('install', 'migrate')
 @pytest.mark.zmei('sample', """
+@suit
+
 #car
 -------
 nr
@@ -80,6 +82,8 @@ def test_admin_more_options():
 
 @pytest.mark.zmei_before('install', 'migrate')
 @pytest.mark.zmei('sample', """
+@suit
+
 #car
 -------
 nr
@@ -117,6 +121,7 @@ def test_admin_more_options_no_weight():
 
 @pytest.mark.zmei_before('install', 'migrate')
 @pytest.mark.zmei('sample', """
+@suit
 
 #wehicle
 ---------
@@ -165,6 +170,8 @@ def test_admin_more_options_no_weight_and_parent():
 
 @pytest.mark.zmei_before('install', 'migrate')
 @pytest.mark.zmei('admin_inline', """
+
+@suit
 
 #car
 -------
