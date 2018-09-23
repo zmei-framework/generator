@@ -112,3 +112,50 @@ def test_to_string():
     foo = cs.collections['foo']
 
     assert foo.to_string == 'lolo {title}'
+
+
+def test_modifiers():
+    cs = _("""
+
+        #foo
+        ----------
+        $a
+        =b
+        &c
+        !d
+        *e
+        ~f
+
+    """)
+
+    assert len(cs.collections) == 1
+
+    foo = cs.collections['foo']
+
+    assert foo.fields['a'].translatable is True
+    assert foo.fields['b'].display_field is True
+    assert foo.fields['c'].unique is True
+    assert foo.fields['d'].index is True
+    assert foo.fields['e'].required is True
+    assert foo.fields['f'].not_null is True
+
+
+def test_modifiers_all():
+    cs = _("""
+
+        #foo
+        ----------
+        $=&!*~a
+
+    """)
+
+    assert len(cs.collections) == 1
+
+    foo = cs.collections['foo']
+
+    assert foo.fields['a'].translatable is True
+    assert foo.fields['a'].display_field is True
+    assert foo.fields['a'].unique is True
+    assert foo.fields['a'].index is True
+    assert foo.fields['a'].required is True
+    assert foo.fields['a'].not_null is True

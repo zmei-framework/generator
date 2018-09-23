@@ -11,7 +11,7 @@ def _(code):
     return populate_collection_set(tree, 'example')
 
 
-def test_admin_empty():
+def test_polymorphic():
     cs = _("""
     
         #boo
@@ -26,3 +26,18 @@ def test_admin_empty():
 
     assert 'django-polymorphic' in cs.get_required_deps()
     assert 'polymorphic' in cs.get_required_apps()
+
+
+def test_i18n():
+    cs = _("""
+    
+        #boo
+        ----------
+        $a
+    
+    """)
+
+    assert cs.translatable is True
+
+    assert 'django-modeltranslation' in cs.get_required_deps()
+    assert 'modeltranslation' in cs.get_required_apps()

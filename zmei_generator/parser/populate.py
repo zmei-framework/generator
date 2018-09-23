@@ -138,6 +138,21 @@ class PartsCollectorListener(ZmeiLangParserListener):
     def enterCol_field(self, ctx: ZmeiLangParser.Col_fieldContext):
         self.field_config = FieldConfig()
 
+    def enterCol_modifier(self, ctx: ZmeiLangParser.Col_modifierContext):
+        m = ctx.getText()
+        if m == "$":
+            self.field_config.translatable = True
+        elif m == "!":
+            self.field_config.index = True
+        elif m == "=":
+            self.field_config.display_field = True
+        elif m == "*":
+            self.field_config.required = True
+        elif m == "~":
+            self.field_config.not_null = True
+        elif m == "&":
+            self.field_config.unique = True
+
     def enterCol_field_name(self, ctx: ZmeiLangParser.Col_field_nameContext):
         self.field_config.name = ctx.getText().strip()
 

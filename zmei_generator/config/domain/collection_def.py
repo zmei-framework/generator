@@ -267,6 +267,9 @@ class CollectionDef(object):
         if self.polymorphic:
             all_apps.append('polymorphic')
 
+        if self.translatable:
+            all_apps.append('modeltranslation')
+
         return all_apps
 
     def get_required_deps(self):
@@ -276,6 +279,9 @@ class CollectionDef(object):
 
         if self.polymorphic:
             all_deps.append('django-polymorphic')
+
+        if self.translatable:
+            all_deps.append('django-modeltranslation')
 
         return all_deps
 

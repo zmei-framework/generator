@@ -130,8 +130,11 @@ class AdminExtra(Extra):
             model_admin_added = True
 
         elif self.collection.polymorphic:
-            classes.append(('polymorphic.admin', 'PolymorphicParentModelAdmin'))
-            model_admin_added = True
+            children_have_admins = len([x for x in self.collection.child_collections if x.admin]) > 0
+
+            if children_have_admins:
+                classes.append(('polymorphic.admin', 'PolymorphicParentModelAdmin'))
+                model_admin_added = True
 
         if self.collection.sortable:
             classes.append(('suit.admin', 'SortableModelAdmin'))
@@ -142,7 +145,7 @@ class AdminExtra(Extra):
             model_admin_added = True
 
         if self.collection.translatable:
-            classes.append(('cratis_i18n.admin', 'TranslatableModelAdmin'))
+            classes.append(('modeltranslation.admin', 'TabbedTranslationAdmin'))
             model_admin_added = True
 
         if not model_admin_added:
