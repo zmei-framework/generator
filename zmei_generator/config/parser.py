@@ -26,12 +26,14 @@ from zmei_generator.extras.rest import RestExtra
 from zmei_generator.extras.sortable import SortableExtra, OrderExtra
 from zmei_generator.extras.tree import TreeExtra
 from zmei_generator.generator.utils import handle_parse_exception
+from zmei_generator.parser.errors import ValidationError
 from zmei_generator.parser.parser import parse_string
 from zmei_generator.parser.populate import populate_collection_set
 
 
 class ParseError(Exception):
     pass
+
 
 class Parser(object):
 
@@ -108,6 +110,6 @@ class Parser(object):
             #                 filename, import_expr.path, relative_path
             #             ))
 
-        except ParseException as e:
+        except ValidationError as e:
             handle_parse_exception(e, config, 'Error parsing {}'.format(filename))
 

@@ -1,4 +1,7 @@
-class PageExtra(object):
+from zmei_generator.config.extras import Extra
+
+
+class PageExtra(Extra):
 
     def __init__(self, parsed_result, page):
         self.page = page
@@ -12,19 +15,4 @@ class PageExtra(object):
 
     def get_python_code(self):
         return ''
-
-    def post_process(self):
-        pass
-
-    def get_required_apps(self):
-        return []
-
-    def get_required_deps(self):
-        return []
-
-    def get_required_settings(self):
-        return {}
-
-    def get_required_urls(self):
-        return []
 

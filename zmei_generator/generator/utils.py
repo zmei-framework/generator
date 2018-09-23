@@ -221,15 +221,25 @@ class StopGenerator(Exception):
 
 def handle_parse_exception(e, parsed_string, subject):
     out = []
+    print('COL: ', e.col)
     # out.append(str(type(e)))
     out.append(colored('{}, error: {}'.format(subject, e), 'white', 'on_red'))
     out.append('-' * 100)
     for nr, line in enumerate(parsed_string.splitlines()):
+        if nr < e.lineno - 5:
+            if out[-1] != '...':
+                out.append('...')
+            continue
+        if nr > e.lineno + 5:
+            if out[-1] != '...':
+                out.append('...')
+            continue
+
         if (nr + 1) == e.lineno:
             try:
-                before = line[:e.col - 1]
-                char = line[e.col - 1]
-                after = line[e.col:]
+                before = line[:e.col]
+                char = line[e.col]
+                after = line[e.col + 1:]
             except IndexError:
                 out.append(colored('{0:04d}| {1}'.format(nr + 1, line), 'white', 'on_red'))
 

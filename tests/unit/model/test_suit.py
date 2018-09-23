@@ -25,6 +25,14 @@ def test_suit():
     assert isinstance(cs.suit, SuitCsExtra)
 
 
+def test_app_name():
+    cs = _("""
+        @suit("hoho!")
+    """)
+
+    assert cs.suit.app_name == 'hoho!'
+
+
 def test_admin_tabs_no_suit():
 
     with pytest.raises(TabsSuitRequiredValidationError):

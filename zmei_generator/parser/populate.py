@@ -431,7 +431,7 @@ class PartsCollectorListener(ZmeiLangParserListener):
 
     def enterAn_admin_tabs(self, ctx: ZmeiLangParser.An_admin_tabsContext):
         if not self.collection_set.suit:
-            raise TabsSuitRequiredValidationError(ctx.KW_TABS())
+            raise TabsSuitRequiredValidationError(ctx.start)
 
     def enterAn_admin_tab(self, ctx: ZmeiLangParser.An_admin_tabContext):
         fields = self._get_fields(ctx)
@@ -472,10 +472,15 @@ class PartsCollectorListener(ZmeiLangParserListener):
         )
         self.inline = None
 
+    # Suit
+
     def enterAn_suit(self, ctx: ZmeiLangParser.An_suitContext):
         suit = SuitCsExtra(self.collection_set)
         self.collection_set.extras.append(suit)
         self.collection_set.suit = suit
+
+    def enterAn_suit_app_name(self, ctx: ZmeiLangParser.An_suit_app_nameContext):
+        self.collection_set.suit.app_name = ctx.getText().strip('"\'')
 
 
 def populate_collection_set(tree, app_name='noname'):

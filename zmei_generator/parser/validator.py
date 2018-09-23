@@ -20,7 +20,7 @@ class ValidationListener(ZmeiLangParserListener):
         name = ctx.getText()[:-2]
 
         if name not in self.symbols.pages:
-            self.errors.append(PageParentValidationError(ctx.id_or_kw(), name))
+            self.errors.append(PageParentValidationError(ctx.id_or_kw().start, name))
 
 
 def validate(tree, symbols):

@@ -1,21 +1,12 @@
-class CollectionSetExtra(object):
+from zmei_generator.config.extras import Extra
+
+
+class CollectionSetExtra(Extra):
 
     def __init__(self, collection_set):
+        super().__init__()
+
         self.collection_set = collection_set
 
-    def get_required_apps(self):
-        return []
-
-    def get_required_deps(self):
-        return []
-
-    def get_required_settings(self):
-        return {}
-
-    def get_required_urls(self):
-        return []
-
-    def post_process(self):
-        pass
 
 

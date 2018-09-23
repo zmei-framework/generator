@@ -8,10 +8,6 @@ class Extra(object):
     def get_name(cls):  # pragma: no cover
         pass
 
-    @abstractmethod
-    def parse(self, extra, collection):  # pragma: no cover
-        pass
-
     def post_process(self):
         pass
 
@@ -26,4 +22,9 @@ class Extra(object):
 
     def get_required_urls(self):
         return []
+
+    @classmethod
+    def write_settings(cls, apps, f):
+        pass
+
 

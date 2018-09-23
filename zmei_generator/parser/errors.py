@@ -2,24 +2,37 @@
 
 class ValidationError(Exception):
 
-    def __init__(self, token, message) -> None:
+    def __init__(self, lineno, col, message) -> None:
         super().__init__()
 
-        self.token = token
         self.message = message
 
+        self.lineno = lineno
+        self.col = col
+
     def format_error(self):
-        return f'[{self.token.line}:{self.token.column}] {self.message}'
+        return f'[{self.lineno}:{self.col}] {self.message}'
+
+    def __str__(self) -> str:
+        return self.format_error()
 
 
-class PageParentValidationError(ValidationError):
+class ValidationTokenError(ValidationError):
+
+    def __init__(self, token, message) -> None:
+        self.token = token
+
+        super().__init__(self.token.line, self.token.column, message)
+
+
+class PageParentValidationError(ValidationTokenError):
 
     def __init__(self, token, parent_page_name) -> None:
         self.parent_page_name = parent_page_name
         super().__init__(token, f"Parent page is not defined: \"{parent_page_name}\"")
 
 
-class TabsSuitRequiredValidationError(ValidationError):
+class TabsSuitRequiredValidationError(ValidationTokenError):
     def __init__(self, token) -> None:
         super().__init__(token, f"@admin->tabs requires @suit feature enabled. Add \"@suit\""
                                 f"to the beginning of the col file.")

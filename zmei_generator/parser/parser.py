@@ -1,6 +1,7 @@
 from antlr4 import *
 from antlr4.error.ErrorListener import ErrorListener
 
+from zmei_generator.parser.errors import ValidationError
 from .gen.ZmeiLangSimpleLexer import ZmeiLangSimpleLexer
 from .gen.ZmeiLangParser import ZmeiLangParser
 
@@ -15,7 +16,7 @@ def parse_string(string, fail_on_error=True):
 
 class ExceptionErrorListener(ErrorListener):
     def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
-        raise Exception("line " + str(line) + ":" + str(column) + " " + msg)
+        raise ValidationError(line, column, msg)
 
 
 def parse(stream, fail_on_error=True):

@@ -1,3 +1,4 @@
+import json
 import os
 import re
 from os import unlink
@@ -85,21 +86,30 @@ def generate_common_files(target_path, skeleton_dir, apps):
     if has_rest:
         installed_apps.append('rest_framework')
 
+    extra_classes = set()
     for collection_set in apps.values():
         installed_apps.extend(collection_set.get_required_apps())
         req_settings.update(collection_set.get_required_settings())
 
+        for extra in collection_set.extras:
+            extra_classes.add(type(extra))
+
     installed_apps = list(set(installed_apps))
 
 
+
     with open(os.path.join(target_path, 'app/settings.py'), 'a') as f:
-        f.write('\nINSTALLED_APPS += [\n')
+        f.write('\nINSTALLED_APPS = [\n')
         f.write("\n    'app',\n")
         f.write('\n'.join([f"    '{app_name}'," for app_name in installed_apps]))
-        f.write('\n]\n\n')# settings
+        f.write('\n] + INSTALLED_APPS\n\n')# settings
 
         for key, val in req_settings.items():
             f.write(f'{key} = {repr(val)}\n')
+
+        for extra in extra_classes:
+            extra.write_settings(apps, f)
+
 
 
     # base template

@@ -188,6 +188,15 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#an_suit_app_name.
+    def enterAn_suit_app_name(self, ctx:ZmeiLangParser.An_suit_app_nameContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_suit_app_name.
+    def exitAn_suit_app_name(self, ctx:ZmeiLangParser.An_suit_app_nameContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#col.
     def enterCol(self, ctx:ZmeiLangParser.ColContext):
         pass
