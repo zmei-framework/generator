@@ -1,6 +1,9 @@
 from textwrap import dedent
 
+import pytest
+
 from zmei_generator.extras.model.admin import AdminExtra, AdminInlineConfig
+from zmei_generator.parser.errors import LangsRequiredValidationError
 from zmei_generator.parser.parser import parse_string
 from zmei_generator.parser.populate import populate_collection_set
 
@@ -30,6 +33,7 @@ def test_polymorphic():
 
 def test_i18n():
     cs = _("""
+        @langs(en)
     
         #boo
         ----------
@@ -41,3 +45,25 @@ def test_i18n():
 
     assert 'django-modeltranslation' in cs.get_required_deps()
     assert 'modeltranslation' in cs.get_required_apps()
+
+
+def test_i18n_no_annot():
+    with pytest.raises(LangsRequiredValidationError):
+        _("""
+            #boo
+            -----
+            $a
+        """)
+
+#
+# def test_filer():
+#     cs = _("""
+#
+#         @filer
+#
+#     """)
+#
+#     assert 'django-filer' in cs.get_required_deps()
+#     assert 'filer' in cs.get_required_apps()
+#     assert 'easy_thumbnails' in cs.get_required_apps()
+#     assert 'mptt' in cs.get_required_apps()

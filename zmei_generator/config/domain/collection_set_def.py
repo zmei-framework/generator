@@ -26,6 +26,8 @@ class CollectionSetDef(object):
         self.rest = False
         self.crud = False
         self.suit = False
+        self.filer = False
+        self.langs = False
         self.admin = False
         self.react = False
         self.collections = {}

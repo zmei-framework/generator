@@ -116,6 +116,7 @@ def test_to_string():
 
 def test_modifiers():
     cs = _("""
+        @langs(en)
 
         #foo
         ----------
@@ -142,6 +143,7 @@ def test_modifiers():
 
 def test_modifiers_all():
     cs = _("""
+        @langs(en)
 
         #foo
         ----------
@@ -165,6 +167,7 @@ def test_modifiers_all():
 
 def test_translatable_parent():
     cs = _("""
+        @langs(en)
 
         #foo
         ------

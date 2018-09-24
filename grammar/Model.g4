@@ -5,7 +5,7 @@ options { tokenVocab=ZmeiLangSimpleLexer; }
 import
     Base,
     ModelFields,
-    ModelExtras
+    ModelExtra
     ;
 
 /**************************

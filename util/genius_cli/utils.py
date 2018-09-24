@@ -3,6 +3,7 @@ import io
 import json
 import os
 import re
+import signal
 import sys
 import zipfile
 from glob import glob
@@ -328,11 +329,17 @@ def mark_req_file_installed(filename):
         f.write(hash)
 
 
-def install_deps():
+def install_deps(django_process):
     if is_req_file_changed('requirements.txt'):
+        if django_process:
+            os.killpg(os.getpgid(django_process.pid), signal.SIGTERM)
+            django_process = None
+
         print(colored('> ', 'white', 'on_blue'), 'Installing pip dependencies...')
         if subprocess.run('pip install -r requirements.txt', shell=True, check=True):
             mark_req_file_installed('requirements.txt')
+
+    return django_process
 
 
 def wait_for_file_changes(paths, initial=True, watch=True):

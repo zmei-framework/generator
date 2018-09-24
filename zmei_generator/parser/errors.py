@@ -36,3 +36,8 @@ class TabsSuitRequiredValidationError(ValidationTokenError):
     def __init__(self, token) -> None:
         super().__init__(token, f"@admin->tabs requires @suit feature enabled. Add \"@suit\""
                                 f"to the beginning of the col file.")
+
+
+class LangsRequiredValidationError(ValidationTokenError):
+    def __init__(self, token) -> None:
+        super().__init__(token, f"$ (localized fields) require @langs annotation with a list of languages added")

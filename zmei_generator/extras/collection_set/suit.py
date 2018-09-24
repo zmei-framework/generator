@@ -9,6 +9,7 @@ class SuitCsExtra(CollectionSetExtra):
         super().__init__(collection_set)
 
         self.app_name = None
+        self.menu = [{'label': 'auth', 'app': 'auth'}]
 
     @classmethod
     def get_name(cls):
@@ -25,9 +26,11 @@ class SuitCsExtra(CollectionSetExtra):
 
         # menu
 
-        menu = [{'label': 'auth', 'app': 'auth'}]
+        menu = []
 
         for app, collection_set in apps.items():
+            menu.extend(collection_set.suit.menu)
+
             if collection_set.admin:
                 models = []
                 for collection in collection_set.collections.values():

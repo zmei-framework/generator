@@ -1,6 +1,8 @@
 lexer grammar ZmeiLangSimpleLexer;
 
-// Field types
+// Annotation types
+AN_LANGS: '@langs';
+AN_FILER: '@filer';
 AN_ADMIN: '@admin';
 AN_SUIT: '@suit';
 

@@ -3,7 +3,7 @@ parser grammar ZmeiLangParser;
 options { tokenVocab=ZmeiLangSimpleLexer; }
 
 import Base,
-       CsExtras,
+       CsExtra,
        Model,
        Page
        ;

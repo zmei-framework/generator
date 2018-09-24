@@ -107,7 +107,7 @@ def run():
                     remove_db(apps=app, features=features)
 
                 if install or rebuild:
-                    install_deps()
+                    django_process = install_deps(django_process)
 
                 if auto:
                     migrate_db(apps=app, features=features)

@@ -1,4 +1,4 @@
-parser grammar ModelExtras;
+parser grammar ModelExtra;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 

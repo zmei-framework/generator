@@ -30,7 +30,8 @@ def test_admin_simple():
 
 def test_admin_i18n():
     cs = _("""
-    
+        @langs(en)
+        
         #boo
         ----------
         $abc

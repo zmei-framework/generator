@@ -34,7 +34,8 @@ class FilerFileFieldDef(FieldDef):
             'FileSerializer()'
         )
 
-class FilerFileFolderDef(FieldDef):
+
+class FilerFileFolderDef(FilerFileFieldDef):
 
     """
     Image field
@@ -67,7 +68,7 @@ class ImageSize(object):
     filters = None
 
 
-class FilerImageFieldDef(FieldDef):
+class FilerImageFieldDef(FilerFileFieldDef):
 
     """
     Image field

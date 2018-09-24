@@ -36,6 +36,8 @@ def generate_common_files(target_path, skeleton_dir, apps):
     has_react = False
     has_rest = False
     has_admin = False
+    has_filer = False
+    has_suit = False
 
     # urls
     imports = set()
@@ -62,6 +64,12 @@ def generate_common_files(target_path, skeleton_dir, apps):
 
         if collection_set.react:
             has_react = True
+
+        if collection_set.suit:
+            has_suit = True
+
+        if collection_set.filer:
+            has_filer = True
 
         if collection_set.api:
             has_rest = True
@@ -118,7 +126,7 @@ def generate_common_files(target_path, skeleton_dir, apps):
     requirements = [
         'zmei==0.1.5',
         'wheel',
-        'django',
+        'django>2',
     ]
 
     if has_rest:

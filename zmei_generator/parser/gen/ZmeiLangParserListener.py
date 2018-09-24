@@ -179,6 +179,24 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#an_langs.
+    def enterAn_langs(self, ctx:ZmeiLangParser.An_langsContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_langs.
+    def exitAn_langs(self, ctx:ZmeiLangParser.An_langsContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_langs_list.
+    def enterAn_langs_list(self, ctx:ZmeiLangParser.An_langs_listContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_langs_list.
+    def exitAn_langs_list(self, ctx:ZmeiLangParser.An_langs_listContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#an_suit.
     def enterAn_suit(self, ctx:ZmeiLangParser.An_suitContext):
         pass

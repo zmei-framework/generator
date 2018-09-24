@@ -19,15 +19,22 @@ from zmei_generator.fields.number import IntegerFieldDef, FloatFieldDef, Decimal
 from zmei_generator.fields.relation import RelationOneDef, RelationOne2OneDef, RelationManyDef
 from zmei_generator.fields.text import TextFieldDef, SlugFieldDef, LongTextFieldDef, RichTextFieldDef, \
     RichTextFieldWithUploadDef
-from zmei_generator.parser.errors import TabsSuitRequiredValidationError
+from zmei_generator.parser.errors import TabsSuitRequiredValidationError, LangsRequiredValidationError
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser, ParseTreeWalker
-from zmei_generator.parser.gen.ZmeiLangParserListener import ZmeiLangParserListener
+# from zmei_generator.parser.gen.ZmeiLangParserListener import ZmeiLangParserListener
+from zmei_generator.extras.collection_set.langs import LangsCsExtraParserListener, LangsCsExtra
+# from zmei_generator.extras.collection_set.filer import FilerCsExtraParserListener
+from zmei_generator.parser.utils import BaseListener
 
 
-class PartsCollectorListener(ZmeiLangParserListener):
+class PartsCollectorListener(
+    LangsCsExtraParserListener,
+    # FilerCsExtraParserListener,
+    BaseListener
+):
 
     def __init__(self, collection_set: CollectionSetDef) -> None:
-        super().__init__()
+        super().__init__(collection_set)
 
         self.collection_set = collection_set
 
@@ -144,6 +151,9 @@ class PartsCollectorListener(ZmeiLangParserListener):
     def enterCol_modifier(self, ctx: ZmeiLangParser.Col_modifierContext):
         m = ctx.getText()
         if m == "$":
+            if not self.collection_set.langs:
+                raise LangsRequiredValidationError(ctx.start)
+
             self.field_config.translatable = True
         elif m == "!":
             self.field_config.index = True
@@ -474,6 +484,7 @@ def populate_collection_set(tree, app_name='noname'):
     cs = CollectionSetDef(app_name)
 
     listener = PartsCollectorListener(cs)
+    LangsCsExtraParserListener,
 
     walker = ParseTreeWalker()
     walker.walk(listener, tree)
