@@ -302,16 +302,13 @@ class PartsCollectorListener(ZmeiLangParserListener):
     def enterField_create_time(self, ctx: ZmeiLangParser.Field_create_timeContext):
         self.field = AutoNowAddDateTimeFieldDef(self.model, self.field_config)
 
-    # image_file  field
-
-    def enterField_image_file(self, ctx: ZmeiLangParser.Field_image_fileContext):
-        self.field = ImageFieldDef(self.model, self.field_config)
-
     # image and image_folder field
 
     def enterField_image(self, ctx: ZmeiLangParser.Field_imageContext):
         type_name = ctx.filer_image_type().getText()
-        if type_name == 'image_folder':
+        if type_name == 'image':
+            self.field = ImageFieldDef(self.model, self.field_config)
+        elif type_name == 'filer_image_folder':
             self.field = FilerImageFolderFieldDef(self.model, self.field_config)
         else:
             self.field = FilerImageFieldDef(self.model, self.field_config)
@@ -337,11 +334,6 @@ class PartsCollectorListener(ZmeiLangParserListener):
         self.field.sizes.append(self.image_size)
         self.image_size = None
 
-    # filer_image  field
-
-    def enterField_filer_image(self, ctx: ZmeiLangParser.Field_filer_imageContext):
-        self.field = FilerImageFieldDef(self.model, self.field_config)
-
     # filer_file  field
 
     def enterField_filer_file(self, ctx: ZmeiLangParser.Field_filer_fileContext):
@@ -349,17 +341,12 @@ class PartsCollectorListener(ZmeiLangParserListener):
 
     # file  field
 
-    def enterField_file(self, ctx: ZmeiLangParser.Field_fileContext):
-        self.field = FilerFileFieldDef(self.model, self.field_config)
-
-    # simple_file  field
-
-    def enterField_simple_file(self, ctx: ZmeiLangParser.Field_simple_fileContext):
+    def enterField_file(self, ctx:ZmeiLangParser.Field_fileContext):
         self.field = SimpleFieldDef(self.model, self.field_config)
 
     # folder  field
 
-    def enterField_folder(self, ctx: ZmeiLangParser.Field_folderContext):
+    def enterField_filer_folder(self, ctx:ZmeiLangParser.Field_filer_folderContext):
         self.field = FilerFileFolderDef(self.model, self.field_config)
 
     # Relation field

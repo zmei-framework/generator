@@ -17,16 +17,11 @@ col_field_def: field_longtext
              | field_bool
              | field_relation
 
-             | field_image_file
              | field_image
-             | field_filer_image
-             | field_filer_file
              | field_file
-             | field_simple_file
-             | field_folder
+             | field_filer_file
+             | field_filer_folder
              ;
-
-
 
 field_longtext: COL_FIELD_TYPE_LONGTEXT;
 field_html: COL_FIELD_TYPE_HTML;
@@ -38,12 +33,9 @@ field_datetime: COL_FIELD_TYPE_DATETIME;
 field_create_time: COL_FIELD_TYPE_CREATE_TIME;
 field_update_time: COL_FIELD_TYPE_UPDATE_TIME;
 
-field_image_file: COL_FIELD_TYPE_IMAGE_FILE;
-field_filer_image: COL_FIELD_TYPE_FILER_IMAGE;
-field_filer_file: COL_FIELD_TYPE_FILER_FILE;
 field_file: COL_FIELD_TYPE_FILE;
-field_simple_file: COL_FIELD_TYPE_SIMPLE_FILE;
-field_folder: COL_FIELD_TYPE_FOLDER;
+field_filer_file: COL_FIELD_TYPE_FILER_FILE;
+field_filer_folder: COL_FIELD_TYPE_FILER_FOLDER;
 
 // Text
 
@@ -107,7 +99,7 @@ field_image:
             filer_image_type
             (BRACE_OPEN field_image_sizes  BRACE_CLOSE)?;
 
-filer_image_type : (COL_FIELD_TYPE_IMAGE|COL_FIELD_TYPE_IMAGE_FOLDER) ;
+filer_image_type : (COL_FIELD_TYPE_IMAGE|COL_FIELD_TYPE_FILER_IMAGE|COL_FIELD_TYPE_FILER_IMAGE_FOLDER) ;
 
 field_image_sizes: field_image_size (COMA field_image_size)*;
 field_image_size: field_image_size_name field_image_size_dimensions field_image_filters;

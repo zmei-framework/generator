@@ -1,11 +1,8 @@
 from textwrap import dedent
 
-from zmei_generator.fields.date import DateFieldDef, DateTimeFieldDef, AutoNowDateTimeFieldDef, \
-    AutoNowAddDateTimeFieldDef
 from zmei_generator.fields.filer import FilerImageFieldDef, FilerFileFieldDef, FilerFileFolderDef, \
     FilerImageFolderFieldDef
 from zmei_generator.fields.image import ImageFieldDef, SimpleFieldDef
-from zmei_generator.fields.number import IntegerFieldDef, FloatFieldDef, DecimalFieldDef
 from zmei_generator.parser.parser import parse_string
 from zmei_generator.parser.populate import populate_collection_set
 
@@ -14,19 +11,6 @@ def _(code):
     tree = parse_string(dedent(code))
 
     return populate_collection_set(tree, 'example')
-
-
-def test_image_file_field():
-    cs = _("""
-
-        #boo
-        ----------
-        a: image_file
-    """)
-
-    a = cs.collections['boo'].fields['a']
-
-    assert isinstance(a, ImageFieldDef)
 
 
 def test_image_field():
@@ -39,7 +23,7 @@ def test_image_field():
 
     a = cs.collections['boo'].fields['a']
 
-    assert isinstance(a, FilerImageFieldDef)
+    assert isinstance(a, ImageFieldDef)
     assert len(a.sizes) == 2
 
     assert a.sizes[0].width == 300
@@ -87,19 +71,6 @@ def test_file_field():
 
     a = cs.collections['boo'].fields['a']
 
-    assert isinstance(a, FilerFileFieldDef)
-
-
-def test_simple_file_field():
-    cs = _("""
-
-        #boo
-        ----------
-        a: simple_file
-    """)
-
-    a = cs.collections['boo'].fields['a']
-
     assert isinstance(a, SimpleFieldDef)
 
 
@@ -108,7 +79,7 @@ def test_folder_field():
 
         #boo
         ----------
-        a: folder
+        a: filer_folder
     """)
 
     a = cs.collections['boo'].fields['a']
@@ -121,7 +92,7 @@ def test_image_folder_field():
 
         #boo
         ----------
-        a: image_folder(default=300x300|crop|upscale, foo=1024x600|crop)
+        a: filer_image_folder(default=300x300|crop|upscale, foo=1024x600|crop)
     """)
 
     a = cs.collections['boo'].fields['a']

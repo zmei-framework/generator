@@ -431,21 +431,12 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ZmeiLangParser#field_image_file.
-    def enterField_image_file(self, ctx:ZmeiLangParser.Field_image_fileContext):
+    # Enter a parse tree produced by ZmeiLangParser#field_file.
+    def enterField_file(self, ctx:ZmeiLangParser.Field_fileContext):
         pass
 
-    # Exit a parse tree produced by ZmeiLangParser#field_image_file.
-    def exitField_image_file(self, ctx:ZmeiLangParser.Field_image_fileContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#field_filer_image.
-    def enterField_filer_image(self, ctx:ZmeiLangParser.Field_filer_imageContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#field_filer_image.
-    def exitField_filer_image(self, ctx:ZmeiLangParser.Field_filer_imageContext):
+    # Exit a parse tree produced by ZmeiLangParser#field_file.
+    def exitField_file(self, ctx:ZmeiLangParser.Field_fileContext):
         pass
 
 
@@ -458,30 +449,12 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ZmeiLangParser#field_file.
-    def enterField_file(self, ctx:ZmeiLangParser.Field_fileContext):
+    # Enter a parse tree produced by ZmeiLangParser#field_filer_folder.
+    def enterField_filer_folder(self, ctx:ZmeiLangParser.Field_filer_folderContext):
         pass
 
-    # Exit a parse tree produced by ZmeiLangParser#field_file.
-    def exitField_file(self, ctx:ZmeiLangParser.Field_fileContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#field_simple_file.
-    def enterField_simple_file(self, ctx:ZmeiLangParser.Field_simple_fileContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#field_simple_file.
-    def exitField_simple_file(self, ctx:ZmeiLangParser.Field_simple_fileContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#field_folder.
-    def enterField_folder(self, ctx:ZmeiLangParser.Field_folderContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#field_folder.
-    def exitField_folder(self, ctx:ZmeiLangParser.Field_folderContext):
+    # Exit a parse tree produced by ZmeiLangParser#field_filer_folder.
+    def exitField_filer_folder(self, ctx:ZmeiLangParser.Field_filer_folderContext):
         pass
 
 
