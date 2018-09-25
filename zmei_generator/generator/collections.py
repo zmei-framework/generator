@@ -124,7 +124,7 @@ def generate_common_files(target_path, skeleton_dir, apps):
     generate_file(target_path, 'app/templates/base.html', template_name='theme/base.html')
 
     requirements = [
-        'zmei==0.1.5',
+        'zmei==0.1.6',
         'wheel',
         'django>2',
     ]
