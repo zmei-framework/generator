@@ -364,10 +364,10 @@ def generate_views_py(target_path, app_name, collection_set):
     imports = ImportSet()
 
     for col in collection_set.collections.values():
+        imports.add('{}.models'.format(app_name), col.class_name)
+
         if not col.rest:
             continue
-
-        imports.add('{}.models'.format(app_name), col.class_name)
 
         for rest_conf in col.rest_conf.values():
             rest_conf.configure_imports(imports)

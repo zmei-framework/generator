@@ -135,8 +135,12 @@ class CollectionSetDef(object):
         return list(self.pages.values())
 
     def post_process(self):
+        for col in self.collections.values():
+            col.post_process()
+
         for extra in self.extras:
             extra.post_process()
+
 
     def get_required_apps(self):
         all_apps = []

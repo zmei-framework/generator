@@ -10,10 +10,7 @@ class FilerCsExtra(CollectionSetExtra):
         return 'filer'
 
     def get_required_deps(self):
-        if self.collection_set.suit:
-            return ['django-filer<1.2 # Django suit is incompatible with latest filer']
-        else:
-            return ['django-filer']
+        return ['git+git://github.com/nephila/django-filer@feature/django-2.0#egg=django-filer']
 
     def get_required_apps(self):
         return [
@@ -32,12 +29,12 @@ class FilerCsExtra(CollectionSetExtra):
                 {'label': 'Files & folders', 'app': 'filer'}
             ] + self.collection_set.suit.menu
 
-#
-# class FilerCsExtraParserListener(BaseListener):
-#
-#     def enterAn_filer(self, ctx: ZmeiLangParser.An_filerContext):
-#         self.collection_set.filer = FilerCsExtra(self.collection_set)
-#
-#         self.collection_set.extras.append(
-#             self.collection_set.filer
-#         )
+
+class FilerCsExtraParserListener(BaseListener):
+
+    def enterAn_filer(self, ctx: ZmeiLangParser.An_filerContext):
+        self.collection_set.filer = FilerCsExtra(self.collection_set)
+
+        self.collection_set.extras.append(
+            self.collection_set.filer
+        )

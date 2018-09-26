@@ -62,3 +62,19 @@ def test_one_relation():
     assert rel_field.target_collection == cs.collections['boo']
     assert rel_field.name == 'rel_name'
     assert rel_field.source_field == b
+
+
+def test_relation_works_in_any_order():
+    cs = _("""
+
+        #boo
+        ----------
+        a: one(#zoo -> boos)
+        
+        #zoo
+        ---------
+        lala
+        
+    """)
+
+    assert isinstance(cs.collections['zoo'].fields['boos'], ReferenceField)

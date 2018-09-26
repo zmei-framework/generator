@@ -134,6 +134,8 @@ XML_OPEN:   '<' -> pushMode(XML), pushMode(XML_INSIDE) ;
 //CODE_LINE_CONTENT: ~'}'+;
 //CODE_LINE_END: '}' -> popMode;
 
+ERRCHAR: ERR;
+
 mode CODE_BLOCK;
 CODE_BLOCK_LINE: WS+ .*? NL;
 CODE_BLOCK_END: '}' -> popMode;

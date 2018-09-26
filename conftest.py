@@ -103,6 +103,8 @@ def add_to_path(work_dir):
         sys.path.remove(path)
     sys.path.append(work_dir)
 
+    print(sys.path)
+
 
 def call_django_command(django_command, work_dir):
     import sys

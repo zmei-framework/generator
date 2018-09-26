@@ -2,7 +2,7 @@ from zmei_generator.config.domain.no_model_field import NoModelField
 
 
 class ReferenceField(object):
-    def __init__(self, collection, target_collection, name: str, source_field: str) -> None:
+    def __init__(self, collection, target_collection, name: str, source_field) -> None:
         super().__init__()
 
         self.target_collection = target_collection
@@ -19,6 +19,9 @@ class ReferenceField(object):
         self.options = {}
 
         self.inline = False
+
+    def post_process(self):
+        pass
 
     def parse_options(self):
         pass

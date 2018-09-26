@@ -3,7 +3,7 @@ parser grammar CsExtra;
 options { tokenVocab=ZmeiLangSimpleLexer; }
 
 import
-//    CsExtraFiler,
+    CsExtraFiler,
     CsExtraLangs,
     CsExtraSuit
     ;
@@ -11,6 +11,6 @@ import
 cs_annotation:
      an_suit
     |an_langs
-//    |an_filer
+    |an_filer
     |NL
     ;

@@ -1,3 +1,4 @@
+from antlr4 import ParseTreeWalker
 from zmei_generator.config.domain.collection_def import CollectionDef
 from zmei_generator.config.domain.collection_set_def import CollectionSetDef
 from zmei_generator.config.domain.collection_set_extra import CollectionSetExtra
@@ -19,17 +20,17 @@ from zmei_generator.fields.number import IntegerFieldDef, FloatFieldDef, Decimal
 from zmei_generator.fields.relation import RelationOneDef, RelationOne2OneDef, RelationManyDef
 from zmei_generator.fields.text import TextFieldDef, SlugFieldDef, LongTextFieldDef, RichTextFieldDef, \
     RichTextFieldWithUploadDef
-from zmei_generator.parser.errors import TabsSuitRequiredValidationError, LangsRequiredValidationError
-from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser, ParseTreeWalker
-# from zmei_generator.parser.gen.ZmeiLangParserListener import ZmeiLangParserListener
+
+from zmei_generator.parser.errors import TabsSuitRequiredValidationError, TabsSuitRequiredValidationError, LangsRequiredValidationError
+from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.extras.collection_set.langs import LangsCsExtraParserListener, LangsCsExtra
-# from zmei_generator.extras.collection_set.filer import FilerCsExtraParserListener
+from zmei_generator.extras.collection_set.filer import FilerCsExtraParserListener
 from zmei_generator.parser.utils import BaseListener
 
 
 class PartsCollectorListener(
     LangsCsExtraParserListener,
-    # FilerCsExtraParserListener,
+    FilerCsExtraParserListener,
     BaseListener
 ):
 
@@ -374,27 +375,12 @@ class PartsCollectorListener(
         self.field.related_class = ctx.getText()
 
     def enterField_relation_target_ref(self, ctx: ZmeiLangParser.Field_relation_target_refContext):
-        ref = ctx.getText()[1:]
-
-        try:
-            ref_collection = self.collection_set.collections[ref]
-        except KeyError:
-            raise ValidationException('Reference to unknown collection: #{}'.format(ref))
-
-        self.field.ref_collection = ref_collection
-        self.field.related_class = ref_collection.class_name
+        self.field.ref_collection_def = ctx.getText()[1:]
 
     def enterField_relation_related_name(self, ctx: ZmeiLangParser.Field_relation_related_nameContext):
         related_name = ctx.getText()[2:].strip()
 
         self.field.related_name = related_name
-
-        if self.field.ref_collection and related_name in self.field.ref_collection.fields:
-            raise ValidationException('Can not override field with related field: {}'.format(related_name))
-
-        if self.field.ref_collection:
-            self.field.ref_collection.fields[related_name] = \
-                ReferenceField(self.field.ref_collection, self.model, related_name, self.field)
 
     ############################################
     # Admin
@@ -484,7 +470,7 @@ def populate_collection_set(tree, app_name='noname'):
     cs = CollectionSetDef(app_name)
 
     listener = PartsCollectorListener(cs)
-    LangsCsExtraParserListener,
+    # LangsCsExtraParserListener,
 
     walker = ParseTreeWalker()
     walker.walk(listener, tree)

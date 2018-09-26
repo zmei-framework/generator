@@ -43,7 +43,9 @@ def test_i18n():
 
     assert cs.translatable is True
 
-    assert 'django-modeltranslation' in cs.get_required_deps()
+    print(cs.get_required_deps())
+
+    assert 'django-modeltranslation==0.13-beta1' in cs.get_required_deps()
     assert 'modeltranslation' in cs.get_required_apps()
 
 

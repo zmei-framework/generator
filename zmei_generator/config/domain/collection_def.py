@@ -56,6 +56,10 @@ class CollectionDef(object):
 
         self.extend_name = False
 
+    def post_process(self):
+        for field in self.fields.values():
+            field.post_process()
+
     def set_parent(self, parent):
 
         if parent not in self.collection_set.collections:

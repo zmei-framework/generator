@@ -39,6 +39,19 @@ def test_pages():
     assert foo.parent_name == 'boo'
     assert foo.parsed_template_expr == 'some_expr'
 
+def test_home_page():
+    cs = _("""
+    
+        [boo: /]
+    """)
+
+    assert len(cs.pages) == 1
+
+    boo = cs.page_list()[0]
+
+    assert boo.name == 'boo'
+    assert boo.uri == '/'
+
 
 def test_page_code():
     cs = _("""

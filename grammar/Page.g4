@@ -35,7 +35,7 @@ page_element : xml_element ;
 
 page_template : CLASSNAME | TEMPLATE_NAME | INLINE_CODE_BLOCK;
 
-page_url : (id_or_kw|URL_SEGMENTS);
+page_url : (id_or_kw|URL_SEGMENTS|SLASH);
 
 page_code: code_block;
 

@@ -44,6 +44,9 @@ class FieldDef(object):
 
         self.options = field.type_opts
 
+    def post_process(self):
+        pass
+
     def prepare_field_arguemnts(self, own_args=None):
         args = {}
 
