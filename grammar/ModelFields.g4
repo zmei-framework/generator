@@ -16,7 +16,6 @@ col_field_def: field_longtext
              | field_slug
              | field_bool
              | field_relation
-
              | field_image
              | field_file
              | field_filer_file

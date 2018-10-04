@@ -105,8 +105,10 @@ URL_SEGMENTS:  '/' URL_SEGMENT ('/' URL_SEGMENT)* '/'?;
 TEMPLATE_NAME: [a-zA-Z\-_0-9/<>.]+ '.html';
 
 
+CODE_LINE: '|' WS* -> pushMode(PYTHON_LINE);
 ASSIGN: ':=' WS* -> pushMode(PYTHON_LINE);
 ASSIGN_STATIC: '@=' WS* -> pushMode(PYTHON_LINE);
+
 
 COMMENT_LINE: '//' REST_OF_LINE -> channel(HIDDEN);
 
@@ -139,9 +141,11 @@ ERRCHAR: ERR;
 mode CODE_BLOCK;
 CODE_BLOCK_LINE: WS+ .*? NL;
 CODE_BLOCK_END: '}' -> popMode;
+CODE_BLOCK_ERRCHAR:	ERR;
 
 /** Python rest of line **/
 mode PYTHON_LINE;
+PYTHON_LINE_NL: '\n' -> type(NL), popMode;
 PYTHON_LINE_CODE: (~'\n')+ -> popMode;
 PYTHON_LINE_ERRCHAR:	ERR;
 

@@ -283,6 +283,55 @@ def test_admin_tabs_inherited():
         'd': 'general',
     }
 
+
+def test_admin_tabs_inherited_merged():
+    cs = _("""
+        @suit
+
+        #data_source
+        --------------
+        name
+        
+        @admin
+        
+        #data_source->db_data_source
+        -------------------
+        database
+        server
+        
+        @admin
+        
+        #data_source->report_data_source
+        -------------------
+        report
+        
+        @admin
+
+
+    """)
+
+    foo = cs.collections['db_data_source']
+
+    assert foo.admin.tab_fields == {
+        'name': 'general',
+        'database': 'general',
+        'server': 'general',
+    }
+
+    assert foo.admin.tabs == ['general']
+    assert foo.admin.tab_names == {'general': 'General'}
+
+    foo = cs.collections['report_data_source']
+
+    assert foo.admin.tab_fields == {
+        'name': 'general',
+        'report': 'general',
+    }
+
+    assert foo.admin.tabs == ['general']
+    assert foo.admin.tab_names == {'general': 'General'}
+
+
 def test_admin_tabs_all_but_some():
     cs = _("""
         @suit

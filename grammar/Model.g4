@@ -44,14 +44,20 @@ col_name : id_or_kw;
 col_field:
     col_modifier*
     col_field_name
-    (
-        (COLON col_field_def) |
-        col_field_expr
-    )?
+    col_field_expr_or_def?
     col_field_vrebose_name?
     col_field_help_text?
     (NL+|EOF)
     ;
+
+col_field_expr_or_def : (
+        (COLON col_field_def) |
+        (COLON wrong_field_type) |
+        col_field_expr
+    ) ;
+
+
+wrong_field_type: id_or_kw;
 
 col_field_expr :
         col_field_expr_marker

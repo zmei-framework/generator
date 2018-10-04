@@ -59,16 +59,19 @@ class AdminExtra(Extra):
         self.add_tab_fieldset(name, verbose_name, fields, prepend)
 
     def add_tab_fieldset(self, name, verbose_name, fields, prepend):
+
         # filter out fields that are not meant to be rendered
         if self.fields:
             fields = [f for f in fields if f in self.fields or isinstance(f, ReferenceField)]
         self.tab_names[name] = verbose_name or name.capitalize()
         for field in fields:
             self.tab_fields[field.name] = name
-        if prepend:
-            self.tabs = [name] + self.tabs
-        else:
-            self.tabs.append(name)
+
+        if name not in self.tabs:
+            if prepend:
+                self.tabs = [name] + self.tabs
+            else:
+                self.tabs.append(name)
 
     def check_tab_consistency(self):
         general_fields = []

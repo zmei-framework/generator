@@ -4,9 +4,9 @@
 
 clear
 echo '--------'
-#antlr4 -o `pwd` -Xexact-output-dir ../ZmeiLanguage.g4
+antlr4 -o `pwd` -Xexact-output-dir ../ZmeiLangSimpleLexer.g4
 javac ZmeiLangSimpleLexer.java
-grun ZmeiLangSimpleLexer tokens -tokens ../grammar/test.col
+grun ZmeiLangSimpleLexer tokens -tokens test.col
 
 echo
 echo
