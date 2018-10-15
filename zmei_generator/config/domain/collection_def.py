@@ -56,6 +56,8 @@ class CollectionDef(object):
 
         self.extend_name = False
 
+        self.date_hierarchy = None
+
     def post_process(self):
         for field in self.fields.values():
             field.post_process()

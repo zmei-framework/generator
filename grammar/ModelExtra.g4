@@ -14,11 +14,15 @@ import
     ModelExtraPostDelete,
     ModelExtraM2mChanged,
     ModelExtraMixin,
+    ModelExtraDateTree,
+    ModelExtraTree,
     ModelExtraAdmin
     ;
 
 model_annotation:
      an_admin
+    |an_tree
+    |an_date_tree
     |an_mixin
     |an_m2m_changed
     |an_post_delete

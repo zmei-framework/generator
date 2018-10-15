@@ -8,6 +8,7 @@ options { tokenVocab=ZmeiLangSimpleLexer; }
 id_or_kw: ID
    |BOOL
    |WRITE_MODE
+   |KW_POLY_LIST
    |KW_CSS
    |KW_JS
    |KW_INLINE_TYPE

@@ -1,6 +1,8 @@
 lexer grammar ZmeiLangSimpleLexer;
 
 // Annotation types
+AN_TREE: '@tree';
+AN_DATE_TREE: '@date_tree';
 AN_MIXIN: '@mixin';
 AN_M2M_CHANGED: '@m2m_changed';
 AN_POST_DELETE: '@post_delete';
@@ -20,7 +22,7 @@ AN_SUIT: '@suit';
 WRITE_MODE: 'r' | 'rw' | 'w';
 BOOL: 'true' | 'false';
 
-KW_EDITABLE: 'change_link';
+KW_POLY_LIST: '+polymorphic_list';
 KW_CSS: 'css';
 KW_JS: 'js';
 KW_INLINE_TYPE: 'tabular' | 'stacked' | 'polymorphic';
