@@ -27,10 +27,9 @@ from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
 class {}ModelExtra(ModelExtra):
-    def get_name(cls):
-        return '{}'
+    # {}
+    pass
     
-
 class {}ModelExtraParserListener(BaseListener):
 
     def enterAn_{}(self, ctx: ZmeiLangParser.An_{}Context):

@@ -8,8 +8,6 @@ import Base,
        Page
        ;
 
-
-
 col_file:
     NL*
     cs_annotation*
@@ -21,7 +19,6 @@ col_file:
     NL*
     EOF
     ;
-
 
 
 page_imports : KW_IMPORT import_source;

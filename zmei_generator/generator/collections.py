@@ -168,7 +168,7 @@ def generate(target_path, app_name: str, collection_set: CollectionSetDef, featu
 
     # urls i18n
     pages = [page for page in collection_set.pages.values() if page.has_uri and not page.i18n]
-    if len(pages) > 0:
+    if collection_set.pages:
         generate_urls_file(
             target_path,
             app_name,
