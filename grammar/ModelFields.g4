@@ -110,7 +110,7 @@ field_image_size_dimensions : SIZE2D;
 field_image_size_name : id_or_kw EQUALS;
 
 field_image_filters: field_image_filter*;
-field_image_filter : FILTER ;
+field_image_filter : PIPE id_or_kw;
 
 // Relation
 
@@ -123,6 +123,6 @@ field_relation:
 
 field_relation_type : COL_FIELD_TYPE_ONE | COL_FIELD_TYPE_ONE2ONE | COL_FIELD_TYPE_MANY;
 
-field_relation_target_ref: REF_SIGN id_or_kw;
+field_relation_target_ref: HASH id_or_kw;
 field_relation_target_class: CLASSNAME;
-field_relation_related_name: RELATED id_or_kw;
+field_relation_related_name: DASH GT id_or_kw;

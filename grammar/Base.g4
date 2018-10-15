@@ -89,32 +89,21 @@ code_block:
  **************************/
 
 
-
 xml_content     :   xml_chardata?
-                ((xml_element | xml_reference) xml_chardata?)* ;
+                (xml_element xml_chardata?)* ;
 
-xml_element     :   XML_OPEN xml_name xml_attribute* XML_CLOSE xml_content XML_OPEN XML_SLASH xml_name_end XML_CLOSE
-                |   XML_OPEN xml_name xml_attribute* XML_SLASH_CLOSE;
+xml_element     :   LT xml_name xml_attribute* GT xml_content LT SLASH xml_name_end GT
+                |   LT xml_name xml_attribute* SLASH GT;
 
-xml_name    :   xml_component_name | xml_tag_name
+xml_name    :   xml_tag_name
             ;
 
-xml_name_end    :   xml_component_name | xml_tag_name
+xml_name_end    :   xml_tag_name
             ;
 
-xml_tag_name : XML_Name ;
+xml_tag_name : id_or_kw;
 
-xml_component_name : XML_CmpName ;
+xml_attribute   :   id_or_kw EQUALS (STRING_DQ|STRING_SQ|code_block|UNICODE) ;
 
-
-xml_reference   :   XML_EntityRef | XML_CharRef ;
-
-xml_attribute   :   XML_Name XML_EQUALS (XML_STRING|XML_REACT_ATTR) ; // Our STRING is AttValue in spec
-
-/** ``All text that is not markup constitutes the character data of
- *  the document.''
- */
-xml_chardata    :   XML_TEXT | WS | NL ;
-
-xml_misc        :   WS | NL ;
+xml_chardata    :   id_or_kw | NL ;
 

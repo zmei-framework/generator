@@ -31,16 +31,31 @@ page_header : SQ_BRACE_OPEN
     SQ_BRACE_CLOSE
     NL ;
 
-page_base : id_or_kw RELATED;
+page_base : id_or_kw DASH GT;
 page_alias : KW_AS page_alias_name;
 
 page_alias_name : id_or_kw ;
 
 page_element : xml_element ;
 
-page_template : CLASSNAME | TEMPLATE_NAME | python_code;
+page_template : CLASSNAME | template_name | python_code;
 
-page_url : (id_or_kw|URL_SEGMENTS|SLASH);
+template_name : file_name_part (SLASH file_name_part)*;
+
+file_name_part : (id_or_kw | DIGIT | DASH | UNDERSCORE | DOT | CLASSNAME) ;
+
+page_url : (id_or_kw|url_segments|SLASH);
+
+url_part: (id_or_kw
+           |DASH
+           |DIGIT
+           )+;
+
+url_param: LT id_or_kw GT;
+
+url_segment: (url_part|url_param);
+
+url_segments : SLASH url_segment (SLASH url_segment)* SLASH?;
 
 //page_code_line: CODE_LINE page_code_line_source NL;
 //page_code_line_source : PYTHON_LINE_CODE ;

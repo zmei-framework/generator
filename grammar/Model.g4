@@ -29,19 +29,21 @@ col_str_expr :
     ;
 
 col_header :
-    REF_SIGN
+    HASH
     col_base_name?
     col_name
     col_verbose_name?
-    LINE_SEPARATOR
+    col_header_line_separator
     NL
     ;
+
+col_header_line_separator : NL DASH DASH (DASH)+;
 
 col_verbose_name : COLON verbose_name_part (SLASH verbose_name_part)?;
 
 verbose_name_part : (id_or_kw | STRING_DQ | STRING_SQ) ;
 
-col_base_name : id_or_kw (RELATED | RELATED_EXTEND);
+col_base_name : id_or_kw ((DASH GT) | (APPROX GT));
 col_name : id_or_kw;
 
 col_field:

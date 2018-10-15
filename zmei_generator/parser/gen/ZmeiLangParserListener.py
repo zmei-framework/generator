@@ -152,24 +152,6 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ZmeiLangParser#xml_component_name.
-    def enterXml_component_name(self, ctx:ZmeiLangParser.Xml_component_nameContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#xml_component_name.
-    def exitXml_component_name(self, ctx:ZmeiLangParser.Xml_component_nameContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#xml_reference.
-    def enterXml_reference(self, ctx:ZmeiLangParser.Xml_referenceContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#xml_reference.
-    def exitXml_reference(self, ctx:ZmeiLangParser.Xml_referenceContext):
-        pass
-
-
     # Enter a parse tree produced by ZmeiLangParser#xml_attribute.
     def enterXml_attribute(self, ctx:ZmeiLangParser.Xml_attributeContext):
         pass
@@ -185,15 +167,6 @@ class ZmeiLangParserListener(ParseTreeListener):
 
     # Exit a parse tree produced by ZmeiLangParser#xml_chardata.
     def exitXml_chardata(self, ctx:ZmeiLangParser.Xml_chardataContext):
-        pass
-
-
-    # Enter a parse tree produced by ZmeiLangParser#xml_misc.
-    def enterXml_misc(self, ctx:ZmeiLangParser.Xml_miscContext):
-        pass
-
-    # Exit a parse tree produced by ZmeiLangParser#xml_misc.
-    def exitXml_misc(self, ctx:ZmeiLangParser.Xml_miscContext):
         pass
 
 
@@ -275,6 +248,15 @@ class ZmeiLangParserListener(ParseTreeListener):
 
     # Exit a parse tree produced by ZmeiLangParser#col_header.
     def exitCol_header(self, ctx:ZmeiLangParser.Col_headerContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#col_header_line_separator.
+    def enterCol_header_line_separator(self, ctx:ZmeiLangParser.Col_header_line_separatorContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#col_header_line_separator.
+    def exitCol_header_line_separator(self, ctx:ZmeiLangParser.Col_header_line_separatorContext):
         pass
 
 
@@ -1421,12 +1403,66 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#template_name.
+    def enterTemplate_name(self, ctx:ZmeiLangParser.Template_nameContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#template_name.
+    def exitTemplate_name(self, ctx:ZmeiLangParser.Template_nameContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#file_name_part.
+    def enterFile_name_part(self, ctx:ZmeiLangParser.File_name_partContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#file_name_part.
+    def exitFile_name_part(self, ctx:ZmeiLangParser.File_name_partContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#page_url.
     def enterPage_url(self, ctx:ZmeiLangParser.Page_urlContext):
         pass
 
     # Exit a parse tree produced by ZmeiLangParser#page_url.
     def exitPage_url(self, ctx:ZmeiLangParser.Page_urlContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#url_part.
+    def enterUrl_part(self, ctx:ZmeiLangParser.Url_partContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#url_part.
+    def exitUrl_part(self, ctx:ZmeiLangParser.Url_partContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#url_param.
+    def enterUrl_param(self, ctx:ZmeiLangParser.Url_paramContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#url_param.
+    def exitUrl_param(self, ctx:ZmeiLangParser.Url_paramContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#url_segment.
+    def enterUrl_segment(self, ctx:ZmeiLangParser.Url_segmentContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#url_segment.
+    def exitUrl_segment(self, ctx:ZmeiLangParser.Url_segmentContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#url_segments.
+    def enterUrl_segments(self, ctx:ZmeiLangParser.Url_segmentsContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#url_segments.
+    def exitUrl_segments(self, ctx:ZmeiLangParser.Url_segmentsContext):
         pass
 
 
