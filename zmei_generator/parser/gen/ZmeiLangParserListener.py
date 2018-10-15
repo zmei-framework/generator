@@ -1115,6 +1115,15 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#an_mixin.
+    def enterAn_mixin(self, ctx:ZmeiLangParser.An_mixinContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_mixin.
+    def exitAn_mixin(self, ctx:ZmeiLangParser.An_mixinContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#an_admin.
     def enterAn_admin(self, ctx:ZmeiLangParser.An_adminContext):
         pass

@@ -8,6 +8,7 @@ from zmei_generator.extras.model.rest import RestModelExtraParserListener
 from zmei_generator.extras.model.sortable import SortableModelExtraParserListener
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
+from zmei_generator.extras.model.mixin import MixinModelExtraParserListener
 from zmei_generator.extras.model.m2m_changed import M2mChangedModelExtraParserListener
 from zmei_generator.extras.model.post_delete import PostDeleteModelExtraParserListener
 from zmei_generator.extras.model.pre_delete import PreDeleteModelExtraParserListener
@@ -17,6 +18,7 @@ from zmei_generator.extras.model.clean import CleanModelExtraParserListener
 
 
 class ModelExtraListener(
+    MixinModelExtraParserListener,
     M2mChangedModelExtraParserListener,
     PostDeleteModelExtraParserListener,
     PreDeleteModelExtraParserListener,
