@@ -323,6 +323,24 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#col_field_extend.
+    def enterCol_field_extend(self, ctx:ZmeiLangParser.Col_field_extendContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#col_field_extend.
+    def exitCol_field_extend(self, ctx:ZmeiLangParser.Col_field_extendContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#col_field_extend_append.
+    def enterCol_field_extend_append(self, ctx:ZmeiLangParser.Col_field_extend_appendContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#col_field_extend_append.
+    def exitCol_field_extend_append(self, ctx:ZmeiLangParser.Col_field_extend_appendContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#wrong_field_type.
     def enterWrong_field_type(self, ctx:ZmeiLangParser.Wrong_field_typeContext):
         pass

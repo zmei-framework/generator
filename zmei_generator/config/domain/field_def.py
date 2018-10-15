@@ -38,6 +38,9 @@ class FieldDef(object):
 
         self.inline = False
 
+        self.extra_args = None
+        self.extra_args_append = False
+
         if self.translatable:
             collection.translatable = True
             collection.collection_set.translatable = True
@@ -48,6 +51,9 @@ class FieldDef(object):
         pass
 
     def prepare_field_arguemnts(self, own_args=None):
+        if not self.extra_args_append and self.extra_args:
+            return {'_': self.extra_args}
+
         args = {}
 
         if self.verbose_name:
@@ -71,6 +77,9 @@ class FieldDef(object):
 
         if own_args:
             args.update(own_args)
+
+        if self.extra_args:
+            args['_'] = self.extra_args
 
         return args
 

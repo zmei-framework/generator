@@ -56,11 +56,14 @@ col_field:
     ;
 
 col_field_expr_or_def : (
-        (COLON col_field_def) |
+        (COLON col_field_def col_field_extend?) |
         (COLON wrong_field_type) |
         col_field_expr
     ) ;
 
+col_field_extend: col_field_extend_append? code_block;
+
+col_field_extend_append : DOT DOT ;
 
 wrong_field_type: id_or_kw;
 

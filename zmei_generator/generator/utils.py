@@ -260,11 +260,14 @@ def gen_args(args, raw_args=None):
         raw_args = []
     _args = []
     for key, val in args.items():
-        if key not in raw_args:
-            val = repr(val)
-        if key in ('verbose_name', 'help_text'):
-            val = '_({})'.format(val)
+        if key == '_':
+            _args.append(val)
+        else:
+            if key not in raw_args:
+                val = repr(val)
+            if key in ('verbose_name', 'help_text'):
+                val = '_({})'.format(val)
 
-        _args.append('{}={}'.format(key, val))
+            _args.append('{}={}'.format(key, val))
 
     return ', '.join(_args)

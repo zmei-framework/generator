@@ -75,6 +75,10 @@ def test_page_html():
 
         [boo]
         <h1>test</h1>
+        
+        #foo
+        ------
+        lala
     """)
 
     assert len(cs.pages) == 1
@@ -92,6 +96,10 @@ def test_page_react():
 
         [boo]
         <Foo>test</Foo>
+        
+        #foo
+        ------
+        lala
     """)
 
     assert len(cs.pages) == 1

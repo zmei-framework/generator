@@ -13,6 +13,10 @@ from cPyparsing import *
 class DefaultTextMixin(FieldDef):
     def prepare_field_arguemnts(self, own_args=None):
         args = super().prepare_field_arguemnts(own_args)
+
+        if not self.extra_args_append and self.extra_args:
+            return args
+
         if not self.required and 'required' not in args:
             args['default'] = ''
 
