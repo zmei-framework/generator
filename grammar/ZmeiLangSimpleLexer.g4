@@ -89,8 +89,6 @@ ID : [a-zA-Z_] [a-zA-Z_0-9]*;
 
 DIGIT: [1-9][0-9]*;
 
-CLASSNAME: ID ('.' ID)+;
-
 SIZE2D: DIGIT 'x' DIGIT;
 
 

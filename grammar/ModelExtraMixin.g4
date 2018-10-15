@@ -8,6 +8,6 @@ import Base;
 an_mixin:
     AN_MIXIN
     (BRACE_OPEN
-    CLASSNAME
+    classname
     BRACE_CLOSE)
     ;

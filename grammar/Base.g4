@@ -57,6 +57,8 @@ id_or_kw: ID
    |COL_FIELD_CHOICES
    ;
 
+classname: id_or_kw (DOT id_or_kw)*;
+
 field_list_expr:
     DOT? STAR (COMA EXCLUDE field_list_expr_field)*
     | id_or_kw (COMA EXCLUDE? field_list_expr_field)*

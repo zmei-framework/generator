@@ -53,6 +53,15 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#classname.
+    def enterClassname(self, ctx:ZmeiLangParser.ClassnameContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#classname.
+    def exitClassname(self, ctx:ZmeiLangParser.ClassnameContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#field_list_expr.
     def enterField_list_expr(self, ctx:ZmeiLangParser.Field_list_exprContext):
         pass

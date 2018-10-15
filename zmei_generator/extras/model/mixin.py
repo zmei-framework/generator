@@ -15,7 +15,7 @@ class MixinModelExtraParserListener(BaseListener):
             MixinModelExtra(self.model)
         )
 
-        class_name = ctx.CLASSNAME().getText()
+        class_name = ctx.classname().getText()
 
         parts = class_name.split('.')
         model_cls = parts[-1]

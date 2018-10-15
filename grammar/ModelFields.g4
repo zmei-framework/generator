@@ -124,5 +124,5 @@ field_relation:
 field_relation_type : COL_FIELD_TYPE_ONE | COL_FIELD_TYPE_ONE2ONE | COL_FIELD_TYPE_MANY;
 
 field_relation_target_ref: HASH id_or_kw;
-field_relation_target_class: CLASSNAME;
+field_relation_target_class: classname;
 field_relation_related_name: DASH GT id_or_kw;
