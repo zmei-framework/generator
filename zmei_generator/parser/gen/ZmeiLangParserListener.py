@@ -1061,6 +1061,60 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#an_clean.
+    def enterAn_clean(self, ctx:ZmeiLangParser.An_cleanContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_clean.
+    def exitAn_clean(self, ctx:ZmeiLangParser.An_cleanContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_pre_save.
+    def enterAn_pre_save(self, ctx:ZmeiLangParser.An_pre_saveContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_pre_save.
+    def exitAn_pre_save(self, ctx:ZmeiLangParser.An_pre_saveContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_post_save.
+    def enterAn_post_save(self, ctx:ZmeiLangParser.An_post_saveContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_post_save.
+    def exitAn_post_save(self, ctx:ZmeiLangParser.An_post_saveContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_pre_delete.
+    def enterAn_pre_delete(self, ctx:ZmeiLangParser.An_pre_deleteContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_pre_delete.
+    def exitAn_pre_delete(self, ctx:ZmeiLangParser.An_pre_deleteContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_post_delete.
+    def enterAn_post_delete(self, ctx:ZmeiLangParser.An_post_deleteContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_post_delete.
+    def exitAn_post_delete(self, ctx:ZmeiLangParser.An_post_deleteContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_m2m_changed.
+    def enterAn_m2m_changed(self, ctx:ZmeiLangParser.An_m2m_changedContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_m2m_changed.
+    def exitAn_m2m_changed(self, ctx:ZmeiLangParser.An_m2m_changedContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#an_admin.
     def enterAn_admin(self, ctx:ZmeiLangParser.An_adminContext):
         pass

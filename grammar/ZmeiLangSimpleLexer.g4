@@ -1,6 +1,12 @@
 lexer grammar ZmeiLangSimpleLexer;
 
 // Annotation types
+AN_M2M_CHANGED: '@m2m_changed';
+AN_POST_DELETE: '@post_delete';
+AN_PRE_DELETE: '@pre_delete';
+AN_POST_SAVE: '@post_save';
+AN_PRE_SAVE: '@pre_save';
+AN_CLEAN: '@clean';
 AN_API: '@api';
 AN_REST: '@rest';
 AN_ORDER: '@order';
