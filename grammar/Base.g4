@@ -7,11 +7,20 @@ options { tokenVocab=ZmeiLangSimpleLexer; }
  */
 id_or_kw: ID
    |BOOL
+   |WRITE_MODE
    |KW_CSS
    |KW_JS
    |KW_INLINE_TYPE
+   |KW_AUTH_TYPE
    |KW_INLINE
    |KW_TYPE
+   |KW_USER_FIELD
+   |KW_ANNOTATE
+   |KW_ON_CREATE
+   |KW_QUERY
+   |KW_AUTH
+   |KW_COUNT
+   |KW_I18N
    |KW_EXTRA
    |KW_TABS
    |KW_LIST
@@ -55,9 +64,21 @@ field_list_expr:
 field_list_expr_field : STAR? id_or_kw STAR? ;
 
 
+write_mode_expr : SQ_BRACE_OPEN WRITE_MODE SQ_BRACE_CLOSE;
+
+python_code:
+     code_block
+    |code_line
+    ;
+
+code_line:
+    ASSIGN
+    PYTHON_CODE
+    NL;
+
 code_block:
     CODE_BLOCK_START
-    (CODE_BLOCK_LINE)*
+    PYTHON_CODE
     CODE_BLOCK_END
     ;
 

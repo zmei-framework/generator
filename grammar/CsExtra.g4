@@ -11,6 +11,4 @@ import
 cs_annotation:
      an_suit
     |an_langs
-    |an_filer
-    |NL
-    ;
+    |NL;

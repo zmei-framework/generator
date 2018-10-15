@@ -27,3 +27,6 @@ def gen():
 
     local('antlr4 -Dlanguage=Python3 -o {dst} -package {package} -lib {lib} -listener {lexerSrc}'.format(**locals()))
     local('antlr4 -Dlanguage=Python3 -o {dst} -package {package} -lib {lib} -listener {parserSrc}'.format(**locals()))
+
+def coverage():
+    local('py.test tests/unit/ --cov=zmei_generator  --cov-report=html')

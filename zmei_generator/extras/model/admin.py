@@ -2,6 +2,7 @@ from zmei_generator.config.domain.collection_set_def import FieldDeclaration
 from zmei_generator.config.domain.exceptions import ValidationException
 from zmei_generator.config.domain.reference_field import ReferenceField
 from zmei_generator.config.extras import Extra
+from zmei_generator.fields.date import AutoNowDateTimeFieldDef, AutoNowAddDateTimeFieldDef
 
 
 class AdminExtra(Extra):
@@ -37,10 +38,6 @@ class AdminExtra(Extra):
         self.css = []
         self.js = []
 
-
-    @classmethod
-    def get_name(cls):
-        return 'admin'
 
     def register_tab(self, name, verbose_name, fields_expr, prepend=False):
 
@@ -88,6 +85,7 @@ class AdminExtra(Extra):
             self.tab_fields = self.collection.parent.admin.tab_fields.copy()
             self.tabs = self.collection.parent.admin.tabs.copy()
             self.tab_names = self.collection.parent.admin.tab_names.copy()
+            self.inlines.extend(self.collection.parent.admin.inlines.copy())
 
         for tab in self.tabs_raw:
             self.add_tab(*tab)
@@ -103,6 +101,15 @@ class AdminExtra(Extra):
 
         for inline in self.inlines:
             inline.post_process()
+
+        # check for auto-fields
+        for field in self.collection.all_and_inherited_fields_map.values():
+            if isinstance(field, (AutoNowDateTimeFieldDef, AutoNowAddDateTimeFieldDef)):
+                if not self.read_only:
+                    self.read_only = []
+
+                self.read_only.append(field)
+
 
     def fields_for_tab(self, tab):
         fields = []

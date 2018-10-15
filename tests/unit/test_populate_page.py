@@ -1,5 +1,6 @@
 from textwrap import dedent
 
+import pytest
 from zmei_generator.parser.parser import parse_string
 from zmei_generator.parser.populate import populate_collection_set
 
@@ -51,7 +52,6 @@ def test_home_page():
 
     assert boo.name == 'boo'
     assert boo.uri == '/'
-
 
 def test_page_code():
     cs = _("""

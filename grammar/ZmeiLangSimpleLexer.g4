@@ -1,18 +1,32 @@
 lexer grammar ZmeiLangSimpleLexer;
 
 // Annotation types
+AN_API: '@api';
+AN_REST: '@rest';
+AN_ORDER: '@order';
+AN_SORTABLE: '@sortable';
 AN_LANGS: '@langs';
 AN_FILER: '@filer';
 AN_ADMIN: '@admin';
 AN_SUIT: '@suit';
 
+WRITE_MODE: 'r' | 'rw' | 'w';
 BOOL: 'true' | 'false';
 
+KW_EDITABLE: 'change_link';
 KW_CSS: 'css';
 KW_JS: 'js';
 KW_INLINE_TYPE: 'tabular' | 'stacked' | 'polymorphic';
+KW_AUTH_TYPE: 'basic' | 'session' | 'token';
 KW_INLINE: 'inline';
 KW_TYPE: 'type';
+KW_USER_FIELD: 'user_field';
+KW_ANNOTATE: 'annotate';
+KW_ON_CREATE: 'on_create';
+KW_QUERY: 'query';
+KW_AUTH: 'auth';
+KW_COUNT: 'count';
+KW_I18N: 'i18n';
 KW_EXTRA: 'extra';
 KW_TABS: 'tabs';
 KW_LIST: 'list';
@@ -62,8 +76,6 @@ fragment ERR: .;
 NL : ('\r'? '\n' | '\r');
 
 
-INLINE_CODE_BLOCK: '{' ~[\n]+? '}';
-
 ID : [a-zA-Z_] [a-zA-Z_0-9]*;
 
 DIGIT: [1-9][0-9]*;
@@ -104,12 +116,6 @@ fragment URL_SEGMENT: (URL_PART|URL_PARAM)+;
 URL_SEGMENTS:  '/' URL_SEGMENT ('/' URL_SEGMENT)* '/'?;
 TEMPLATE_NAME: [a-zA-Z\-_0-9/<>.]+ '.html';
 
-
-CODE_LINE: '|' WS* -> pushMode(PYTHON_LINE);
-ASSIGN: ':=' WS* -> pushMode(PYTHON_LINE);
-ASSIGN_STATIC: '@=' WS* -> pushMode(PYTHON_LINE);
-
-
 COMMENT_LINE: '//' REST_OF_LINE -> channel(HIDDEN);
 
 fragment REST_OF_LINE : .*? (NL|EOF) ;
@@ -123,12 +129,15 @@ EXCLAM: '!';
 STAR: '*';
 APPROX: '~';
 
+
 WS : ' ' -> channel(HIDDEN);
 
 COL_FIELD_CALCULATED: ('<<'|'<@') -> pushMode(PYTHON_EXPR);
 
-CODE_BLOCK_START: '{' NL -> pushMode(CODE_BLOCK);
-//CODE_LINE_START: '{' -> pushMode(CODE_LINE);
+ASSIGN: ':=' WS* -> pushMode(PYTHON_LINE);
+ASSIGN_STATIC: '@=' WS* -> pushMode(PYTHON_LINE);
+
+CODE_BLOCK_START: '{' -> pushMode(CODE_BLOCK);
 
 XML_OPEN:   '<' -> pushMode(XML), pushMode(XML_INSIDE) ;
 
@@ -139,20 +148,20 @@ XML_OPEN:   '<' -> pushMode(XML), pushMode(XML_INSIDE) ;
 ERRCHAR: ERR;
 
 mode CODE_BLOCK;
-CODE_BLOCK_LINE: WS+ .*? NL;
+PYTHON_CODE: (~'}')+;
 CODE_BLOCK_END: '}' -> popMode;
 CODE_BLOCK_ERRCHAR:	ERR;
 
 /** Python rest of line **/
 mode PYTHON_LINE;
 PYTHON_LINE_NL: '\n' -> type(NL), popMode;
-PYTHON_LINE_CODE: (~'\n')+ -> popMode;
+PYTHON_LINE_CODE: (~'\n')+ -> type(PYTHON_CODE), popMode;
 PYTHON_LINE_ERRCHAR:	ERR;
 
 
 mode PYTHON_EXPR;
 PYTHON_LINE_END: ';' -> popMode;
-PYTHON_EXPR_CODE: (~[;\n])+ -> type(PYTHON_LINE_CODE);
+PYTHON_EXPR_CODE: (~[;\n])+ -> type(PYTHON_CODE);
 PYTHON_EXPR_ERRCHAR:	ERR;
 
 

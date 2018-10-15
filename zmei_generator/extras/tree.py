@@ -4,10 +4,6 @@ from zmei_generator.config.extras import Extra
 
 class TreeExtra(Extra):
 
-    @classmethod
-    def get_name(cls):
-        return 'tree'
-
     def parse(self, extra, collection: CollectionDef):
         collection.tree = True
 

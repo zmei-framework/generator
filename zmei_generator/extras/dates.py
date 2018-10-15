@@ -5,10 +5,6 @@ from zmei_generator.config.extras import Extra
 
 class DateTreeExtra(Extra):
 
-    @classmethod
-    def get_name(cls):
-        return 'dateTree'
-
     def parse(self, extra, collection: CollectionDef):
         field_name = extra.extra_body.strip()
 

@@ -33,7 +33,7 @@ class RelationDef(FieldDef):
         if self.ref_collection and self.related_name in self.ref_collection.fields:
             raise ValidationException('Can not override field with related field: {}'.format(self.related_name))
 
-        if self.ref_collection:
+        if self.ref_collection and self.related_name:
             self.ref_collection.fields[self.related_name] = \
                 ReferenceField(self.ref_collection, self.collection, self.related_name, self)
 

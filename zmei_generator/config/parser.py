@@ -1,30 +1,4 @@
-import os
-from cPyparsing import ParseException
-from glob import glob
-
-from zmei_generator.config.domain.exceptions import ValidationException
-from zmei_generator.config.grammar import collection_set
-from zmei_generator.extras.model.admin import AdminExtra
-from zmei_generator.extras.api import ApiExtra
-from zmei_generator.extras.clean import CleanExtra
-from zmei_generator.extras.collection_set.react import ReactCollectionSetExtra
-from zmei_generator.extras.dates import DateTreeExtra
-from zmei_generator.extras.db_signals import PreSaveExtra, PostSaveExtra, PreDeleteExtra, \
-    PostDeleteExtra, M2mChangedExtra
-from zmei_generator.extras.mixin import MixinExtra
-from zmei_generator.extras.page.auth import AuthExtra
 from zmei_generator.extras.page.block import BlocksPageExtra
-from zmei_generator.extras.page.crud import CrudPageExtra, CrudCreatePageExtra, CrudUpdatePageExtra, \
-    CrudDeletePageExtra, CrudDetailPageExtra
-from zmei_generator.extras.page.form import FormExtra
-from zmei_generator.extras.page.menu import MenuPageExtra
-from zmei_generator.extras.page.merge import MergePageExtra
-from zmei_generator.extras.page.page_handlers import HandleErrorExtra
-from zmei_generator.extras.page.post import PostPageExtra
-from zmei_generator.extras.page.rss import RssPageExtra
-from zmei_generator.extras.rest import RestExtra
-from zmei_generator.extras.sortable import SortableExtra, OrderExtra
-from zmei_generator.extras.tree import TreeExtra
 from zmei_generator.generator.utils import handle_parse_exception
 from zmei_generator.parser.errors import ValidationError
 from zmei_generator.parser.parser import parse_string
@@ -49,7 +23,6 @@ class Parser(object):
             raise NotImplementedError('Unknown field type: ' + type_name)
 
     def parse_file(self, filename, app_name):
-        from zmei_generator.config.domain.collection_set_def import CollectionSetDef
 
         return self.parse_collection_set(filename, app_name)
         # TODO: imports.

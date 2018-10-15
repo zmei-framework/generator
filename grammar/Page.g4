@@ -12,14 +12,16 @@ page:
     page_header
     NL*
 
-//    (page_code_line|NL)*
-
     page_field*
 
     page_element?
 
+    page_code?
+
     NL*
     ;
+
+page_code: python_code;
 
 page_header : SQ_BRACE_OPEN
     page_base?
@@ -36,7 +38,7 @@ page_alias_name : id_or_kw ;
 
 page_element : xml_element ;
 
-page_template : CLASSNAME | TEMPLATE_NAME | INLINE_CODE_BLOCK;
+page_template : CLASSNAME | TEMPLATE_NAME | python_code;
 
 page_url : (id_or_kw|URL_SEGMENTS|SLASH);
 
@@ -55,4 +57,4 @@ page_field:
 
 page_field_name : id_or_kw ;
 
-page_field_code : PYTHON_LINE_CODE ;
+page_field_code : PYTHON_CODE;

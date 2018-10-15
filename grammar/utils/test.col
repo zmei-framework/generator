@@ -1,2 +1,6 @@
-[index: / ]d
-foo := 123
+#boo
+----------
+@rest(
+    fields: *, ^ds [r]
+
+)

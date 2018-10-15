@@ -2,6 +2,8 @@ parser grammar ModelFields;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 
+import Base;
+
 col_field_def: field_longtext
              | field_html_media
              | field_html
@@ -53,9 +55,9 @@ field_text_choices:
 
 field_text_choice: field_text_choice_key? field_text_choice_val;
 
-field_text_choice_val : (ID | STRING_DQ | STRING_SQ) ;
+field_text_choice_val : (id_or_kw | STRING_DQ | STRING_SQ) ;
 
-field_text_choice_key : ID COLON;
+field_text_choice_key : id_or_kw COLON;
 
 // Int
 
@@ -70,7 +72,7 @@ field_int_choices:
 
 field_int_choice: field_int_choice_key? field_int_choice_val;
 
-field_int_choice_val : (ID | STRING_DQ | STRING_SQ) ;
+field_int_choice_val : (id_or_kw | STRING_DQ | STRING_SQ) ;
 
 field_int_choice_key : DIGIT COLON;
 
@@ -83,7 +85,7 @@ field_slug:
             BRACE_CLOSE;
 
 field_slug_ref_field: field_slug_ref_field_id (COMA field_slug_ref_field_id)*;
-field_slug_ref_field_id: ID;
+field_slug_ref_field_id: id_or_kw;
 
 // Bool
 field_bool:
@@ -105,7 +107,7 @@ field_image_size: field_image_size_name field_image_size_dimensions field_image_
 
 field_image_size_dimensions : SIZE2D;
 
-field_image_size_name : ID EQUALS;
+field_image_size_name : id_or_kw EQUALS;
 
 field_image_filters: field_image_filter*;
 field_image_filter : FILTER ;
@@ -121,6 +123,6 @@ field_relation:
 
 field_relation_type : COL_FIELD_TYPE_ONE | COL_FIELD_TYPE_ONE2ONE | COL_FIELD_TYPE_MANY;
 
-field_relation_target_ref: REF_SIGN ID;
+field_relation_target_ref: REF_SIGN id_or_kw;
 field_relation_target_class: CLASSNAME;
-field_relation_related_name: RELATED ID;
+field_relation_related_name: RELATED id_or_kw;

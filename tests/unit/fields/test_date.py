@@ -73,3 +73,24 @@ def test_create_time_field():
 
     assert "models.DateTimeField" in a.get_model_field()[1]
     assert "auto_now_add=True" in a.get_model_field()[1]
+
+
+def test_auto_fields_are_read_only():
+    cs = _("""
+
+        #data_set_order
+        -----------------
+        created: create_time
+        completed: datetime
+        ref_id
+        success: bool
+        
+        @admin(
+            list: *
+            read_only: ref_id, success
+        )
+    """)
+
+    admin = cs.collections['data_set_order'].admin
+
+    assert [x.name for x in admin.read_only] == ['ref_id', 'success', 'created']

@@ -481,6 +481,88 @@ def test_admin_inline_simple():
     assert inline.source_field_name == 'rel'
     assert inline.field_names == ['c', 'd']
 
+def test_admin_inline_inheritance():
+    cs = _("""
+    
+    #data_source
+    --------------
+    name
+    
+    @admin(
+        inline: fields
+    )
+    
+    #data_source_field
+    ---------------------
+    name
+    data_source: one(#data_source -> fields)
+    
+    
+    #data_source->db_data_source
+    -------------------
+    database
+    server
+    
+    @admin
+    """)
+
+    data_source = cs.collections['data_source']
+    db_data_source = cs.collections['db_data_source']
+    data_source_field = cs.collections['data_source_field']
+
+    assert len(db_data_source.admin.inlines) == 1
+    inline = db_data_source.admin.inlines[0]
+
+    assert isinstance(inline, AdminInlineConfig)
+    assert inline.collection == data_source
+    assert inline.target_collection == data_source_field
+    assert inline.inline_type == 'tabular'
+    assert inline.inline_name == 'fields'
+    assert inline.source_field_name == 'data_source'
+    assert inline.field_names == ['name']
+
+
+def test_admin_inline_endclass_with_parent():
+    cs = _("""
+    
+    
+    #data_source
+    --------------
+    =name
+    
+    @admin
+    
+    
+    #data_source->db_data_source
+    -------------------
+    database
+    server
+    
+    @admin(
+        inline: tables
+    )
+    
+    
+    #table
+    ---------------------
+    data_source: one(#db_data_source -> tables)
+    name
+    """)
+
+    db_data_source = cs.collections['db_data_source']
+    table = cs.collections['table']
+
+    assert len(db_data_source.admin.inlines) == 1
+    inline = db_data_source.admin.inlines[0]
+
+    assert isinstance(inline, AdminInlineConfig)
+    assert inline.collection == db_data_source
+    assert inline.target_collection == table
+    assert inline.inline_type == 'tabular'
+    assert inline.inline_name == 'tables'
+    assert inline.source_field_name == 'data_source'
+    assert inline.field_names == ['name']
+
 
 def test_admin_inline_details():
     cs = _("""

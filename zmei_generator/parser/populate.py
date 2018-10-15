@@ -1,12 +1,12 @@
 from antlr4 import ParseTreeWalker
+
 from zmei_generator.config.domain.collection_def import CollectionDef
 from zmei_generator.config.domain.collection_set_def import CollectionSetDef
-from zmei_generator.config.domain.collection_set_extra import CollectionSetExtra
-from zmei_generator.config.domain.exceptions import ValidationException
-from zmei_generator.config.domain.field_def import FieldConfig, FieldDef
+from zmei_generator.config.domain.field_def import FieldConfig
 from zmei_generator.config.domain.page_def import PageDef
 from zmei_generator.config.domain.page_expression import PageExpression
-from zmei_generator.config.domain.reference_field import ReferenceField
+from zmei_generator.extras.collection_set.filer import FilerCsExtraParserListener
+from zmei_generator.extras.collection_set.langs import LangsCsExtraParserListener
 from zmei_generator.extras.collection_set.suit import SuitCsExtra
 from zmei_generator.extras.model.admin import AdminExtra, AdminInlineConfig
 from zmei_generator.fields.bool import BooleanFieldDef
@@ -20,11 +20,9 @@ from zmei_generator.fields.number import IntegerFieldDef, FloatFieldDef, Decimal
 from zmei_generator.fields.relation import RelationOneDef, RelationOne2OneDef, RelationManyDef
 from zmei_generator.fields.text import TextFieldDef, SlugFieldDef, LongTextFieldDef, RichTextFieldDef, \
     RichTextFieldWithUploadDef
-
-from zmei_generator.parser.errors import TabsSuitRequiredValidationError, TabsSuitRequiredValidationError, LangsRequiredValidationError
+from zmei_generator.parser.errors import TabsSuitRequiredValidationError, LangsRequiredValidationError
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
-from zmei_generator.extras.collection_set.langs import LangsCsExtraParserListener, LangsCsExtra
-from zmei_generator.extras.collection_set.filer import FilerCsExtraParserListener
+from zmei_generator.parser.populate_model_extras import ModelExtraListener
 from zmei_generator.parser.utils import BaseListener
 
 
@@ -36,8 +34,6 @@ class PartsCollectorListener(
 
     def __init__(self, collection_set: CollectionSetDef) -> None:
         super().__init__(collection_set)
-
-        self.collection_set = collection_set
 
         self.page = None  # type: PageDef
         self.model = None  # type: CollectionDef
@@ -77,8 +73,8 @@ class PartsCollectorListener(
         else:
             self.page.parsed_template_name = tpl
 
-    def enterPage_code(self, ctx: ZmeiLangParser.Page_codeContext):
-        self.page.page_code = ctx.getText().strip('{} \n')
+    # def enterPage_code(self, ctx: ZmeiLangParser.Page_codeContext):
+    #     self.page.page_code = ctx.getText().strip('{} \n')
 
     def enterPage_field(self, ctx: ZmeiLangParser.Page_fieldContext):
         field = ctx.page_field_name().getText()
@@ -93,6 +89,9 @@ class PartsCollectorListener(
 
     def enterPage_element(self, ctx: ZmeiLangParser.Page_elementContext):
         self.page.set_html(ctx.getText().strip())
+
+    def enterPage_code(self, ctx: ZmeiLangParser.Page_codeContext):
+        self.page.page_code = self._get_code(ctx.python_code())
 
     def exitPage(self, ctx: ZmeiLangParser.PageContext):
         self.collection_set.pages[self.page.name] = self.page
@@ -409,9 +408,6 @@ class PartsCollectorListener(
     def enterAn_admin_fields(self, ctx: ZmeiLangParser.An_admin_fieldsContext):
         self.model.admin.fields = self.model.filter_fields(self._get_fields(ctx))
 
-    def _get_fields(self, ctx):
-        return [x.strip() for x in ctx.field_list_expr().getText().split(',')]
-
     def enterAn_admin_tabs(self, ctx: ZmeiLangParser.An_admin_tabsContext):
         if not self.collection_set.suit:
             raise TabsSuitRequiredValidationError(ctx.start)
@@ -470,11 +466,15 @@ def populate_collection_set(tree, app_name='noname'):
     cs = CollectionSetDef(app_name)
 
     listener = PartsCollectorListener(cs)
-    # LangsCsExtraParserListener,
+    model_extra_listener = ModelExtraListener(cs)
 
     walker = ParseTreeWalker()
-    walker.walk(listener, tree)
 
+    walker.walk(listener, tree)
     cs.post_process()
+
+    walker.walk(model_extra_listener, tree)
+    cs.post_process_extras()
+
 
     return cs

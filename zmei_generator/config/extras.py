@@ -27,4 +27,9 @@ class Extra(object):
     def write_settings(cls, apps, f):
         pass
 
+class ModelExtra(Extra):
 
+    def __init__(self, model) -> None:
+        super().__init__()
+
+        self.model = model

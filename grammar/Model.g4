@@ -15,8 +15,11 @@ import
 col:
     col_header
     col_str_expr?
+    NL*
     col_field*
+    NL*
     model_annotation*
+    NL*
     ;
 
 
@@ -66,7 +69,7 @@ col_field_expr :
 
 col_field_expr_marker : ASSIGN | ASSIGN_STATIC;
 
-col_feild_expr_code : PYTHON_LINE_CODE ;
+col_feild_expr_code : PYTHON_CODE ;
 
 string_or_quoted : (id_or_kw+ | STRING_DQ | STRING_SQ) ;
 

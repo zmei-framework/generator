@@ -51,6 +51,10 @@ def run():
             full_clean,
             **kwargs):
 
+        if rebuild:
+            auto = True
+            remove = True
+
         if not host:
             host = '127.0.0.1:{}'.format(port)
 

@@ -4,10 +4,6 @@ from zmei_generator.config.extras import Extra
 
 class MixinExtra(Extra):
 
-    @classmethod
-    def get_name(cls):
-        return 'mixin'
-
     def parse(self, extra, collection: CollectionDef):
         class_name = extra.extra_body.strip()
 

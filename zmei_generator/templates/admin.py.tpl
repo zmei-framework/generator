@@ -10,28 +10,30 @@ class {{ col.class_name }}ModelForm(forms.ModelForm):
     {% for field in col.fields.values() %}{% if field.get_admin_widget() %}'{{ field.name }}': {{ field.get_admin_widget().declaration }},{% endif %}{% endfor %}
     }
 
-{% for inline in col.admin.inlines %}
+{% for inline in col.admin.inlines %}{% if inline.collection == col %}
 class {{ inline.class_name }}({{ inline.parent_classes|join(', ') }}):
     model  = {{ inline.target_collection.class_name }}{% if inline.tab %}
     suit_classes = 'suit-tab suit-tab-{{ inline.tab }}'
     {% endif %}{% if inline.target_collection.sortable %}
-    sortable = {{ inline.target_collection.sortable_field|repr }}
+    sortable = {{ inline.target_collection.sortable_field.0|repr }}
     {% endif %}{% if not inline.inline_type == 'polymorphic' %}
     extra = {{ inline.extra_count }}
     fk_name = '{{ inline.source_field_name }}'
     fields = [{{ inline.field_set|field_names() }}]
     {% else %}{% for col in inline.target_collection.child_collections %}
     class {{ col.class_name }}{{ inline.class_name }}({% if col.translatable %}TranslatableInlineModelAdmin, {% endif %}{{ inline.parent_classes[0] }}.Child):
-        model = {{ col.class_name }}{% endfor %}
+        model = {{ col.class_name }}
+        suit_classes = 'suit-tab suit-tab-{{ inline.tab }}'{% endfor %}
 
     child_inlines = ({% for col in inline.target_collection.child_collections %}
         {{ col.class_name }}{{ inline.class_name }},{% endfor %}
     )
     {% endif %}
-{% endfor %}
+{% endif %}{% endfor %}
 
 class {{ col.class_name }}Admin({{ col.admin.class_declaration }}):
     """
+    #{{ col.ref }}
     {{ col.class_name }} Admin
     """
 
