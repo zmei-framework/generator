@@ -84,28 +84,3 @@ code_block:
     PYTHON_CODE
     CODE_BLOCK_END
     ;
-
-
-/**************************
- * ReactComponents
- **************************/
-
-
-xml_content     :   xml_chardata?
-                (xml_element xml_chardata?)* ;
-
-xml_element     :   LT xml_name xml_attribute* GT xml_content LT SLASH xml_name_end GT
-                |   LT xml_name xml_attribute* SLASH GT;
-
-xml_name    :   xml_tag_name
-            ;
-
-xml_name_end    :   xml_tag_name
-            ;
-
-xml_tag_name : id_or_kw;
-
-xml_attribute   :   id_or_kw EQUALS (STRING_DQ|STRING_SQ|code_block|UNICODE) ;
-
-xml_chardata    :   id_or_kw | NL ;
-

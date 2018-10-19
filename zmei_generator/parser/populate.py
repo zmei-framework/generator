@@ -10,6 +10,7 @@ from zmei_generator.extras.collection_set.langs import LangsCsExtraParserListene
 from zmei_generator.extras.collection_set.suit import SuitCsExtra
 from zmei_generator.extras.model.admin import AdminExtra, AdminInlineConfig
 from zmei_generator.fields.bool import BooleanFieldDef
+from zmei_generator.fields.custom import CustomFieldDef
 from zmei_generator.fields.date import DateFieldDef, DateTimeFieldDef, AutoNowDateTimeFieldDef, \
     AutoNowAddDateTimeFieldDef
 from zmei_generator.fields.expression import ExpressionFieldDef
@@ -23,6 +24,7 @@ from zmei_generator.fields.text import TextFieldDef, SlugFieldDef, LongTextField
 from zmei_generator.parser.errors import TabsSuitRequiredValidationError, LangsRequiredValidationError
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.populate_model_extras import ModelExtraListener
+from zmei_generator.parser.populate_page_extras import PageExtraListener
 from zmei_generator.parser.utils import BaseListener
 
 
@@ -86,9 +88,6 @@ class PartsCollectorListener(
             self.page.sitemap_expr = expr
         else:
             self.page.page_items[field] = expr
-
-    def enterPage_element(self, ctx: ZmeiLangParser.Page_elementContext):
-        self.page.set_html(ctx.getText().strip())
 
     def enterPage_code(self, ctx: ZmeiLangParser.Page_codeContext):
         self.page.page_code = self._get_code(ctx.python_code())
@@ -201,6 +200,12 @@ class PartsCollectorListener(
 
     def enterCol_field_extend(self, ctx: ZmeiLangParser.Col_field_extendContext):
         self.field.extra_args = ctx.code_block().PYTHON_CODE().getText()
+
+    # Custom
+
+    def enterCol_field_custom(self, ctx: ZmeiLangParser.Col_field_customContext):
+        self.field = CustomFieldDef(self.model, self.field_config)
+        self.field.custom_declaration = ctx.code_block().PYTHON_CODE().getText()
 
     # Text
 
@@ -473,6 +478,7 @@ def populate_collection_set(tree, app_name='noname'):
 
     listener = PartsCollectorListener(cs)
     model_extra_listener = ModelExtraListener(cs)
+    page_extra_listener = PageExtraListener(cs)
 
     walker = ParseTreeWalker()
 
@@ -480,6 +486,7 @@ def populate_collection_set(tree, app_name='noname'):
     cs.post_process()
 
     walker.walk(model_extra_listener, tree)
+    walker.walk(page_extra_listener, tree)
     cs.post_process_extras()
 
 

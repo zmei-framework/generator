@@ -14,6 +14,9 @@ class ImageFieldDef(FieldDef):
             'models.ImageField({})'.format(gen_args(args))
         )
 
+    def get_required_deps(self):
+        return ['Pillow']
+
 
 class SimpleFieldDef(FieldDef):
     def get_model_field(self):

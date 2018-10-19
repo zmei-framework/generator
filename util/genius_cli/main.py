@@ -26,30 +26,84 @@ def run():
     )
 
     @click.group()
-    def cli():
-        pass
-
-    @click.command()
-    @click.option('--auto', is_flag=True, help='Generate and run migrations')
-    @click.option('--install', is_flag=True, help='Install dependencies')
-    @click.option('--watch', is_flag=True, help='Watch for changes')
-    @click.option('--up', is_flag=True, help='--with=django_process + --install + --auto + --watch + --run')
-    @click.option('--run', is_flag=True, help='Run django_process with reload when generation ends')
-    @click.option('--webpack', is_flag=True, help='Run webpack with reload when generation ends')
-    @click.option('--nodejs', is_flag=True, help='Initialize nodejs dependencies')
-    @click.option('--port', default='8000', help='Django host:port to run on')
-    @click.option('--host', default=None, help='Django host:port to run on')
-    @click.option('--rebuild', help='Rebuild application migrations')
-    @click.option('--remove', help='Remove application migrations')
-    @click.option('--full-clean', is_flag=True, help='Remove everything except col files')
     @click.option('--src', default='.', help='Sources path')
     @click.option('--dst', default='.', help='Target path')
-    @click.option('--name', help='Request name (for debug purposes)')
-    @click.option('--with', default='', help='Extra features to use (coma separated)')
+    def cli(**args):
+        pass
+
+    @cli.command(help='Deploy to hyper.sh')
+    def config(**args):
+        print('Deploy!')
+        pass
+
+    @cli.command(help='Deploy to hyper.sh')
+    def deploy(**args):
+        print('Deploy!')
+
+    @cli.command(help='Generate and start app')
+    def up(**args):
+        print('Up!')
+        gen(up=True, **args)
+
+    @cli.command(help='Run application')
+    @click.option('--nodejs', is_flag=True, help='Initialize nodejs dependencies')
+    @click.option('--watch', is_flag=True, help='Watch for changes')
+    @click.option('--webpack', is_flag=True, help='Run webpack with reload when generation ends')
+    @click.option('--port', default='8000', help='Django host:port to run on')
+    @click.option('--host', default=None, help='Django host:port to run on')
+    def run(**kwargs):
+        print('Run!')
+        gen(run=True, **kwargs)
+
+    @cli.command(help='Just generate the code')
     @click.argument('app', nargs=-1)
-    def gen(auto, src, dst, name, install, rebuild, remove, app, run, webpack, nodejs, host, port, watch, up,
-            full_clean,
-            **kwargs):
+    def generate(app=None, **args):
+        print('generate!')
+        gen(install=True, app=app or [])
+
+    @cli.command(help='Install project dependencies')
+    def install():
+        print('Install!')
+        gen(install=True)
+
+    @cli.group(help='Database related commands')
+    def db(**args):
+        pass
+
+    @db.command(help='Creates database migrations and apply them')
+    @click.argument('app', nargs=-1)
+    def migrate(app, **args):
+        print('Db migrate!', app)
+        gen(auto=True, app=app)
+
+    @db.command(help='db remove + db migrate')
+    @click.argument('app', nargs=-1)
+    def rebuild(app, **args):
+        print('Db rebuild!', app)
+        gen(rebuild=True, app=app)
+
+    @db.command(help='Rollback all the migrations')
+    @click.argument('app', nargs=-1)
+    def remove(app, **args):
+        print('Db remove!', app)
+
+        gen(remove=True, app=app)
+
+    def gen(auto=False,
+            src='.',
+            dst='.',
+            install=False,
+            rebuild=False,
+            remove=False,
+            app=None,
+            run=False,
+            webpack=False,
+            nodejs=False,
+            host=None,
+            port=8000,
+            watch=False,
+            up=False
+            ):
 
         if rebuild:
             auto = True
@@ -58,20 +112,13 @@ def run():
         if not host:
             host = '127.0.0.1:{}'.format(port)
 
-        features = kwargs.get('with', features_env)
-
-        if not features:
-            features = []
-        else:
-            features = features.split(',')
-
         if up:
             install = True
             auto = True
             watch = True
             run = True
 
-        if len(app) == 0:
+        if not app or len(app) == 0:
             app = collect_app_names()
 
         src = os.path.realpath(src)
@@ -96,7 +143,7 @@ def run():
             files = collect_files(src)
 
             try:
-                files = genius.generate(files, name=name, collections=app, features=features)
+                files = genius.generate(files, collections=app)
 
                 extract_files(dst, files)
 
@@ -108,16 +155,16 @@ def run():
                     npm_install()
 
                 if remove:
-                    remove_db(apps=app, features=features)
+                    remove_db(apps=app)
 
                 if install or rebuild:
                     django_process = install_deps(django_process)
 
                 if auto:
-                    migrate_db(apps=app, features=features)
+                    migrate_db(apps=app)
 
                 if run and not django_process:
-                    django_process = run_django(features=features, run_host=host)
+                    django_process = run_django(run_host=host)
 
                 if webpack and not webpack_process:
                     webpack_process = run_webpack()
@@ -128,6 +175,4 @@ def run():
             if watch:
                 print(colored('> ', 'white', 'on_blue'), 'Watching for changes...')
 
-    gen()
-
-
+    cli()

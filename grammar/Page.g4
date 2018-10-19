@@ -2,7 +2,9 @@ parser grammar Page;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 
-import Base;
+import Base,
+       PageExtra
+       ;
 
 /**************************
  * Pages
@@ -14,10 +16,10 @@ page:
 
     page_field*
 
-    page_element?
-
     page_code?
 
+    NL*
+    page_annotation*
     NL*
     ;
 
@@ -29,14 +31,12 @@ page_header : SQ_BRACE_OPEN
     page_alias?
     (COLON page_url? (COLON page_template)?)?
     SQ_BRACE_CLOSE
-    NL ;
+    NL? ;
 
 page_base : id_or_kw DASH GT;
 page_alias : KW_AS page_alias_name;
 
 page_alias_name : id_or_kw ;
-
-page_element : xml_element ;
 
 page_template : template_name | python_code;
 
@@ -55,7 +55,7 @@ url_param: LT id_or_kw GT;
 
 url_segment: (url_part|url_param);
 
-url_segments : SLASH? url_segment? (SLASH url_segment)* SLASH?;
+url_segments : SLASH | (SLASH url_segment)+ SLASH?;
 
 //page_code_line: CODE_LINE page_code_line_source NL;
 //page_code_line_source : PYTHON_LINE_CODE ;

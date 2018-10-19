@@ -52,11 +52,9 @@ class GeniusClient(object):
 
             raise ApiError(response)
 
-    def generate(self, files, name=None, collections=None, features=None):
+    def generate(self, files, collections=None):
         response = self._post('generate', data={
-            'name': name,
             'collections': ','.join(collections),
-            'features': ','.join(features),
         }, files={
             'gen': files
         })

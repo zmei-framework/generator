@@ -3,8 +3,7 @@ import sys
 bp = '/Users/aleksandrrudakov/dev/generator/grammar'
 lexer = '/Users/aleksandrrudakov/dev/generator/grammar/ZmeiLangSimpleLexer.g4'
 
-etype = sys.argv[1]
-name = sys.argv[2]
+name = sys.argv[1]
 
 
 tpl = """
@@ -40,51 +39,50 @@ class {}CsExtraParserListener(BaseListener):
 
 """
 
-if etype == 'cs':
-    cname = ''.join([x.capitalize() for x in name.split('_')])
-    gr_name = 'CsExtra' + cname
+cname = ''.join([x.capitalize() for x in name.split('_')])
+gr_name = 'CsExtra' + cname
 
-    with open(bp + '/' + gr_name + '.g4', 'w+') as f:
-        f.write(tpl.format(gr_name, name, name.upper()))
+with open(bp + '/' + gr_name + '.g4', 'w+') as f:
+    f.write(tpl.format(gr_name, name, name.upper()))
 
-    with open('/Users/aleksandrrudakov/dev/generator/grammar/CsExtra.g4', 'r') as f:
-        lines = []
-        for line in f.readlines():
-            if 'CsExtraSuit' in line:
-                lines.append('    ' + gr_name + ',\n')
+with open('/Users/aleksandrrudakov/dev/generator/grammar/CsExtra.g4', 'r') as f:
+    lines = []
+    for line in f.readlines():
+        if 'CsExtraSuit' in line:
+            lines.append('    ' + gr_name + ',\n')
 
-            lines.append(line)
+        lines.append(line)
 
-            if 'an_suit' in line:
-                lines.append('    |an_' + name + '\n')
+        if 'an_suit' in line:
+            lines.append('    |an_' + name + '\n')
 
-    with open('/Users/aleksandrrudakov/dev/generator/grammar/CsExtra.g4', 'w') as f:
-        f.write(''.join(lines))
+with open('/Users/aleksandrrudakov/dev/generator/grammar/CsExtra.g4', 'w') as f:
+    f.write(''.join(lines))
 
-    with open('/Users/aleksandrrudakov/dev/generator/grammar/ZmeiLangSimpleLexer.g4', 'r') as f:
-        lines = []
-        for line in f.readlines():
-            lines.append(line)
+with open('/Users/aleksandrrudakov/dev/generator/grammar/ZmeiLangSimpleLexer.g4', 'r') as f:
+    lines = []
+    for line in f.readlines():
+        lines.append(line)
 
-            if '// Annotation types' in line:
-                lines.append("AN_{}: '@{}';\n".format(name.upper(), name))
+        if '// Annotation types' in line:
+            lines.append("AN_{}: '@{}';\n".format(name.upper(), name))
 
-    with open('/Users/aleksandrrudakov/dev/generator/grammar/ZmeiLangSimpleLexer.g4', 'w+') as f:
-        f.write(''.join(lines))
+with open('/Users/aleksandrrudakov/dev/generator/grammar/ZmeiLangSimpleLexer.g4', 'w+') as f:
+    f.write(''.join(lines))
 
-    with open('/Users/aleksandrrudakov/dev/generator/zmei_generator/parser/populate.py', 'r') as f:
-        lines = []
-        for line in f.readlines():
-            lines.append(line)
+with open('/Users/aleksandrrudakov/dev/generator/zmei_generator/parser/populate.py', 'r') as f:
+    lines = []
+    for line in f.readlines():
+        lines.append(line)
 
-            if 'import ZmeiLangParserListener' in line:
-                lines.append("from zmei_generator.extras.collection_set.{} import {}CsExtraParserListener\n".format(name, cname))
+        if 'import ZmeiLangParserListener' in line:
+            lines.append("from zmei_generator.extras.collection_set.{} import {}CsExtraParserListener\n".format(name, cname))
 
-            if 'PartsCollectorListener(' in line:
-                lines.append("    {}CsExtraParserListener,\n".format(cname))
+        if 'PartsCollectorListener(' in line:
+            lines.append("    {}CsExtraParserListener,\n".format(cname))
 
-    with open('/Users/aleksandrrudakov/dev/generator/zmei_generator/parser/populate.py', 'w+') as f:
-        f.write(''.join(lines))
+with open('/Users/aleksandrrudakov/dev/generator/zmei_generator/parser/populate.py', 'w+') as f:
+    f.write(''.join(lines))
 
-    with open(f'/Users/aleksandrrudakov/dev/generator/zmei_generator/extras/collection_set/{name}.py', 'w+') as f:
-        f.write(tpl_py.format(cname, name, cname, name, name, cname))
+with open(f'/Users/aleksandrrudakov/dev/generator/zmei_generator/extras/collection_set/{name}.py', 'w+') as f:
+    f.write(tpl_py.format(cname, name, cname, name, name, cname))

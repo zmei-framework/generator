@@ -1,6 +1,8 @@
 lexer grammar ZmeiLangSimpleLexer;
 
 // Annotation types
+AN_REACT: '@react';
+AN_HTML: '@html';
 AN_TREE: '@tree';
 AN_DATE_TREE: '@date_tree';
 AN_MIXIN: '@mixin';

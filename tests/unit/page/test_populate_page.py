@@ -56,8 +56,7 @@ def test_home_page():
 def test_page_code():
     cs = _("""
 
-        [boo]
-        {
+        [boo] {
             That's my code!
         }
     """)
@@ -74,7 +73,9 @@ def test_page_html():
     cs = _("""
 
         [boo]
-        <h1>test</h1>
+        @html {
+            <h1>test</h1>
+        }
         
         #foo
         ------
@@ -91,11 +92,33 @@ def test_page_html():
     assert boo.extra_bases == ['ZmeiDataViewMixin']
 
 
+@pytest.mark.parametrize("xml", [
+    "<div>Lala</div>"
+    "<div>Lala!</div>"
+])
+def test_page_xml_cases(xml):
+    cs = _("""
+
+        [boo]
+        @html {
+            %s
+        }
+
+        #foo
+        ------
+        lala
+    """ % xml)
+
+    assert cs.pages['boo'].blocks['content'][0].source == xml
+
+
 def test_page_react():
     cs = _("""
 
         [boo]
-        <Foo>test</Foo>
+        @react {
+            <Foo>test</Foo>
+        }
         
         #foo
         ------

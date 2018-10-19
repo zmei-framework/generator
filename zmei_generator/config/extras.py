@@ -33,3 +33,11 @@ class ModelExtra(Extra):
         super().__init__()
 
         self.model = model
+
+
+class PageExtra(Extra):
+
+    def __init__(self, page) -> None:
+        super().__init__()
+
+        self.page = page

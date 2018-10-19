@@ -1,5 +1,6 @@
 from textwrap import dedent
 
+from zmei_generator.fields.custom import CustomFieldDef
 from zmei_generator.parser.parser import parse_string
 from zmei_generator.parser.populate import populate_collection_set
 
@@ -19,6 +20,7 @@ def test_extend():
         cda: str ..{whatever here}
         efg: str {whatever here}
         def: str
+        custom: {whatever here}
     
     """)
 
@@ -27,6 +29,7 @@ def test_extend():
     field_cda = boo.fields['cda'].prepare_field_arguemnts({'max_length': 100})
     field_efg = boo.fields['efg'].prepare_field_arguemnts({'max_length': 100})
     field_def = boo.fields['def'].prepare_field_arguemnts({'max_length': 100})
+    field_custom = boo.fields['custom']
 
     assert field_abc['max_length'] == 255
     assert field_abc['_'] == 'whatever here'
@@ -37,3 +40,6 @@ def test_extend():
     assert field_efg == {'_': 'whatever here'}
 
     assert '_' not in field_def
+
+    assert isinstance(field_custom, CustomFieldDef)
+    assert field_custom.custom_declaration == 'whatever here'
