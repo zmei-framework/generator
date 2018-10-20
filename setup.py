@@ -24,6 +24,7 @@ setup(
     install_requires=[
         "cpyparsing",
         "termcolor",
+        "markdown",
         "autopep8",
         "django<1.11",
         'pip>8.0.0',

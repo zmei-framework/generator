@@ -1484,6 +1484,15 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#an_markdown.
+    def enterAn_markdown(self, ctx:ZmeiLangParser.An_markdownContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_markdown.
+    def exitAn_markdown(self, ctx:ZmeiLangParser.An_markdownContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#an_html.
     def enterAn_html(self, ctx:ZmeiLangParser.An_htmlContext):
         pass

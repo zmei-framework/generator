@@ -1,6 +1,7 @@
 lexer grammar ZmeiLangSimpleLexer;
 
 // Annotation types
+AN_MARKDOWN: '@markdown';
 AN_REACT: '@react';
 AN_HTML: '@html';
 AN_TREE: '@tree';
@@ -149,6 +150,7 @@ ASSIGN_STATIC: '@=' WS* -> pushMode(PYTHON_LINE);
 
 CODE_BLOCK_START: '{' -> pushMode(CODE_BLOCK);
 
+ERRCHAR: ERR;
 
 mode CODE_BLOCK;
 PYTHON_CODE: (~'}')+;

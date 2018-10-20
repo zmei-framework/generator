@@ -1,3 +1,4 @@
+from textwrap import dedent
 
 from zmei_generator.config.extras import PageExtra
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
@@ -14,6 +15,5 @@ class HtmlPageExtraParserListener(BaseListener):
             HtmlPageExtra(self.page)
         )
 
-        self.page.set_html(ctx.code_block().PYTHON_CODE().getText().strip(), react=False)
-
-
+        html = dedent(ctx.code_block().PYTHON_CODE().getText().strip('\n'))
+        self.page.set_html(html)
