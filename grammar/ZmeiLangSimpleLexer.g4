@@ -1,6 +1,7 @@
 lexer grammar ZmeiLangSimpleLexer;
 
 // Annotation types
+AN_AUTH: '@auth';
 AN_MARKDOWN: '@markdown';
 AN_REACT: '@react';
 AN_HTML: '@html';

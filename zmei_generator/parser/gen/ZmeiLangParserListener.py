@@ -1493,6 +1493,15 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#an_auth.
+    def enterAn_auth(self, ctx:ZmeiLangParser.An_authContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_auth.
+    def exitAn_auth(self, ctx:ZmeiLangParser.An_authContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#an_html.
     def enterAn_html(self, ctx:ZmeiLangParser.An_htmlContext):
         pass
