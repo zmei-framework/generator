@@ -42,7 +42,7 @@ def add_page_auth(auth_expr, page):
     if auth_expr:
         code += "elif not ({}):\n".format(auth_expr)
         code += "   raise PermissionDenied(self.get_permission_denied_message())\n"
-    code += "return super().dispatch(request, *args, **kwargs)\n"
+    code += "return super().dispatch(*args, **kwargs)\n"
     page.methods['dispatch'] = code
 
 

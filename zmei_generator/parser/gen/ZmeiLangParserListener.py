@@ -1502,6 +1502,33 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#an_error.
+    def enterAn_error(self, ctx:ZmeiLangParser.An_errorContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_error.
+    def exitAn_error(self, ctx:ZmeiLangParser.An_errorContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_error_code.
+    def enterAn_error_code(self, ctx:ZmeiLangParser.An_error_codeContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_error_code.
+    def exitAn_error_code(self, ctx:ZmeiLangParser.An_error_codeContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_post.
+    def enterAn_post(self, ctx:ZmeiLangParser.An_postContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_post.
+    def exitAn_post(self, ctx:ZmeiLangParser.An_postContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#an_html.
     def enterAn_html(self, ctx:ZmeiLangParser.An_htmlContext):
         pass
