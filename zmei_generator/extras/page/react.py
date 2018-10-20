@@ -17,4 +17,8 @@ class ReactPageExtraParserListener(BaseListener):
             ReactPageExtra(self.page)
         )
 
-        self.page.set_html(dedent(ctx.code_block().PYTHON_CODE().getText().strip('\n')), react=True)
+        area = 'content'
+        if ctx.an_react_discriminator():
+            area = ctx.an_react_discriminator().id_or_kw().getText()
+
+        self.page.set_html(dedent(ctx.code_block().PYTHON_CODE().getText().strip('\n')), react=True, area=area)

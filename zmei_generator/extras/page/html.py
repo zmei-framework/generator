@@ -15,5 +15,9 @@ class HtmlPageExtraParserListener(BaseListener):
             HtmlPageExtra(self.page)
         )
 
+        area = 'content'
+        if ctx.an_html_discriminator():
+            area = ctx.an_html_discriminator().id_or_kw().getText()
+
         html = dedent(ctx.code_block().PYTHON_CODE().getText().strip('\n'))
-        self.page.set_html(html)
+        self.page.set_html(html, area=area)

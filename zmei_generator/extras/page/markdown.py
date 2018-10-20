@@ -16,7 +16,13 @@ class MarkdownPageExtraParserListener(BaseListener):
         self.collection_set.extras.append(
             MarkdownPageExtra(self.page)
         )
+
+        area = 'content'
+        if ctx.an_markdown_discriminator():
+            area = ctx.an_markdown_discriminator().id_or_kw().getText()
+
+
         md = dedent(ctx.code_block().PYTHON_CODE().getText().strip('\n'))
         html = markdown.markdown(md)
 
-        self.page.set_html(html)
+        self.page.set_html(html, area=area)

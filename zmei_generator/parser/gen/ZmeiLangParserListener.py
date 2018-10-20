@@ -1484,12 +1484,30 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#an_react_discriminator.
+    def enterAn_react_discriminator(self, ctx:ZmeiLangParser.An_react_discriminatorContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_react_discriminator.
+    def exitAn_react_discriminator(self, ctx:ZmeiLangParser.An_react_discriminatorContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#an_markdown.
     def enterAn_markdown(self, ctx:ZmeiLangParser.An_markdownContext):
         pass
 
     # Exit a parse tree produced by ZmeiLangParser#an_markdown.
     def exitAn_markdown(self, ctx:ZmeiLangParser.An_markdownContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_markdown_discriminator.
+    def enterAn_markdown_discriminator(self, ctx:ZmeiLangParser.An_markdown_discriminatorContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_markdown_discriminator.
+    def exitAn_markdown_discriminator(self, ctx:ZmeiLangParser.An_markdown_discriminatorContext):
         pass
 
 
@@ -1535,6 +1553,15 @@ class ZmeiLangParserListener(ParseTreeListener):
 
     # Exit a parse tree produced by ZmeiLangParser#an_html.
     def exitAn_html(self, ctx:ZmeiLangParser.An_htmlContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_html_discriminator.
+    def enterAn_html_discriminator(self, ctx:ZmeiLangParser.An_html_discriminatorContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_html_discriminator.
+    def exitAn_html_discriminator(self, ctx:ZmeiLangParser.An_html_discriminatorContext):
         pass
 
 

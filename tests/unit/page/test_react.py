@@ -11,12 +11,12 @@ def _(code):
     return populate_collection_set(tree, 'example')
 
 
-def test_page_html():
+def test_page_react():
     cs = _("""
 
         [boo]
-        @html {
-            <h1>test</h1>
+        @react {
+            <Foo>test</Foo>
         }
         
         #foo
@@ -29,18 +29,17 @@ def test_page_html():
     boo = cs.pages['boo']
 
     assert boo.name == 'boo'
-    assert boo.blocks['content'][0].source == "<h1>test</h1>"
-    assert boo.react is False
-    assert boo.extra_bases == ['ZmeiDataViewMixin']
+    assert boo.blocks['content'][0].source == "<Foo>test</Foo>"
+    assert boo.react is True
+    assert boo.extra_bases == ['ZmeiReactViewMixin']
 
 
-
-def test_page_html_area():
+def test_page_react_another_area():
     cs = _("""
 
         [boo]
-        @html.foo {
-            <h1>test</h1>
+        @react.foo {
+            <Foo>test</Foo>
         }
         
         #foo
@@ -53,7 +52,6 @@ def test_page_html_area():
     boo = cs.pages['boo']
 
     assert boo.name == 'boo'
-    assert boo.blocks['foo'][0].source == "<h1>test</h1>"
-    assert boo.react is False
-    assert boo.extra_bases == ['ZmeiDataViewMixin']
-
+    assert boo.blocks['foo'][0].source == "<Foo>test</Foo>"
+    assert boo.react is True
+    assert boo.extra_bases == ['ZmeiReactViewMixin']

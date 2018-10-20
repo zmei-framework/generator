@@ -99,9 +99,8 @@ class PageDef(object):
         #         raise ValidationException('Page extra not found: {}, reason: {}'.format(extra.extra_name, e))
 
 
-    def set_html(self, html, react=False):
+    def set_html(self, html, react=False, area='content'):
         from zmei_generator.extras.page.block import ReactPageBlock
-        area = 'content'
         self.react = react
 
         self.add_block(area, ReactPageBlock(self, html, area_name=area))

@@ -11,12 +11,12 @@ def _(code):
     return populate_collection_set(tree, 'example')
 
 
-def test_page_html():
+def test_page_markdown():
     cs = _("""
 
         [boo]
-        @html {
-            <h1>test</h1>
+        @markdown {
+            # test
         }
         
         #foo
@@ -33,14 +33,12 @@ def test_page_html():
     assert boo.react is False
     assert boo.extra_bases == ['ZmeiDataViewMixin']
 
-
-
-def test_page_html_area():
+def test_page_markdown_area():
     cs = _("""
 
         [boo]
-        @html.foo {
-            <h1>test</h1>
+        @markdown.foo {
+            # test
         }
         
         #foo
@@ -56,4 +54,3 @@ def test_page_html_area():
     assert boo.blocks['foo'][0].source == "<h1>test</h1>"
     assert boo.react is False
     assert boo.extra_bases == ['ZmeiDataViewMixin']
-
