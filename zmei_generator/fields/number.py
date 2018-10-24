@@ -1,35 +1,11 @@
-import re
-
 from zmei_generator.config.domain.collection_set_def import FieldDeclaration
 from zmei_generator.config.domain.field_def import FieldDef
-from zmei_generator.config.grammar import choices
 from zmei_generator.generator.utils import gen_args, handle_parse_exception
-from cPyparsing import *
 
 
 class IntegerFieldDef(FieldDef):
 
     choices = None
-
-    def parse_options(self):
-
-        field_opts = Optional(Suppress('choices') + Suppress(':') + choices) + stringEnd
-
-        if isinstance(self.options, str) and self.options.strip() != '':
-            try:
-                opts = field_opts.parseString(self.options)
-
-                if opts.choices:
-                    choice_list = []
-                    for x in opts.choices:
-                        value = int(x.value)
-                        label = x.label or x.value
-                        choice_list.append((value, label))
-                    self.choices = tuple(choice_list)
-
-            except ParseException as e:
-                handle_parse_exception(e, self.options,
-                                       'Can not parse options for field "{}" for collection "{}"'.format(self.name, self.collection.ref))
 
     def get_model_field(self):
         args = self.prepare_field_arguemnts()

@@ -3,9 +3,7 @@ from zmei_generator.config.domain.collection_set_def import FieldDeclaration
 from zmei_generator.config.domain.exceptions import ValidationException
 from zmei_generator.config.domain.field_def import FieldDef
 from zmei_generator.config.domain.reference_field import ReferenceField
-from zmei_generator.config.grammar import ref, class_name, ref_or_class_name, identifier
 from zmei_generator.generator.utils import gen_args
-from cPyparsing import *
 
 
 class RelationDef(FieldDef):

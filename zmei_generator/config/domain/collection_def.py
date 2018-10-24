@@ -1,5 +1,3 @@
-from cPyparsing import ParseException
-
 from zmei_generator.config.domain.exceptions import ValidationException
 from zmei_generator.config.domain.reference_field import ReferenceField
 from zmei_generator.generator.utils import handle_parse_exception
