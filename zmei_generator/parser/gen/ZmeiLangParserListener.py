@@ -35,12 +35,30 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ZmeiLangParser#import_source.
-    def enterImport_source(self, ctx:ZmeiLangParser.Import_sourceContext):
+    # Enter a parse tree produced by ZmeiLangParser#page_import_statement.
+    def enterPage_import_statement(self, ctx:ZmeiLangParser.Page_import_statementContext):
         pass
 
-    # Exit a parse tree produced by ZmeiLangParser#import_source.
-    def exitImport_source(self, ctx:ZmeiLangParser.Import_sourceContext):
+    # Exit a parse tree produced by ZmeiLangParser#page_import_statement.
+    def exitPage_import_statement(self, ctx:ZmeiLangParser.Page_import_statementContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#model_import_statement.
+    def enterModel_import_statement(self, ctx:ZmeiLangParser.Model_import_statementContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#model_import_statement.
+    def exitModel_import_statement(self, ctx:ZmeiLangParser.Model_import_statementContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#import_list.
+    def enterImport_list(self, ctx:ZmeiLangParser.Import_listContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#import_list.
+    def exitImport_list(self, ctx:ZmeiLangParser.Import_listContext):
         pass
 
 

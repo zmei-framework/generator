@@ -11,18 +11,28 @@ import Base,
 col_file:
     NL*
     cs_annotation*
-    page_imports?
     NL*
-    page*
-    model_imports?
-    col*
+    (
+        page_imports?
+        page+
+    )?
+    NL*
+    (
+        model_imports?
+        col+
+    )?
     NL*
     EOF
     ;
 
 
-page_imports : KW_IMPORT import_source;
-model_imports : KW_IMPORT import_source;
+page_imports : (page_import_statement)+;
+model_imports : (model_import_statement)+;
 
-import_source : code_block;
+page_import_statement : KW_FROM classname KW_IMPORT import_list NL+;
+model_import_statement : KW_FROM classname KW_IMPORT import_list NL+;
+
+import_list: id_or_kw (COMA id_or_kw)*;
+
+
 

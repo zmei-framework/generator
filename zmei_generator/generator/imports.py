@@ -22,11 +22,14 @@ class ImportSet(object):
         return None, None
 
     def import_sting(self):
-        items = sorted(self.imports.items())
+        items = self.get_items()
         return '\n'.join(['from {} import {}'.format(source, ', '.join(what)) for source, what in items])
 
+    def get_items(self):
+        return sorted(self.imports.items())
+
     def import_sting_js(self):
-        items = sorted(self.imports.items())
+        items = self.get_items()
 
         grouped = {}
         ungrouped = {}
@@ -53,3 +56,7 @@ class ImportSet(object):
             stm.append("import {} from '{}';".format(', '.join(what), source))
 
         return '\n'.join(stm)
+
+    def __str__(self) -> str:
+        return self.import_sting()
+

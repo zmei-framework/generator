@@ -46,9 +46,17 @@ class PartsCollectorListener(
         self.field_config = None  # type: FieldConfig
         self.image_size = None  # type: ImageSize
 
+    def enterPage_import_statement(self, ctx: ZmeiLangParser.Page_import_statementContext):
+        self.collection_set.page_imports.add(ctx.classname().getText(), *ctx.import_list().getText().split(','))
+
+    def enterModel_import_statement(self, ctx:ZmeiLangParser.Model_import_statementContext):
+        self.collection_set.model_imports.add(ctx.classname().getText(), *ctx.import_list().getText().split(','))
+
     ############################################
     # Page
     ############################################
+
+
 
     def enterPage(self, ctx: ZmeiLangParser.PageContext):
         self.page = PageDef(self.collection_set)
