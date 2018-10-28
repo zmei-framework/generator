@@ -170,6 +170,15 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#an_celery.
+    def enterAn_celery(self, ctx:ZmeiLangParser.An_celeryContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_celery.
+    def exitAn_celery(self, ctx:ZmeiLangParser.An_celeryContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#an_suit.
     def enterAn_suit(self, ctx:ZmeiLangParser.An_suitContext):
         pass

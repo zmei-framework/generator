@@ -5,6 +5,7 @@ from zmei_generator.config.domain.collection_set_def import CollectionSetDef
 from zmei_generator.config.domain.field_def import FieldConfig
 from zmei_generator.config.domain.page_def import PageDef
 from zmei_generator.config.domain.page_expression import PageExpression
+from zmei_generator.extras.collection_set.celery import CeleryCsExtraParserListener
 from zmei_generator.extras.collection_set.filer import FilerCsExtraParserListener
 from zmei_generator.extras.collection_set.langs import LangsCsExtraParserListener
 from zmei_generator.extras.collection_set.suit import SuitCsExtra
@@ -29,6 +30,7 @@ from zmei_generator.parser.utils import BaseListener
 
 
 class PartsCollectorListener(
+    CeleryCsExtraParserListener,
     LangsCsExtraParserListener,
     FilerCsExtraParserListener,
     BaseListener

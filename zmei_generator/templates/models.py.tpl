@@ -1,7 +1,7 @@
 
 {{ imports }}
 
-{{ collection_set.collection_imports }}
+{{ collection_set.model_imports }}
 
 if '_' not in locals():
     _ = lambda s: s

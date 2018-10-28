@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='zmei-gen',
-    version='1.0.20',
+    version='1.1.0',
     packages=find_packages(),
 
     url='',
@@ -23,7 +23,7 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'zmei-gen = genius_cli.main:run',
+            'zmei = genius_cli.main:run',
         ]
     },
 )

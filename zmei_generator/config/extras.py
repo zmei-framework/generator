@@ -27,6 +27,10 @@ class Extra(object):
     def write_settings(cls, apps, f):
         pass
 
+    @classmethod
+    def generate(cls, apps, target_path):
+        pass
+
 class ModelExtra(Extra):
 
     def __init__(self, model) -> None:

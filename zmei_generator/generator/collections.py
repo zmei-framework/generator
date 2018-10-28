@@ -118,13 +118,14 @@ def generate_common_files(target_path, skeleton_dir, apps):
         for extra in extra_classes:
             extra.write_settings(apps, f)
 
-
+    for extra in extra_classes:
+        extra.generate(apps, target_path)
 
     # base template
     generate_file(target_path, 'app/templates/base.html', template_name='theme/base.html')
 
     requirements = [
-        'zmei==0.1.6',
+        'zmei-utils==0.1.9',
         'wheel',
         'django>2',
     ]
