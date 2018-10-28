@@ -38,7 +38,8 @@ setup(
         'jinja2',
         'defusedxml',
         'django',
-        'antlr4-python3-runtime'
+        'antlr4-python3-runtime',
+        'AoikLiveReload',
     ],
 
     entry_points={

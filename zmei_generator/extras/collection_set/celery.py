@@ -10,13 +10,21 @@ class CeleryCsExtra(CollectionSetExtra):
 
     def get_required_deps(self):
         return [
-            'celery'
+            'celery',
+            'redis'
         ]
 
     @classmethod
     def generate(cls, apps, target_path):
         generate_file(target_path, 'app/celery.py', template_name='celery.py.tpl')
+        generate_file(target_path, 'app/tasks.py', template_name='celery_tasks.py.tpl')
         generate_file(target_path, 'app/__init__.py', template_name='celery_init.py.tpl')
+
+    @classmethod
+    def write_settings(cls, apps, f):
+        f.write("\n")
+        f.write("\nCELERY_BROKER_URL = 'redis://127.0.0.1'")
+        f.write("\nCELERY_RESULT_BACKEND = 'redis://127.0.0.1'")
 
 
 class CeleryCsExtraParserListener(BaseListener):

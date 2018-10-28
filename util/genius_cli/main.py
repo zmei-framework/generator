@@ -3,13 +3,14 @@ import os
 import signal
 import sys
 from glob import glob
+from time import sleep
 
 import click
 from termcolor import colored
 
 from genius_cli.client import GeniusClient, ApiError
 from genius_cli.utils import collect_files, extract_files, collect_app_names, migrate_db, install_deps, remove_db, \
-    wait_for_file_changes, run_django, run_webpack, npm_install, get_watch_paths
+    wait_for_file_changes, run_django, run_webpack, npm_install, get_watch_paths, run_celery
 
 
 def run():
@@ -47,6 +48,7 @@ def run():
 
     @cli.command(help='Run application')
     @click.option('--nodejs', is_flag=True, help='Initialize nodejs dependencies')
+    @click.option('--celery', is_flag=True, help='Run celery worker & beat')
     @click.option('--watch', is_flag=True, help='Watch for changes')
     @click.option('--webpack', is_flag=True, help='Run webpack with reload when generation ends')
     @click.option('--port', default='8000', help='Django host:port to run on')
@@ -99,6 +101,7 @@ def run():
             run=False,
             webpack=False,
             nodejs=False,
+            celery=False,
             host=None,
             port=8000,
             watch=False,
@@ -126,12 +129,18 @@ def run():
 
         django_process = None
         webpack_process = None
+        celery_process = None
 
         def emergency_stop():
             if django_process:
                 os.killpg(os.getpgid(django_process.pid), signal.SIGTERM)
             if webpack_process:
                 os.killpg(os.getpgid(webpack_process.pid), signal.SIGTERM)
+            if celery_process:
+                os.killpg(os.getpgid(celery_process.pid), signal.SIGTERM)
+
+            sleep(1)
+            print('\n')
 
         atexit.register(emergency_stop)
 
@@ -144,6 +153,8 @@ def run():
 
             try:
                 files = genius.generate(files, collections=app)
+                if up and os.path.exists('app/celery.py'):
+                    celery = True
 
                 extract_files(dst, files)
 
@@ -168,6 +179,13 @@ def run():
 
                 if webpack and not webpack_process:
                     webpack_process = run_webpack()
+
+                if celery:
+                    # restart celery process on changes
+                    if celery_process:
+                        os.killpg(os.getpgid(celery_process.pid), signal.SIGTERM)
+
+                    celery_process = run_celery()
 
             except ApiError:
                 pass

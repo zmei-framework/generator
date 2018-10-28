@@ -272,6 +272,14 @@ def run_webpack():
     return subprocess.Popen('{}'.format(webpack_command), shell=True, cwd='react', preexec_fn=os.setsid)
 
 
+def run_celery():
+    print(colored('> ', 'white', 'on_blue'), 'Starting celery')
+
+    webpack_command = 'celery -A app worker -B -E -l info'
+    print(webpack_command)
+    return subprocess.Popen('{}'.format(webpack_command), shell=True, preexec_fn=os.setsid)
+
+
 def npm_install():
     if is_req_file_changed('react/package.json'):
         print(colored('> ', 'white', 'on_blue'), 'Installing nodejs dependencies ...')
