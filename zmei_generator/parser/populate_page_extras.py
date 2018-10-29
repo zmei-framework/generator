@@ -35,6 +35,7 @@ class PageExtraListener(
 
         self.page = None  # type: PageDef
 
+
     def enterPage(self, ctx: ZmeiLangParser.PageContext):
         self.page = PageDef(self.collection_set)
 

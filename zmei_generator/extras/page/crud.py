@@ -1,6 +1,8 @@
 import re
+from copy import copy
 
 from zmei_generator.config.domain.collection_set_def import CollectionSetDef
+from zmei_generator.config.domain.page_def import PageDef
 from zmei_generator.config.extras import PageExtra
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
@@ -47,6 +49,22 @@ class CrudPageExtraParserListener(CrudBasePageExtraParserListener):
 class CrudParams(object):
     def __init__(self) -> None:
         self.model = None
+        self.filter_expr = None
+        self.spec = None
+        self.query = None
+        self.fields = None
+        self.list_fields = None
+        self.skip = None
+        self.block_name = None
+        self.theme = None
+        self.url_prefix = None
+        self.pk_param = None
+        self.object_expr = None
+        self.edit_auth = None
+        self.item_name = None
+        self.link_extra = None
+        self.link_suffix = None
+        self.next_page = None
 
 
 class CrudPageExtra(PageExtra):
@@ -78,20 +96,15 @@ class CrudPageExtra(PageExtra):
     create_list = True
     link_suffix = ''
 
-    def __init__(self, page):
+    def __init__(self, page, params=None, descriptor='_'):
         super().__init__(page)
 
-        self.params = CrudParams()
+        self.params = params or CrudParams()
 
-        # page.collection_set.crud = True
-        #
-        # self.raw_extra_body = parsed_result.extra_body
-        self.descriptor = '_'
-        #
-        # crud = parser.parseString(parsed_result.extra_body, parseAll=True)
-        #
-        # self.prepare_environment(crud, page)
-        # self.build_pages(page)
+        self.descriptor = descriptor
+
+        if page.defined_uri is None:
+            raise ValidationException('@crud annotations require page to have url')
 
     def post_process(self):
         if self.descriptor not in self.page.cruds:
@@ -99,7 +112,14 @@ class CrudPageExtra(PageExtra):
 
         self.page.cruds[self.descriptor][self.get_name()] = self
 
-    def prepare_environment(self, crud, page):
+        self.prepare_environment()
+
+        self.build_pages()
+
+    def prepare_environment(self):
+        crud = self.params
+        page = self.page
+
         # next page
         if crud.next_page:
             self.next_page_expr = f"return reverse({crud.next_page})" + self.link_suffix
@@ -136,7 +156,7 @@ class CrudPageExtra(PageExtra):
                 raise ValidationException('@crud -> fields for external models are required: {}'.format(crud.model))
 
         # link extra
-        if len(crud.link_extra):
+        if crud.link_extra:
             self.link_extra = crud.link_extra
             link_extra_params = []
             for item in re.split('\s+', self.link_extra):
@@ -207,8 +227,8 @@ class CrudPageExtra(PageExtra):
             self.edit_auth = crud.edit_auth
 
         # formated_query
-        self.query = crud.query.strip()
-        if self.query != '':
+        if self.query:
+            self.query = crud.query.strip()
             self.formatted_query = '.filter({})'.format(self.query)
         else:
             self.formatted_query = '.all()'
@@ -260,50 +280,71 @@ class CrudPageExtra(PageExtra):
 
         return ctx
 
-    def build_pages(self, page):
+    def build_pages(self):
 
         if self.create_list:
-            page.imports.append(
+            self.page.imports.append(
                 (self.app_name, self.model_cls)
             )
 
-            page.page_items[f'{self.name_prefix}{self.item_name}_meta'] = PageExpression(
-                f'{self.name_prefix}{self.item_name}_meta', f"{self.model_cls}._meta", page)
+            self.page.page_items[f'{self.name_prefix}{self.item_name}_meta'] = PageExpression(
+                f'{self.name_prefix}{self.item_name}_meta', f"{self.model_cls}._meta", self.page)
 
-            page.page_items[f'_{self.context_object_name}_list'] = PageExpression(
-                f'{self.context_object_name}_list', f"{self.model_cls}.objects{self.formatted_query}", page)
+            self.page.page_items[f'_{self.context_object_name}_list'] = PageExpression(
+                f'{self.context_object_name}_list', f"{self.model_cls}.objects{self.formatted_query}", self.page)
 
-            page.add_block(
+            self.page.add_block(
                 self.block_name,
 
                 PageBlock(
                     theme=self.theme,
                     root_el='crud_list',
-                    fields=self.prepare_block_fields(page)
+                    fields=self.prepare_block_fields(self.page)
                 )
             )
 
-        sub_descriptor = '.' + self.descriptor if self.descriptor else ''
-
         for crud_page in self.crud_pages:
+
+            new_page = PageDef(self.page.collection_set)
+            new_page.parent_name = self.page.name
+            new_page.name = f"{self.page.name}{self.name_suffix}_{crud_page}"
+
             if crud_page == 'create':
-                page.children.append(f"""
-[{page.name}->{page.name}{self.name_suffix}_{crud_page}: {page.defined_uri}{self.url_prefix}{crud_page}]
-@merge
-@crud_{crud_page}{sub_descriptor}<@{self.raw_extra_body} => '{page.collection_set.app_name}.{page.name}', kwargs={{{self.link_extra_params}}}@>
-""")
+                new_page.set_uri(f"{self.page.defined_uri}{self.url_prefix}{crud_page}")
             else:
-                page.children.append(f"""
-[{page.name}->{page.name}{self.name_suffix}_{crud_page}: {page.defined_uri}{self.url_prefix}<{self.pk_param}>/{crud_page}]
-@merge
-@crud_{crud_page}{sub_descriptor}<@{self.raw_extra_body} => '{page.collection_set.app_name}.{page.name}', kwargs={{{self.link_extra_params}}}@>
-""")
+                new_page.set_uri(f"{self.page.defined_uri}{self.url_prefix}<{self.pk_param}>/{crud_page}")
+
+            params = copy(self.params)
+            params.next_page = f"'{self.page.collection_set.app_name}.{self.page.name}', kwargs={{{self.link_extra_params}}}"
+
+            crud = crud_cls_by_name(crud_page)(self.page, params=self.params, descriptor=self.descriptor)
+
+            self.page.collection_set.pages[new_page.name] = new_page
+            self.page.collection_set.extras.append(crud)
+
+            self.page.children.append(new_page)
+
+
+def crud_cls_by_name(name):
+    from zmei_generator.extras.page.crud_create import CrudCreatePageExtra
+    from zmei_generator.extras.page.crud_delete import CrudDeletePageExtra
+    from zmei_generator.extras.page.crud_detail import CrudDetailPageExtra
+    from zmei_generator.extras.page.crud_edit import CrudEditPageExtra
+
+    return dict((
+        ("create", CrudCreatePageExtra),
+        ("delete", CrudDeletePageExtra),
+        ("detail", CrudDetailPageExtra),
+        ("edit", CrudEditPageExtra),
+    ))[name]
 
 
 class BaseCrudSubpageExtra(CrudPageExtra):
     crud_page = None
 
-    def build_pages(self, page):
+    def build_pages(self):
+        page = self.page
+
         page.imports.append(
             (self.app_name, self.model_cls)
         )

@@ -85,9 +85,6 @@ class PartsCollectorListener(
         else:
             self.page.parsed_template_name = tpl
 
-    # def enterPage_code(self, ctx: ZmeiLangParser.Page_codeContext):
-    #     self.page.page_code = ctx.getText().strip('{} \n')
-
     def enterPage_field(self, ctx: ZmeiLangParser.Page_fieldContext):
         field = ctx.page_field_name().getText()
         val = ctx.page_field_code().getText()
