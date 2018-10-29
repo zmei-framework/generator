@@ -104,19 +104,22 @@ def generate_common_files(target_path, skeleton_dir, apps):
 
     installed_apps = list(set(installed_apps))
 
+    with open(os.path.join(target_path, 'app/settings.py'), 'r') as fb:
+        with open(os.path.join(target_path, 'app/settings_base.py'), 'a') as f:
+            f.write(fb.read())
 
+            f.write('\nINSTALLED_APPS = [\n')
+            f.write("\n    'app',\n")
+            f.write('\n'.join([f"    '{app_name}'," for app_name in installed_apps]))
+            f.write('\n] + INSTALLED_APPS\n\n')# settings
 
-    with open(os.path.join(target_path, 'app/settings.py'), 'a') as f:
-        f.write('\nINSTALLED_APPS = [\n')
-        f.write("\n    'app',\n")
-        f.write('\n'.join([f"    '{app_name}'," for app_name in installed_apps]))
-        f.write('\n] + INSTALLED_APPS\n\n')# settings
+            for key, val in req_settings.items():
+                f.write(f'{key} = {repr(val)}\n')
 
-        for key, val in req_settings.items():
-            f.write(f'{key} = {repr(val)}\n')
+            for extra in extra_classes:
+                extra.write_settings(apps, f)
 
-        for extra in extra_classes:
-            extra.write_settings(apps, f)
+    generate_file(target_path, 'app/settings.py', template_name='settings.py.tpl')
 
     for extra in extra_classes:
         extra.generate(apps, target_path)
@@ -139,8 +142,10 @@ def generate_common_files(target_path, skeleton_dir, apps):
     requirements = list(set(requirements))
 
     # requirements
-    with open(os.path.join(target_path, 'requirements.txt'), 'w') as f:
+    with open(os.path.join(target_path, 'requirements_base.txt'), 'w') as f:
         f.write('\n'.join(requirements))
+
+    generate_file(target_path, 'requirements.txt', template_name='requirements.txt.tpl')
 
     # react
     if react:
