@@ -8,12 +8,22 @@ import
     PageExtraAuth,
     PageExtraError,
     PageExtraPost,
+    PageExtraCrudCreate,
+    PageExtraCrudEdit,
+    PageExtraCrudDelete,
+    PageExtraCrudDetail,
+    PageExtraCrud,
     PageExtraHtml
     ;
 
 page_annotation:
      an_html
     |an_react
+    |an_crud
+    |an_crud_detail
+    |an_crud_delete
+    |an_crud_edit
+    |an_crud_create
     |an_post
     |an_error
     |an_auth

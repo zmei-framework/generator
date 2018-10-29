@@ -1,6 +1,11 @@
 lexer grammar ZmeiLangSimpleLexer;
 
 // Annotation types
+AN_CRUD: '@crud';
+AN_CRUD_DETAIL: '@crud_detail';
+AN_CRUD_DELETE: '@crud_delete';
+AN_CRUD_EDIT: '@crud_edit';
+AN_CRUD_CREATE: '@crud_create';
 AN_CELERY: '@celery';
 AN_POST: '@post';
 AN_ERROR: '@error';

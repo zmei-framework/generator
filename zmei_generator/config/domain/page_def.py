@@ -65,6 +65,7 @@ class PageDef(object):
         self.options = {}
         self.methods = {}
         self.blocks = {}
+        self.cruds = {}
         self.react_components = {}
         self.page_component_name = None
         self.react_pages = {}

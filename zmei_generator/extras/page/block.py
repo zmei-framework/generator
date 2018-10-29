@@ -1,7 +1,6 @@
 import re
 from xml.etree import ElementTree
 
-from zmei_generator.config.domain.page_extra import PageExtra
 from defusedxml.ElementTree import fromstring, tostring
 
 from zmei_generator.generator.imports import ImportSet
@@ -121,21 +120,21 @@ class PageBlock(object):
 
         return f'\n<genius:blocks theme="{self.theme}">\n    {source}\n</genius:blocks>'
 
-
-class BlocksPageExtra(PageExtra):
-
-    @classmethod
-    def get_name(cls):
-        return 'block'
-
-    def __init__(self, parsed_result, page):
-        super().__init__(parsed_result, page)
-
-        area_name = parsed_result.descriptor or 'content'
-
-        blocks = [PageBlock(source=parsed_result.extra_body, area_name=area_name)]
-
-        if area_name not in page.blocks:
-            page.blocks[area_name] = blocks
-        else:
-            page.blocks[area_name] = page.blocks[area_name] + blocks
+#
+# class BlocksPageExtra(PageExtra):
+#
+#     @classmethod
+#     def get_name(cls):
+#         return 'block'
+#
+#     def __init__(self, parsed_result, page):
+#         super().__init__(parsed_result, page)
+#
+#         area_name = parsed_result.descriptor or 'content'
+#
+#         blocks = [PageBlock(source=parsed_result.extra_body, area_name=area_name)]
+#
+#         if area_name not in page.blocks:
+#             page.blocks[area_name] = blocks
+#         else:
+#             page.blocks[area_name] = page.blocks[area_name] + blocks
