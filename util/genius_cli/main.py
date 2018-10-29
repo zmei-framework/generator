@@ -27,19 +27,23 @@ def run():
     )
 
     @click.group()
-    @click.option('--src', default='.', help='Sources path')
-    @click.option('--dst', default='.', help='Target path')
-    def cli(**args):
+    def main(**args):
         pass
 
-    @cli.command(help='Deploy to hyper.sh')
+    @main.command(help='Deploy to hyper.sh')
     def config(**args):
         print('Deploy!')
         pass
 
-    @cli.command(help='Deploy to hyper.sh')
+    @main.command(help='Deploy to hyper.sh')
     def deploy(**args):
         print('Deploy!')
+
+    @main.group(name='gen')
+    @click.option('--src', default='.', help='Sources path')
+    @click.option('--dst', default='.', help='Target path')
+    def cli(**args):
+        pass
 
     @cli.command(help='Generate and start app')
     def up(**args):
@@ -193,4 +197,4 @@ def run():
             if watch:
                 print(colored('> ', 'white', 'on_blue'), 'Watching for changes...')
 
-    cli()
+    main()

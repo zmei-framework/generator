@@ -1,3 +1,3 @@
-from .settings_base import *
+from ._settings import *
 
 # Add your custom settings here

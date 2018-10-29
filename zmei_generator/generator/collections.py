@@ -7,7 +7,8 @@ from shutil import copytree, copyfile, rmtree
 from zmei_generator.config.domain.collection_set_def import FieldDeclaration, CollectionSetDef
 from zmei_generator.config.domain.field_def import FieldDef
 from zmei_generator.generator.imports import ImportSet
-from zmei_generator.generator.utils import generate_feature, generate_file, generate_urls_file, generate_urls_rest
+from zmei_generator.generator.utils import generate_feature, generate_file, generate_urls_file, generate_urls_rest, \
+    format_file
 
 
 def list_apps():
@@ -79,7 +80,7 @@ def generate_common_files(target_path, skeleton_dir, apps):
     urls.append(']')
 
     # urls
-    with open(os.path.join(target_path, 'app/urls.py'), 'w') as f:
+    with open(os.path.join(target_path, 'app/_urls.py'), 'w') as f:
         f.write('from django.conf.urls import url, include\n')
         f.write('from django.contrib import admin\n')
 
@@ -87,6 +88,8 @@ def generate_common_files(target_path, skeleton_dir, apps):
         f.write('\n'.join([f'import {app_name}' for app_name in imports]))
         f.write('\n\n')
         f.write('\n'.join(urls))
+
+    generate_file(target_path, 'app/urls.py', template_name='urls_main.py.tpl')
 
     # settings
     req_settings = {}
@@ -105,7 +108,7 @@ def generate_common_files(target_path, skeleton_dir, apps):
     installed_apps = list(set(installed_apps))
 
     with open(os.path.join(target_path, 'app/settings.py'), 'r') as fb:
-        with open(os.path.join(target_path, 'app/settings_base.py'), 'a') as f:
+        with open(os.path.join(target_path, 'app/_settings.py'), 'a') as f:
             f.write(fb.read())
 
             f.write('\nINSTALLED_APPS = [\n')
@@ -120,6 +123,7 @@ def generate_common_files(target_path, skeleton_dir, apps):
                 extra.write_settings(apps, f)
 
     generate_file(target_path, 'app/settings.py', template_name='settings.py.tpl')
+    format_file(target_path, 'app/_settings.py')
 
     for extra in extra_classes:
         extra.generate(apps, target_path)
@@ -142,7 +146,7 @@ def generate_common_files(target_path, skeleton_dir, apps):
     requirements = list(set(requirements))
 
     # requirements
-    with open(os.path.join(target_path, 'requirements_base.txt'), 'w') as f:
+    with open(os.path.join(target_path, '_requirements.txt'), 'w') as f:
         f.write('\n'.join(requirements))
 
     generate_file(target_path, 'requirements.txt', template_name='requirements.txt.tpl')

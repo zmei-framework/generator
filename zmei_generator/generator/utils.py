@@ -118,6 +118,15 @@ def generate_file(target_path, filename, template_name, context=None):
         f.write(rendered)
 
 
+def format_file(target_path, filename):
+    filename = os.path.join(target_path, filename)
+
+    with open(filename, 'r') as f:
+        code = f.read()
+    with open(filename, 'w') as f:
+        f.write(autopep8.fix_code(code))
+
+
 def generate_feature(target_path, package_name: str, feature_name: str, collection_set, extra_context=None):
     """
     Generates new feature

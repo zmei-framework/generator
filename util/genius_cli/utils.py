@@ -55,6 +55,7 @@ def write_generated_file(path, source):
         # settings.py is specially designed to be overriden
         if not path.endswith('settings.py') \
                 and not path.endswith('tasks.py') \
+                and not path.endswith('app/urls.py') \
                 and not path.endswith('requirements.txt'):
             source_prefix = f"# {tag}\n\n"
 
