@@ -91,6 +91,9 @@ class CrudBasePageExtraParserListener(BaseListener):
     def enterAn_crud_target_filter(self, ctx: ZmeiLangParser.An_crud_target_filterContext):
         self.crud.params.query = ctx.code_block().PYTHON_CODE().getText().strip()
 
+    def enterAn_crud_url_prefix_val(self, ctx: ZmeiLangParser.An_crud_url_prefix_valContext):
+        self.crud.params.url_prefix = ctx.getText().strip(' "\'')
+
 
 class CrudPageExtraParserListener(CrudBasePageExtraParserListener):
 

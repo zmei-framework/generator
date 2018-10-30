@@ -1628,6 +1628,24 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#an_crud_url_prefix.
+    def enterAn_crud_url_prefix(self, ctx:ZmeiLangParser.An_crud_url_prefixContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_crud_url_prefix.
+    def exitAn_crud_url_prefix(self, ctx:ZmeiLangParser.An_crud_url_prefixContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_crud_url_prefix_val.
+    def enterAn_crud_url_prefix_val(self, ctx:ZmeiLangParser.An_crud_url_prefix_valContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_crud_url_prefix_val.
+    def exitAn_crud_url_prefix_val(self, ctx:ZmeiLangParser.An_crud_url_prefix_valContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#an_crud_item_name.
     def enterAn_crud_item_name(self, ctx:ZmeiLangParser.An_crud_item_nameContext):
         pass

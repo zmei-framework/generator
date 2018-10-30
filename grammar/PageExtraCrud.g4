@@ -25,6 +25,7 @@ an_crud_params:
         |an_crud_block
         |an_crud_object_expr
         |an_crud_can_edit
+        |an_crud_url_prefix
         |NL
         |COMA
     )*
@@ -47,6 +48,14 @@ an_crud_target_filter:
 
 an_crud_theme:
     KW_THEME COLON id_or_kw;
+
+// url_prefix
+
+an_crud_url_prefix:
+    KW_URL_PREFIX COLON an_crud_url_prefix_val;
+
+an_crud_url_prefix_val:
+    STRING_DQ | STRING_SQ;
 
 // item_name
 

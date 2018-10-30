@@ -35,6 +35,8 @@ WRITE_MODE: 'r' | 'rw' | 'w';
 BOOL: 'true' | 'false';
 
 KW_THEME: 'theme';
+KW_LINK_EXTRA: 'link_extra';
+KW_URL_PREFIX: 'url_prefix';
 KW_CAN_EDIT: 'can_edit';
 KW_OBJECT_EXPR: 'object_expr';
 KW_BLOCK: 'block';
