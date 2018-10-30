@@ -1,13 +1,12 @@
 {% load crud_utils %}
-
+{% if crud_list_link %}
 <a href="{% crud_link crud_list_link %}">&laquo; Back to list</a>
+{% endif %}
 
-<div>
-    <h2>New {{ meta.verbose_name|lower }}</h2>
+<h2>New {{ meta.verbose_name|lower }}</h2>
 
-    {{ form.media }}
-    <form action="" method="post"{% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>{% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Create" />
-    </form>
-</div>
+{{ form.media }}
+<form action="" method="post"{% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Create" />
+</form>

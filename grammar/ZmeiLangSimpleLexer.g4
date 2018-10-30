@@ -35,6 +35,11 @@ WRITE_MODE: 'r' | 'rw' | 'w';
 BOOL: 'true' | 'false';
 
 KW_THEME: 'theme';
+KW_CAN_EDIT: 'can_edit';
+KW_OBJECT_EXPR: 'object_expr';
+KW_BLOCK: 'block';
+KW_ITEM_NAME: 'item_name';
+KW_PK_PARAM: 'pk_param';
 KW_LIST_FIELDS: 'list_fields';
 KW_DELETE: 'delete';
 KW_EDIT: 'edit';

@@ -63,6 +63,31 @@ class CrudBasePageExtraParserListener(BaseListener):
 
         self.crud.params.list_fields.append(field)
 
+    def enterAn_crud_pk_param(self, ctx: ZmeiLangParser.An_crud_pk_paramContext):
+        self.crud.params.pk_param = ctx.id_or_kw().getText().strip()
+
+    def enterAn_crud_item_name(self, ctx: ZmeiLangParser.An_crud_item_nameContext):
+        self.crud.params.item_name = ctx.id_or_kw().getText().strip()
+
+    def enterAn_crud_block(self, ctx: ZmeiLangParser.An_crud_blockContext):
+        self.crud.params.block_name = ctx.id_or_kw().getText().strip()
+
+    def enterAn_crud_object_expr(self, ctx: ZmeiLangParser.An_crud_object_exprContext):
+        if ctx.code_line():
+            code = ctx.code_line().PYTHON_CODE().getText().strip()
+        else:
+            code = ctx.code_block().PYTHON_CODE().getText().strip()
+
+        self.crud.params.object_expr = code
+
+    def enterAn_crud_can_edit(self, ctx: ZmeiLangParser.An_crud_can_editContext):
+        if ctx.code_line():
+            code = ctx.code_line().PYTHON_CODE().getText().strip()
+        else:
+            code = ctx.code_block().PYTHON_CODE().getText().strip()
+
+        self.crud.params.can_edit = code
+
 
 class CrudPageExtraParserListener(CrudBasePageExtraParserListener):
 
@@ -93,7 +118,7 @@ class CrudParams(object):
         self.url_prefix = None
         self.pk_param = None
         self.object_expr = None
-        self.edit_auth = None
+        self.can_edit = None
         self.item_name = None
         self.link_extra = None
         self.link_suffix = None
@@ -183,7 +208,7 @@ class CrudPageExtra(PageExtra):
             self.model_cls = parts[-1]
             self.fields = {field: field.replace('_', ' ').capitalize() for field in crud_fields}
             self.list_fields = {field: field.replace('_', ' ').capitalize() for field in
-                                crud.list_fields} or crud_fields
+                                crud.list_fields or crud_fields}
             if not self.fields:
                 raise ValidationException('@crud -> fields for external models are required: {}'.format(crud.model))
 
@@ -255,8 +280,10 @@ class CrudPageExtra(PageExtra):
             self.object_expr = 'self.object = self.get_object()'
 
         # auth
-        if crud.edit_auth:
-            self.edit_auth = crud.edit_auth
+        if crud.can_edit:
+            self.can_edit = crud.can_edit
+        else:
+            self.can_edit = repr(True)
 
         # formatted_query
         if self.query:
@@ -280,19 +307,9 @@ class CrudPageExtra(PageExtra):
         if link_extra:
             link_extra = ' ' + link_extra
 
-        # edit_auth = self.edit_auth or None
-        edit_auth = None
-        if edit_auth:
-            edit_auth = edit_auth.strip()
-            if len(edit_auth) == 0:
-                edit_auth = None
-
-            if edit_auth.startswith('data'):
-                edit_auth = edit_auth[5:]
-
         ctx = {
             'link_suffix': repr(self.link_suffix),
-            'can_edit': repr(edit_auth or True),
+            'can_edit': self.can_edit,
             'fields': repr(self.fields),
             'list_fields': repr(self.list_fields),
             # 'meta': f'{self.name_prefix}{self.item_name}_meta',
@@ -300,7 +317,6 @@ class CrudPageExtra(PageExtra):
             # 'items': repr(f"{self.context_object_name}_list"),
             'pk_param': repr(self.pk_param),
             'context_object_name': repr(self.context_object_name),
-            'by_id': repr(f"{self.pk_param}={self.context_object_name}.pk"),
             'crud_prefix': repr(str(self.name_prefix)),
         }
 

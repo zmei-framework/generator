@@ -1,24 +1,24 @@
 {% load crud_utils %}
 
-<div>
-    <a href="{% crud_link crud_list_link %}">&laquo; Back to list</a>
+{% if crud_list_link %}
+<a href="{% crud_link crud_list_link %}">&laquo; Back to list</a>
+{% endif %}
 
-    <h2>{{ meta.verbose_name }} "{{ item }}"</h2>
+<h2>{{ meta.verbose_name }} "{{ item }}"</h2>
 
-    <table>
-        <tbody>
-            {% for field, field_name in fields.items %}
-            <tr>
-                <td>{{ field_name }}</td>
-                <td>{% crud_field item field %}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<table>
+    <tbody>
+        {% for field, field_name in fields.items %}
+        <tr>
+            <td>{{ field_name }}</td>
+            <td>{% crud_field item field %}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
-    <p>
-        {% if crud_edit_link %}<a href="{% crud_link crud_edit_link pk_param item.pk %}">[Edit]</a>{% endif %}
-        |
-        {% if crud_delete_link %}<a href="{% crud_link crud_delete_link pk_param item.pk %}">[Delete]</a>{% endif %}
-    </p>
-</div>
+<p>
+    {% if crud_edit_link %}<a href="{% crud_link crud_edit_link pk_param item.pk %}">[Edit]</a>{% endif %}
+    |
+    {% if crud_delete_link %}<a href="{% crud_link crud_delete_link pk_param item.pk %}">[Delete]</a>{% endif %}
+</p>

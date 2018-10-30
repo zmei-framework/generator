@@ -19,6 +19,11 @@ an_crud_params:
         |an_crud_skip
         |an_crud_fields
         |an_crud_list_fields
+        |an_crud_pk_param
+        |an_crud_item_name
+        |an_crud_block
+        |an_crud_object_expr
+        |an_crud_can_edit
         |NL
         |COMA
     )*
@@ -36,6 +41,31 @@ an_crud_target_model:
 
 an_crud_theme:
     KW_THEME COLON id_or_kw;
+
+// item_name
+
+an_crud_item_name:
+    KW_ITEM_NAME COLON id_or_kw;
+
+// object_expr
+
+an_crud_object_expr:
+    KW_OBJECT_EXPR (code_line | COLON code_block);
+
+// can_edit
+
+an_crud_can_edit:
+    KW_CAN_EDIT (code_line | COLON code_block);
+
+// block
+
+an_crud_block:
+    KW_BLOCK COLON id_or_kw;
+
+// pk_param
+
+an_crud_pk_param:
+    KW_PK_PARAM COLON id_or_kw;
 
 // skip
 
