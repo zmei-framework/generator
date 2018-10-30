@@ -1,4 +1,3 @@
-from zmei_generator.extras.page.block import BlocksPageExtra
 from zmei_generator.generator.utils import handle_parse_exception
 from zmei_generator.parser.errors import ValidationError
 from zmei_generator.parser.parser import parse_string
@@ -10,17 +9,6 @@ class ParseError(Exception):
 
 
 class Parser(object):
-
-    def get_field_class(self, type_name):
-        from zmei_generator.config.fields import field_type_map
-
-        if type_name == '':
-            type_name = 'text'
-
-        try:
-            return field_type_map[type_name]
-        except KeyError:
-            raise NotImplementedError('Unknown field type: ' + type_name)
 
     def parse_file(self, filename, app_name):
 

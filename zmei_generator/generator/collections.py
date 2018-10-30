@@ -155,6 +155,12 @@ def generate_common_files(target_path, skeleton_dir, apps):
     if react:
         generate_react_configs(target_path, apps)
 
+    # theme files
+    for collection_set in apps.values():
+        for page in collection_set.pages.values():
+            for path, template_name in page.themed_files.items():
+                generate_file(target_path, f'app/templates/{path}', template_name, raw=True)
+
 
 def generate(target_path, app_name: str, collection_set: CollectionSetDef, features=None):
     features = features or []

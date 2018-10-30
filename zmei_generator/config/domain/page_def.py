@@ -70,6 +70,9 @@ class PageDef(object):
         self.page_component_name = None
         self.react_pages = {}
         self.functions = []
+        self.template_libs = []
+
+        self.themed_files = {}
 
         self.react = False
 

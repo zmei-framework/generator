@@ -17,6 +17,7 @@ def _(code):
 
     return populate_collection_set(tree, 'example')
 
+
 @pytest.mark.parametrize("extra_type_name, extra_cls", [
     ("crud", CrudPageExtra),
     ("crud_create", CrudCreatePageExtra),
@@ -37,6 +38,7 @@ def test_crud_no_uri_on_crud(extra_type_name, extra_cls):
             b
             c
         """)
+
 
 @pytest.mark.parametrize("extra_type_name, extra_cls", [
     ("crud", CrudPageExtra),
@@ -84,8 +86,6 @@ def test_crud_subpages():
 
     assert cs.crud is True
 
-    assert len(cs.pages) == 5
-
     boo = cs.pages['boo']
     assert isinstance(boo.cruds['_']['crud'], CrudPageExtra)
 
@@ -94,9 +94,20 @@ def test_crud_subpages():
     assert isinstance(params, CrudParams)
     assert params.model == '#foo'
 
+    assert len(cs.pages) == 5
     assert len(boo.children) == 4
 
     for page in boo.children:
         assert page.parent_name == boo.name
         assert page.defined_uri.startswith('/mycrud')
 
+        if page.name == 'boo_create':
+            assert 'CreateView' in page.extra_bases
+        elif page.name == 'boo_edit':
+            assert 'UpdateView' in page.extra_bases
+        elif page.name == 'boo_detail':
+            assert 'DetailView' in page.extra_bases
+        elif page.name == 'boo_delete':
+            assert 'DeleteView' in page.extra_bases
+        else:
+            pytest.fail('Wrong page name: ', page.name)

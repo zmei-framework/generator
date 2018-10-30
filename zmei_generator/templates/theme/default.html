@@ -3,6 +3,10 @@
 {%- else -%}
 {{ "{% extends '" + app_name + "/base.html' %}" }}
 {%- endif %}
+{%- if page.template_libs %}
+
+{{ "{% load " }}{{ ' '.join(page.template_libs) }}{{ " %}" }}
+{%- endif %}
 
 {% for area, blocks in page.blocks.items() -%}
 {{ "{% block " }}{{ area }}{{ " %}" }}

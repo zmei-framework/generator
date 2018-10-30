@@ -92,7 +92,7 @@ env.filters['repr'] = repr
 env.globals['include_block'] = include_block
 
 
-def generate_file(target_path, filename, template_name, context=None):
+def generate_file(target_path, filename, template_name, context=None, raw=False):
     """
     Generates a new file using Jinja2 template
 
@@ -107,15 +107,28 @@ def generate_file(target_path, filename, template_name, context=None):
     if len(dirname) and not os.path.exists(dirname):
         os.makedirs(dirname)
 
+    with open(filename, 'w') as f:
+        if not raw:
+            rendered = render_template(template_name, context=context)
+        else:
+            rendered = render_file(template_name)
+
+        if filename.endswith('.py'):
+            rendered = autopep8.fix_code(rendered)
+
+        f.write(rendered)
+
+
+def render_template(template_name, context=None):
     context = context or {}
 
     template = env.get_template(template_name)
 
-    with open(filename, 'w+') as f:
-        rendered = template.render(**context)
-        if filename.endswith('.py'):
-            rendered = autopep8.fix_code(rendered)
-        f.write(rendered)
+    return template.render(**context)
+
+
+def render_file(template_name):
+    return loader.get_source(env, template_name)[0]
 
 
 def format_file(target_path, filename):
