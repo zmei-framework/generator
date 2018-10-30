@@ -63,12 +63,14 @@ def test_crud_model(extra_type_name, extra_cls):
     assert cs.crud is True
 
     boo = cs.pages['boo']
-    assert isinstance(boo.cruds['_'][extra_type_name], extra_cls)
+    crud = boo.cruds['_'][extra_type_name]
+    assert isinstance(crud, extra_cls)
 
-    params = boo.cruds['_'][extra_type_name].params
+    params = crud.params
 
     assert isinstance(params, CrudParams)
     assert params.model == '#foo'
+    assert crud.formatted_query == ".all()"
 
 
 @pytest.mark.parametrize("extra_type_name", [
@@ -428,3 +430,32 @@ def test_crud_can_edit2(extra_type_name):
     crud = boo.cruds['_'][extra_type_name].params
 
     assert crud.can_edit == "request.user"
+
+
+@pytest.mark.parametrize("extra_type_name", [
+    "crud",
+    "crud_create",
+    "crud_delete",
+    "crud_detail",
+    "crud_edit",
+])
+def test_crud_filter(extra_type_name):
+    cs = _(f"""
+
+        [boo: /mycrud]
+        @{extra_type_name}(#foo{{lala.lolo}})
+
+        #foo
+        ------
+        a
+        b
+        c
+    """)
+
+    assert cs.crud is True
+
+    boo = cs.pages['boo']
+    crud = boo.cruds['_'][extra_type_name]
+
+    assert crud.params.query == "lala.lolo"
+    assert crud.formatted_query == ".filter(lala.lolo)"

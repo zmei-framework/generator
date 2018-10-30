@@ -14,6 +14,7 @@ an_crud_params:
     BRACE_OPEN
     NL*
     an_crud_target_model
+    an_crud_target_filter?
     (
          an_crud_theme
         |an_crud_skip
@@ -36,6 +37,11 @@ an_crud_params:
 
 an_crud_target_model:
     (HASH id_or_kw) | classname;
+
+// filter
+
+an_crud_target_filter:
+    code_block;
 
 // theme
 

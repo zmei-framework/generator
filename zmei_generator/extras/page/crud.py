@@ -88,6 +88,9 @@ class CrudBasePageExtraParserListener(BaseListener):
 
         self.crud.params.can_edit = code
 
+    def enterAn_crud_target_filter(self, ctx: ZmeiLangParser.An_crud_target_filterContext):
+        self.crud.params.query = ctx.code_block().PYTHON_CODE().getText().strip()
+
 
 class CrudPageExtraParserListener(CrudBasePageExtraParserListener):
 
@@ -146,7 +149,7 @@ class CrudPageExtra(PageExtra):
     formatted_query = None
     context_object_name = None
     object_expr = None
-    edit_auth = None
+    can_edit = None
     query = None
     next_page_expr = None
     item_name = None
@@ -286,7 +289,7 @@ class CrudPageExtra(PageExtra):
             self.can_edit = repr(True)
 
         # formatted_query
-        if self.query:
+        if crud.query:
             self.query = crud.query.strip()
             self.formatted_query = '.filter({})'.format(self.query)
         else:
@@ -312,6 +315,7 @@ class CrudPageExtra(PageExtra):
             'can_edit': self.can_edit,
             'fields': repr(self.fields),
             'list_fields': repr(self.list_fields),
+            'link_extra': repr(link_extra),
             # 'meta': f'{self.name_prefix}{self.item_name}_meta',
             # 'item': repr(f"{self.context_object_name}"),
             # 'items': repr(f"{self.context_object_name}_list"),
@@ -433,8 +437,8 @@ class BaseCrudSubpageExtra(CrudPageExtra):
             page.methods['get_success_url'] = self.next_page_expr
 
         if self.crud_page in ('edit', 'delete', 'create'):
-            if self.edit_auth:
-                add_page_auth(self.edit_auth, page)
+            if self.can_edit:
+                add_page_auth(self.can_edit, page)
 
         if self.crud_page in ('edit', 'delete', 'create', 'detail'):
             page.methods['get_queryset'] = "return " + self.model_cls + ".objects" + self.formatted_query
