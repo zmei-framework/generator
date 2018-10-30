@@ -26,6 +26,7 @@ an_crud_params:
         |an_crud_object_expr
         |an_crud_can_edit
         |an_crud_url_prefix
+        |an_crud_link_extra
         |NL
         |COMA
     )*
@@ -55,6 +56,14 @@ an_crud_url_prefix:
     KW_URL_PREFIX COLON an_crud_url_prefix_val;
 
 an_crud_url_prefix_val:
+    STRING_DQ | STRING_SQ;
+
+// link_extra
+
+an_crud_link_extra:
+    KW_LINK_EXTRA COLON an_crud_link_extra_val;
+
+an_crud_link_extra_val:
     STRING_DQ | STRING_SQ;
 
 // item_name

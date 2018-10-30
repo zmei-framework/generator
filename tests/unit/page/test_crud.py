@@ -173,7 +173,6 @@ def test_crud_subpages_skip():
             pytest.fail('Wrong page name: ', page.name)
 
 
-
 @pytest.mark.parametrize("extra_type_name", [
     "crud",
     "crud_create",
@@ -233,6 +232,7 @@ def test_crud_model_list_fields(extra_type_name):
 
     assert list(crud.list_fields.keys()) == ['a', 'b']
 
+
 @pytest.mark.parametrize("extra_type_name", [
     "crud",
     "crud_create",
@@ -259,7 +259,8 @@ def test_crud_pk_param(extra_type_name):
     crud = boo.cruds['_'][extra_type_name].params
 
     assert crud.pk_param == "foo"
-    
+
+
 @pytest.mark.parametrize("extra_type_name", [
     "crud",
     "crud_create",
@@ -286,6 +287,7 @@ def test_crud_item_name(extra_type_name):
     crud = boo.cruds['_'][extra_type_name].params
 
     assert crud.item_name == "foo"
+
 
 @pytest.mark.parametrize("extra_type_name", [
     "crud",
@@ -344,6 +346,7 @@ def test_crud_object_expr1(extra_type_name):
 
     assert crud.object_expr == "request.user"
 
+
 @pytest.mark.parametrize("extra_type_name", [
     "crud",
     "crud_create",
@@ -372,6 +375,7 @@ def test_crud_object_expr2(extra_type_name):
     crud = boo.cruds['_'][extra_type_name].params
 
     assert crud.object_expr == "request.user"
+
 
 @pytest.mark.parametrize("extra_type_name", [
     "crud",
@@ -402,6 +406,7 @@ def test_crud_can_edit1(extra_type_name):
 
     assert crud.can_edit == "request.user"
 
+
 @pytest.mark.parametrize("extra_type_name", [
     "crud",
     "crud_create",
@@ -431,6 +436,7 @@ def test_crud_can_edit2(extra_type_name):
 
     assert crud.can_edit == "request.user"
 
+
 @pytest.mark.parametrize("extra_type_name", [
     "crud",
     "crud_create",
@@ -459,6 +465,36 @@ def test_crud_url_prefix(extra_type_name):
     crud = boo.cruds['_'][extra_type_name].params
 
     assert crud.url_prefix == "this/is/custom/prefix/"
+
+
+@pytest.mark.parametrize("extra_type_name", [
+    "crud",
+    "crud_create",
+    "crud_delete",
+    "crud_detail",
+    "crud_edit",
+])
+def test_crud_link_extra(extra_type_name):
+    cs = _(f"""
+
+        [boo: /mycrud]
+        @{extra_type_name}(#foo, 
+            link_extra: "category=url.category"
+        )
+
+        #foo
+        ------
+        a
+        b
+        c
+    """)
+
+    assert cs.crud is True
+
+    boo = cs.pages['boo']
+    crud = boo.cruds['_'][extra_type_name].params
+
+    assert crud.link_extra == "category=url.category"
 
 
 @pytest.mark.parametrize("extra_type_name", [
