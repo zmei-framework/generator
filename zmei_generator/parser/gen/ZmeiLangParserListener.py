@@ -1646,21 +1646,21 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ZmeiLangParser#an_crud_link_extra.
-    def enterAn_crud_link_extra(self, ctx:ZmeiLangParser.An_crud_link_extraContext):
+    # Enter a parse tree produced by ZmeiLangParser#an_crud_link_suffix.
+    def enterAn_crud_link_suffix(self, ctx:ZmeiLangParser.An_crud_link_suffixContext):
         pass
 
-    # Exit a parse tree produced by ZmeiLangParser#an_crud_link_extra.
-    def exitAn_crud_link_extra(self, ctx:ZmeiLangParser.An_crud_link_extraContext):
+    # Exit a parse tree produced by ZmeiLangParser#an_crud_link_suffix.
+    def exitAn_crud_link_suffix(self, ctx:ZmeiLangParser.An_crud_link_suffixContext):
         pass
 
 
-    # Enter a parse tree produced by ZmeiLangParser#an_crud_link_extra_val.
-    def enterAn_crud_link_extra_val(self, ctx:ZmeiLangParser.An_crud_link_extra_valContext):
+    # Enter a parse tree produced by ZmeiLangParser#an_crud_link_suffix_val.
+    def enterAn_crud_link_suffix_val(self, ctx:ZmeiLangParser.An_crud_link_suffix_valContext):
         pass
 
-    # Exit a parse tree produced by ZmeiLangParser#an_crud_link_extra_val.
-    def exitAn_crud_link_extra_val(self, ctx:ZmeiLangParser.An_crud_link_extra_valContext):
+    # Exit a parse tree produced by ZmeiLangParser#an_crud_link_suffix_val.
+    def exitAn_crud_link_suffix_val(self, ctx:ZmeiLangParser.An_crud_link_suffix_valContext):
         pass
 
 

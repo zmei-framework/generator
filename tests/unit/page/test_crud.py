@@ -474,12 +474,12 @@ def test_crud_url_prefix(extra_type_name):
     "crud_detail",
     "crud_edit",
 ])
-def test_crud_link_extra(extra_type_name):
+def test_crud_link_suffix(extra_type_name):
     cs = _(f"""
 
         [boo: /mycrud]
         @{extra_type_name}(#foo, 
-            link_extra: "category=url.category"
+            link_suffix: "category=url.category"
         )
 
         #foo
@@ -494,7 +494,7 @@ def test_crud_link_extra(extra_type_name):
     boo = cs.pages['boo']
     crud = boo.cruds['_'][extra_type_name].params
 
-    assert crud.link_extra == "category=url.category"
+    assert crud.link_suffix == "category=url.category"
 
 
 @pytest.mark.parametrize("extra_type_name", [

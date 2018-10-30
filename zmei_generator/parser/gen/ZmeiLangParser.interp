@@ -32,7 +32,7 @@ null
 null
 null
 'theme'
-'link_extra'
+'link_suffix'
 'url_prefix'
 'can_edit'
 'object_expr'
@@ -172,7 +172,7 @@ AN_SUIT
 WRITE_MODE
 BOOL
 KW_THEME
-KW_LINK_EXTRA
+KW_LINK_SUFFIX
 KW_URL_PREFIX
 KW_CAN_EDIT
 KW_OBJECT_EXPR
@@ -461,8 +461,8 @@ an_crud_target_filter
 an_crud_theme
 an_crud_url_prefix
 an_crud_url_prefix_val
-an_crud_link_extra
-an_crud_link_extra_val
+an_crud_link_suffix
+an_crud_link_suffix_val
 an_crud_item_name
 an_crud_object_expr
 an_crud_can_edit
