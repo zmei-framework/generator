@@ -71,6 +71,37 @@ def test_crud_model(extra_type_name, extra_cls):
     assert params.model == '#foo'
 
 
+@pytest.mark.parametrize("extra_type_name", [
+    "crud",
+    "crud_create",
+    "crud_delete",
+    "crud_detail",
+    "crud_edit",
+])
+def test_crud_theme(extra_type_name):
+    cs = _(f"""
+
+        [boo: /mycrud]
+        @{extra_type_name}(
+            #foo
+            
+            theme: lala
+        )
+
+        #foo
+        ------
+        a
+        b
+        c
+    """)
+
+    boo = cs.pages['boo']
+
+    params = boo.cruds['_'][extra_type_name].params
+
+    assert params.theme == 'lala'
+
+
 def test_crud_subpages():
     cs = _(f"""
 

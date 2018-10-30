@@ -37,6 +37,9 @@ class CrudBasePageExtraParserListener(BaseListener):
     def enterAn_crud_target_model(self, ctx: ZmeiLangParser.An_crud_target_modelContext):
         self.crud.params.model = ctx.getText().strip()
 
+    def enterAn_crud_theme(self, ctx: ZmeiLangParser.An_crud_themeContext):
+        self.crud.params.theme = ctx.id_or_kw().getText().strip()
+
 
 class CrudPageExtraParserListener(CrudBasePageExtraParserListener):
 

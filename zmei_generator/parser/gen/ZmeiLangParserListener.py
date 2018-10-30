@@ -1610,6 +1610,15 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#an_crud_theme.
+    def enterAn_crud_theme(self, ctx:ZmeiLangParser.An_crud_themeContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_crud_theme.
+    def exitAn_crud_theme(self, ctx:ZmeiLangParser.An_crud_themeContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#an_crud_edit.
     def enterAn_crud_edit(self, ctx:ZmeiLangParser.An_crud_editContext):
         pass

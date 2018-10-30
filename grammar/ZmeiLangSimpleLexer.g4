@@ -34,6 +34,7 @@ AN_SUIT: '@suit';
 WRITE_MODE: 'r' | 'rw' | 'w';
 BOOL: 'true' | 'false';
 
+KW_THEME: 'theme';
 KW_FROM: 'from';
 KW_POLY_LIST: '+polymorphic_list';
 KW_CSS: 'css';
