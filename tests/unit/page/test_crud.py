@@ -142,3 +142,30 @@ def test_crud_subpages():
             assert 'DeleteView' in page.extra_bases
         else:
             pytest.fail('Wrong page name: ', page.name)
+
+
+def test_crud_subpages_skip():
+    cs = _(f"""
+
+        [boo: /mycrud]
+        @crud(#foo, skip: delete, edit)
+
+        #foo
+        ------
+        a
+        b
+        c
+    """)
+
+    boo = cs.pages['boo']
+
+    assert len(cs.pages) == 3
+    assert len(boo.children) == 2
+
+    for page in boo.children:
+        if page.name == 'boo_create':
+            assert 'CreateView' in page.extra_bases
+        elif page.name == 'boo_detail':
+            assert 'DetailView' in page.extra_bases
+        else:
+            pytest.fail('Wrong page name: ', page.name)

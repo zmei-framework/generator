@@ -9,6 +9,11 @@ id_or_kw: ID
    |BOOL
    |WRITE_MODE
    |KW_THEME
+   |KW_DELETE
+   |KW_EDIT
+   |KW_CREATE
+   |KW_DETAIL
+   |KW_SKIP
    |KW_FROM
    |KW_POLY_LIST
    |KW_CSS

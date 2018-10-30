@@ -40,6 +40,9 @@ class CrudBasePageExtraParserListener(BaseListener):
     def enterAn_crud_theme(self, ctx: ZmeiLangParser.An_crud_themeContext):
         self.crud.params.theme = ctx.id_or_kw().getText().strip()
 
+    def enterAn_crud_skip(self, ctx: ZmeiLangParser.An_crud_skipContext):
+        self.crud.params.skip = re.split('\s*,\s*', ctx.an_crud_skip_values().getText().strip())
+
 
 class CrudPageExtraParserListener(CrudBasePageExtraParserListener):
 
@@ -227,7 +230,7 @@ class CrudPageExtra(PageExtra):
         if crud.edit_auth:
             self.edit_auth = crud.edit_auth
 
-        # formated_query
+        # formatted_query
         if self.query:
             self.query = crud.query.strip()
             self.formatted_query = '.filter({})'.format(self.query)

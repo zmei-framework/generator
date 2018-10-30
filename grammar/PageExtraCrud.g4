@@ -17,6 +17,7 @@ an_crud_params:
 
     (
          an_crud_theme
+        |an_crud_skip
         |NL
         |COMA
     )*
@@ -30,3 +31,17 @@ an_crud_target_model:
 
 an_crud_theme:
     KW_THEME COLON id_or_kw;
+
+an_crud_skip:
+    KW_SKIP COLON an_crud_skip_values;
+
+an_crud_skip_values:
+    an_crud_view_name (COMA an_crud_view_name)*;
+
+an_crud_view_name:
+     KW_DELETE
+    |KW_LIST
+    |KW_CREATE
+    |KW_EDIT
+    |KW_DETAIL
+    ;
