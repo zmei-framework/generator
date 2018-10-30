@@ -9,6 +9,7 @@ id_or_kw: ID
    |BOOL
    |WRITE_MODE
    |KW_THEME
+   |KW_LIST_FIELDS
    |KW_DELETE
    |KW_EDIT
    |KW_CREATE

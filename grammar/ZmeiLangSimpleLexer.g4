@@ -35,6 +35,7 @@ WRITE_MODE: 'r' | 'rw' | 'w';
 BOOL: 'true' | 'false';
 
 KW_THEME: 'theme';
+KW_LIST_FIELDS: 'list_fields';
 KW_DELETE: 'delete';
 KW_EDIT: 'edit';
 KW_CREATE: 'create';

@@ -1646,6 +1646,87 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#an_crud_fields.
+    def enterAn_crud_fields(self, ctx:ZmeiLangParser.An_crud_fieldsContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_crud_fields.
+    def exitAn_crud_fields(self, ctx:ZmeiLangParser.An_crud_fieldsContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_crud_fields_expr.
+    def enterAn_crud_fields_expr(self, ctx:ZmeiLangParser.An_crud_fields_exprContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_crud_fields_expr.
+    def exitAn_crud_fields_expr(self, ctx:ZmeiLangParser.An_crud_fields_exprContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_crud_field.
+    def enterAn_crud_field(self, ctx:ZmeiLangParser.An_crud_fieldContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_crud_field.
+    def exitAn_crud_field(self, ctx:ZmeiLangParser.An_crud_fieldContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_crud_field_spec.
+    def enterAn_crud_field_spec(self, ctx:ZmeiLangParser.An_crud_field_specContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_crud_field_spec.
+    def exitAn_crud_field_spec(self, ctx:ZmeiLangParser.An_crud_field_specContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_crud_field_filter.
+    def enterAn_crud_field_filter(self, ctx:ZmeiLangParser.An_crud_field_filterContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_crud_field_filter.
+    def exitAn_crud_field_filter(self, ctx:ZmeiLangParser.An_crud_field_filterContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_crud_list_fields.
+    def enterAn_crud_list_fields(self, ctx:ZmeiLangParser.An_crud_list_fieldsContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_crud_list_fields.
+    def exitAn_crud_list_fields(self, ctx:ZmeiLangParser.An_crud_list_fieldsContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_crud_list_fields_expr.
+    def enterAn_crud_list_fields_expr(self, ctx:ZmeiLangParser.An_crud_list_fields_exprContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_crud_list_fields_expr.
+    def exitAn_crud_list_fields_expr(self, ctx:ZmeiLangParser.An_crud_list_fields_exprContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_crud_list_field.
+    def enterAn_crud_list_field(self, ctx:ZmeiLangParser.An_crud_list_fieldContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_crud_list_field.
+    def exitAn_crud_list_field(self, ctx:ZmeiLangParser.An_crud_list_fieldContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_crud_list_field_spec.
+    def enterAn_crud_list_field_spec(self, ctx:ZmeiLangParser.An_crud_list_field_specContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_crud_list_field_spec.
+    def exitAn_crud_list_field_spec(self, ctx:ZmeiLangParser.An_crud_list_field_specContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#an_crud_edit.
     def enterAn_crud_edit(self, ctx:ZmeiLangParser.An_crud_editContext):
         pass

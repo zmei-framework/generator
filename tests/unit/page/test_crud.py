@@ -169,3 +169,64 @@ def test_crud_subpages_skip():
             assert 'DetailView' in page.extra_bases
         else:
             pytest.fail('Wrong page name: ', page.name)
+
+
+
+@pytest.mark.parametrize("extra_type_name", [
+    "crud",
+    "crud_create",
+    "crud_delete",
+    "crud_detail",
+    "crud_edit",
+])
+def test_crud_model_fields(extra_type_name):
+    cs = _(f"""
+
+        [boo: /mycrud]
+        @{extra_type_name}(#foo, fields: *, ^b)
+
+        #foo
+        ------
+        a
+        b
+        c
+    """)
+
+    assert cs.crud is True
+
+    boo = cs.pages['boo']
+    crud = boo.cruds['_'][extra_type_name]
+
+    assert list(crud.fields.keys()) == ['a', 'c']
+
+    assert list(crud.list_fields.keys()) == ['a', 'c']
+
+
+@pytest.mark.parametrize("extra_type_name", [
+    "crud",
+    "crud_create",
+    "crud_delete",
+    "crud_detail",
+    "crud_edit",
+])
+def test_crud_model_list_fields(extra_type_name):
+    cs = _(f"""
+
+        [boo: /mycrud]
+        @{extra_type_name}(#foo, fields: *, ^b list_fields: *, ^c)
+
+        #foo
+        ------
+        a
+        b
+        c
+    """)
+
+    assert cs.crud is True
+
+    boo = cs.pages['boo']
+    crud = boo.cruds['_'][extra_type_name]
+
+    assert list(crud.fields.keys()) == ['a', 'c']
+
+    assert list(crud.list_fields.keys()) == ['a', 'b']

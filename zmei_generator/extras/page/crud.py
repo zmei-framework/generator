@@ -20,6 +20,7 @@ class CrudBasePageExtraParserListener(BaseListener):
         super().__init__(collection_set)
 
         self.crud = None
+        self.crud_field = None
 
     def extra_start(self, cls):
         extra = cls(self.page)
@@ -43,6 +44,25 @@ class CrudBasePageExtraParserListener(BaseListener):
     def enterAn_crud_skip(self, ctx: ZmeiLangParser.An_crud_skipContext):
         self.crud.params.skip = re.split('\s*,\s*', ctx.an_crud_skip_values().getText().strip())
 
+    def enterAn_crud_fields(self, ctx: ZmeiLangParser.An_crud_fieldsContext):
+        self.crud.params.fields = []
+
+    def enterAn_crud_field(self, ctx: ZmeiLangParser.An_crud_fieldContext):
+        field = CrudField()
+        field.spec = ctx.an_crud_field_spec().getText().strip()
+        if ctx.an_crud_field_filter():
+            field.filter_expr = ctx.an_crud_field_filter().getText().strip()
+
+        self.crud.params.fields.append(field)
+
+    def enterAn_crud_list_fields(self, ctx: ZmeiLangParser.An_crud_list_fieldsContext):
+        self.crud.params.list_fields = []
+
+    def enterAn_crud_list_field(self, ctx: ZmeiLangParser.An_crud_list_fieldContext):
+        field = ctx.an_crud_list_field_spec().getText().strip()
+
+        self.crud.params.list_fields.append(field)
+
 
 class CrudPageExtraParserListener(CrudBasePageExtraParserListener):
 
@@ -51,6 +71,12 @@ class CrudPageExtraParserListener(CrudBasePageExtraParserListener):
 
     def exitAn_crud(self, ctx: ZmeiLangParser.An_crudContext):
         self.extra_end(CrudPageExtra)
+
+
+class CrudField(object):
+    def __init__(self) -> None:
+        self.spec = None
+        self.filter_expr = None
 
 
 class CrudParams(object):
@@ -138,7 +164,9 @@ class CrudPageExtra(PageExtra):
                 if field.filter_expr and not field.spec.startswith('^'):
                     self.field_filters[field.spec] = field.filter_expr
 
-            crud.fields = all_fields
+            crud_fields = all_fields
+        else:
+            crud_fields = None
 
         # appname, model_cls, fields
         if crud.model.startswith('#'):
@@ -146,16 +174,16 @@ class CrudPageExtra(PageExtra):
             collection = page.collection_set.collections[crud.model[1:]]
             self.model_cls = collection.class_name
             self.fields = {field.name: field.verbose_name or field.name.replace('_', ' ').capitalize() for field in
-                           collection.filter_fields(crud.fields or '*') if not field.read_only}
+                           collection.filter_fields(crud_fields or '*') if not field.read_only}
             self.list_fields = {field.name: field.verbose_name or field.name.replace('_', ' ').capitalize() for field in
-                                collection.filter_fields(crud.list_fields or crud.fields or '*') if not field.read_only}
+                                collection.filter_fields(crud.list_fields or crud_fields or '*') if not field.read_only}
         else:
             parts = crud.model.split('.')
             self.app_name = '.'.join(parts[:-1]) + '.models'
             self.model_cls = parts[-1]
-            self.fields = {field: field.replace('_', ' ').capitalize() for field in crud.fields}
+            self.fields = {field: field.replace('_', ' ').capitalize() for field in crud_fields}
             self.list_fields = {field: field.replace('_', ' ').capitalize() for field in
-                                crud.list_fields} or crud.fields
+                                crud.list_fields} or crud_fields
             if not self.fields:
                 raise ValidationException('@crud -> fields for external models are required: {}'.format(crud.model))
 
