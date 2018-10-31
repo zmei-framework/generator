@@ -368,7 +368,7 @@ an_order_fields
 an_rest
 an_rest_config
 an_rest_main_part
-an_rest_discriminator
+an_rest_descriptor
 an_rest_i18n
 an_rest_query
 an_rest_on_create
@@ -442,9 +442,9 @@ page_field_name
 page_field_code
 page_annotation
 an_react
-an_react_discriminator
+an_react_descriptor
 an_markdown
-an_markdown_discriminator
+an_markdown_descriptor
 an_auth
 an_error
 an_error_code
@@ -483,7 +483,7 @@ an_crud_edit
 an_crud_delete
 an_crud_detail
 an_html
-an_html_discriminator
+an_html_descriptor
 
 
 atn:

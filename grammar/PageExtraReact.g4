@@ -7,8 +7,8 @@ import Base;
 
 an_react:
     AN_REACT
-    (DOT an_react_discriminator)?
+    (DOT an_react_descriptor)?
     code_block
     ;
 
-an_react_discriminator: id_or_kw;
+an_react_descriptor: id_or_kw;

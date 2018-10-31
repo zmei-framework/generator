@@ -7,7 +7,7 @@ import Base;
 
 an_rest:
     AN_REST
-    (DOT an_rest_discriminator)?
+    (DOT an_rest_descriptor)?
     (BRACE_OPEN
     an_rest_config
     BRACE_CLOSE)?
@@ -35,7 +35,7 @@ an_rest_main_part: (
         |COMA
     )*;
 
-an_rest_discriminator : id_or_kw;
+an_rest_descriptor : id_or_kw;
 
 an_rest_i18n: KW_I18N COLON BOOL NL*;
 

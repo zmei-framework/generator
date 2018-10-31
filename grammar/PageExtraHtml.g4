@@ -7,8 +7,8 @@ import Base;
 
 an_html:
     AN_HTML
-    (DOT an_html_discriminator)?
+    (DOT an_html_descriptor)?
     code_block
     ;
 
-an_html_discriminator: id_or_kw;
+an_html_descriptor: id_or_kw;

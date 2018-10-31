@@ -52,7 +52,7 @@ class RestModelExtraParserListener(BaseListener):
 
         self.model.rest_conf[self.rest_config.descriptor] = self.rest_config
 
-    def enterAn_rest_discriminator(self, ctx: ZmeiLangParser.An_rest_discriminatorContext):
+    def enterAn_rest_descriptor(self, ctx: ZmeiLangParser.An_rest_descriptorContext):
         self.rest_config.set_descriptor(ctx.getText())
 
     def enterAn_rest_fields(self, ctx: ZmeiLangParser.An_rest_fieldsContext):

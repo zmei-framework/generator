@@ -18,8 +18,8 @@ class MarkdownPageExtraParserListener(BaseListener):
         )
 
         area = 'content'
-        if ctx.an_markdown_discriminator():
-            area = ctx.an_markdown_discriminator().id_or_kw().getText()
+        if ctx.an_markdown_descriptor():
+            area = ctx.an_markdown_descriptor().id_or_kw().getText()
 
         md = self._get_code(ctx)
         html = markdown.markdown(md)

@@ -845,12 +845,12 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ZmeiLangParser#an_rest_discriminator.
-    def enterAn_rest_discriminator(self, ctx:ZmeiLangParser.An_rest_discriminatorContext):
+    # Enter a parse tree produced by ZmeiLangParser#an_rest_descriptor.
+    def enterAn_rest_descriptor(self, ctx:ZmeiLangParser.An_rest_descriptorContext):
         pass
 
-    # Exit a parse tree produced by ZmeiLangParser#an_rest_discriminator.
-    def exitAn_rest_discriminator(self, ctx:ZmeiLangParser.An_rest_discriminatorContext):
+    # Exit a parse tree produced by ZmeiLangParser#an_rest_descriptor.
+    def exitAn_rest_descriptor(self, ctx:ZmeiLangParser.An_rest_descriptorContext):
         pass
 
 
@@ -1511,12 +1511,12 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ZmeiLangParser#an_react_discriminator.
-    def enterAn_react_discriminator(self, ctx:ZmeiLangParser.An_react_discriminatorContext):
+    # Enter a parse tree produced by ZmeiLangParser#an_react_descriptor.
+    def enterAn_react_descriptor(self, ctx:ZmeiLangParser.An_react_descriptorContext):
         pass
 
-    # Exit a parse tree produced by ZmeiLangParser#an_react_discriminator.
-    def exitAn_react_discriminator(self, ctx:ZmeiLangParser.An_react_discriminatorContext):
+    # Exit a parse tree produced by ZmeiLangParser#an_react_descriptor.
+    def exitAn_react_descriptor(self, ctx:ZmeiLangParser.An_react_descriptorContext):
         pass
 
 
@@ -1529,12 +1529,12 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ZmeiLangParser#an_markdown_discriminator.
-    def enterAn_markdown_discriminator(self, ctx:ZmeiLangParser.An_markdown_discriminatorContext):
+    # Enter a parse tree produced by ZmeiLangParser#an_markdown_descriptor.
+    def enterAn_markdown_descriptor(self, ctx:ZmeiLangParser.An_markdown_descriptorContext):
         pass
 
-    # Exit a parse tree produced by ZmeiLangParser#an_markdown_discriminator.
-    def exitAn_markdown_discriminator(self, ctx:ZmeiLangParser.An_markdown_discriminatorContext):
+    # Exit a parse tree produced by ZmeiLangParser#an_markdown_descriptor.
+    def exitAn_markdown_descriptor(self, ctx:ZmeiLangParser.An_markdown_descriptorContext):
         pass
 
 
@@ -1880,12 +1880,12 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ZmeiLangParser#an_html_discriminator.
-    def enterAn_html_discriminator(self, ctx:ZmeiLangParser.An_html_discriminatorContext):
+    # Enter a parse tree produced by ZmeiLangParser#an_html_descriptor.
+    def enterAn_html_descriptor(self, ctx:ZmeiLangParser.An_html_descriptorContext):
         pass
 
-    # Exit a parse tree produced by ZmeiLangParser#an_html_discriminator.
-    def exitAn_html_discriminator(self, ctx:ZmeiLangParser.An_html_discriminatorContext):
+    # Exit a parse tree produced by ZmeiLangParser#an_html_descriptor.
+    def exitAn_html_descriptor(self, ctx:ZmeiLangParser.An_html_descriptorContext):
         pass
 
 

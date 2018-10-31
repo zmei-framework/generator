@@ -1090,7 +1090,7 @@ class ZmeiLangParser ( Parser ):
     RULE_an_rest = 90
     RULE_an_rest_config = 91
     RULE_an_rest_main_part = 92
-    RULE_an_rest_discriminator = 93
+    RULE_an_rest_descriptor = 93
     RULE_an_rest_i18n = 94
     RULE_an_rest_query = 95
     RULE_an_rest_on_create = 96
@@ -1164,9 +1164,9 @@ class ZmeiLangParser ( Parser ):
     RULE_page_field_code = 164
     RULE_page_annotation = 165
     RULE_an_react = 166
-    RULE_an_react_discriminator = 167
+    RULE_an_react_descriptor = 167
     RULE_an_markdown = 168
-    RULE_an_markdown_discriminator = 169
+    RULE_an_markdown_descriptor = 169
     RULE_an_auth = 170
     RULE_an_error = 171
     RULE_an_error_code = 172
@@ -1205,7 +1205,7 @@ class ZmeiLangParser ( Parser ):
     RULE_an_crud_delete = 205
     RULE_an_crud_detail = 206
     RULE_an_html = 207
-    RULE_an_html_discriminator = 208
+    RULE_an_html_descriptor = 208
 
     ruleNames =  [ "col_file", "page_imports", "model_imports", "page_import_statement", 
                    "model_import_statement", "import_list", "id_or_kw", 
@@ -1235,7 +1235,7 @@ class ZmeiLangParser ( Parser ):
                    "field_relation_target_class", "field_relation_related_name", 
                    "model_annotation", "an_sortable", "an_sortable_field_name", 
                    "an_order", "an_order_fields", "an_rest", "an_rest_config", 
-                   "an_rest_main_part", "an_rest_discriminator", "an_rest_i18n", 
+                   "an_rest_main_part", "an_rest_descriptor", "an_rest_i18n", 
                    "an_rest_query", "an_rest_on_create", "an_rest_read_only", 
                    "an_rest_user_field", "an_rest_fields", "an_rest_fields_write_mode", 
                    "an_rest_auth", "an_rest_auth_type", "an_rest_auth_token_model", 
@@ -1256,20 +1256,19 @@ class ZmeiLangParser ( Parser ):
                    "template_name", "file_name_part", "page_url", "url_part", 
                    "url_param", "url_segment", "url_segments", "page_name", 
                    "page_field", "page_field_name", "page_field_code", "page_annotation", 
-                   "an_react", "an_react_discriminator", "an_markdown", 
-                   "an_markdown_discriminator", "an_auth", "an_error", "an_error_code", 
-                   "an_post", "an_crud_create", "an_crud", "an_crud_params", 
-                   "an_crud_next_page", "an_crud_next_page_url", "an_crud_next_page_url_val", 
-                   "an_crud_target_model", "an_crud_target_filter", "an_crud_theme", 
-                   "an_crud_url_prefix", "an_crud_url_prefix_val", "an_crud_link_suffix", 
-                   "an_crud_link_suffix_val", "an_crud_item_name", "an_crud_object_expr", 
-                   "an_crud_can_edit", "an_crud_block", "an_crud_pk_param", 
-                   "an_crud_skip", "an_crud_skip_values", "an_crud_view_name", 
-                   "an_crud_fields", "an_crud_fields_expr", "an_crud_field", 
-                   "an_crud_field_spec", "an_crud_field_filter", "an_crud_list_fields", 
-                   "an_crud_list_fields_expr", "an_crud_list_field", "an_crud_list_field_spec", 
-                   "an_crud_edit", "an_crud_delete", "an_crud_detail", "an_html", 
-                   "an_html_discriminator" ]
+                   "an_react", "an_react_descriptor", "an_markdown", "an_markdown_descriptor", 
+                   "an_auth", "an_error", "an_error_code", "an_post", "an_crud_create", 
+                   "an_crud", "an_crud_params", "an_crud_next_page", "an_crud_next_page_url", 
+                   "an_crud_next_page_url_val", "an_crud_target_model", 
+                   "an_crud_target_filter", "an_crud_theme", "an_crud_url_prefix", 
+                   "an_crud_url_prefix_val", "an_crud_link_suffix", "an_crud_link_suffix_val", 
+                   "an_crud_item_name", "an_crud_object_expr", "an_crud_can_edit", 
+                   "an_crud_block", "an_crud_pk_param", "an_crud_skip", 
+                   "an_crud_skip_values", "an_crud_view_name", "an_crud_fields", 
+                   "an_crud_fields_expr", "an_crud_field", "an_crud_field_spec", 
+                   "an_crud_field_filter", "an_crud_list_fields", "an_crud_list_fields_expr", 
+                   "an_crud_list_field", "an_crud_list_field_spec", "an_crud_edit", 
+                   "an_crud_delete", "an_crud_detail", "an_html", "an_html_descriptor" ]
 
     EOF = Token.EOF
     AN_CRUD=1
@@ -7059,8 +7058,8 @@ class ZmeiLangParser ( Parser ):
         def DOT(self):
             return self.getToken(ZmeiLangParser.DOT, 0)
 
-        def an_rest_discriminator(self):
-            return self.getTypedRuleContext(ZmeiLangParser.An_rest_discriminatorContext,0)
+        def an_rest_descriptor(self):
+            return self.getTypedRuleContext(ZmeiLangParser.An_rest_descriptorContext,0)
 
 
         def BRACE_OPEN(self):
@@ -7103,7 +7102,7 @@ class ZmeiLangParser ( Parser ):
                 self.state = 988
                 self.match(ZmeiLangParser.DOT)
                 self.state = 989
-                self.an_rest_discriminator()
+                self.an_rest_descriptor()
 
 
             self.state = 996
@@ -7369,7 +7368,7 @@ class ZmeiLangParser ( Parser ):
             self.exitRule()
         return localctx
 
-    class An_rest_discriminatorContext(ParserRuleContext):
+    class An_rest_descriptorContext(ParserRuleContext):
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -7380,23 +7379,23 @@ class ZmeiLangParser ( Parser ):
 
 
         def getRuleIndex(self):
-            return ZmeiLangParser.RULE_an_rest_discriminator
+            return ZmeiLangParser.RULE_an_rest_descriptor
 
         def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterAn_rest_discriminator" ):
-                listener.enterAn_rest_discriminator(self)
+            if hasattr( listener, "enterAn_rest_descriptor" ):
+                listener.enterAn_rest_descriptor(self)
 
         def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitAn_rest_discriminator" ):
-                listener.exitAn_rest_discriminator(self)
+            if hasattr( listener, "exitAn_rest_descriptor" ):
+                listener.exitAn_rest_descriptor(self)
 
 
 
 
-    def an_rest_discriminator(self):
+    def an_rest_descriptor(self):
 
-        localctx = ZmeiLangParser.An_rest_discriminatorContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 186, self.RULE_an_rest_discriminator)
+        localctx = ZmeiLangParser.An_rest_descriptorContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 186, self.RULE_an_rest_descriptor)
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 1022
@@ -12028,8 +12027,8 @@ class ZmeiLangParser ( Parser ):
         def DOT(self):
             return self.getToken(ZmeiLangParser.DOT, 0)
 
-        def an_react_discriminator(self):
-            return self.getTypedRuleContext(ZmeiLangParser.An_react_discriminatorContext,0)
+        def an_react_descriptor(self):
+            return self.getTypedRuleContext(ZmeiLangParser.An_react_descriptorContext,0)
 
 
         def getRuleIndex(self):
@@ -12062,7 +12061,7 @@ class ZmeiLangParser ( Parser ):
                 self.state = 1536
                 self.match(ZmeiLangParser.DOT)
                 self.state = 1537
-                self.an_react_discriminator()
+                self.an_react_descriptor()
 
 
             self.state = 1540
@@ -12075,7 +12074,7 @@ class ZmeiLangParser ( Parser ):
             self.exitRule()
         return localctx
 
-    class An_react_discriminatorContext(ParserRuleContext):
+    class An_react_descriptorContext(ParserRuleContext):
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -12086,23 +12085,23 @@ class ZmeiLangParser ( Parser ):
 
 
         def getRuleIndex(self):
-            return ZmeiLangParser.RULE_an_react_discriminator
+            return ZmeiLangParser.RULE_an_react_descriptor
 
         def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterAn_react_discriminator" ):
-                listener.enterAn_react_discriminator(self)
+            if hasattr( listener, "enterAn_react_descriptor" ):
+                listener.enterAn_react_descriptor(self)
 
         def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitAn_react_discriminator" ):
-                listener.exitAn_react_discriminator(self)
+            if hasattr( listener, "exitAn_react_descriptor" ):
+                listener.exitAn_react_descriptor(self)
 
 
 
 
-    def an_react_discriminator(self):
+    def an_react_descriptor(self):
 
-        localctx = ZmeiLangParser.An_react_discriminatorContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 334, self.RULE_an_react_discriminator)
+        localctx = ZmeiLangParser.An_react_descriptorContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 334, self.RULE_an_react_descriptor)
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 1542
@@ -12131,8 +12130,8 @@ class ZmeiLangParser ( Parser ):
         def DOT(self):
             return self.getToken(ZmeiLangParser.DOT, 0)
 
-        def an_markdown_discriminator(self):
-            return self.getTypedRuleContext(ZmeiLangParser.An_markdown_discriminatorContext,0)
+        def an_markdown_descriptor(self):
+            return self.getTypedRuleContext(ZmeiLangParser.An_markdown_descriptorContext,0)
 
 
         def getRuleIndex(self):
@@ -12165,7 +12164,7 @@ class ZmeiLangParser ( Parser ):
                 self.state = 1545
                 self.match(ZmeiLangParser.DOT)
                 self.state = 1546
-                self.an_markdown_discriminator()
+                self.an_markdown_descriptor()
 
 
             self.state = 1549
@@ -12178,7 +12177,7 @@ class ZmeiLangParser ( Parser ):
             self.exitRule()
         return localctx
 
-    class An_markdown_discriminatorContext(ParserRuleContext):
+    class An_markdown_descriptorContext(ParserRuleContext):
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -12189,23 +12188,23 @@ class ZmeiLangParser ( Parser ):
 
 
         def getRuleIndex(self):
-            return ZmeiLangParser.RULE_an_markdown_discriminator
+            return ZmeiLangParser.RULE_an_markdown_descriptor
 
         def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterAn_markdown_discriminator" ):
-                listener.enterAn_markdown_discriminator(self)
+            if hasattr( listener, "enterAn_markdown_descriptor" ):
+                listener.enterAn_markdown_descriptor(self)
 
         def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitAn_markdown_discriminator" ):
-                listener.exitAn_markdown_discriminator(self)
+            if hasattr( listener, "exitAn_markdown_descriptor" ):
+                listener.exitAn_markdown_descriptor(self)
 
 
 
 
-    def an_markdown_discriminator(self):
+    def an_markdown_descriptor(self):
 
-        localctx = ZmeiLangParser.An_markdown_discriminatorContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 338, self.RULE_an_markdown_discriminator)
+        localctx = ZmeiLangParser.An_markdown_descriptorContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 338, self.RULE_an_markdown_descriptor)
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 1551
@@ -14371,8 +14370,8 @@ class ZmeiLangParser ( Parser ):
         def DOT(self):
             return self.getToken(ZmeiLangParser.DOT, 0)
 
-        def an_html_discriminator(self):
-            return self.getTypedRuleContext(ZmeiLangParser.An_html_discriminatorContext,0)
+        def an_html_descriptor(self):
+            return self.getTypedRuleContext(ZmeiLangParser.An_html_descriptorContext,0)
 
 
         def getRuleIndex(self):
@@ -14405,7 +14404,7 @@ class ZmeiLangParser ( Parser ):
                 self.state = 1749
                 self.match(ZmeiLangParser.DOT)
                 self.state = 1750
-                self.an_html_discriminator()
+                self.an_html_descriptor()
 
 
             self.state = 1753
@@ -14418,7 +14417,7 @@ class ZmeiLangParser ( Parser ):
             self.exitRule()
         return localctx
 
-    class An_html_discriminatorContext(ParserRuleContext):
+    class An_html_descriptorContext(ParserRuleContext):
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -14429,23 +14428,23 @@ class ZmeiLangParser ( Parser ):
 
 
         def getRuleIndex(self):
-            return ZmeiLangParser.RULE_an_html_discriminator
+            return ZmeiLangParser.RULE_an_html_descriptor
 
         def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterAn_html_discriminator" ):
-                listener.enterAn_html_discriminator(self)
+            if hasattr( listener, "enterAn_html_descriptor" ):
+                listener.enterAn_html_descriptor(self)
 
         def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitAn_html_discriminator" ):
-                listener.exitAn_html_discriminator(self)
+            if hasattr( listener, "exitAn_html_descriptor" ):
+                listener.exitAn_html_descriptor(self)
 
 
 
 
-    def an_html_discriminator(self):
+    def an_html_descriptor(self):
 
-        localctx = ZmeiLangParser.An_html_discriminatorContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 416, self.RULE_an_html_discriminator)
+        localctx = ZmeiLangParser.An_html_descriptorContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 416, self.RULE_an_html_descriptor)
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 1755
