@@ -73,29 +73,25 @@ class CrudBasePageExtraParserListener(BaseListener):
         self.crud.params.block_name = ctx.id_or_kw().getText().strip()
 
     def enterAn_crud_object_expr(self, ctx: ZmeiLangParser.An_crud_object_exprContext):
-        if ctx.code_line():
-            code = ctx.code_line().PYTHON_CODE().getText().strip()
-        else:
-            code = ctx.code_block().PYTHON_CODE().getText().strip()
-
-        self.crud.params.object_expr = code
+        self.crud.params.object_expr = self._get_code(ctx)
 
     def enterAn_crud_can_edit(self, ctx: ZmeiLangParser.An_crud_can_editContext):
-        if ctx.code_line():
-            code = ctx.code_line().PYTHON_CODE().getText().strip()
-        else:
-            code = ctx.code_block().PYTHON_CODE().getText().strip()
-
-        self.crud.params.can_edit = code
+        self.crud.params.can_edit = self._get_code(ctx)
 
     def enterAn_crud_target_filter(self, ctx: ZmeiLangParser.An_crud_target_filterContext):
-        self.crud.params.query = ctx.code_block().PYTHON_CODE().getText().strip()
+        self.crud.params.query = self._get_code(ctx)
 
     def enterAn_crud_url_prefix_val(self, ctx: ZmeiLangParser.An_crud_url_prefix_valContext):
         self.crud.params.url_prefix = ctx.getText().strip(' "\'')
 
     def enterAn_crud_link_suffix_val(self, ctx:ZmeiLangParser.An_crud_link_suffix_valContext):
         self.crud.params.link_suffix = ctx.getText().strip(' "\'')
+
+    def enterAn_crud_next_page(self, ctx: ZmeiLangParser.An_crud_next_pageContext):
+        self.crud.params.next_page = self._get_code(ctx)
+
+    def enterAn_crud_next_page_url_val(self, ctx:ZmeiLangParser.An_crud_next_page_url_valContext):
+        self.crud.params.next_page = ctx.getText()
 
 
 class CrudPageExtraParserListener(CrudBasePageExtraParserListener):
@@ -186,7 +182,7 @@ class CrudPageExtra(PageExtra):
     def prepare_environment(self, crud, page):
         # next page
         if crud.next_page:
-            self.next_page_expr = f"return reverse({crud.next_page})" + self.link_suffix
+            self.next_page_expr = f"return {crud.next_page}"
         else:
             self.next_page_expr = f"return self.request.get_full_path()" + self.link_suffix
 
@@ -379,7 +375,8 @@ class CrudPageExtra(PageExtra):
                 new_page.set_uri(f"{page.defined_uri}{self.url_prefix}<{self.pk_param}>/{crud_page}")
 
             params = copy(self.params)
-            params.next_page = f"'{page.collection_set.app_name}.{page.name}', kwargs={{{self.link_extra_params}}}"
+            link_extra_params = "{key: val for key, val in self.kwargs.items() if key != self.pk_url_kwarg}"
+            params.next_page = f"reverse('{page.collection_set.app_name}.{page.name}', kwargs={link_extra_params})"
 
             crud = crud_cls_by_name(crud_page)(new_page, params=params, descriptor=self.descriptor)
 

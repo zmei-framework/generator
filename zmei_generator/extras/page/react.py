@@ -21,4 +21,4 @@ class ReactPageExtraParserListener(BaseListener):
         if ctx.an_react_discriminator():
             area = ctx.an_react_discriminator().id_or_kw().getText()
 
-        self.page.set_html(dedent(ctx.code_block().PYTHON_CODE().getText().strip('\n')), react=True, area=area)
+        self.page.set_html(self._get_code(ctx), react=True, area=area)

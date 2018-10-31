@@ -31,7 +31,7 @@ an_crud_params:
         |COMA
     )*
     NL*
-    an_crud_next_page?
+    (an_crud_next_page|an_crud_next_page_url)?
     NL*
 
     BRACE_CLOSE
@@ -40,6 +40,15 @@ an_crud_params:
 // next page
 an_crud_next_page:
     EQUALS GT code_block
+    ;
+// next page url
+an_crud_next_page_url:
+    EQUALS GT an_crud_next_page_url_val
+    ;
+
+an_crud_next_page_url_val:
+     STRING_DQ
+    |STRING_SQ
     ;
 
 // model

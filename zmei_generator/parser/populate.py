@@ -206,13 +206,13 @@ class PartsCollectorListener(
         self.field.extra_args_append = True
 
     def enterCol_field_extend(self, ctx: ZmeiLangParser.Col_field_extendContext):
-        self.field.extra_args = ctx.code_block().PYTHON_CODE().getText()
+        self.field.extra_args = self._get_code(ctx)
 
     # Custom
 
     def enterCol_field_custom(self, ctx: ZmeiLangParser.Col_field_customContext):
         self.field = CustomFieldDef(self.model, self.field_config)
-        self.field.custom_declaration = ctx.code_block().PYTHON_CODE().getText()
+        self.field.custom_declaration = self._get_code(ctx)
 
     # Text
 

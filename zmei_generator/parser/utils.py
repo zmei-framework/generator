@@ -12,9 +12,10 @@ class BaseListener(ZmeiLangParserListener):
 
         self.collection_set = collection_set
 
-    def _get_code(self, ctx: ZmeiLangParser.Python_codeContext):
+    def _get_code(self, ctx):
         if ctx.code_block():
-            return dedent(ctx.code_block().PYTHON_CODE().getText()).strip()
+            code = ctx.code_block().getText().strip()[1:-1]
+            return dedent(code).strip()
         elif ctx.code_line():
             return dedent(ctx.code_line().PYTHON_CODE().getText()).strip()
 

@@ -21,8 +21,7 @@ class MarkdownPageExtraParserListener(BaseListener):
         if ctx.an_markdown_discriminator():
             area = ctx.an_markdown_discriminator().id_or_kw().getText()
 
-
-        md = dedent(ctx.code_block().PYTHON_CODE().getText().strip('\n'))
+        md = self._get_code(ctx)
         html = markdown.markdown(md)
 
         self.page.set_html(html, area=area)

@@ -554,3 +554,62 @@ def test_crud_success_page(extra_type_name):
     crud = boo.cruds['_'][extra_type_name]
 
     assert crud.params.next_page == "reverse_lazy('some_url', kwargs={'param1': self.object.pk})"
+
+
+@pytest.mark.parametrize("extra_type_name", [
+    "crud",
+    "crud_create",
+    "crud_delete",
+    "crud_detail",
+    "crud_edit",
+])
+def test_crud_success_url_dq(extra_type_name):
+    cs = _(f"""
+
+        [boo: /mycrud]
+        @{extra_type_name}(#foo
+            => "https://google.com/"
+        )
+
+        #foo
+        ------
+        a
+        b
+        c
+    """)
+
+    assert cs.crud is True
+
+    boo = cs.pages['boo']
+    crud = boo.cruds['_'][extra_type_name]
+
+    assert crud.params.next_page == '"https://google.com/"'
+
+@pytest.mark.parametrize("extra_type_name", [
+    "crud",
+    "crud_create",
+    "crud_delete",
+    "crud_detail",
+    "crud_edit",
+])
+def test_crud_success_url_sq(extra_type_name):
+    cs = _(f"""
+
+        [boo: /mycrud]
+        @{extra_type_name}(#foo
+            => 'https://google.com/'
+        )
+
+        #foo
+        ------
+        a
+        b
+        c
+    """)
+
+    assert cs.crud is True
+
+    boo = cs.pages['boo']
+    crud = boo.cruds['_'][extra_type_name]
+
+    assert crud.params.next_page == "'https://google.com/'"
