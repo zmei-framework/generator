@@ -444,6 +444,11 @@ class BaseCrudSubpageExtra(CrudPageExtra):
             if self.can_edit:
                 add_page_auth(self.can_edit, page)
 
+            if self.descriptor:
+                page.options['prefix'] = f'"crud_{self.descriptor}_{self.crud_page}"'
+            else:
+                page.options['prefix'] = f'"crud_{self.crud_page}"'
+
         if self.crud_page in ('edit', 'delete', 'create', 'detail'):
             page.methods['get_queryset'] = "return " + self.model_cls + ".objects" + self.formatted_query
             page.options['model'] = self.model_cls
