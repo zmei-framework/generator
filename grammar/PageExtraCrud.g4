@@ -31,8 +31,15 @@ an_crud_params:
         |COMA
     )*
     NL*
+    an_crud_next_page?
+    NL*
 
     BRACE_CLOSE
+    ;
+
+// next page
+an_crud_next_page:
+    EQUALS GT code_block
     ;
 
 // model

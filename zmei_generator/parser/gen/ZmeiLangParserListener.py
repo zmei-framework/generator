@@ -1601,6 +1601,15 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#an_crud_next_page.
+    def enterAn_crud_next_page(self, ctx:ZmeiLangParser.An_crud_next_pageContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_crud_next_page.
+    def exitAn_crud_next_page(self, ctx:ZmeiLangParser.An_crud_next_pageContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#an_crud_target_model.
     def enterAn_crud_target_model(self, ctx:ZmeiLangParser.An_crud_target_modelContext):
         pass

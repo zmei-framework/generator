@@ -95,7 +95,5 @@ code_line:
     NL;
 
 code_block:
-    CODE_BLOCK_START
-    PYTHON_CODE
-    CODE_BLOCK_END
+    CODE_BLOCK
     ;

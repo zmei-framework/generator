@@ -172,19 +172,20 @@ COL_FIELD_CALCULATED: ('<<'|'<@') -> pushMode(PYTHON_EXPR);
 ASSIGN: ':=' WS* -> pushMode(PYTHON_LINE);
 ASSIGN_STATIC: '@=' WS* -> pushMode(PYTHON_LINE);
 
-CODE_BLOCK_START: '{' -> pushMode(CODE_BLOCK);
+CODE_BLOCK: '{' ( CODE_BLOCK | ~[{}] )* '}' ;
 
 ERRCHAR: ERR;
-
-mode CODE_BLOCK;
-PYTHON_CODE: (~'}')+;
-CODE_BLOCK_END: '}' -> popMode;
-CODE_BLOCK_ERRCHAR:	ERR;
+//
+//mode CODE_BLOCK;
+//PYTHON_CODE: ~[{}]+;
+//CODE_BLOCK_CODE_BLOCK_START: '{' -> more, pushMode(CODE_BLOCK);
+//CODE_BLOCK_END: '}' -> popMode;
+//CODE_BLOCK_ERRCHAR:	ERR;
 
 /** Python rest of line **/
 mode PYTHON_LINE;
 PYTHON_LINE_NL: '\n' -> type(NL), popMode;
-PYTHON_LINE_CODE: (~'\n')+ -> type(PYTHON_CODE), popMode;
+PYTHON_CODE: (~'\n')+ -> popMode;
 PYTHON_LINE_ERRCHAR:	ERR;
 
 
