@@ -1,29 +1,29 @@
 {% load crud_utils %}
 
 <div>
-    <h2>{{ meta.verbose_name_plural }}</h2>
+    <h2>{{ crud.meta.verbose_name_plural }}</h2>
 
-    {% if items %}
+    {% if crud.items %}
     <table>
         <thead>
-        <tr>{% for field_name in list_fields.values %}
+        <tr>{% for field_name in crud.list_fields.values %}
             <th>{{ field_name }}</th>{% endfor %}
 
-            {% if can_edit %}
+            {% if crud.can_edit %}
             <th>Edit</th>
             {% endif %}
         </tr>
         </thead>
         <tbody>
-            {% for item in items %}
-            <tr>{% for field in list_fields %}
+            {% for item in crud.items %}
+            <tr>{% for field in crud.list_fields %}
                 <td>{% crud_field item field %}</td>{% endfor %}
 
-                {% if can_edit %}
+                {% if crud.can_edit %}
                 <td>
-                    {% if crud_detail_link %}<a href="{% crud_link crud_detail_link pk_param item.pk %}">[Detail]</a>{% endif %}
-                    {% if crud_edit_link %}<a href="{% crud_link crud_edit_link pk_param item.pk %}">[Edit]</a>{% endif %}
-                    {% if crud_delete_link %}<a href="{% crud_link crud_delete_link pk_param item.pk %}">[X]</a>{% endif %}
+                    {% if crud.crud_detail_link %}<a href="{% crud_link crud.crud_detail_link crud.pk_param item.pk %}">[Detail]</a>{% endif %}
+                    {% if crud.crud_edit_link %}<a href="{% crud_link crud.crud_edit_link crud.pk_param item.pk %}">[Edit]</a>{% endif %}
+                    {% if crud.crud_delete_link %}<a href="{% crud_link crud.crud_delete_link crud.pk_param item.pk %}">[X]</a>{% endif %}
                 </td>
                 {% endif %}
             </tr>
@@ -31,12 +31,12 @@
         </tbody>
     </table>
     {% else %}
-    <p>No {{ meta.verbose_name_plural }} yet.</p>
+    <p>No {{ crud.meta.verbose_name_plural }} yet.</p>
     {% endif %}
 
-    {% if crud_create_link and can_edit %}
+    {% if crud.crud_create_link and crud.can_edit %}
     <p>
-        <a href="{% crud_link crud_create_link %}">Add new {{ meta.verbose_name }}</a>
+        <a href="{% crud_link crud.crud_create_link %}">Add new {{ crud.meta.verbose_name }}</a>
     </p>
     {% endif %}
 </div>

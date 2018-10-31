@@ -127,8 +127,7 @@ def test_crud_subpages():
     assert isinstance(params, CrudParams)
     assert params.model == '#foo'
 
-    assert len(cs.pages) == 5
-    assert len(boo.children) == 4
+    assert len(cs.pages) == 10
 
     for page in boo.children:
         assert page.parent_name == boo.name
@@ -161,8 +160,7 @@ def test_crud_subpages_skip():
 
     boo = cs.pages['boo']
 
-    assert len(cs.pages) == 3
-    assert len(boo.children) == 2
+    assert len(cs.pages) == 6
 
     for page in boo.children:
         if page.name == 'boo_create':

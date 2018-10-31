@@ -144,18 +144,19 @@ class InlineFilePageBlock(object):
 
 
 class ThemeFileIncludePageBlock(object):
-    def __init__(self, page, source, template_name, ns, theme='default') -> None:
+    def __init__(self, page, source, template_name, ns, theme='default', with_expr=None) -> None:
         super().__init__()
 
         self.template_name = f'{ns}/{theme}/{template_name}'
         self.theme = theme
         self.page = page
         self.source = source
+        self.with_expr = with_expr or ' '
 
         page.themed_files[self.template_name] = source
 
     def render(self, area=None, index=None):
-        return f"{{% include '{self.template_name}' %}}"
+        return f"{{% include '{self.template_name}'{self.with_expr} %}}"
 
 #
 # class BlocksPageExtra(PageExtra):
