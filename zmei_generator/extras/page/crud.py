@@ -22,7 +22,7 @@ class CrudBasePageExtraParserListener(BaseListener):
         self.crud = None
         self.crud_field = None
 
-    def extra_start(self, cls):
+    def extra_start(self, cls, ctx):
         extra = cls(self.page)
         self.collection_set.extras.append(
             extra
@@ -30,8 +30,11 @@ class CrudBasePageExtraParserListener(BaseListener):
         self.collection_set.crud = True
         self.crud = extra
 
-    def extra_end(self, cls):
+    def extra_end(self, cls, ctx):
         self.crud = None
+
+    def enterAn_crud_descriptor(self, ctx: ZmeiLangParser.An_crud_descriptorContext):
+        self.crud.descriptor = ctx.getText()
 
     # Params
 
@@ -97,10 +100,10 @@ class CrudBasePageExtraParserListener(BaseListener):
 class CrudPageExtraParserListener(CrudBasePageExtraParserListener):
 
     def enterAn_crud(self, ctx: ZmeiLangParser.An_crudContext):
-        self.extra_start(CrudPageExtra)
+        self.extra_start(CrudPageExtra, ctx)
 
     def exitAn_crud(self, ctx: ZmeiLangParser.An_crudContext):
-        self.extra_end(CrudPageExtra)
+        self.extra_end(CrudPageExtra, ctx)
 
 
 class CrudField(object):
@@ -249,8 +252,6 @@ class CrudPageExtra(PageExtra):
         # block name
         if crud.block_name:
             self.block_name = crud.block_name
-        elif self.descriptor:
-            self.block_name = f'{self.descriptor}_content'
         else:
             self.block_name = 'content'
 

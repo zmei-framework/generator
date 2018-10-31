@@ -10,7 +10,9 @@ an_crud:
     an_crud_params
     ;
 
+
 an_crud_params:
+    (DOT an_crud_descriptor)?
     BRACE_OPEN
     NL*
     an_crud_target_model
@@ -36,6 +38,8 @@ an_crud_params:
 
     BRACE_CLOSE
     ;
+
+an_crud_descriptor : id_or_kw;
 
 // next page
 an_crud_next_page:

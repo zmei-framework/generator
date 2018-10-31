@@ -17,7 +17,7 @@ class CrudDeletePageExtra(BaseCrudSubpageExtra):
 class CrudDeletePageExtraParserListener(CrudBasePageExtraParserListener):
 
     def enterAn_crud_delete(self, ctx:ZmeiLangParser.An_crud_deleteContext):
-        self.extra_start(CrudDeletePageExtra)
+        self.extra_start(CrudDeletePageExtra, ctx)
 
     def exitAn_crud_delete(self, ctx:ZmeiLangParser.An_crud_deleteContext):
-        self.extra_end(CrudDeletePageExtra)
+        self.extra_end(CrudDeletePageExtra, ctx)

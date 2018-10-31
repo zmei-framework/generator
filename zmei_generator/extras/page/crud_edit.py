@@ -17,7 +17,7 @@ class CrudEditPageExtra(BaseCrudSubpageExtra):
 class CrudEditPageExtraParserListener(CrudBasePageExtraParserListener):
 
     def enterAn_crud_edit(self, ctx:ZmeiLangParser.An_crud_editContext):
-        self.extra_start(CrudEditPageExtra)
+        self.extra_start(CrudEditPageExtra, ctx)
 
     def exitAn_crud_edit(self, ctx:ZmeiLangParser.An_crud_editContext):
-        self.extra_end(CrudEditPageExtra)
+        self.extra_end(CrudEditPageExtra, ctx)
