@@ -35,6 +35,7 @@ def generate_common_files(target_path, skeleton_dir, apps):
 
     #config
     has_react = False
+    has_crud = False
     has_rest = False
     has_admin = False
     has_filer = False
@@ -66,6 +67,9 @@ def generate_common_files(target_path, skeleton_dir, apps):
         if collection_set.react:
             has_react = True
 
+        if collection_set.crud:
+            has_crud = True
+
         if collection_set.suit:
             has_suit = True
 
@@ -94,6 +98,10 @@ def generate_common_files(target_path, skeleton_dir, apps):
     # settings
     req_settings = {}
     installed_apps = list(apps.keys())
+
+    if has_crud:
+        installed_apps.append('zmei.crud')
+
     if has_rest:
         installed_apps.append('rest_framework')
 
@@ -401,17 +409,18 @@ def generate_views_py(target_path, app_name, collection_set):
                 for import_spec in item.get_imports():
                     imports.add(*import_spec)
 
-            template = page.defined_template_name
-            if template:
-                template_name = '{app_name}/templates/{template}'.format(app_name=app_name, template=template, )
+            if page.template:
+                template = page.defined_template_name
+                if template:
+                    template_name = '{app_name}/templates/{template}'.format(app_name=app_name, template=template, )
 
-                generate_file(target_path, template_name, 'theme/default.html', {
-                    'app_name': app_name,
-                    'page': page,
-                    'parent': collection_set.pages[page.parent_name] if page.parent_name else None
-                })
+                    generate_file(target_path, template_name, 'theme/default.html', {
+                        'app_name': app_name,
+                        'page': page,
+                        'parent': collection_set.pages[page.parent_name] if page.parent_name else None
+                    })
 
-                generated_templates.append(template_name)
+                    generated_templates.append(template_name)
 
     generate_file(target_path, '{}/views.py'.format(app_name), 'views.py.tpl', {
         'imports': imports.import_sting(),

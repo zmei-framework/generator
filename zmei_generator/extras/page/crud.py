@@ -243,11 +243,7 @@ class CrudPageExtra(PageExtra):
             self.name_prefix = ''
             self.name_suffix = ''
 
-        # item name
-        if crud.item_name:
-            self.context_object_name = crud.item_name
-        else:
-            self.context_object_name = self.name_prefix + 'item'
+        self.context_object_name = 'item'
 
         # block name
         if crud.block_name:
@@ -342,12 +338,15 @@ class CrudPageExtra(PageExtra):
         base_page.imports.append(
             ('zmei.views', 'CrudMultiplexerView')
         )
-        base_page.extra_bases.append('CrudMultiplexerView')
+
+        if 'CrudMultiplexerView' not in base_page.extra_bases:
+            base_page.extra_bases.append('CrudMultiplexerView')
 
         page = None
 
         if self.create_list:
             page = PageDef(self.page.collection_set)
+            page.template = True
             # page.extra_bases = []
             # page.parent_name = base_page.name
             page.name = f"crud_{base_page.name}{self.name_suffix}_list"
@@ -384,7 +383,7 @@ class CrudPageExtra(PageExtra):
             for key, val in self.prepare_block_fields(base_page).items():
                 page.page_items[key] = PageExpression(key, val, page)
 
-            base_page.methods['get_crud_views'] = f"return (\n    {page.view_name},\n)"
+            base_page.add_crud(self.descriptor, page.view_name)
 
         for crud_page in self.crud_pages:
 
@@ -442,9 +441,12 @@ class BaseCrudSubpageExtra(CrudPageExtra):
         base_page.imports.append(
             ('zmei.views', 'CrudMultiplexerView')
         )
-        base_page.extra_bases.append('CrudMultiplexerView')
+        if 'CrudMultiplexerView' not in base_page.extra_bases:
+            base_page.extra_bases.append('CrudMultiplexerView')
 
         page = PageDef(self.page.collection_set)
+        page.template = False
+
         if self.crud_parent:
             page.parent_name = self.crud_parent
             page.extra_bases = []
@@ -473,7 +475,7 @@ class BaseCrudSubpageExtra(CrudPageExtra):
                 with_expr=f' with crud=crud.{page.name}'
             )
         )
-        base_page.methods['get_crud_views'] = f"return (\n    {page.view_name},\n)"
+        base_page.add_crud(self.descriptor, page.view_name)
 
         page.page_items[f'name'] = PageExpression(
             f'name', f"'{page.name}'", page)

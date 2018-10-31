@@ -40,6 +40,59 @@ def test_crud_no_uri_on_crud(extra_type_name, extra_cls):
         """)
 
 
+def test_crud_same_descriptor():
+    with pytest.raises(ValidationException):
+        cs = _(f"""
+    
+            [boo: /lala]
+            @crud(#foo)
+            @crud(#boo)
+            
+            #boo
+            ------
+            a
+            
+            #foo
+            ------
+            a
+        """)
+
+
+def test_crud_same_descriptor_different_annotations():
+    with pytest.raises(ValidationException):
+        cs = _(f"""
+    
+            [boo: /lala]
+            @crud(#foo)
+            @crud_create(#boo)
+            
+            #boo
+            ------
+            a
+            
+            #foo
+            ------
+            a
+        """)
+
+
+def test_crud_diff_descriptor():
+    cs = _(f"""
+
+        [boo: /lala]
+        @crud(#foo)
+        @crud.foo(#boo)
+        
+        #boo
+        ------
+        a
+        
+        #foo
+        ------
+        a
+    """)
+
+
 @pytest.mark.parametrize("extra_type_name, extra_cls", [
     ("crud", CrudPageExtra),
     ("crud_create", CrudCreatePageExtra),

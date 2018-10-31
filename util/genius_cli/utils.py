@@ -32,7 +32,7 @@ PACKAGE_JSON_TOKEN = '__generated__'
 
 def write_generated_file(path, source):
     # special hack for settings.py->SECRET_KEY
-    if path.endswith('app/settings_base.py'):
+    if path.endswith('app/_settings.py'):
         if os.path.exists(path):
             with open(path, 'r') as f:
                 found = re.search('^SECRET_KEY\s*=.*$', f.read(), flags=re.MULTILINE)
@@ -53,8 +53,8 @@ def write_generated_file(path, source):
 
     if path.endswith('.py') or path.endswith('requirements.txt') or path.endswith('Dockerfile'):
         # settings.py is specially designed to be overriden
-        if not path.endswith('settings.py') \
-                and not path.endswith('tasks.py') \
+        if not path.endswith('app/settings.py') \
+                and not path.endswith('app/tasks.py') \
                 and not path.endswith('app/urls.py') \
                 and not path.endswith('requirements.txt'):
             source_prefix = f"# {tag}\n\n"

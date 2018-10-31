@@ -37,6 +37,7 @@ class PageDef(object):
 
         self.extra_bases = ['ZmeiDataViewMixin']
 
+        self.template = True
         self.name = None
         self.url_alias = None
         self.parent_name = None
@@ -71,6 +72,7 @@ class PageDef(object):
         self.react_pages = {}
         self.functions = []
         self.template_libs = []
+        self.crud_views = {}
 
         self.themed_files = {}
 
@@ -112,6 +114,11 @@ class PageDef(object):
         if self.react:
             self.extra_bases.remove('ZmeiDataViewMixin')
             self.extra_bases.append('ZmeiReactViewMixin')
+
+    def add_crud(self, descriptor, cls):
+        if descriptor in self.crud_views:
+            raise ValidationException('Two or more @crud annotations with same descriptor are not allowed.')
+        self.crud_views[descriptor] = cls
 
     def add_block(self, area, block):
         if area not in self.blocks:
@@ -266,6 +273,8 @@ class PageDef(object):
             return '{}/{}.html'.format(self.collection_set.app_name, self.name)
 
     def render_template_name_expr(self):
+        if not self.template:
+            return ''
 
         if not self.parsed_template_expr:
             return 'template_name = "{tpl}"'.format(tpl=self.defined_template_name)

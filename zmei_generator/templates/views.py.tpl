@@ -45,6 +45,12 @@ class {{ page.view_name }}({% if page.extra_bases %}{{ page.extra_bases|join(", 
     def get_sitemap(cls):
         return {{ page.sitemap_expr.render_python_code() }}
     {% endif %}
+    {%- if page.crud_views %}
+    def get_crud_views(self):
+        return ({% for cls in page.crud_views.values() %}
+            {{ cls }},{% endfor %}
+        )
+    {% endif %}
     {{ page.render_template_name_expr()|indent(4) }}
     {% for func in page.functions %}
     def {{ func.python_name }}(self, url, request{% if func.args %}, {{ func.render_python_args() }}{% endif %}):
