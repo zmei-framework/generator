@@ -243,7 +243,6 @@ class StopGenerator(Exception):
 
 def handle_parse_exception(e, parsed_string, subject):
     out = []
-    print('COL: ', e.col)
     # out.append(str(type(e)))
     out.append(colored('{}, error: {}'.format(subject, e), 'white', 'on_red'))
     out.append('-' * 100)

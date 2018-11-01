@@ -23,8 +23,10 @@ class PageFunction(object):
 
 
 class PageDef(object):
-    def __init__(self, collection_set) -> None:
+    def __init__(self, collection_set, override=False) -> None:
         super().__init__()
+
+        self.override = override
 
         # self.raw_ = parse_result
         self._parent = None
@@ -83,6 +85,8 @@ class PageDef(object):
         self.has_uri = False
 
         self.i18n = False
+
+        self.crud_overrides = {}
 
         self.page_items = {}
         # extras = self.collection_set.parser.get_page_extras_available()

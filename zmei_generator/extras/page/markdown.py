@@ -6,10 +6,12 @@ from zmei_generator.config.extras import PageExtra
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
+
 class MarkdownPageExtra(PageExtra):
     # markdown
     pass
-    
+
+
 class MarkdownPageExtraParserListener(BaseListener):
 
     def enterAn_markdown(self, ctx: ZmeiLangParser.An_markdownContext):

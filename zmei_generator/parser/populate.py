@@ -25,6 +25,7 @@ from zmei_generator.fields.text import TextFieldDef, SlugFieldDef, LongTextField
 from zmei_generator.parser.errors import TabsSuitRequiredValidationError, LangsRequiredValidationError
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.populate_model_extras import ModelExtraListener
+from zmei_generator.parser.populate_page_crud_overrides import PageCrudOverrideExtraListener
 from zmei_generator.parser.populate_page_extras import PageExtraListener
 from zmei_generator.parser.utils import BaseListener
 
@@ -33,6 +34,7 @@ class PartsCollectorListener(
     CeleryCsExtraParserListener,
     LangsCsExtraParserListener,
     FilerCsExtraParserListener,
+    PageCrudOverrideExtraListener,
     BaseListener
 ):
 
@@ -51,14 +53,12 @@ class PartsCollectorListener(
     def enterPage_import_statement(self, ctx: ZmeiLangParser.Page_import_statementContext):
         self.collection_set.page_imports.add(ctx.classname().getText(), *ctx.import_list().getText().split(','))
 
-    def enterModel_import_statement(self, ctx:ZmeiLangParser.Model_import_statementContext):
+    def enterModel_import_statement(self, ctx: ZmeiLangParser.Model_import_statementContext):
         self.collection_set.model_imports.add(ctx.classname().getText(), *ctx.import_list().getText().split(','))
 
     ############################################
     # Page
     ############################################
-
-
 
     def enterPage(self, ctx: ZmeiLangParser.PageContext):
         self.page = PageDef(self.collection_set)
@@ -102,6 +102,7 @@ class PartsCollectorListener(
     def exitPage(self, ctx: ZmeiLangParser.PageContext):
         self.collection_set.pages[self.page.name] = self.page
         self.page = None
+
 
     ############################################
     # Model
@@ -369,12 +370,12 @@ class PartsCollectorListener(
 
     # file  field
 
-    def enterField_file(self, ctx:ZmeiLangParser.Field_fileContext):
+    def enterField_file(self, ctx: ZmeiLangParser.Field_fileContext):
         self.field = SimpleFieldDef(self.model, self.field_config)
 
     # folder  field
 
-    def enterField_filer_folder(self, ctx:ZmeiLangParser.Field_filer_folderContext):
+    def enterField_filer_folder(self, ctx: ZmeiLangParser.Field_filer_folderContext):
         self.field = FilerFileFolderDef(self.model, self.field_config)
 
     # Relation field
@@ -463,7 +464,7 @@ class PartsCollectorListener(
     def enterAn_admin_js_file_name(self, ctx: ZmeiLangParser.An_admin_js_file_nameContext):
         self.model.admin.js.append(ctx.getText().strip('"\''))
 
-    def exitAn_admin_inline(self, ctx:ZmeiLangParser.An_admin_inlineContext):
+    def exitAn_admin_inline(self, ctx: ZmeiLangParser.An_admin_inlineContext):
         self.model.admin.inlines.append(
             self.inline
         )
@@ -493,8 +494,8 @@ def populate_collection_set(tree, app_name='noname'):
     cs.post_process()
 
     walker.walk(model_extra_listener, tree)
+
     walker.walk(page_extra_listener, tree)
     cs.post_process_extras()
-
 
     return cs

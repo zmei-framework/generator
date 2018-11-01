@@ -3,7 +3,9 @@ parser grammar PageExtraCrud;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 
-import Base;
+import Base
+//       PageBody
+       ;
 
 an_crud:
     AN_CRUD
@@ -36,7 +38,23 @@ an_crud_params:
     (an_crud_next_page|an_crud_next_page_url)?
     NL*
 
+    an_crud_page_override*
+
+    NL*
+
     BRACE_CLOSE
+    ;
+
+an_crud_page_override:
+    an_crud_view_name
+    NL*
+    BRACE_OPEN
+    NL*
+    page_body
+
+    NL*
+    BRACE_CLOSE
+    NL*
     ;
 
 an_crud_descriptor : id_or_kw;

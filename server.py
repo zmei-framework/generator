@@ -23,7 +23,6 @@ app = Sanic()
 
 from sanic import response
 
-
 @app.route('/api/generate', methods=['POST'])
 async def api_generate(request):
 

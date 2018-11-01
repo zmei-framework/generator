@@ -93,6 +93,93 @@ def test_crud_diff_descriptor():
     """)
 
 
+def test_crud_page_parsing():
+    cs = _("""
+
+        [boo: /mycrud]        
+        lala := 123
+        
+        @crud(#foo)
+
+        #foo
+        ------
+        a
+    """)
+
+    boo = cs.pages['boo']
+
+    assert boo.page_items['lala'].expression == '123'
+
+
+def test_crud_subpage_parsing():
+    cs = _("""
+
+        [boo: /mycrud]
+        zoo := 321
+        
+        @crud(#foo
+
+            detail(
+                lala := 123
+                
+                @markdown {
+                    test
+                }
+            )
+        )
+
+        #foo
+        ------
+        a
+    """)
+
+    assert cs.crud is True
+
+    boo = cs.pages['boo']
+    boo_detail = cs.pages['boo_detail']
+
+    assert boo.crud_overrides['detail'] is boo_detail
+
+    assert boo.page_items['zoo'].expression == '321'
+
+    assert boo_detail.page_items['lala'].expression == '123'
+
+    assert len(boo_detail.blocks['content']) == 2
+
+
+def test_crud_subpage_subcrud():
+    cs = _("""
+
+        [boo: /mycrud]
+        zoo := 321
+        
+        @crud(#foo
+
+            detail(
+                lala := 123
+                
+                @crud.lala(#goo)
+            )
+        )
+
+        #foo
+        ------
+        a
+        
+        #goo
+        ------
+        a
+    """)
+
+    assert cs.crud is True
+
+    boo = cs.pages['boo']
+    boo_detail = cs.pages['boo_detail']
+    #
+    assert boo.page_items['zoo'].expression == '321'
+    assert boo_detail.page_items['lala'].expression == '123'
+
+
 @pytest.mark.parametrize("extra_type_name, extra_cls", [
     ("crud", CrudPageExtra),
     ("crud_create", CrudCreatePageExtra),

@@ -1,7 +1,6 @@
-from zmei_generator.config.extras import PageExtra
-from zmei_generator.extras.page.crud import BaseCrudSubpageExtra, CrudBasePageExtraParserListener
+from zmei_generator.extras.page.crud import BaseCrudSubpageExtra
+from zmei_generator.extras.page.crud_parser import CrudBasePageExtraParserListener
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
-from zmei_generator.parser.utils import BaseListener
 
 
 class CrudEditPageExtra(BaseCrudSubpageExtra):

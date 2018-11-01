@@ -1,109 +1,12 @@
 import re
 from copy import copy
 
-from zmei_generator.config.domain.collection_set_def import CollectionSetDef
-from zmei_generator.config.domain.page_def import PageDef
-from zmei_generator.config.extras import PageExtra
-from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
-from zmei_generator.parser.utils import BaseListener
-
 from zmei_generator.config.domain.exceptions import ValidationException
+from zmei_generator.config.domain.page_def import PageDef
 from zmei_generator.config.domain.page_expression import PageExpression
+from zmei_generator.config.extras import PageExtra
 from zmei_generator.extras.page.auth import add_page_auth
-from zmei_generator.extras.page.block import PageBlock, InlineTemplatePageBlock, InlineFilePageBlock, \
-    ThemeFileIncludePageBlock
-
-
-class CrudBasePageExtraParserListener(BaseListener):
-
-    def __init__(self, collection_set: CollectionSetDef) -> None:
-        super().__init__(collection_set)
-
-        self.crud = None
-        self.crud_field = None
-
-    def extra_start(self, cls, ctx):
-        extra = cls(self.page)
-        self.collection_set.extras.append(
-            extra
-        )
-        self.collection_set.crud = True
-        self.crud = extra
-
-    def extra_end(self, cls, ctx):
-        self.crud = None
-
-    def enterAn_crud_descriptor(self, ctx: ZmeiLangParser.An_crud_descriptorContext):
-        self.crud.descriptor = ctx.getText()
-
-    # Params
-
-    def enterAn_crud_target_model(self, ctx: ZmeiLangParser.An_crud_target_modelContext):
-        self.crud.params.model = ctx.getText().strip()
-
-    def enterAn_crud_theme(self, ctx: ZmeiLangParser.An_crud_themeContext):
-        self.crud.params.theme = ctx.id_or_kw().getText().strip()
-
-    def enterAn_crud_skip(self, ctx: ZmeiLangParser.An_crud_skipContext):
-        self.crud.params.skip = re.split('\s*,\s*', ctx.an_crud_skip_values().getText().strip())
-
-    def enterAn_crud_fields(self, ctx: ZmeiLangParser.An_crud_fieldsContext):
-        self.crud.params.fields = []
-
-    def enterAn_crud_field(self, ctx: ZmeiLangParser.An_crud_fieldContext):
-        field = CrudField()
-        field.spec = ctx.an_crud_field_spec().getText().strip()
-        if ctx.an_crud_field_filter():
-            field.filter_expr = ctx.an_crud_field_filter().getText().strip()
-
-        self.crud.params.fields.append(field)
-
-    def enterAn_crud_list_fields(self, ctx: ZmeiLangParser.An_crud_list_fieldsContext):
-        self.crud.params.list_fields = []
-
-    def enterAn_crud_list_field(self, ctx: ZmeiLangParser.An_crud_list_fieldContext):
-        field = ctx.an_crud_list_field_spec().getText().strip()
-
-        self.crud.params.list_fields.append(field)
-
-    def enterAn_crud_pk_param(self, ctx: ZmeiLangParser.An_crud_pk_paramContext):
-        self.crud.params.pk_param = ctx.id_or_kw().getText().strip()
-
-    def enterAn_crud_item_name(self, ctx: ZmeiLangParser.An_crud_item_nameContext):
-        self.crud.params.item_name = ctx.id_or_kw().getText().strip()
-
-    def enterAn_crud_block(self, ctx: ZmeiLangParser.An_crud_blockContext):
-        self.crud.params.block_name = ctx.id_or_kw().getText().strip()
-
-    def enterAn_crud_object_expr(self, ctx: ZmeiLangParser.An_crud_object_exprContext):
-        self.crud.params.object_expr = self._get_code(ctx)
-
-    def enterAn_crud_can_edit(self, ctx: ZmeiLangParser.An_crud_can_editContext):
-        self.crud.params.can_edit = self._get_code(ctx)
-
-    def enterAn_crud_target_filter(self, ctx: ZmeiLangParser.An_crud_target_filterContext):
-        self.crud.params.query = self._get_code(ctx)
-
-    def enterAn_crud_url_prefix_val(self, ctx: ZmeiLangParser.An_crud_url_prefix_valContext):
-        self.crud.params.url_prefix = ctx.getText().strip(' "\'')
-
-    def enterAn_crud_link_suffix_val(self, ctx:ZmeiLangParser.An_crud_link_suffix_valContext):
-        self.crud.params.link_suffix = ctx.getText().strip(' "\'')
-
-    def enterAn_crud_next_page(self, ctx: ZmeiLangParser.An_crud_next_pageContext):
-        self.crud.params.next_page = self._get_code(ctx)
-
-    def enterAn_crud_next_page_url_val(self, ctx:ZmeiLangParser.An_crud_next_page_url_valContext):
-        self.crud.params.next_page = ctx.getText()
-
-
-class CrudPageExtraParserListener(CrudBasePageExtraParserListener):
-
-    def enterAn_crud(self, ctx: ZmeiLangParser.An_crudContext):
-        self.extra_start(CrudPageExtra, ctx)
-
-    def exitAn_crud(self, ctx: ZmeiLangParser.An_crudContext):
-        self.extra_end(CrudPageExtra, ctx)
+from zmei_generator.extras.page.block import ThemeFileIncludePageBlock
 
 
 class CrudField(object):
@@ -169,7 +72,7 @@ class CrudPageExtra(PageExtra):
 
         self.descriptor = descriptor
 
-        if page.defined_uri is None:
+        if page.defined_uri is None and not page.override:  # override -> allow empty urls for override @crud's functionality
             raise ValidationException('@crud annotations require page to have url')
 
     def post_process(self):
@@ -346,7 +249,7 @@ class CrudPageExtra(PageExtra):
 
         if self.create_list:
             page = PageDef(self.page.collection_set)
-            page.template = True
+            page.template = False
             # page.extra_bases = []
             # page.parent_name = base_page.name
             page.name = f"crud_{base_page.name}{self.name_suffix}_list"
@@ -387,7 +290,16 @@ class CrudPageExtra(PageExtra):
 
         for crud_page in self.crud_pages:
 
-            new_page = PageDef(self.page.collection_set)
+            if self.descriptor:
+                override_id = f"{self.descriptor}_{crud_page}"
+            else:
+                override_id = crud_page
+
+            if override_id in base_page.crud_overrides:
+                new_page = base_page.crud_overrides[override_id]
+            else:
+                new_page = PageDef(self.page.collection_set)
+
             # new_page.extra_bases = []
             # new_page.parent_name = page.name
             new_page.name = f"{base_page.name}{self.name_suffix}_{crud_page}"
@@ -402,7 +314,8 @@ class CrudPageExtra(PageExtra):
             link_extra_params = "{key: val for key, val in self.kwargs.items() if key != self.pk_url_kwarg}"
             params.next_page = f"reverse('{base_page.collection_set.app_name}.{base_page.name}', kwargs={link_extra_params})"
 
-            crud = crud_cls_by_name(crud_page)(new_page, params=params, descriptor=self.descriptor, crud_parent=page.name)
+            crud = crud_cls_by_name(crud_page)(new_page, params=params, descriptor=self.descriptor,
+                                               crud_parent_page_name=page.name, parent_base_page=base_page)
 
             base_page.collection_set.pages[new_page.name] = new_page
             base_page.collection_set.extras.append(crud)
@@ -410,9 +323,6 @@ class CrudPageExtra(PageExtra):
         # preserve correct page order
         if self.create_list and page:
             page.collection_set.pages[page.name] = page
-
-
-
 
 
 def crud_cls_by_name(name):
@@ -432,9 +342,10 @@ def crud_cls_by_name(name):
 class BaseCrudSubpageExtra(CrudPageExtra):
     crud_page = None
 
-    def __init__(self, page, params=None, descriptor=None, crud_parent=None):
+    def __init__(self, page, params=None, descriptor=None, crud_parent_page_name=None, parent_base_page=None):
         super().__init__(page, params, descriptor)
-        self.crud_parent = crud_parent
+        self.crud_parent_page_name = crud_parent_page_name
+        self.parent_base_page = parent_base_page
 
     def build_pages(self, base_page):
 
@@ -447,8 +358,8 @@ class BaseCrudSubpageExtra(CrudPageExtra):
         page = PageDef(self.page.collection_set)
         page.template = False
 
-        if self.crud_parent:
-            page.parent_name = self.crud_parent
+        if self.crud_parent_page_name:
+            page.parent_name = self.crud_parent_page_name
             page.extra_bases = []
         else:
             page.imports.append(
