@@ -404,6 +404,7 @@ class BaseCrudSubpageExtra(CrudPageExtra):
             )
 
         if self.crud_page in ('edit', 'create') and len(self.field_filters):
+            print('LLLALALLA!')
             code = "form = super().get_form(*args, **kwargs)\n"
 
             for name, expr in self.field_filters.items():

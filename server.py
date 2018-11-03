@@ -10,7 +10,6 @@ from io import BytesIO
 from os.path import dirname
 
 from zmei_generator.config.domain.exceptions import ValidationException
-from zmei_generator.config.parser import Parser
 from zmei_generator.generator.collections import generate, generate_common_files
 from zmei_generator.generator.utils import StopGenerator
 
@@ -18,6 +17,8 @@ from sanic.exceptions import InvalidUsage
 
 from sanic import Sanic
 from sanic.response import HTTPResponse
+
+from zmei_generator.parser.parser import ZmeiParser
 
 app = Sanic()
 
@@ -109,8 +110,16 @@ async def do_generate(executor, request, target_path):
 
 
 def generate_app(target_path, app_name, features, filename):
-    collection_set = Parser().parse_file(os.path.join(target_path, filename), app_name=app_name)
+
+    parser = ZmeiParser()
+    parser.parse_file(os.path.join(target_path, filename))
+    collection_set = parser.populate_collection_set(app_name)
+
+    stats = parser.collect_stats()
+    print(stats)
+
     generate(target_path, app_name, collection_set, features=features)
+
     return app_name, collection_set
 
 

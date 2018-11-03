@@ -10,8 +10,7 @@ import pytest
 from pytest_forked import forked_run_report
 
 from zmei_generator.generator.collections import generate, generate_common_files
-from zmei_generator.parser.parser import parse_string, parse_file
-from zmei_generator.parser.populate import populate_collection_set
+from zmei_generator.parser.parser import ZmeiParser
 
 skeleton_dir = os.path.join(os.path.dirname(__file__), 'skeleton')
 samples_dir = os.path.join(os.path.dirname(__file__), 'tests/samples')
@@ -63,14 +62,16 @@ def pytest_runtest_setup(item):
             rmtree(work_dir)
         os.mkdir(work_dir)
 
+        parser = ZmeiParser()
+
         collection_set_name = colmarker.args[0]
         if len(colmarker.args) > 1:
-            tree = parse_string(colmarker.args[1])
+            parser.parse_string(colmarker.args[1])
         else:
             col_file = '{}/{}.col'.format(samples_dir, collection_set_name)
-            tree = parse_file(col_file)
+            parser.parse_file(col_file)
 
-        collection_set = populate_collection_set(tree, collection_set_name)
+        collection_set = parser.populate_collection_set(collection_set_name)
 
         copy('{}/dev.db'.format(files_dir), '{}/dev.db'.format(work_dir, collection_set_name))
 

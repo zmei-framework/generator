@@ -4,13 +4,13 @@ from textwrap import dedent
 import pytest
 
 from zmei_generator.parser.errors import PageParentValidationError, TabsSuitRequiredValidationError
-from zmei_generator.parser.parser import parse_string
+from zmei_generator.parser.parser import ZmeiParser
 from zmei_generator.parser.symbols import SymbolTable
 from zmei_generator.parser.validator import validate
 
 
 def _(code):
-    tree = parse_string(dedent(code))
+    tree = ZmeiParser().parse_string(dedent(code))
 
     symbols = SymbolTable()
     symbols.update_from_tree(tree)

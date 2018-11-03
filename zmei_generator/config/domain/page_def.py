@@ -219,6 +219,12 @@ class PageDef(object):
         code = ""
         if use_data or use_parent:
             code += "data = self.get_data()\n"
+        if use_parent:
+            code += "parent = type('parent', (object,), data)\n"
+        if use_request:
+            code += "request = self.request\n"
+        if use_url:
+            code += "url = type('url', (object,), self.kwargs)\n"
 
         if len(code) > 0:
             code += "\n"

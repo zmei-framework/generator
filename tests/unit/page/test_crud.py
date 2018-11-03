@@ -8,14 +8,13 @@ from zmei_generator.extras.page.crud_create import CrudCreatePageExtra
 from zmei_generator.extras.page.crud_delete import CrudDeletePageExtra
 from zmei_generator.extras.page.crud_detail import CrudDetailPageExtra
 from zmei_generator.extras.page.crud_edit import CrudEditPageExtra
-from zmei_generator.parser.parser import parse_string
-from zmei_generator.parser.populate import populate_collection_set
+from zmei_generator.parser.parser import ZmeiParser
 
 
 def _(code):
-    tree = parse_string(dedent(code))
-
-    return populate_collection_set(tree, 'example')
+    parser = ZmeiParser()
+    parser.parse_string(dedent(code))
+    return parser.populate_collection_set('example')
 
 
 @pytest.mark.parametrize("extra_type_name, extra_cls", [
@@ -339,6 +338,35 @@ def test_crud_model_fields(extra_type_name):
     assert list(crud.fields.keys()) == ['a', 'c']
 
     assert list(crud.list_fields.keys()) == ['a', 'c']
+
+@pytest.mark.parametrize("extra_type_name", [
+    "crud",
+    "crud_create",
+    "crud_delete",
+    "crud_detail",
+    "crud_edit",
+])
+def test_crud_model_fields(extra_type_name):
+    cs = _(f"""
+
+        [boo: /mycrud]
+        @{extra_type_name}(#foo, fields: a, b{{lala}})
+
+        #foo
+        ------
+        a
+        b
+        c
+    """)
+
+    assert cs.crud is True
+
+    boo = cs.pages['boo']
+    crud = boo.cruds['_'][extra_type_name]
+
+    assert list(crud.fields.keys()) == ['a', 'b']
+    assert list(crud.list_fields.keys()) == ['a', 'b']
+    assert crud.field_filters['b'] == 'lala'
 
 
 @pytest.mark.parametrize("extra_type_name", [

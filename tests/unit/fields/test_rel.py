@@ -4,14 +4,13 @@ from zmei_generator.config.domain.reference_field import ReferenceField
 from zmei_generator.fields.bool import BooleanFieldDef
 from zmei_generator.fields.relation import RelationOneDef, RelationManyDef, RelationOne2OneDef
 from zmei_generator.fields.text import TextFieldDef, LongTextFieldDef, RichTextFieldDef, RichTextFieldWithUploadDef
-from zmei_generator.parser.parser import parse_string
-from zmei_generator.parser.populate import populate_collection_set
+from zmei_generator.parser.parser import ZmeiParser
 
 
 def _(code):
-    tree = parse_string(dedent(code))
-
-    return populate_collection_set(tree, 'example')
+    parser = ZmeiParser()
+    parser.parse_string(dedent(code))
+    return parser.populate_collection_set('example')
 
 
 def test_one_relation():

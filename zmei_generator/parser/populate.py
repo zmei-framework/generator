@@ -1,3 +1,7 @@
+from collections import defaultdict
+
+from time import perf_counter
+
 from antlr4 import ParseTreeWalker
 
 from zmei_generator.config.domain.collection_def import CollectionDef
@@ -24,6 +28,7 @@ from zmei_generator.fields.text import TextFieldDef, SlugFieldDef, LongTextField
     RichTextFieldWithUploadDef
 from zmei_generator.parser.errors import TabsSuitRequiredValidationError, LangsRequiredValidationError
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
+from zmei_generator.parser.gen.ZmeiLangParserListener import ZmeiLangParserListener
 from zmei_generator.parser.populate_model_extras import ModelExtraListener
 from zmei_generator.parser.populate_page_crud_overrides import PageCrudOverrideExtraListener
 from zmei_generator.parser.populate_page_extras import PageExtraListener
@@ -481,21 +486,3 @@ class PartsCollectorListener(
         self.collection_set.suit.app_name = ctx.getText().strip('"\'')
 
 
-def populate_collection_set(tree, app_name='noname'):
-    cs = CollectionSetDef(app_name)
-
-    listener = PartsCollectorListener(cs)
-    model_extra_listener = ModelExtraListener(cs)
-    page_extra_listener = PageExtraListener(cs)
-
-    walker = ParseTreeWalker()
-
-    walker.walk(listener, tree)
-    cs.post_process()
-
-    walker.walk(model_extra_listener, tree)
-
-    walker.walk(page_extra_listener, tree)
-    cs.post_process_extras()
-
-    return cs

@@ -1,13 +1,12 @@
 from textwrap import dedent
 
-from zmei_generator.parser.parser import parse_string
-from zmei_generator.parser.populate import populate_collection_set
+from zmei_generator.parser.parser import ZmeiParser
 
 
 def _(code):
-    tree = parse_string(dedent(code))
-
-    return populate_collection_set(tree, 'example')
+    parser = ZmeiParser()
+    parser.parse_string(dedent(code))
+    return parser.populate_collection_set('example')
 
 
 def test_models():

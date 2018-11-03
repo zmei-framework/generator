@@ -46,7 +46,7 @@ class CrudBasePageExtraParserListener(BaseListener):
         field = CrudField()
         field.spec = ctx.an_crud_field_spec().getText().strip()
         if ctx.an_crud_field_filter():
-            field.filter_expr = ctx.an_crud_field_filter().getText().strip()
+            field.filter_expr = self._get_code(ctx.an_crud_field_filter())
 
         self.crud.params.fields.append(field)
 
