@@ -1,1 +1,8 @@
-{la{dsfdss}la}
+[base]
+@menu.main(
+    "Home": page(index)
+    Profile: page(dashboard)
+)
+
+[base->index: /]
+[base->dashboard: /dashboard]

@@ -13,12 +13,14 @@ import
     PageExtraCrudDelete,
     PageExtraCrudDetail,
     PageExtraCrud,
+    PageExtraMenu,
     PageExtraHtml
     ;
 
 page_annotation:
      an_html
     |an_react
+    |an_menu
     |an_crud
     |an_crud_detail
     |an_crud_delete

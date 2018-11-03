@@ -1,6 +1,7 @@
 lexer grammar ZmeiLangSimpleLexer;
 
 // Annotation types
+AN_MENU: '@menu';
 AN_CRUD: '@crud';
 AN_CRUD_DETAIL: '@crud_detail';
 AN_CRUD_DELETE: '@crud_delete';
@@ -35,6 +36,7 @@ WRITE_MODE: 'r' | 'rw' | 'w';
 BOOL: 'true' | 'false';
 
 KW_THEME: 'theme';
+KW_PAGE: 'page';
 KW_LINK_SUFFIX: 'link_suffix';
 KW_URL_PREFIX: 'url_prefix';
 KW_CAN_EDIT: 'can_edit';

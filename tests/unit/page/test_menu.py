@@ -1,6 +1,8 @@
 from textwrap import dedent
 
 import pytest
+
+from zmei_generator.extras.page.menu import MenuItem
 from zmei_generator.parser.parser import ZmeiParser
 
 
@@ -27,7 +29,11 @@ def test_menu_cases():
 
     menu = base.menus['main']
 
+    assert menu.descriptor == 'main'
     assert len(menu.items) == 2
+
+    assert isinstance(menu.items[0], MenuItem)
+    assert isinstance(menu.items[1], MenuItem)
 
     assert menu.items[0].ref == 'item_0'
     assert menu.items[1].ref == 'item_1'
@@ -54,9 +60,10 @@ def test_menu_url():
 
     assert len(menu.items) == 1
 
+    assert isinstance(menu.items[0], MenuItem)
     assert menu.items[0].ref == 'item_0'
     assert menu.items[0].label == 'Google'
-    assert menu.items[0].url == 'https://google.com'
+    assert menu.items[0].url == '"https://google.com"'
 
 
 def test_menu_expr():
@@ -74,9 +81,10 @@ def test_menu_expr():
 
     assert len(menu.items) == 1
 
+    assert isinstance(menu.items[0], MenuItem)
     assert menu.items[0].ref == 'item_0'
     assert menu.items[0].label == 'Google'
-    assert menu.items[0].expr == 'https://google.com'
+    assert menu.items[0].expr == "reverse_lazy('some.page')"
 
 
 def test_menu_args():
@@ -95,12 +103,14 @@ def test_menu_args():
 
     assert len(menu.items) == 2
 
+    assert isinstance(menu.items[0], MenuItem)
     assert menu.items[0].ref == 'item_0'
     assert menu.items[0].label == 'Page'
-    assert menu.items[0].url == 'Some'
+    assert menu.items[0].url == '"Some"'
     assert menu.items[0].args == {'icon': 'lala'}
 
+    assert isinstance(menu.items[1], MenuItem)
     assert menu.items[1].ref == 'item_1'
     assert menu.items[1].label == 'Page2'
-    assert menu.items[1].url == 'Other'
+    assert menu.items[1].url == '"Other"'
     assert menu.items[1].args == {'icon': 'hoho', 'boo': 'lala'}

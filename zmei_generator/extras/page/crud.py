@@ -302,7 +302,7 @@ class CrudPageExtra(PageExtra):
                 new_page = PageDef(self.page.collection_set)
 
             # new_page.extra_bases = []
-            # new_page.parent_name = page.name
+            new_page.parent_name = base_page.name
             new_page.name = f"{base_page.name}{self.name_suffix}_{crud_page}"
             new_page.url_alias = new_page.name
 
@@ -405,7 +405,6 @@ class BaseCrudSubpageExtra(CrudPageExtra):
             )
 
         if self.crud_page in ('edit', 'create') and len(self.field_filters):
-            print('LLLALALLA!')
             code = "form = super().get_form(*args, **kwargs)\n"
 
             for name, expr in self.field_filters.items():

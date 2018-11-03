@@ -9,6 +9,7 @@ id_or_kw: ID
    |BOOL
    |WRITE_MODE
    |KW_THEME
+   |KW_PAGE
    |KW_LINK_SUFFIX
    |KW_URL_PREFIX
    |KW_CAN_EDIT

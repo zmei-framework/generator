@@ -1898,6 +1898,114 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#an_menu.
+    def enterAn_menu(self, ctx:ZmeiLangParser.An_menuContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_menu.
+    def exitAn_menu(self, ctx:ZmeiLangParser.An_menuContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_menu_descriptor.
+    def enterAn_menu_descriptor(self, ctx:ZmeiLangParser.An_menu_descriptorContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_menu_descriptor.
+    def exitAn_menu_descriptor(self, ctx:ZmeiLangParser.An_menu_descriptorContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_menu_item.
+    def enterAn_menu_item(self, ctx:ZmeiLangParser.An_menu_itemContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_menu_item.
+    def exitAn_menu_item(self, ctx:ZmeiLangParser.An_menu_itemContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_menu_target.
+    def enterAn_menu_target(self, ctx:ZmeiLangParser.An_menu_targetContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_menu_target.
+    def exitAn_menu_target(self, ctx:ZmeiLangParser.An_menu_targetContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_menu_item_code.
+    def enterAn_menu_item_code(self, ctx:ZmeiLangParser.An_menu_item_codeContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_menu_item_code.
+    def exitAn_menu_item_code(self, ctx:ZmeiLangParser.An_menu_item_codeContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_menu_item_args.
+    def enterAn_menu_item_args(self, ctx:ZmeiLangParser.An_menu_item_argsContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_menu_item_args.
+    def exitAn_menu_item_args(self, ctx:ZmeiLangParser.An_menu_item_argsContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_menu_item_arg.
+    def enterAn_menu_item_arg(self, ctx:ZmeiLangParser.An_menu_item_argContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_menu_item_arg.
+    def exitAn_menu_item_arg(self, ctx:ZmeiLangParser.An_menu_item_argContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_menu_item_arg_key.
+    def enterAn_menu_item_arg_key(self, ctx:ZmeiLangParser.An_menu_item_arg_keyContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_menu_item_arg_key.
+    def exitAn_menu_item_arg_key(self, ctx:ZmeiLangParser.An_menu_item_arg_keyContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_menu_item_arg_val.
+    def enterAn_menu_item_arg_val(self, ctx:ZmeiLangParser.An_menu_item_arg_valContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_menu_item_arg_val.
+    def exitAn_menu_item_arg_val(self, ctx:ZmeiLangParser.An_menu_item_arg_valContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_menu_item_url.
+    def enterAn_menu_item_url(self, ctx:ZmeiLangParser.An_menu_item_urlContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_menu_item_url.
+    def exitAn_menu_item_url(self, ctx:ZmeiLangParser.An_menu_item_urlContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_menu_item_page.
+    def enterAn_menu_item_page(self, ctx:ZmeiLangParser.An_menu_item_pageContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_menu_item_page.
+    def exitAn_menu_item_page(self, ctx:ZmeiLangParser.An_menu_item_pageContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_menu_label.
+    def enterAn_menu_label(self, ctx:ZmeiLangParser.An_menu_labelContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_menu_label.
+    def exitAn_menu_label(self, ctx:ZmeiLangParser.An_menu_labelContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#an_html.
     def enterAn_html(self, ctx:ZmeiLangParser.An_htmlContext):
         pass
