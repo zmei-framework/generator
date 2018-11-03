@@ -1,3 +1,4 @@
+import os
 import re
 from textwrap import dedent
 
@@ -67,6 +68,7 @@ class PageDef(object):
 
         self.options = {}
         self.methods = {}
+        self.menus = {}
         self.blocks = {}
         self.cruds = {}
         self.react_components = {}
@@ -130,6 +132,20 @@ class PageDef(object):
 
         self.blocks[area].append(block)
 
+    def get_extra_bases(self):
+        if not self.parent_name:
+            return self.extra_bases
+
+        all_bases = self.get_parent().get_all_bases()
+
+        return [x for x in self.extra_bases if x not in all_bases]
+
+    def get_all_bases(self):
+        bases = self.extra_bases.copy()
+        if self.parent_name:
+            bases += self.get_parent().get_all_bases()
+        return bases
+
     def get_parent(self):
         if self.parent_name:
             if not self._parent:
@@ -151,6 +167,14 @@ class PageDef(object):
         return '(?P<{}>{})'.format(param, expr)
 
     def set_uri(self, uri):
+        if uri.startswith('.'):
+            uri = uri[1:]
+            parent = self.get_parent()
+
+            if parent:
+                uri = '/'.join([parent.defined_uri, uri])
+                uri = re.sub('/+', '/', uri)
+
         self.defined_uri = uri
         self.has_uri = bool(uri)
 

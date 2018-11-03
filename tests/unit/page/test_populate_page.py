@@ -39,6 +39,7 @@ def test_pages():
     assert foo.parent_name == 'boo'
     assert foo.parsed_template_expr == 'some_expr'
 
+
 def test_home_page():
     cs = _("""
     
@@ -51,6 +52,34 @@ def test_home_page():
 
     assert boo.name == 'boo'
     assert boo.uri == '/'
+
+
+def test_inherited_normal_url():
+    cs = _("""
+    
+        [foo: /a/]
+        [foo->boo: /b/]
+    """)
+
+    assert len(cs.pages) == 2
+
+    boo = cs.pages['boo']
+
+    assert boo.uri == '/b/'
+
+def test_inherited_local_url():
+    cs = _("""
+    
+        [foo: /a/]
+        [foo->boo: ./b/]
+    """)
+
+    assert len(cs.pages) == 2
+
+    boo = cs.pages['boo']
+
+    assert boo.uri == '/a/b/'
+
 
 def test_page_code():
     cs = _("""

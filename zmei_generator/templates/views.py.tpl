@@ -31,7 +31,7 @@ rs = ZmeiReactServer()
 rs.load(settings.BASE_DIR + '/app/static/react/{{ collection_set.app_name }}.bundle.js')
 {% endif -%}
 {% for page in pages %}
-class {{ page.view_name }}({% if page.extra_bases %}{{ page.extra_bases|join(", ") }}, {% endif %}{{ page.parent_view_name }}):
+class {{ page.view_name }}({% if page.get_extra_bases() %}{{ page.get_extra_bases()|join(", ") }}, {% endif %}{{ page.parent_view_name }}):
     {% if page.options %}{% for key, option in page.options.items() %}{{ key }} = {{ option }}
     {% endfor %}{% endif %}{% if page.react %}
     react_server = rs

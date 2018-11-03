@@ -39,7 +39,7 @@ template_name : file_name_part (SLASH file_name_part)*;
 
 file_name_part : (id_or_kw | DIGIT | DASH | UNDERSCORE | DOT)+ ;
 
-page_url : url_segments;
+page_url : DOT? url_segments;
 
 url_part: (id_or_kw
            |DASH

@@ -242,7 +242,7 @@ class CrudPageExtra(PageExtra):
             ('zmei.views', 'CrudMultiplexerView')
         )
 
-        if 'CrudMultiplexerView' not in base_page.extra_bases:
+        if 'CrudMultiplexerView' not in base_page.get_all_bases():
             base_page.extra_bases.append('CrudMultiplexerView')
 
         page = None
@@ -261,6 +261,7 @@ class CrudPageExtra(PageExtra):
             page.imports.append(
                 ('zmei.views', 'CrudView'),
             )
+
             page.extra_bases.append('CrudView')
 
             page.page_items[f'meta'] = PageExpression(

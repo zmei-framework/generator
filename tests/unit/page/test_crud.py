@@ -807,3 +807,32 @@ def test_crud_descriptor(extra_type_name):
     crud = boo.cruds['zoo'][extra_type_name]
 
     assert crud.descriptor == "zoo"
+
+
+
+def test_crud_check_parents_for_extra_bases():
+    cs = _(f"""
+        [root: /boo]
+        @crud(#foo)
+
+        [root->foo]
+
+
+        [foo->boo: /foo]
+        @crud(#foo)
+        
+        #foo
+        -----
+        a
+    """)
+
+    assert cs.crud is True
+
+    root = cs.pages['root']
+    foo = cs.pages['foo']
+    boo = cs.pages['boo']
+
+    assert 'CrudMultiplexerView' in root.get_extra_bases()
+    assert 'CrudMultiplexerView' not in foo.get_extra_bases()
+    assert 'CrudMultiplexerView' not in boo.get_extra_bases()
+
