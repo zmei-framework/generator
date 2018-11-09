@@ -30,7 +30,7 @@ class RestModelExtraParserListener(BaseListener):
     def ensure_defaults(self):
         # fields
         if not self.rest_config.fields:
-            self.rest_config.set_fields(self.model.filter_fields(['*']))
+            self.rest_config.set_fields(self.rest_config.collection.filter_fields(['*']))
 
     def enterAn_rest(self, ctx: ZmeiLangParser.An_restContext):
         if not self.model.rest:

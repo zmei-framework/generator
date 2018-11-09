@@ -354,6 +354,32 @@ def test_inline():
 
     assert [x.name for x in boo.rest_conf['_'].extra_serializers[0].fields] == ['lala1', 'lala3']
 
+def test_inline_default():
+    cs = _("""
+
+        #other
+        -----------
+        lala1
+        lala2
+        lala3
+
+        #boo
+        ----------
+        abc: one(#other)
+        cda
+
+        @rest(
+            inline: abc()
+        )
+    """)
+
+    boo = cs.collections['boo']
+
+    assert 'abc' in boo.rest_conf['_'].inlines
+    assert len(boo.rest_conf['_'].extra_serializers) == 1
+
+    assert [x.name for x in boo.rest_conf['_'].extra_serializers[0].fields] == ['lala1', 'lala2', 'lala3']
+
 
 def test_annotate():
     cs = _("""
