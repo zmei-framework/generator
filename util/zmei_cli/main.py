@@ -5,7 +5,7 @@ import signal
 import sys
 from glob import glob
 
-from genius_cli.config import Config
+from zmei_cli.config import Config
 from terminaltables import AsciiTable
 from time import sleep
 import requests.exceptions
@@ -13,8 +13,8 @@ import requests.exceptions
 import click
 from termcolor import colored
 
-from genius_cli.client import ZmeiApiClient, ApiError
-from genius_cli.utils import collect_files, extract_files, collect_app_names, migrate_db, install_deps, remove_db, \
+from zmei_cli.client import ZmeiApiClient, ApiError
+from zmei_cli.utils import collect_files, extract_files, collect_app_names, migrate_db, install_deps, remove_db, \
     wait_for_file_changes, run_django, run_webpack, npm_install, get_watch_paths, run_celery
 
 

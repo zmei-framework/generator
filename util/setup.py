@@ -24,7 +24,7 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'zmei = genius_cli.main:run',
+            'zmei = zmei_cli.main:run',
         ]
     },
 )

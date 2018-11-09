@@ -16,7 +16,7 @@ from tarfile import TarFile
 from termcolor import colored
 from time import sleep
 
-from genius_cli.blocks import render_blocks
+from zmei_cli.blocks import render_blocks
 
 
 @contextmanager
