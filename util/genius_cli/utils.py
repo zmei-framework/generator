@@ -51,12 +51,11 @@ def write_generated_file(path, source):
 
     source_prefix = ''
 
-    if path.endswith('.py') or path.endswith('requirements.txt') or path.endswith('Dockerfile'):
+    if path.endswith('.py') or path.endswith('_requirements.txt') or path.endswith('Dockerfile'):
         # settings.py is specially designed to be overriden
         if not path.endswith('app/settings.py') \
                 and not path.endswith('app/tasks.py') \
-                and not path.endswith('app/urls.py') \
-                and not path.endswith('requirements.txt'):
+                and not path.endswith('app/urls.py'):
             source_prefix = f"# {tag}\n\n"
 
     elif path.endswith('.js') or path.endswith('.jsx'):
@@ -160,6 +159,9 @@ def copy_generated_tree(source_path, target_path, glob_expr="**/*"):
 
 def clean_up_generated_files(path, file_list, remove_root=False):
     for file in os.listdir(path):
+        if file.startswith('.'):
+            continue
+
         if file == 'node_modules':
             continue
 

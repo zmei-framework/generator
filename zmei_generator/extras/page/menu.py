@@ -119,7 +119,7 @@ class MenuPageExtraParserListener(BaseListener):
         self.menu_item.url = ctx.getText()
 
     def enterAn_menu_item_page(self, ctx: ZmeiLangParser.An_menu_item_pageContext):
-        self.menu_item.page = ctx.id_or_kw().getText()
+        self.menu_item.page = ctx.an_menu_item_page_ref().getText()
 
     def enterAn_menu_item_code(self, ctx: ZmeiLangParser.An_menu_item_codeContext):
         self.menu_item.expr = ctx.code_line().PYTHON_CODE().getText().strip()

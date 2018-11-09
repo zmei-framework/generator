@@ -1,56 +1,141 @@
 import atexit
 import os
+import re
 import signal
 import sys
 from glob import glob
+
+from genius_cli.config import Config
+from terminaltables import AsciiTable
 from time import sleep
+import requests.exceptions
 
 import click
 from termcolor import colored
 
-from genius_cli.client import GeniusClient, ApiError
+from genius_cli.client import ZmeiApiClient, ApiError
 from genius_cli.utils import collect_files, extract_files, collect_app_names, migrate_db, install_deps, remove_db, \
     wait_for_file_changes, run_django, run_webpack, npm_install, get_watch_paths, run_celery
 
 
 def run():
-    api_token = os.environ.get('GENIUS_TOKEN', None)
-    features_env = os.environ.get('GENIUS_FEATURES', None)
-
-    # if not api_token:
-    #     print('No genius api token. Add GENIUS_TOKEN variable to your profile.')
-    #     sys.exit(1)
-
-    genius = GeniusClient(
-        api_url=os.environ.get('ZMEI_URL', 'http://ng.genius-project.io:9000/api/'),
-        token=api_token,
+    zmei = ZmeiApiClient(
+        # api_url=os.environ.get('ZMEI_URL', 'http://ng.genius-project.io:9000/api/'),
+        api_url=os.environ.get('ZMEI_URL', 'http://127.0.0.1:9000/api/'),
+        apps_url=os.environ.get('ZMEI_APPS_URL', 'http://127.0.0.1:8000/')
     )
+
+    def ensure_logged_in(msg='Login required to continue.\n'):
+        if not zmei.is_logged_in():
+            if msg:
+                print(msg)
+
+            email = click.prompt('Email address')
+            password = click.prompt('Password', hide_input=True)
+
+            success = zmei.login(email, password)
+            if not success:
+                print('Can not login with provided credentials.')
+            return success
+        else:
+            return True
 
     @click.group()
     def main(**args):
         pass
 
-    @main.command(help='Deploy to hyper.sh')
-    def config(**args):
-        print('Deploy!')
-        pass
+    @main.group(help='Deploy commands')
+    @click.pass_context
+    def app(context, **args):
+        ensure_logged_in()
+
+    @app.command(help='Create application', name='create')
+    @click.option('--ref', help='Reference name of the new application')
+    def app_create(ref, **args):
+        new_app = zmei.app_create(ref)
+        print(f"Created new app with id {new_app['id']}")
+
+    @app.command(help='Delete application', name='delete')
+    @click.option('--ref', help='Reference name of the application to delete')
+    @click.option('--id', help='Id of the application to delete')
+    def app_delete(ref, id, **args):
+        if ref:
+            result = zmei.app_delete(ref=ref)
+        elif id:
+            result = zmei.app_delete(app_id=id)
+        else:
+            print('Specify --ref or --id of the application you wish to delete')
+            return
+        if result:
+            print(f"App deleted.")
+        else:
+            print("App you requested, do not exist")
+
+    @app.command(help='List applications', name='list')
+    def app_list(**args):
+        apps = zmei.app_list()
+
+        if not len(apps):
+            print("You have no applications.")
+            return
+
+        table = [
+            ['Id', 'Reference name (ref)', 'Server created?', 'Public', 'Ssh port']
+        ]
+
+        for app in apps:
+            if app['created']:
+                table.append([
+                    app['id'],
+                    app['ref'],
+                    '+' if app['created'] else '',
+                    f"http://{app['ref']}.genius-apps.com/",
+                    app['ssh_port'],
+                ])
+            else:
+                table.append([
+                    app['id'],
+                    app['ref'],
+                    '',
+                    '',
+                    '',
+                ])
+        print(AsciiTable(table).table)
+
+
+        # config = Config(os.getcwd())
+        # config.load(interactive=True)
+        #
+        # config.save()
+
 
     @main.command(help='Deploy to hyper.sh')
-    def deploy(**args):
-        print('Deploy!')
+    def login(*args, **kwargs):
+        if zmei.is_logged_in():
+            if not click.confirm('Already logged in. Logout and login again?'):
+                return
+            zmei.logout()
 
-    @main.group(name='gen')
+        ensure_logged_in(msg='')
+
+    @main.command(help='Deploy to hyper.sh')
+    def logout(*args, **kwargs):
+        zmei.logout()
+
+    @main.group()
     @click.option('--src', default='.', help='Sources path')
     @click.option('--dst', default='.', help='Target path')
-    def cli(**args):
-        pass
+    def gen(**args):
+        ensure_logged_in()
 
-    @cli.command(help='Generate and start app')
+    @gen.command(help='Generate and start app')
+    @click.option('--port', default='8000', help='Django host:port to run on')
+    @click.option('--host', default=None, help='Django host:port to run on')
     def up(**args):
         print('Up!')
         gen(up=True, **args)
 
-    @cli.command(help='Run application')
+    @gen.command(help='Run application')
     @click.option('--nodejs', is_flag=True, help='Initialize nodejs dependencies')
     @click.option('--celery', is_flag=True, help='Run celery worker & beat')
     @click.option('--watch', is_flag=True, help='Watch for changes')
@@ -58,41 +143,34 @@ def run():
     @click.option('--port', default='8000', help='Django host:port to run on')
     @click.option('--host', default=None, help='Django host:port to run on')
     def run(**kwargs):
-        print('Run!')
         gen(run=True, **kwargs)
 
-    @cli.command(help='Just generate the code')
+    @gen.command(help='Just generate the code')
     @click.argument('app', nargs=-1)
     def generate(app=None, **args):
-        print('generate!')
         gen(install=True, app=app or [])
 
-    @cli.command(help='Install project dependencies')
+    @gen.command(help='Install project dependencies')
     def install():
-        print('Install!')
         gen(install=True)
 
-    @cli.group(help='Database related commands')
+    @gen.group(help='Database related commands')
     def db(**args):
         pass
 
     @db.command(help='Creates database migrations and apply them')
     @click.argument('app', nargs=-1)
     def migrate(app, **args):
-        print('Db migrate!', app)
         gen(auto=True, app=app)
 
     @db.command(help='db remove + db migrate')
     @click.argument('app', nargs=-1)
     def rebuild(app, **args):
-        print('Db rebuild!', app)
         gen(rebuild=True, app=app)
 
     @db.command(help='Rollback all the migrations')
     @click.argument('app', nargs=-1)
     def remove(app, **args):
-        print('Db remove!', app)
-
         gen(remove=True, app=app)
 
     def gen(auto=False,
@@ -156,7 +234,7 @@ def run():
             files = collect_files(src)
 
             try:
-                files = genius.generate(files, collections=app)
+                files = zmei.generate(files, collections=app)
                 if up and os.path.exists('app/celery.py'):
                     celery = True
 
@@ -191,10 +269,19 @@ def run():
 
                     celery_process = run_celery()
 
-            except ApiError:
-                pass
+                if watch:
+                    print(colored('> ', 'white', 'on_blue'), 'Watching for changes...')
 
-            if watch:
-                print(colored('> ', 'white', 'on_blue'), 'Watching for changes...')
+            except ApiError as e:
+                print(f'Error when accessing server. Status: {e.response.status_code}')
+                print(e.response.content.decode())
 
-    main()
+            except requests.exceptions.ConnectionError as e:
+                print('Can not connect to server.')
+                print()
+
+    try:
+        main()
+
+    except ApiError as e:
+        print(e)

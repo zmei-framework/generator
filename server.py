@@ -8,6 +8,8 @@ from concurrent.futures import ThreadPoolExecutor
 from glob import glob
 from io import BytesIO
 from os.path import dirname
+import jwt
+from jwt import ExpiredSignatureError, PyJWTError
 
 from zmei_generator.config.domain.exceptions import ValidationException
 from zmei_generator.generator.collections import generate, generate_common_files
@@ -16,7 +18,7 @@ from zmei_generator.generator.utils import StopGenerator
 from sanic.exceptions import InvalidUsage
 
 from sanic import Sanic
-from sanic.response import HTTPResponse
+from sanic.response import HTTPResponse, text
 
 from zmei_generator.parser.parser import ZmeiParser
 
@@ -131,6 +133,13 @@ def extract_files(target_path, request):
     return set(files.namelist())
 
 
+def get_user(jwt_token):
+    secret = '5%)z2n2io_m7%&=(y6s#s(1#$qx@1!w!2(_s+5(u*78$mh9lye'
+
+    token = jwt.decode(jwt_token, secret, algorithms=['HS256'])
+    return token
+
+
 if __name__ == '__main__':
 
     if os.environ.get('ZMEI_DEBUG') == '1':
@@ -142,5 +151,31 @@ if __name__ == '__main__':
 
         # Start watcher thread
         reloader.start_watcher_thread()
+
+    @app.middleware('request')
+    async def auth_request(request):
+        auth = request.headers.get('authorization')
+        if not auth:
+            return text('Missing authentication token.', status=401)
+
+        try:
+            token_type, token = auth.split(' ')
+        except ValueError:
+            return text('Malformed authorization header.', status=401)
+
+        if token_type != 'JWT':
+            return text('Unsupported authorization type.', status=401)
+
+        try:
+            user = get_user(token)
+
+            if not user:
+                return text('Invalid authentication token. Can not authorise user.', status=403)
+
+            request['user'] = user
+
+        except PyJWTError as e:
+            return text(str(e), status=403)
+
 
     app.run(host='0.0.0.0', port=9000)

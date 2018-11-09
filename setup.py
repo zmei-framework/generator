@@ -36,6 +36,7 @@ setup(
         'termcolor==1.1.0',
         'autopep8',
         'jinja2',
+        'pyjwt',
         'defusedxml',
         'django',
         'antlr4-python3-runtime',

@@ -126,7 +126,6 @@ GT: '>';
 COLON: ':';
 EXCLUDE: '^';
 BRACE_OPEN: '(';
-
 BRACE_CLOSE: ')';
 SQ_BRACE_OPEN: '[';
 SQ_BRACE_CLOSE: ']';
@@ -135,7 +134,6 @@ UNDERSCORE: '_';
 DASH: '-';
 COMA: ',';
 DOT: '.';
-
 HASH: '#';
 SLASH: '/';
 EQUALS: '=';

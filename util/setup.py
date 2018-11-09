@@ -16,6 +16,7 @@ setup(
         'click',
         'requests',
         'termcolor',
+        'terminaltables',
         'beautifulsoup4',
         'pyparsing',
         'jinja2',

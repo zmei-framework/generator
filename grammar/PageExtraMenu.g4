@@ -70,9 +70,11 @@ an_menu_item_url:
 an_menu_item_page:
     KW_PAGE
     BRACE_OPEN
-    id_or_kw
+    an_menu_item_page_ref
     BRACE_CLOSE
     ;
+
+an_menu_item_page_ref : id_or_kw ;
 
 an_menu_label:
      STRING_DQ

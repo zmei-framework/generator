@@ -1997,6 +1997,15 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#an_menu_item_page_ref.
+    def enterAn_menu_item_page_ref(self, ctx:ZmeiLangParser.An_menu_item_page_refContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_menu_item_page_ref.
+    def exitAn_menu_item_page_ref(self, ctx:ZmeiLangParser.An_menu_item_page_refContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#an_menu_label.
     def enterAn_menu_label(self, ctx:ZmeiLangParser.An_menu_labelContext):
         pass
