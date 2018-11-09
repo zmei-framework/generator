@@ -115,9 +115,12 @@ def run():
         ensure_logged_in()
 
     @key.command(help='Create ssh key', name='create')
-    @click.option('--name', help='Nameerence name of the new ssh key')
-    def key_create(name, **args):
-        new_key = zmei.ssh_key_create(name)
+    @click.option('--name', help='Name of the new ssh key', default='default')
+    @click.option('--key', help='Key path', default='~/.ssh/id_rsa.pub')
+    def key_create(name, key, **args):
+        with open(os.path.expanduser(key)) as f:
+            key_source = f.read()
+        new_key = zmei.ssh_key_create(name, key_source)
         print(f"Created new key with id {new_key['id']}")
 
     @key.command(help='Delete ssh key', name='delete')

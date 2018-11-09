@@ -204,9 +204,10 @@ class ZmeiApiClient(object):
     def ssh_key_list(self, **filter):
         return self._get_json('api/ssh_key', params=filter)
 
-    def ssh_key_create(self, name):
+    def ssh_key_create(self, name, key):
         return self._post_json('api/ssh_key', data={
-            'name': name
+            'name': name,
+            'key': key,
         })
 
     def ssh_key_delete(self, name=None, ssh_key_id=None):

@@ -17,6 +17,11 @@ class RelationDef(FieldDef):
         self.ref_collection = None
         self.related_class = None
 
+    def prepare_field_arguemnts(self, own_args=None):
+        args = super().prepare_field_arguemnts(own_args)
+        args['on_delete'] = 'models.PROTECTED'
+        return args
+
     def post_process(self):
 
         if self.ref_collection_def:
@@ -89,7 +94,7 @@ class RelationOneDef(RelationDef):
 
         return FieldDeclaration(
             [('django.db', 'models')],
-            'models.ForeignKey("{}", {}, on_delete=models.CASCADE)'.format(self.related_class, gen_args(args))
+            'models.ForeignKey("{}", {})'.format(self.related_class, gen_args(args))
         )
 
     def get_admin_widget(self):

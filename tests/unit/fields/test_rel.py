@@ -77,3 +77,35 @@ def test_relation_works_in_any_order():
     """)
 
     assert isinstance(cs.collections['zoo'].fields['boos'], ReferenceField)
+
+
+def test_relation_protected_by_default():
+    cs = _("""
+
+        #boo
+        ----------
+        a: one(#zoo -> boos)
+        
+        #zoo
+        ---------
+        lala
+        
+    """)
+
+    assert 'on_delete=models.CASCADE' not in cs.collections['boo'].fields['a'].get_model_field()[1]
+
+
+def test_relation_protected_can_be_overriden():
+    cs = _("""
+
+        #boo
+        ----------
+        a: one(#zoo -> boos) ..{on_delete=models.CASCADE}
+        
+        #zoo
+        ---------
+        lala
+        
+    """)
+
+    assert 'on_delete=models.CASCADE' in cs.collections['boo'].fields['a'].get_model_field()[1]
