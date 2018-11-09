@@ -44,15 +44,20 @@ def run():
     def main(**args):
         pass
 
-    @main.group(help='Deploy commands')
+    @main.group(help='Application management')
     @click.pass_context
     def app(context, **args):
         ensure_logged_in()
 
     @app.command(help='Create application', name='create')
     @click.option('--ref', help='Reference name of the new application')
-    def app_create(ref, **args):
-        new_app = zmei.app_create(ref)
+    @click.option('--key', help='Key id to use')
+    def app_create(ref, key, **args):
+        if not key:
+            print("Key is required")
+            return
+
+        new_app = zmei.app_create(ref, key)
         print(f"Created new app with id {new_app['id']}")
 
     @app.command(help='Delete application', name='delete')
@@ -80,7 +85,7 @@ def run():
             return
 
         table = [
-            ['Id', 'Reference name (ref)', 'Server created?', 'Public', 'Ssh port']
+            ['Id', 'Reference name (ref)', 'Server created?', 'Public', 'Ssh port', 'Ssh key']
         ]
 
         for app in apps:
@@ -91,6 +96,7 @@ def run():
                     '+' if app['created'] else '',
                     f"http://{app['ref']}.genius-apps.com/",
                     app['ssh_port'],
+                    app['key']['name'] if app['key'] else '',
                 ])
             else:
                 table.append([
@@ -99,14 +105,56 @@ def run():
                     '',
                     '',
                     '',
+                    app['key']['name'] if app['key'] else '',
                 ])
         print(AsciiTable(table).table)
 
+    @main.group(help='Ssh key management')
+    @click.pass_context
+    def key(context, **args):
+        ensure_logged_in()
 
-        # config = Config(os.getcwd())
-        # config.load(interactive=True)
-        #
-        # config.save()
+    @key.command(help='Create ssh key', name='create')
+    @click.option('--name', help='Nameerence name of the new ssh key')
+    def key_create(name, **args):
+        new_key = zmei.ssh_key_create(name)
+        print(f"Created new key with id {new_key['id']}")
+
+    @key.command(help='Delete ssh key', name='delete')
+    @click.option('--name', help='Name of the ssh key to delete')
+    @click.option('--id', help='Id of the ssh key to delete')
+    def key_delete(name, id, **args):
+        if name:
+            result = zmei.ssh_key_delete(name=name)
+        elif id:
+            result = zmei.ssh_key_delete(ssh_key_id=id)
+        else:
+            print('Specify --name or --id of the ssh key you wish to delete')
+            return
+        if result:
+            print(f"Key deleted.")
+        else:
+            print("Key you requested, do not exist")
+
+    @key.command(help='List ssh keys', name='list')
+    def key_list(**args):
+        keys = zmei.ssh_key_list()
+
+        if not len(keys):
+            print("You have no ssh keys.")
+            return
+
+        table = [
+            ['Id', 'Name', 'Key']
+        ]
+
+        for key in keys:
+            table.append([
+                key['id'],
+                key['name'],
+                f"{key['key'][:20]}...{key['key'][-50:]}"
+            ])
+        print(AsciiTable(table).table)
 
 
     @main.command(help='Deploy to hyper.sh')

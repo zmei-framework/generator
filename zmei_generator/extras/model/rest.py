@@ -56,7 +56,7 @@ class RestModelExtraParserListener(BaseListener):
         self.rest_config.set_descriptor(ctx.getText())
 
     def enterAn_rest_fields(self, ctx: ZmeiLangParser.An_rest_fieldsContext):
-        self.rest_config.set_fields(self.model.filter_fields(self._get_fields(ctx)))
+        self.rest_config.set_fields(self.rest_config.collection.filter_fields(self._get_fields(ctx)))
 
     def enterAn_rest_i18n(self, ctx: ZmeiLangParser.An_rest_i18nContext):
         self.rest_config.i18n = ctx.BOOL().getText() == 'true'
@@ -92,9 +92,21 @@ class RestModelExtraParserListener(BaseListener):
         if not inline_collection:
             raise ValidationException('field "{}" can not be used as inline'.format(field.name))
 
-        new_config = RestSerializerConfig(inline_collection, field)
+        serializer_name = self.rest_config.serializer_name + '_Inline' + inline_collection.class_name
+
+        new_config = RestSerializerConfig(serializer_name, inline_collection, field)
 
         self.rest_config.inlines[name] = new_config
+
+        self.rest_config.extra_serializers.append(new_config)
+
+        self.rest_config.field_imports.append(
+            FieldDeclaration('{}.models'.format(inline_collection.collection_set.app_name),
+                             inline_collection.class_name))
+
+        self.rest_config.field_declarations.append(
+            (field.name, '{}Serializer(many={}, read_only={})'.format(serializer_name, repr(field.is_many),
+                                                                      repr(field.name in self.rest_config.read_only_fields))))
 
         self.rest_config_stack.append(self.rest_config)
         self.rest_config = new_config
@@ -103,7 +115,7 @@ class RestModelExtraParserListener(BaseListener):
         self.rest_config = self.rest_config_stack.pop()
 
     def enterAn_rest_read_only(self, ctx: ZmeiLangParser.An_rest_read_onlyContext):
-        self.rest_config.read_only_fields = [f.name  for f in self.model.filter_fields(self._get_fields(ctx))]
+        self.rest_config.read_only_fields = [f.name for f in self.rest_config.collection.filter_fields(self._get_fields(ctx))]
 
     def enterAn_rest_annotate_count(self, ctx: ZmeiLangParser.An_rest_annotate_countContext):
         field = ctx.an_rest_annotate_count_field().getText()
@@ -194,25 +206,6 @@ class RestSerializerConfig(object):
             self.auth_method_classes.append('BasicAuthentication')
 
         self.field_imports.append(('rest_framework.permissions', 'IsAuthenticated'))
-
-    def add_inline(self, field, ):
-        inline_collection = field.get_rest_inline_collection()
-
-        if not inline_collection:
-            raise ValidationException('field "{}" can not be used as inline'.format(field.name))
-
-        serializer_name = self.serializer_name + '_Inline' + inline_collection.class_name
-
-        self.extra_serializers.append(
-            RestSerializerConfig(serializer_name, inline_collection, parent_field=field))
-
-        self.field_imports.append(
-            FieldDeclaration('{}.models'.format(inline_collection.collection_set.app_name),
-                             inline_collection.class_name))
-
-        self.field_declarations.append(
-            (field.name, '{}Serializer(many={}, read_only={})'.format(serializer_name, repr(field.is_many),
-                                                                      repr(field.name in self.read_only_fields))))
 
     def post_process(self):
         if self.processed:

@@ -185,9 +185,10 @@ class ZmeiApiClient(object):
     def app_list(self, **filter):
         return self._get_json('api/application', params=filter)
 
-    def app_create(self, ref):
+    def app_create(self, ref, key):
         return self._post_json('api/application', data={
-            'ref': ref
+            'ref': ref,
+            'key': key
         })
 
     def app_delete(self, ref=None, app_id=None):
@@ -197,5 +198,23 @@ class ZmeiApiClient(object):
 
         for app in apps:
             self._delete(f"api/application/{app['id']}")
+
+        return True
+
+    def ssh_key_list(self, **filter):
+        return self._get_json('api/ssh_key', params=filter)
+
+    def ssh_key_create(self, name):
+        return self._post_json('api/ssh_key', data={
+            'name': name
+        })
+
+    def ssh_key_delete(self, name=None, ssh_key_id=None):
+        ssh_keys = self.ssh_key_list(name=name, id=ssh_key_id)
+        if not len(ssh_keys):
+            return False
+
+        for ssh_key in ssh_keys:
+            self._delete(f"api/ssh_key/{ssh_key['id']}")
 
         return True
