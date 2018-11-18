@@ -11,7 +11,7 @@ env.hosts = ['root@ng.genius-project.io']
 def deploy():
 
     with cd('/var/www/app'):
-        local('rsync -rv ./ root@ng.genius-project.io:/var/www/app/')
+        local('rsync -rv --exclude .git --exclude .idea ./ root@ng.genius-project.io:/var/www/app/')
         run('/var/www/app/.pyvenv/bin/pip install -e .')
         run('systemctl restart zmei')
 

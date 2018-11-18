@@ -1,8 +1,8 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='zmei-gen',
-    version='1.1.0',
+    name='zmei-cli',
+    version='1.2.2',
     packages=find_packages(),
 
     url='',
@@ -17,9 +17,8 @@ setup(
         'requests',
         'termcolor',
         'terminaltables',
-        'beautifulsoup4',
-        'pyparsing',
-        'jinja2',
+        'PyYaml',
+        'PyJWT',
     ],
 
     entry_points={

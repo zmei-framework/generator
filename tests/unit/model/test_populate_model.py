@@ -113,6 +113,67 @@ def test_to_string():
     assert foo.to_string == 'lolo {title}'
 
 
+def test_verbose_name():
+    cs = _("""
+
+        #foo
+        ----------
+        title / This is title
+        title2 /This is title2
+        title3 /"This is title3"
+        title4 /'This is title4'
+
+    """)
+
+    assert len(cs.collections) == 1
+
+    foo = cs.collections['foo']
+
+    assert foo.fields['title'].verbose_name == 'This is title'
+    assert foo.fields['title2'].verbose_name == 'This is title2'
+    assert foo.fields['title3'].verbose_name == 'This is title3'
+    assert foo.fields['title4'].verbose_name == 'This is title4'
+
+
+def test_help():
+    cs = _("""
+
+        #foo
+        ----------
+        title ? This is title
+        title2 ?This is title2
+        title3 ?"This is title3"
+        title4 ?'This is title4'
+
+    """)
+
+    assert len(cs.collections) == 1
+
+    foo = cs.collections['foo']
+
+    assert foo.fields['title'].help == 'This is title'
+    assert foo.fields['title2'].help == 'This is title2'
+    assert foo.fields['title3'].help == 'This is title3'
+    assert foo.fields['title4'].help == 'This is title4'
+
+
+def test_help_and_verbose_name():
+    cs = _("""
+
+        #foo
+        ----------
+        title /This is title ? Definitely is
+
+    """)
+
+    assert len(cs.collections) == 1
+
+    foo = cs.collections['foo']
+
+    assert foo.fields['title'].verbose_name == 'This is title'
+    assert foo.fields['title'].help == 'Definitely is'
+
+
 def test_modifiers():
     cs = _("""
         @langs(en)

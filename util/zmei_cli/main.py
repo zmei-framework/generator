@@ -1,28 +1,26 @@
 import atexit
 import os
-import re
 import signal
-import sys
-from glob import glob
-
-from zmei_cli.config import Config
-from terminaltables import AsciiTable
-from time import sleep
-import requests.exceptions
 
 import click
+import requests.exceptions
 from termcolor import colored
+from terminaltables import AsciiTable
+from time import sleep
 
 from zmei_cli.client import ZmeiApiClient, ApiError
+from zmei_cli.config import Config
+from zmei_cli.deploy import generate_setting, generate_req_prod
 from zmei_cli.utils import collect_files, extract_files, collect_app_names, migrate_db, install_deps, remove_db, \
     wait_for_file_changes, run_django, run_webpack, npm_install, get_watch_paths, run_celery
 
 
 def run():
     zmei = ZmeiApiClient(
-        # api_url=os.environ.get('ZMEI_URL', 'http://ng.genius-project.io:9000/api/'),
-        api_url=os.environ.get('ZMEI_URL', 'http://127.0.0.1:9000/api/'),
-        apps_url=os.environ.get('ZMEI_APPS_URL', 'http://127.0.0.1:8000/')
+        api_url=os.environ.get('ZMEI_URL', 'http://ng.genius-project.io:9000/api/'),
+        # api_url=os.environ.get('ZMEI_URL', 'http://127.0.0.1:9000/api/'),
+        apps_url=os.environ.get('ZMEI_APPS_URL', 'https://zmei-framework.com/')
+        # apps_url=os.environ.get('ZMEI_APPS_URL', 'http://127.0.0.1:8000/')
     )
 
     def ensure_logged_in(msg='Login required to continue.\n'):
@@ -44,6 +42,61 @@ def run():
     def main(**args):
         pass
 
+    def prepare_app():
+        ensure_logged_in()
+
+        config = Config(os.getcwd())
+        config.load(interactive=True)
+
+        config.save()
+
+        app_name = config.config['app_name']
+        app = zmei.app_get(ref=app_name)
+
+        if not app:
+            print(f'You have no application with name "{app_name}" yet.')
+            return
+
+        return app
+
+    def run_command(cmd, show=False):
+        print(cmd)
+        if not show:
+            os.system(cmd)
+
+    @main.command(help='Ssh into deployed application')
+    @click.option('--show', help='Only print connect command', is_flag=True, default=False)
+    @click.pass_context
+    def ssh(context, show, **args):
+        app = prepare_app()
+        if not app:
+            return
+
+        if not app['ssh_port']:
+            print('Applications is not ready. Waiting')
+            while not app['ssh_port']:
+                sleep(1)
+                print('.')
+                app = zmei.app_get(ref=app['ref'])
+
+        run_command(f"ssh root@genius-apps.com -p {app['ssh_port']}", show=show)
+
+    @main.command(help='Deploy')
+    @click.pass_context
+    def deploy(context, **args):
+        app = prepare_app()
+        if not app:
+            return
+
+        generate_setting('.', app)
+        generate_req_prod('.', app)
+
+        run_command(
+            f"rsync --exclude *.pyc --exclude __pycache__ --exclude *.sqlite* --exclude .idea --exclude .git .e  -e 'ssh -p {app['ssh_port']}' -rv ./ root@genius-apps.com:/var/www/app/")
+        run_command(f"ssh -p {app['ssh_port']} root@genius-apps.com bash /var/www/deploy.sh")
+
+        print(f"Your application is up at http://{app['ref']}.genius-apps.com/")
+
     @main.group(help='Application management')
     @click.pass_context
     def app(context, **args):
@@ -58,6 +111,17 @@ def run():
             return
 
         new_app = zmei.app_create(ref, key)
+        print(f"Created new app with id {new_app['id']}")
+
+    @app.command(help='Delete application and it\'s container and create from scratch', name='rebuild')
+    @click.option('--ref', help='Reference name of the new application')
+    def app_rebuild(ref, **args):
+        app = zmei.app_get(ref=ref)
+        print('Deleting application')
+        zmei.app_delete(ref=app['ref'])
+        print('Waiting ...')
+        sleep(2)
+        new_app = zmei.app_create(ref=app['ref'], key=app['key']['id'])
         print(f"Created new app with id {new_app['id']}")
 
     @app.command(help='Delete application', name='delete')
@@ -158,7 +222,6 @@ def run():
                 f"{key['key'][:20]}...{key['key'][-50:]}"
             ])
         print(AsciiTable(table).table)
-
 
     @main.command(help='Deploy to hyper.sh')
     def login(*args, **kwargs):

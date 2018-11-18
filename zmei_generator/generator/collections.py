@@ -140,7 +140,7 @@ def generate_common_files(target_path, skeleton_dir, apps):
     generate_file(target_path, 'app/templates/base.html', template_name='theme/base.html')
 
     requirements = [
-        'zmei-utils==0.1.10',
+        'zmei-utils==0.1.12',
         'wheel',
         'django>2',
     ]

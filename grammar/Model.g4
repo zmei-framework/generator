@@ -50,7 +50,7 @@ col_field:
     col_modifier*
     col_field_name
     col_field_expr_or_def?
-    col_field_vrebose_name?
+    col_field_verbose_name?
     col_field_help_text?
     (NL+|EOF)
     ;
@@ -82,7 +82,7 @@ string_or_quoted : (id_or_kw+ | STRING_DQ | STRING_SQ) ;
 
 col_field_help_text : QUESTION_MARK string_or_quoted;
 
-col_field_vrebose_name : SLASH string_or_quoted;
+col_field_verbose_name : SLASH string_or_quoted;
 
 col_field_name : id_or_kw ;
 

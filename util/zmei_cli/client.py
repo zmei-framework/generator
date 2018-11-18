@@ -143,7 +143,7 @@ class ZmeiApiClient(object):
             self.token = self._post_json('login', data={
                 'email': email,
                 'password': password
-            }).json()['token']
+            })['token']
 
             path = os.path.expanduser('~/.zmei/token')
             dirname = os.path.dirname(path)
@@ -182,11 +182,16 @@ class ZmeiApiClient(object):
 
         return response.content
 
+    def app_get(self, **filter):
+        found = self.app_list(**filter)
+        if found:
+            return found[0]
+
     def app_list(self, **filter):
         return self._get_json('api/application', params=filter)
 
     def app_create(self, ref, key):
-        return self._post_json('api/application', data={
+        return self._post_json('api/application_new', data={
             'ref': ref,
             'key': key
         })
@@ -197,7 +202,7 @@ class ZmeiApiClient(object):
             return False
 
         for app in apps:
-            self._delete(f"api/application/{app['id']}")
+            self._delete(f"api/application_new/{app['id']}")
 
         return True
 

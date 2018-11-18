@@ -4,19 +4,15 @@ import json
 import os
 import re
 import signal
-import sys
-import zipfile
-from glob import glob
-from contextlib import contextmanager
 import subprocess
+import zipfile
+from contextlib import contextmanager
+from glob import glob
 from io import BytesIO
 from shutil import rmtree
-from tarfile import TarFile
 
 from termcolor import colored
 from time import sleep
-
-from zmei_cli.blocks import render_blocks
 
 
 @contextmanager

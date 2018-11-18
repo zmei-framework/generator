@@ -160,6 +160,12 @@ class PartsCollectorListener(
     def enterCol_field(self, ctx: ZmeiLangParser.Col_fieldContext):
         self.field_config = FieldConfig()
 
+    def enterCol_field_verbose_name(self, ctx: ZmeiLangParser.Col_field_verbose_nameContext):
+        self.field_config.verbose_name = ' '.join([x.getText() for x in ctx.string_or_quoted().children]).strip('"\' ')
+
+    def enterCol_field_help_text(self, ctx: ZmeiLangParser.Col_field_help_textContext):
+        self.field_config.field_help = ' '.join([x.getText() for x in ctx.string_or_quoted().children]).strip('"\' ')
+
     def enterCol_modifier(self, ctx: ZmeiLangParser.Col_modifierContext):
         m = ctx.getText()
         if m == "$":

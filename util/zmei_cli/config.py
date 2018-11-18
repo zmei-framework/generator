@@ -90,3 +90,4 @@ class Config(object):
 
     def _filter_config(self, conf, allowed_keys):
         return {key: val for key, val in conf.items() if key in allowed_keys}
+

@@ -1139,7 +1139,7 @@ class ZmeiLangParser ( Parser ):
     RULE_col_feild_expr_code = 37
     RULE_string_or_quoted = 38
     RULE_col_field_help_text = 39
-    RULE_col_field_vrebose_name = 40
+    RULE_col_field_verbose_name = 40
     RULE_col_field_name = 41
     RULE_col_modifier = 42
     RULE_col_field_def = 43
@@ -1336,7 +1336,7 @@ class ZmeiLangParser ( Parser ):
                    "col_field_expr_or_def", "col_field_custom", "col_field_extend", 
                    "col_field_extend_append", "wrong_field_type", "col_field_expr", 
                    "col_field_expr_marker", "col_feild_expr_code", "string_or_quoted", 
-                   "col_field_help_text", "col_field_vrebose_name", "col_field_name", 
+                   "col_field_help_text", "col_field_verbose_name", "col_field_name", 
                    "col_modifier", "col_field_def", "field_longtext", "field_html", 
                    "field_html_media", "field_float", "field_decimal", "field_date", 
                    "field_datetime", "field_create_time", "field_update_time", 
@@ -3749,8 +3749,8 @@ class ZmeiLangParser ( Parser ):
             return self.getTypedRuleContext(ZmeiLangParser.Col_field_expr_or_defContext,0)
 
 
-        def col_field_vrebose_name(self):
-            return self.getTypedRuleContext(ZmeiLangParser.Col_field_vrebose_nameContext,0)
+        def col_field_verbose_name(self):
+            return self.getTypedRuleContext(ZmeiLangParser.Col_field_verbose_nameContext,0)
 
 
         def col_field_help_text(self):
@@ -3809,7 +3809,7 @@ class ZmeiLangParser ( Parser ):
             _la = self._input.LA(1)
             if _la==ZmeiLangParser.SLASH:
                 self.state = 725
-                self.col_field_vrebose_name()
+                self.col_field_verbose_name()
 
 
             self.state = 729
@@ -4387,7 +4387,7 @@ class ZmeiLangParser ( Parser ):
             self.exitRule()
         return localctx
 
-    class Col_field_vrebose_nameContext(ParserRuleContext):
+    class Col_field_verbose_nameContext(ParserRuleContext):
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -4401,23 +4401,23 @@ class ZmeiLangParser ( Parser ):
 
 
         def getRuleIndex(self):
-            return ZmeiLangParser.RULE_col_field_vrebose_name
+            return ZmeiLangParser.RULE_col_field_verbose_name
 
         def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterCol_field_vrebose_name" ):
-                listener.enterCol_field_vrebose_name(self)
+            if hasattr( listener, "enterCol_field_verbose_name" ):
+                listener.enterCol_field_verbose_name(self)
 
         def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitCol_field_vrebose_name" ):
-                listener.exitCol_field_vrebose_name(self)
+            if hasattr( listener, "exitCol_field_verbose_name" ):
+                listener.exitCol_field_verbose_name(self)
 
 
 
 
-    def col_field_vrebose_name(self):
+    def col_field_verbose_name(self):
 
-        localctx = ZmeiLangParser.Col_field_vrebose_nameContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 80, self.RULE_col_field_vrebose_name)
+        localctx = ZmeiLangParser.Col_field_verbose_nameContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 80, self.RULE_col_field_verbose_name)
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 784

@@ -368,12 +368,12 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ZmeiLangParser#col_field_vrebose_name.
-    def enterCol_field_vrebose_name(self, ctx:ZmeiLangParser.Col_field_vrebose_nameContext):
+    # Enter a parse tree produced by ZmeiLangParser#col_field_verbose_name.
+    def enterCol_field_verbose_name(self, ctx:ZmeiLangParser.Col_field_verbose_nameContext):
         pass
 
-    # Exit a parse tree produced by ZmeiLangParser#col_field_vrebose_name.
-    def exitCol_field_vrebose_name(self, ctx:ZmeiLangParser.Col_field_vrebose_nameContext):
+    # Exit a parse tree produced by ZmeiLangParser#col_field_verbose_name.
+    def exitCol_field_verbose_name(self, ctx:ZmeiLangParser.Col_field_verbose_nameContext):
         pass
 
 
