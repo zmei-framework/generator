@@ -56,22 +56,25 @@ class ZmeiParser(object):
         return self.tree
 
     def populate_collection_set(self, app_name='noname'):
+        cs = CollectionSetDef(app_name)
+
+        listener = PartsCollectorListener(cs)
+        model_extra_listener = ModelExtraListener(cs)
+        page_extra_listener = PageExtraListener(cs)
+
+        self.walker.walk(listener, self.tree)
+        cs.post_process()
+
+        self.walker.walk(model_extra_listener, self.tree)
+
+        self.walker.walk(page_extra_listener, self.tree)
+        cs.post_process_extras()
+
+        return cs
+
+    def populate_collection_set_and_errors(self, *args, **kwargs):
         try:
-            cs = CollectionSetDef(app_name)
-
-            listener = PartsCollectorListener(cs)
-            model_extra_listener = ModelExtraListener(cs)
-            page_extra_listener = PageExtraListener(cs)
-
-            self.walker.walk(listener, self.tree)
-            cs.post_process()
-
-            self.walker.walk(model_extra_listener, self.tree)
-
-            self.walker.walk(page_extra_listener, self.tree)
-            cs.post_process_extras()
-
-            return cs
+            self.populate_collection_set(*args, **kwargs)
 
         except ValidationError as e:
             if self.filename:

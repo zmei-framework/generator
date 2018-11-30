@@ -179,7 +179,7 @@ async def do_generate(executor, request, target_path):
 def generate_app(stats_listener, target_path, app_name, features, filename):
     parser = ZmeiParser()
     parser.parse_file(os.path.join(target_path, filename))
-    collection_set = parser.populate_collection_set(app_name)
+    collection_set = parser.populate_collection_set_and_errors(app_name)
 
     parser.collect_stats(stats_listener)
 

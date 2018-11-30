@@ -54,6 +54,21 @@ def test_home_page():
     assert boo.uri == '/'
 
 
+def test_i18n_url():
+    cs = _("""
+
+        [boo: $/lala/]
+    """)
+
+    assert len(cs.pages) == 1
+
+    boo = cs.page_list()[0]
+
+    assert boo.name == 'boo'
+    assert boo.uri == '/lala/'
+    assert boo.i18n is True
+
+
 def test_inherited_normal_url():
     cs = _("""
     
@@ -80,6 +95,20 @@ def test_inherited_local_url():
 
     assert boo.uri == '/a/b/'
 
+
+def test_inherited_local_url_i18n():
+    cs = _("""
+
+        [foo: $/a/]
+        [foo->boo: ./b/]
+    """)
+
+    assert len(cs.pages) == 2
+
+    boo = cs.pages['boo']
+
+    assert boo.uri == '/a/b/'
+    assert boo.i18n is True
 
 def test_page_code():
     cs = _("""
