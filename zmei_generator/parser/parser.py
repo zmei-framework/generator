@@ -23,8 +23,11 @@ class ZmeiParser(object):
 
         self.tree = None
         self.walker = ParseTreeWalker()
+        self.filename = None
+        self.string = None
 
     def parse_file(self, filename, fail_on_error=True):
+        self.filename = filename
         try:
             return self.parse(FileStream(filename), fail_on_error=fail_on_error)
 
@@ -34,6 +37,7 @@ class ZmeiParser(object):
             handle_parse_exception(e, config, 'Error parsing col file ' + filename)
 
     def parse_string(self, string, fail_on_error=True):
+        self.string = string
         try:
             return self.parse(InputStream(string), fail_on_error=fail_on_error)
 
@@ -52,21 +56,31 @@ class ZmeiParser(object):
         return self.tree
 
     def populate_collection_set(self, app_name='noname'):
-        cs = CollectionSetDef(app_name)
+        try:
+            cs = CollectionSetDef(app_name)
 
-        listener = PartsCollectorListener(cs)
-        model_extra_listener = ModelExtraListener(cs)
-        page_extra_listener = PageExtraListener(cs)
+            listener = PartsCollectorListener(cs)
+            model_extra_listener = ModelExtraListener(cs)
+            page_extra_listener = PageExtraListener(cs)
 
-        self.walker.walk(listener, self.tree)
-        cs.post_process()
+            self.walker.walk(listener, self.tree)
+            cs.post_process()
 
-        self.walker.walk(model_extra_listener, self.tree)
+            self.walker.walk(model_extra_listener, self.tree)
 
-        self.walker.walk(page_extra_listener, self.tree)
-        cs.post_process_extras()
+            self.walker.walk(page_extra_listener, self.tree)
+            cs.post_process_extras()
 
-        return cs
+            return cs
+
+        except ValidationError as e:
+            if self.filename:
+                with open(self.filename, 'r', encoding='utf8') as f:
+                    config = f.read()
+                handle_parse_exception(e, config, 'Error processing col file ' + self.filename)
+            else:
+                config = self.string
+                handle_parse_exception(e, config, 'Error processing col file')
 
     def collect_stats(self, stats_listener):
         self.walker.walk(stats_listener, self.tree)
