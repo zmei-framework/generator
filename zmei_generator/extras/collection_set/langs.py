@@ -38,6 +38,8 @@ class LangsCsExtra(CollectionSetExtra):
         f.write('\nLANGUAGES = {}'.format(repr(langs)))
         f.write('\nMAIN_LANGUAGE = {}\n'.format(repr(langs[0][0])))
 
+        f.write('\nMIDDLEWARE += ["django.middleware.locale.LocaleMiddleware"]')
+
 
 class LangsCsExtraParserListener(BaseListener):
 

@@ -74,7 +74,7 @@ class ZmeiParser(object):
 
     def populate_collection_set_and_errors(self, *args, **kwargs):
         try:
-            self.populate_collection_set(*args, **kwargs)
+            return self.populate_collection_set(*args, **kwargs)
 
         except ValidationError as e:
             if self.filename:

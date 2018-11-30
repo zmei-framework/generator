@@ -33,13 +33,15 @@ def generate_common_files(target_path, skeleton_dir, apps):
     copytree(os.path.join(skeleton_dir, 'app'), app_dir)
     copyfile(os.path.join(skeleton_dir, 'manage.py'), manage_py)
 
-    #config
+    # config
     has_react = False
     has_crud = False
     has_rest = False
     has_admin = False
     has_filer = False
     has_suit = False
+    has_i18n_pages = False
+    has_normal_pages = False
 
     # urls
     imports = set()
@@ -58,8 +60,15 @@ def generate_common_files(target_path, skeleton_dir, apps):
                 imports.add(import_def)
 
         if collection_set.pages:
-            urls.append(f"    url(r'^', include({app_name}.urls)),")
-            imports.add(f'{app_name}.urls')
+            for page in collection_set.pages.values():
+                if page.i18n:
+                    has_i18n_pages = True
+                else:
+                    has_normal_pages = True
+
+            if has_normal_pages:
+                urls.append(f"    url(r'^', include({app_name}.urls)),")
+                imports.add(f'{app_name}.urls')
 
         if collection_set.admin:
             has_admin = True
@@ -83,6 +92,14 @@ def generate_common_files(target_path, skeleton_dir, apps):
 
     urls.append(']')
 
+    if has_i18n_pages:
+        urls += [
+            'urlpatterns += i18n_patterns(',
+            f"    url(r'^', include({app_name}.urls_i18n)),",
+            ")"
+        ]
+        imports.add(f'{app_name}.urls_i18n')
+
     # urls
     with open(os.path.join(target_path, 'app/_urls.py'), 'w') as f:
         f.write('from django.conf.urls import url, include\n')
@@ -90,6 +107,8 @@ def generate_common_files(target_path, skeleton_dir, apps):
 
         f.write('\n')
         f.write('\n'.join([f'import {app_name}' for app_name in imports]))
+        if has_i18n_pages:
+            f.write('\nfrom django.conf.urls.i18n import i18n_patterns\n')
         f.write('\n\n')
         f.write('\n'.join(urls))
 
@@ -122,7 +141,7 @@ def generate_common_files(target_path, skeleton_dir, apps):
             f.write('\nINSTALLED_APPS = [\n')
             f.write("\n    'app',\n")
             f.write('\n'.join([f"    '{app_name}'," for app_name in installed_apps]))
-            f.write('\n] + INSTALLED_APPS\n\n')# settings
+            f.write('\n] + INSTALLED_APPS\n\n')  # settings
 
             for key, val in req_settings.items():
                 f.write(f'{key} = {repr(val)}\n')
@@ -177,7 +196,6 @@ def generate(target_path, app_name: str, collection_set: CollectionSetDef, featu
         'cratis', 'django'
     ]})
     collection_set.features = features
-
 
     # urls
     pages_i18n = [page for page in collection_set.pages.values() if page.has_uri and page.i18n]
@@ -235,9 +253,10 @@ def generate(target_path, app_name: str, collection_set: CollectionSetDef, featu
     if collection_set.rest or len(collection_set.pages.values()) > 0:
         generate_views_py(target_path, app_name, collection_set)
 
-    generate_file(target_path, '{}/templates/{}/base.html'.format(app_name, app_name), template_name='theme/base_app.html', context={
-        'collection_set': collection_set,
-    })
+    generate_file(target_path, '{}/templates/{}/base.html'.format(app_name, app_name),
+                  template_name='theme/base_app.html', context={
+            'collection_set': collection_set,
+        })
 
     # react templates
     if collection_set.react:
@@ -272,29 +291,31 @@ def generate_react_jsx(target_path, app_name, collection_set):
     for page in collection_set.pages.values():
         if page.react:
             for name, (imports, body, source) in page.react_components.items():
-
-                generate_file(target_path, 'react/src/{}/Components/{}.jsx'.format(app_name.capitalize(), name), 'react.jsx.tpl', {
-                    'imports': imports.import_sting_js(),
-                    'name': name,
-                    'body': body,
-                    'source': source
-                })
+                generate_file(target_path, 'react/src/{}/Components/{}.jsx'.format(app_name.capitalize(), name),
+                              'react.jsx.tpl', {
+                                  'imports': imports.import_sting_js(),
+                                  'name': name,
+                                  'body': body,
+                                  'source': source
+                              })
 
             for name, (imports, body, source) in page.react_pages.items():
                 index_imports.add(f'./Pages/{name}', '*' + name)
                 index_imports.add(f'./Reducers/{name}Reducers', '*' + name + 'Reducer')
                 react_pages.append(name)
 
-                generate_file(target_path, 'react/src/{}/Reducers/{}Reducers.js'.format(app_name.capitalize(), name), 'react_reducer.js.tpl', {
-                    'name': name,
-                })
+                generate_file(target_path, 'react/src/{}/Reducers/{}Reducers.js'.format(app_name.capitalize(), name),
+                              'react_reducer.js.tpl', {
+                                  'name': name,
+                              })
 
-                generate_file(target_path, 'react/src/{}/Pages/{}.jsx'.format(app_name.capitalize(), name), 'react_page.jsx.tpl', {
-                    'imports': imports.import_sting_js(),
-                    'name': name,
-                    'body': body,
-                    'source': source
-                })
+                generate_file(target_path, 'react/src/{}/Pages/{}.jsx'.format(app_name.capitalize(), name),
+                              'react_page.jsx.tpl', {
+                                  'imports': imports.import_sting_js(),
+                                  'name': name,
+                                  'body': body,
+                                  'source': source
+                              })
 
     generate_file(target_path, 'react/src/{}/index.scss'.format(app_name.capitalize()), 'react.index.scss.tpl', {
         'pages': react_pages
@@ -472,6 +493,3 @@ def generate_models_py(target_path, app_name, collection_set):
         'collection_set': collection_set,
         'collections': collection_set.collections.items()
     })
-
-
-
