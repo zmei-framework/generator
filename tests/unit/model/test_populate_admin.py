@@ -94,7 +94,7 @@ def test_admin_with_parent_local_only():
     assert cs.admin is True
     assert [x.name for x in boo.admin.admin_list] == ['b', 'c']
 
-    
+
 def test_admin_plain_list():
     cs = _("""
     
@@ -131,7 +131,7 @@ def test_admin_exclude():
         color_back
         
         @admin(
-            list: *, ^color_front
+            list: *, ^color_front, ^size_x
         )
     
     """)
@@ -140,7 +140,7 @@ def test_admin_exclude():
 
     assert isinstance(boo.admin, AdminExtra)
     assert cs.admin is True
-    assert [x.name for x in boo.admin.admin_list] == ['weight', 'size_x', 'size_y', 'color_back']
+    assert [x.name for x in boo.admin.admin_list] == ['weight', 'size_y', 'color_back']
 
 
 def test_admin_exclude_wildcard():
@@ -479,6 +479,7 @@ def test_admin_inline_simple():
     assert inline.inline_name == 'lala'
     assert inline.source_field_name == 'rel'
     assert inline.field_names == ['c', 'd']
+
 
 def test_admin_inline_inheritance():
     cs = _("""

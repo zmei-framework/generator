@@ -1,7 +1,7 @@
 import re
 from copy import copy
 
-from zmei_generator.config.domain.exceptions import ValidationException
+from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
 from zmei_generator.config.domain.page_def import PageDef
 from zmei_generator.config.domain.page_expression import PageExpression
 from zmei_generator.config.extras import PageExtra
@@ -33,13 +33,15 @@ class CrudParams(object):
         self.item_name = None
         self.link_extra = None
         self.link_suffix = None
-        self.next_page = None
+        self.next_page = {}
 
 
 class CrudPageExtra(PageExtra):
     @classmethod
     def get_name(cls):
         return 'crud'
+
+    crud_page = None
 
     link_extra = None
     link_extra_params = None
@@ -86,9 +88,15 @@ class CrudPageExtra(PageExtra):
         self.build_pages(self.page)
 
     def prepare_environment(self, crud, page):
-        # next page
-        if crud.next_page:
-            self.next_page_expr = f"return {crud.next_page}"
+        if self.crud_page in crud.next_page:
+            next_page = crud.next_page[self.crud_page]
+        elif 'all' in crud.next_page:
+            next_page = crud.next_page['all']
+        else:
+            next_page = None
+
+        if next_page:
+            self.next_page_expr = f"return {next_page}"
         else:
             self.next_page_expr = f"return self.request.get_full_path()" + self.link_suffix
 
@@ -313,7 +321,10 @@ class CrudPageExtra(PageExtra):
 
             params = copy(self.params)
             link_extra_params = "{key: val for key, val in self.kwargs.items() if key != self.pk_url_kwarg}"
-            params.next_page = f"reverse('{base_page.collection_set.app_name}.{base_page.name}', kwargs={link_extra_params})"
+
+            if crud_page not in params.next_page:
+                if 'all' not in params.next_page:
+                    params.next_page[crud_page] = f"reverse('{base_page.collection_set.app_name}.{base_page.name}', kwargs={link_extra_params})"
 
             crud = crud_cls_by_name(crud_page)(new_page, params=params, descriptor=self.descriptor,
                                                crud_parent_page_name=page.name, parent_base_page=base_page)

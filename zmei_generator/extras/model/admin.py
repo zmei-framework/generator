@@ -1,5 +1,5 @@
 from zmei_generator.config.domain.collection_set_def import FieldDeclaration
-from zmei_generator.config.domain.exceptions import ValidationException
+from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
 from zmei_generator.config.domain.reference_field import ReferenceField
 from zmei_generator.config.extras import Extra
 from zmei_generator.fields.date import AutoNowDateTimeFieldDef, AutoNowAddDateTimeFieldDef

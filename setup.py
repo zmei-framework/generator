@@ -41,6 +41,7 @@ setup(
         'django',
         'antlr4-python3-runtime',
         'AoikLiveReload',
+        'aioelasticsearch',
     ],
 
     entry_points={

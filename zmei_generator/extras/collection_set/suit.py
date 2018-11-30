@@ -29,7 +29,8 @@ class SuitCsExtra(CollectionSetExtra):
         menu = []
 
         for app, collection_set in apps.items():
-            menu.extend(collection_set.suit.menu)
+            if collection_set.suit and collection_set.suit.menu:
+                menu.extend(collection_set.suit.menu)
 
             if collection_set.admin:
                 models = []

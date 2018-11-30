@@ -2,7 +2,7 @@ import re
 
 from termcolor import colored
 
-from zmei_generator.config.domain.exceptions import ValidationException
+from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
 
 
 class PageExpression(object):

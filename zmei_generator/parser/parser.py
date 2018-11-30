@@ -68,9 +68,5 @@ class ZmeiParser(object):
 
         return cs
 
-    def collect_stats(self):
-
-        stats_listener = StatsCollector()
+    def collect_stats(self, stats_listener):
         self.walker.walk(stats_listener, self.tree)
-
-        return stats_listener.stats

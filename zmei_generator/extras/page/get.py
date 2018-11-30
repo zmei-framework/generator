@@ -1,26 +1,24 @@
+from textwrap import indent
+
 from zmei_generator.config.extras import PageExtra
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
-from textwrap import indent
 
-
-class PostPageExtra(PageExtra):
-    # post
+class GetPageExtra(PageExtra):
+    # get
     pass
+    
+class GetPageExtraParserListener(BaseListener):
 
-
-class PostPageExtraParserListener(BaseListener):
-
-    def enterAn_post(self, ctx: ZmeiLangParser.An_postContext):
+    def enterAn_get(self, ctx: ZmeiLangParser.An_getContext):
         self.collection_set.extras.append(
-            PostPageExtra(self.page)
+            GetPageExtra(self.page)
         )
-
-        self.page.allow_post = True
 
         if not self.page.page_code:
             self.page.page_code = ''
 
         if ctx.code_block():
-            self.page.page_code += '\nif request.method == "POST":\n' + \
+            self.page.page_code += '\nif request.method == "GET":\n' + \
                                indent(self._get_code(ctx), ' ' * 4)
+

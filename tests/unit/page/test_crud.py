@@ -2,7 +2,7 @@ from textwrap import dedent
 
 import pytest
 
-from zmei_generator.config.domain.exceptions import ValidationException
+from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
 from zmei_generator.extras.page.crud import CrudParams, CrudPageExtra
 from zmei_generator.extras.page.crud_create import CrudCreatePageExtra
 from zmei_generator.extras.page.crud_delete import CrudDeletePageExtra
@@ -693,7 +693,6 @@ def test_crud_filter(extra_type_name):
 
 
 @pytest.mark.parametrize("extra_type_name", [
-    "crud",
     "crud_create",
     "crud_delete",
     "crud_detail",
@@ -719,7 +718,54 @@ def test_crud_success_page(extra_type_name):
     boo = cs.pages['boo']
     crud = boo.cruds['_'][extra_type_name]
 
-    assert crud.params.next_page == "reverse_lazy('some_url', kwargs={'param1': self.object.pk})"
+    assert crud.params.next_page == {'all': "reverse_lazy('some_url', kwargs={'param1': self.object.pk})"}
+
+
+def test_crud_success_page_main():
+    cs = _(f"""
+
+        [boo: /mycrud]
+        @crud(#foo
+            => {{reverse_lazy('some_url', kwargs={{'param1': self.object.pk}})}}
+        )
+
+        #foo
+        ------
+        a
+        b
+        c
+    """)
+
+    assert cs.crud is True
+
+    for tname in ('create', 'delete', 'edit'):
+        crud = cs.pages[f'boo_{tname}'].cruds['_'][f'crud_{tname}']
+        assert crud.params.next_page == {'all': "reverse_lazy('some_url', kwargs={'param1': self.object.pk})"}
+
+
+def test_crud_success_page_main_create_only():
+    cs = _(f"""
+
+        [boo: /mycrud]
+        @crud(#foo
+            (create) => {{reverse_lazy('some_url', kwargs={{'param1': self.object.pk}})}}
+        )
+
+        #foo
+        ------
+        a
+        b
+        c
+    """)
+
+    assert cs.crud is True
+
+    for tname in ('create', 'delete', 'edit'):
+        crud = cs.pages[f'boo_{tname}'].cruds['_'][f'crud_{tname}']
+        if tname == 'create':
+            assert crud.next_page_expr == "return reverse_lazy('some_url', kwargs={'param1': self.object.pk})"
+        else:
+            assert crud.next_page_expr != "return reverse_lazy('some_url', kwargs={'param1': self.object.pk})"
 
 
 @pytest.mark.parametrize("extra_type_name", [
@@ -749,7 +795,7 @@ def test_crud_success_url_dq(extra_type_name):
     boo = cs.pages['boo']
     crud = boo.cruds['_'][extra_type_name]
 
-    assert crud.params.next_page == '"https://google.com/"'
+    assert crud.params.next_page == {'all': '"https://google.com/"'}
 
 @pytest.mark.parametrize("extra_type_name", [
     "crud",
@@ -778,7 +824,7 @@ def test_crud_success_url_sq(extra_type_name):
     boo = cs.pages['boo']
     crud = boo.cruds['_'][extra_type_name]
 
-    assert crud.params.next_page == "'https://google.com/'"
+    assert crud.params.next_page == {'all': "'https://google.com/'"}
 
 
 @pytest.mark.parametrize("extra_type_name", [

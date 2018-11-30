@@ -1,5 +1,3 @@
-from textwrap import dedent
-
 import markdown
 
 from zmei_generator.config.extras import PageExtra

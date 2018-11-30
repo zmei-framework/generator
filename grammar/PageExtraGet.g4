@@ -1,11 +1,11 @@
 
-parser grammar PageExtraPost;
+parser grammar PageExtraGet;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 
 import Base;
 
-an_post:
-    AN_POST
+an_get:
+    AN_GET
     code_block?
     ;

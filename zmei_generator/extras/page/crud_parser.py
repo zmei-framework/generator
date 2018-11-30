@@ -83,10 +83,21 @@ class CrudBasePageExtraParserListener(BaseListener):
         self.crud.params.link_suffix = ctx.getText().strip(' "\'')
 
     def enterAn_crud_next_page(self, ctx: ZmeiLangParser.An_crud_next_pageContext):
-        self.crud.params.next_page = self._get_code(ctx)
+        code = self._get_code(ctx)
 
-    def enterAn_crud_next_page_url_val(self, ctx: ZmeiLangParser.An_crud_next_page_url_valContext):
-        self.crud.params.next_page = ctx.getText()
+        self.add_next_page(code, ctx)
+
+    def enterAn_crud_next_page_url(self, ctx: ZmeiLangParser.An_crud_next_page_urlContext):
+        code = ctx.an_crud_next_page_url_val().getText()
+
+        self.add_next_page(code, ctx)
+
+    def add_next_page(self, code, ctx):
+        if ctx.an_crud_next_page_event_name():
+            event = ctx.an_crud_next_page_event_name().getText()
+        else:
+            event = 'all'
+        self.crud.params.next_page[event] = code
 
 
 class CrudPageExtraParserListener(CrudBasePageExtraParserListener):

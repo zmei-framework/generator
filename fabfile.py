@@ -7,6 +7,8 @@ from fabric.state import env
 
 env.hosts = ['root@ng.genius-project.io']
 
+def tunnel():
+    local('ssh root@zmei-framework.com -L 9200:127.0.0.1:9200 -L 9300:127.0.0.1:9300 -L 5601:127.0.0.1:5601')
 
 def deploy():
 

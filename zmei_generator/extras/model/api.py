@@ -1,4 +1,4 @@
-from zmei_generator.config.domain.exceptions import ValidationException
+from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
 from zmei_generator.config.extras import ModelExtra
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener

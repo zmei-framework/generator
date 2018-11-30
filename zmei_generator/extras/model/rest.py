@@ -2,7 +2,7 @@ import sys
 from traceback import print_tb, print_stack
 
 from zmei_generator.config.domain.collection_set_def import FieldDeclaration, CollectionSetDef
-from zmei_generator.config.domain.exceptions import ValidationException
+from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
 from zmei_generator.config.extras import ModelExtra
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener

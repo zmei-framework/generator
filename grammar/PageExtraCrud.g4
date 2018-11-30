@@ -61,10 +61,19 @@ an_crud_descriptor : id_or_kw;
 
 // next page
 an_crud_next_page:
+    (BRACE_OPEN an_crud_next_page_event_name BRACE_CLOSE)?
     EQUALS GT code_block
     ;
+
+an_crud_next_page_event_name:
+    KW_DELETE
+    |KW_CREATE
+    |KW_EDIT
+    ;
+
 // next page url
 an_crud_next_page_url:
+    (BRACE_OPEN an_crud_next_page_event_name BRACE_CLOSE)?
     EQUALS GT an_crud_next_page_url_val
     ;
 

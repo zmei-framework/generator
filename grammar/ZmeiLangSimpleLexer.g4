@@ -1,6 +1,7 @@
 lexer grammar ZmeiLangSimpleLexer;
 
 // Annotation types
+AN_GET: '@get';
 AN_MENU: '@menu';
 AN_CRUD: '@crud';
 AN_CRUD_DETAIL: '@crud_detail';

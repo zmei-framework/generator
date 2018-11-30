@@ -1,5 +1,4 @@
 
-
 class ValidationError(Exception):
 
     def __init__(self, lineno, col, message) -> None:
@@ -15,6 +14,11 @@ class ValidationError(Exception):
 
     def __str__(self) -> str:
         return self.format_error()
+
+
+class GlobalScopeValidationError(ValidationError):
+    def __init__(self, message) -> None:
+        super().__init__(0, 0, message)
 
 
 class ValidationTokenError(ValidationError):

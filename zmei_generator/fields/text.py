@@ -2,7 +2,7 @@ import glob
 import re
 
 from zmei_generator.config.domain.collection_set_def import FieldDeclaration
-from zmei_generator.config.domain.exceptions import ValidationException
+from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
 from zmei_generator.config.domain.field_def import FieldDef
 from zmei_generator.generator.utils import gen_args, handle_parse_exception
 

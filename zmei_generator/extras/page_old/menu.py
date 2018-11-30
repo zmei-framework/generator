@@ -3,7 +3,7 @@ import re
 
 from zmei_generator.config.domain.page_extra import PageExtra
 from zmei_generator.config.domain.page_expression import PageExpression
-from zmei_generator.config.domain.exceptions import ValidationException
+from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
 
 from cPyparsing import *
 

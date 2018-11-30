@@ -1,7 +1,7 @@
 import re
 
 from zmei_generator.config.domain.collection_set_def import CollectionSetDef
-from zmei_generator.config.domain.exceptions import ValidationException
+from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
 from zmei_generator.config.extras import PageExtra
 from zmei_generator.extras.page.block import ThemeFileIncludePageBlock
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
@@ -28,8 +28,9 @@ class MenuPageExtra(PageExtra):
             try:
                 page = self.page.collection_set.pages[item.page]
             except KeyError:
-                raise ValidationException(f'Invalid page reference, page do not exist: "#{item.page}" when parsing menu '
-                                          f'extra "{self.descriptor}" item "{item.ref}" for page {self.page}')
+                raise ValidationException(
+                    f'Invalid page reference, page do not exist: "#{item.page}" when parsing menu '
+                    f'extra "{self.descriptor}" item "{item.ref}" for page {self.page}')
 
             self.page_refs.append(
                 (item.page, item.ref, page)
@@ -126,19 +127,3 @@ class MenuPageExtraParserListener(BaseListener):
 
     def enterAn_menu_item_arg(self, ctx: ZmeiLangParser.An_menu_item_argContext):
         self.menu_item.args[ctx.an_menu_item_arg_key().getText()] = ctx.an_menu_item_arg_val().getText().strip('\'"')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

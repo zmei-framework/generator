@@ -2,7 +2,7 @@ import os
 import re
 from textwrap import dedent
 
-from zmei_generator.config.domain.exceptions import ValidationException
+from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
 
 
 class PageFunction(object):
@@ -242,7 +242,7 @@ class PageDef(object):
     def render_method_headers(self, use_data=False, use_parent=False, use_url=False, use_request=False):
         code = ""
         if use_data or use_parent:
-            code += "data = self.get_data()\n"
+            code += "data = self._get_data()\n"
         if use_parent:
             code += "parent = type('parent', (object,), data)\n"
         if use_request:
