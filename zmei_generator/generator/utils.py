@@ -180,6 +180,7 @@ def generate_urls_file(target_path, app_name, collection_set, pages, i18n=False)
         url_imports.add('.views', page.view_name)
 
     context = {
+        'i18n': i18n,
         'package_name': app_name,
         'collection_set': collection_set,
         'pages': pages,
