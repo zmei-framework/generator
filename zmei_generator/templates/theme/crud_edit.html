@@ -1,7 +1,7 @@
-{% load crud_utils %}
+{% load crud_utils i18n %}
 
 {% if crud.crud_list_link %}
-<a href="{% crud_link crud.crud_list_link %}">&laquo; Back to list</a>
+<a href="{% crud_link crud.crud_list_link %}">&laquo; {% trans "Back to the list" %}</a>
 {% endif %}
 
 <h2>{{ crud.meta.verbose_name }} "{{ crud.item }}"</h2>
@@ -10,5 +10,5 @@
 <form action="" method="post"{% if crud.form.is_multipart %} enctype="multipart/form-data"{% endif %}>{% csrf_token %}
     {{ crud.form.as_p }}
     <input type="hidden" name="_form" value="{{ crud.name }}" />
-    <input type="submit" value="Save changes" />
+    <input type="submit" value="{% trans "Edit" %}" />
 </form>

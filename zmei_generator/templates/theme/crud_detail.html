@@ -1,7 +1,7 @@
-{% load crud_utils %}
+{% load crud_utils i18n %}
 
 {% if crud.crud_list_link %}
-<a href="{% crud_link crud.crud_list_link %}">&laquo; Back to list</a>
+<a href="{% crud_link crud.crud_list_link %}">&laquo; {% trans "Back to the list" %}</a>
 {% endif %}
 
 <h2>{{ crud.meta.verbose_name }} "{{ crud.item }}"</h2>
@@ -18,7 +18,7 @@
 </table>
 
 <p>
-    {% if crud.crud_edit_link %}<a href="{% crud_link crud.crud_edit_link crud.pk_param crud.item.pk %}">[Edit]</a>{% endif %}
+    {% if crud.crud_edit_link %}<a href="{% crud_link crud.crud_edit_link crud.pk_param crud.item.pk %}">[{% trans "Edit" %}]</a>{% endif %}
     |
-    {% if crud.crud_delete_link %}<a href="{% crud_link crud.crud_delete_link crud.pk_param crud.item.pk %}">[Delete]</a>{% endif %}
+    {% if crud.crud_delete_link %}<a href="{% crud_link crud.crud_delete_link crud.pk_param crud.item.pk %}">[{% trans "Delete" %}]</a>{% endif %}
 </p>

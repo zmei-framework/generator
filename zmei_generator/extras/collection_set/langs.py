@@ -35,10 +35,11 @@ class LangsCsExtra(CollectionSetExtra):
 
         langs = tuple([(code, name) for code, name in _langs.items()])
 
+        f.write('\n# LANGUAGE SETTINGS')
         f.write('\nLANGUAGES = {}'.format(repr(langs)))
         f.write('\nMAIN_LANGUAGE = {}\n'.format(repr(langs[0][0])))
-
         f.write('\nMIDDLEWARE += ["django.middleware.locale.LocaleMiddleware"]')
+        f.write("\nLOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]")
 
 
 class LangsCsExtraParserListener(BaseListener):

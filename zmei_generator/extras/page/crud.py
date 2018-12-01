@@ -9,6 +9,10 @@ from zmei_generator.extras.page.auth import add_page_auth
 from zmei_generator.extras.page.block import ThemeFileIncludePageBlock
 
 
+def format_field_names(names):
+    return '{%s}' % ', '.join([f"'{key}': _('{val}')" for key, val in names.items()])
+
+
 class CrudField(object):
     def __init__(self) -> None:
         self.spec = None
@@ -223,8 +227,8 @@ class CrudPageExtra(PageExtra):
         ctx = {
             'link_suffix': repr(self.link_suffix),
             'can_edit': self.can_edit,
-            'fields': repr(self.fields),
-            'list_fields': repr(self.list_fields),
+            'fields': format_field_names(self.fields),
+            'list_fields': format_field_names(self.list_fields),
             'link_extra': repr(link_extra),
             # 'meta': f'{self.name_prefix}{self.item_name}_meta',
             # 'item': repr(f"{self.context_object_name}"),

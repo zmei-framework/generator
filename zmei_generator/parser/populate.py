@@ -80,7 +80,11 @@ class PartsCollectorListener(
         self.page.parent_name = ctx.getText()[:-2]
 
     def enterPage_url(self, ctx: ZmeiLangParser.Page_urlContext):
-        self.page.set_uri(ctx.getText().strip())
+        url = ctx.getText().strip()
+        if url[0] == '$':
+            if not self.collection_set.langs:
+                raise LangsRequiredValidationError(ctx.start)
+        self.page.set_uri(url)
 
     def enterPage_template(self, ctx: ZmeiLangParser.Page_templateContext):
         tpl = ctx.getText().strip()

@@ -1,6 +1,7 @@
 import json
 import os
 import re
+import subprocess
 from os import unlink
 from shutil import copytree, copyfile, rmtree
 
@@ -43,6 +44,8 @@ def generate_common_files(target_path, skeleton_dir, apps):
     has_i18n_pages = False
     has_normal_pages = False
 
+    i18n_langs = []
+
     # urls
     imports = set()
     urls = ['urlpatterns = [']
@@ -75,6 +78,9 @@ def generate_common_files(target_path, skeleton_dir, apps):
 
         if collection_set.react:
             has_react = True
+
+        if collection_set.langs:
+            i18n_langs += collection_set.langs.langs
 
         if collection_set.crud:
             has_crud = True
@@ -177,6 +183,16 @@ def generate_common_files(target_path, skeleton_dir, apps):
         f.write('\n'.join(requirements))
 
     generate_file(target_path, 'requirements.txt', template_name='requirements.txt.tpl')
+
+    if i18n_langs:
+        for lang in i18n_langs:
+            os.makedirs(os.path.join(target_path, f'locale/{lang}'))
+            with open(os.path.join(target_path, f'locale/{lang}/readme.txt'), 'w') as f:
+                f.write('Collect translations:\n')
+                f.write('django-admin makemessages --all\n')
+                f.write('\n')
+                f.write('Compile translations:\n')
+                f.write('django-admin compilemessages\n')
 
     # react
     if react:

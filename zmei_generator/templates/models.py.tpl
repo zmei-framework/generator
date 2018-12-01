@@ -3,8 +3,7 @@
 
 {{ collection_set.model_imports }}
 
-if '_' not in locals():
-    _ = lambda s: s
+from django.utils.translation import gettext_lazy as _
 
 
 {% for cname, col in collections %}
