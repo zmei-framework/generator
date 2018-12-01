@@ -29,7 +29,7 @@ class ZmeiParser(object):
     def parse_file(self, filename, fail_on_error=True):
         self.filename = filename
         try:
-            return self.parse(FileStream(filename), fail_on_error=fail_on_error)
+            return self.parse(FileStream(filename, encoding='utf8'), fail_on_error=fail_on_error)
 
         except ValidationError as e:
             with open(filename, 'r', encoding='utf8') as f:

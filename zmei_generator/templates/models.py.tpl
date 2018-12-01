@@ -33,7 +33,7 @@ class {{ col.class_name }}({% for import_str, class_name, alias in col.mixin_cla
 
     {% if col.to_string %}
     def __str__(self):
-        return "{{ col.to_string }}".format(me=self)
+        return _("{{ col.to_string }}").format(me=self)
     {% elif col.display_field  %}
     def __str__(self):
         return str(self.{{ col.display_field.name }}) or "{{ col.name }} {}".format(self.id)

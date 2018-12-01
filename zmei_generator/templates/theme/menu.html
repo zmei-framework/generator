@@ -1,5 +1,5 @@
 <ul>
-    {% for ref, item in menu.items %}
+    {% for ref, item in menu.items.items %}
     <li>
         <a class="{% if item.active %}active{% endif %}" href="{{ item.link }}">{{ item.label }}</a>
     </li>
