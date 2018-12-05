@@ -11,6 +11,10 @@ import ReactDOMServer from 'react-dom/server';
 
 import {createStore} from 'redux'
 import {Provider} from 'react-redux'
+import axios from "axios";
+
+axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
 const renderElement = (rootReducer, component, state) => {
 

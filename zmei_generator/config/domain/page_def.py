@@ -17,6 +17,10 @@ class PageFunction(object):
     def render_python_args(self):
         return ', '.join(self.args)
 
+    @property
+    def python_name(self):
+        return f'_remote__{self.name}'
+
 
 class PageDef(object):
     def __init__(self, collection_set, override=False) -> None:

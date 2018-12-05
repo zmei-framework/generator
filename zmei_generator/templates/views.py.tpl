@@ -53,7 +53,7 @@ class {{ page.view_name }}({% if page.get_extra_bases() %}{{ page.get_extra_base
         )
     {% endif %}
     {{ page.render_template_name_expr()|indent(4) }}
-    {% for func in page.functions %}
+    {% for name, func in page.functions.items() %}
     def {{ func.python_name }}(self, url, request{% if func.args %}, {{ func.render_python_args() }}{% endif %}):
         {{ func.body|indent(8) }}
     {% endfor %}

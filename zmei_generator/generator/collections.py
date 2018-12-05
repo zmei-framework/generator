@@ -331,6 +331,7 @@ def generate_react_jsx(target_path, app_name, collection_set):
                                   'imports': imports.import_sting_js(),
                                   'name': name,
                                   'body': body,
+                                  'page': page,
                                   'source': source
                               })
 

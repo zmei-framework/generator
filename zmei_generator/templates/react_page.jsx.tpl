@@ -4,12 +4,19 @@ import axios from "axios";
 
 class {{ name }} extends React.Component {
 
-    reload = () => axios.get('').then((response) => {
-        // var state = {...this.props.store, ...response.data};
-        this.props.dispatch(reloadPageDataAction(response.data))
-    });
+    setState = (response) => {
+        if (response.data.__error__) throw response.data.__error__;
+        if (response.data.__state__) {
+            this.props.dispatch(reloadPageDataAction(response.data.__state__));
+            return response.data.__state__;
+        }
+        return response.data;
+    };
 
-    foo = (...args) => () => axios.post('', {'method': 'foo', args: args});
+    reload = () => axios.get('').then(this.setState);
+    {% for name, func in page.functions.items() %}
+    {{ name }} = ({% if func.args %}{{ func.render_python_args() }}{% endif %}) => () => axios.post('', {'method': '{{ name }}'{% if func.args %}, args: [{{ func.render_python_args() }}]{% else %}{% endif %}}).then(this.setState);
+    {%- endfor %}
 
     render() {
         {{ body|indent(8) }}
