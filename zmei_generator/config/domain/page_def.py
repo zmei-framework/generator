@@ -7,20 +7,15 @@ from zmei_generator.parser.errors import GlobalScopeValidationError as Validatio
 
 class PageFunction(object):
 
-    def __init__(self, function) -> None:
+    def __init__(self) -> None:
         super().__init__()
 
-        self.name = function.name
-        self.args = function.args
-
-        self.body = dedent(function.body.strip('\n'))
+        self.name = None
+        self.args = None
+        self.body = None
 
     def render_python_args(self):
         return ', '.join(self.args)
-
-    @property
-    def python_name(self):
-        return f'_remote__{self.name}'
 
 
 class PageDef(object):
@@ -74,7 +69,7 @@ class PageDef(object):
         self.react_components = {}
         self.page_component_name = None
         self.react_pages = {}
-        self.functions = []
+        self.functions = {}
         self.template_libs = []
         self.crud_views = {}
 
@@ -219,7 +214,7 @@ class PageDef(object):
         if self.react:
             imports.append(('django.conf', 'settings'))
             imports.append(('zmei.react', 'ZmeiReactServer'))
-            imports.append(('zmei.views', 'ZmeiReactViewMixin'))
+            imports.append(('zmei.react', 'ZmeiReactViewMixin'))
         else:
             imports.append(('zmei.views', 'ZmeiDataViewMixin'))
 

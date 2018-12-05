@@ -7,7 +7,7 @@ from antlr4 import ParseTreeWalker
 from zmei_generator.config.domain.collection_def import CollectionDef
 from zmei_generator.config.domain.collection_set_def import CollectionSetDef
 from zmei_generator.config.domain.field_def import FieldConfig
-from zmei_generator.config.domain.page_def import PageDef
+from zmei_generator.config.domain.page_def import PageDef, PageFunction
 from zmei_generator.config.domain.page_expression import PageExpression
 from zmei_generator.extras.collection_set.celery import CeleryCsExtraParserListener
 from zmei_generator.extras.collection_set.filer import FilerCsExtraParserListener
@@ -104,6 +104,19 @@ class PartsCollectorListener(
             self.page.sitemap_expr = expr
         else:
             self.page.page_items[field] = expr
+
+    def enterPage_function(self, ctx: ZmeiLangParser.Page_functionContext):
+        super().enterPage_function(ctx)
+
+        func = PageFunction()
+        func.name = ctx.page_function_name().getText()
+        if ctx.page_function_args():
+            func.args = [x.strip() for x in ctx.page_function_args().getText().split(',')]
+        else:
+            func.args = []
+        func.body = self._get_code(ctx)
+
+        self.page.functions[func.name] = func
 
     def enterPage_code(self, ctx: ZmeiLangParser.Page_codeContext):
         self.page.page_code = self._get_code(ctx.python_code())

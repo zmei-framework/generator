@@ -3,11 +3,7 @@ const path = require('path');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
-    entry: {
-        "blog": [
-            "./src/Blog/index.jsx"
-        ]
-    },
+    entry: {{ entries|tojson }},
 
     mode: "development",
     module: {

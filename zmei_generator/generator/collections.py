@@ -284,7 +284,8 @@ def generate_react_configs(target_path, apps):
 
     for app_name, collection_set in apps.items():
         if collection_set.react:
-            entries[app_name] = ["babel-polyfill", f'./src/{app_name.capitalize()}/index.jsx']
+            # entries[app_name] = ["babel-polyfill", f'./src/{app_name.capitalize()}/index.jsx']
+            entries[app_name] = [f'./src/{app_name.capitalize()}/index.jsx']
 
     packages = {}
 

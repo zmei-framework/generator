@@ -6,8 +6,8 @@ from zmei_generator.parser.utils import BaseListener
 
 
 class ReactPageExtra(PageExtra):
-    # react
-    pass
+    def get_required_deps(self):
+        return ['py_mini_racer']
 
 
 class ReactPageExtraParserListener(BaseListener):

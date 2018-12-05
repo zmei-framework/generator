@@ -56,6 +56,8 @@ def test_home_page():
 
 def test_i18n_url():
     cs = _("""
+    
+        @langs(en, ru)
 
         [boo: $/lala/]
     """)
@@ -98,6 +100,8 @@ def test_inherited_local_url():
 
 def test_inherited_local_url_i18n():
     cs = _("""
+    
+        @langs(en, ru)
 
         [foo: $/a/]
         [foo->boo: ./b/]
@@ -145,4 +149,33 @@ def test_page_items():
 
     # sitemap is special case
     assert boo.sitemap_expr.expression == '321'
+
+
+def test_page_func():
+    cs = _("""
+
+        [boo]
+        lala:= 123
+        
+        loo() {
+            lolo!
+        }
+        
+        zoo(hoho, abc) {
+            zozo!
+        }
+    """)
+
+    assert len(cs.pages) == 1
+
+    boo = cs.pages['boo']
+
+    assert len(boo.functions) == 2
+    assert boo.functions['loo'].args == []
+    assert boo.functions['loo'].name == 'loo'
+    assert boo.functions['loo'].body == 'lolo!'
+
+    assert boo.functions['zoo'].args == ['hoho', 'abc']
+    assert boo.functions['zoo'].name == 'zoo'
+    assert boo.functions['zoo'].body == 'zozo!'
 
