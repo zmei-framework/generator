@@ -11,7 +11,7 @@ export const reloadPageDataAction = (newState) => ({
 export const {{ name }}Reducer = (state, action) => {
     if (action.type === 'SERVER_DATA_RELOAD') {
         console.log('Reloading state from server: ', state);
-        return action.newState;
+        return {...state, ...action.newState}
     }
     return state
 };
