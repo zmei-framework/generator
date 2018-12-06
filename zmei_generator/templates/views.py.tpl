@@ -1,5 +1,8 @@
 {{ imports }}
 {{ collection_set.page_imports }}
+{% if collection_set.channels %}
+channel_layer = get_channel_layer()
+{% endif %}
 
 from django.utils.translation import gettext_lazy as _
 
@@ -37,6 +40,7 @@ class {{ page.view_name }}({% if page.get_extra_bases() %}{{ page.get_extra_base
     {% endfor %}{% endif %}{% if page.react %}
     react_server = rs
     react_components = {{ page.react_component_names|repr }}
+    {% if not page.react_server %}server_render = False{% endif %}
     {% endif %}{% if page.methods %}{% for key, method_code in page.methods.items() %}
     def {{ key }}(self, *args, **kwargs):
         {{ page.render_method_expr(method_code)|indent(8) }}
@@ -77,6 +81,32 @@ class {{ page.view_name }}({% if page.get_extra_bases() %}{{ page.get_extra_base
 {% if page.name == 'global' %}
 def global_context(request):
     return GlobalView(request=request, kwargs={}, args=[]).get_context_data()
+{% endif %}
+
+{% if page.stream %}
+class {{ page.view_name }}Consumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        await self.channel_layer.group_add('page_{{ page.name }}', self.channel_name)
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard('page_{{ page.name }}', self.channel_name)
+
+    async def state_update(self, event):
+        await self.send(text_data=ZmeiReactJsonEncoder(view=self.scope['url_route']).encode(event['message']))
+
+{% for item in page.page_items.values() %}
+@receiver(post_save, sender={{ item.stream_model }})
+def counter_post_save_callback(sender, instance, **kwargs):
+    async_to_sync(channel_layer.group_send)("page_{{ page.name }}", {
+        "type": "state_update",
+        "message": {
+            '__state__': {
+                '{{ item.key }}': {{ item.render_python_code() }}
+            }
+        }
+    })
+{% endfor %}
 {% endif %}
 
 {% if page.handlers %}

@@ -15,6 +15,7 @@ class CollectionSetDef(object):
 
         self.api = False
         self.rest = False
+        self.channels = False
         self.crud = False
         self.suit = False
         self.filer = False

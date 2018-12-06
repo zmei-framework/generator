@@ -1,6 +1,7 @@
 {{ imports }}
 import {connect} from "react-redux";
 import axios from "axios";
+import ReconnectingWebSocket from 'reconnecting-websocket';
 
 class {{ name }} extends React.Component {
 
@@ -12,6 +13,12 @@ class {{ name }} extends React.Component {
         }
         return response.data;
     };
+    {% if page.stream -%}
+    componentDidMount = () => {
+        const socket = new ReconnectingWebSocket('ws://' + window.location.host + '/ws/pages' + window.location.pathname);
+        socket.onmessage = (e) => this.setState({data: JSON.parse(e.data)});
+    };
+    {%- endif %}
 
     reload = () => axios.get('').then(this.setState);
     {% for name, func in page.functions.items() %}

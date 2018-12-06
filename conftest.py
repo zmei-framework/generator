@@ -19,6 +19,10 @@ files_dir = os.path.join(os.path.dirname(__file__), 'tests/files')
 
 base_path = os.path.realpath('.')
 
+if os.environ.get('DEBUG') == '1':
+    import pydevd
+    pydevd.settrace('localhost', port=12345, stdoutToServer=True, stderrToServer=True, suspend=False)
+
 
 def pytest_sessionstart(session):
     if os.path.exists(work_dir_prefix):

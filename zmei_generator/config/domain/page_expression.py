@@ -18,6 +18,9 @@ class PageExpression(object):
 
         self.serialize = False
 
+        self.stream = False
+        self.stream_model = False
+
         if '@cached_as' in self.expression:
             self.cache_type = 'cached_as'
         elif '@cached' in self.expression:
@@ -55,6 +58,57 @@ class PageExpression(object):
                 self.expression = f'serialize({self.expression}, "{descriptor}")'
             else:
                 self.expression = f'serialize({self.expression})'
+            self.or_404 = True
+
+        # @rest.xxx
+        stream_params_expr = self.get_annotation_with_braces('@stream')
+        if stream_params_expr:
+            self.stream = True
+            self.page.stream = True
+            self.stream_model = stream_params_expr
+
+    def get_annotation_with_braces(self, annot):
+        exp = self.expression
+        try:
+            idx = exp.index(annot)
+        except ValueError:
+            return
+
+        if not idx:  # if it's in 0 position we also don't care
+            return
+
+        try:
+            if exp[idx + len(annot)] != '(':
+                return
+        except IndexError:
+            pass
+
+        new_exp = exp[:idx]
+
+
+        pos = 0
+        braces_level = 1
+        start_pos = idx + len(annot) + 1
+        for char in exp[start_pos:]:
+            if char == ')':
+                braces_level -= 1
+            if char == '(':
+                braces_level += 1
+
+            pos += 1
+
+            if braces_level == 0:
+                new_exp += exp[idx + start_pos + pos:]
+                break
+
+        if braces_level > 0:
+            return
+
+        exp_inside = self.expression[start_pos: start_pos + pos -1]
+
+        self.expression = new_exp.strip()
+
+        return exp_inside
 
 
     def find_collection_by_ref(self, ref):

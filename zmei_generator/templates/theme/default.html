@@ -20,11 +20,11 @@
 {{ "{% endblock %}" }}
 {%- endfor %}
 
-{% if page.react %}
+{% if page.react_client %}
 {{ "{% block js %}{{ block.super }}" }}
 <script>
-{% for page in page.react_pages.keys() -%}
-R.renderClient(R.{{ page }}Reducer, R.{{ page }}, {{ '{{ react_state|safe }}' }}, document.getElementById('reactEl-{{ page }}'));
+{% for page_name in page.react_pages.keys() -%}
+R.renderClient(R.{{ page_name }}Reducer, R.{{ page_name }}, {{ '{{ react_state|safe }}' }}, document.getElementById('reactEl-{{ page_name }}'), {{ page.react_server|tojson }});
 {%- endfor %}
 </script>
 {{ "{% endblock %}" }}

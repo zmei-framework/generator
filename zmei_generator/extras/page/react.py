@@ -17,8 +17,10 @@ class ReactPageExtraParserListener(BaseListener):
             ReactPageExtra(self.page)
         )
 
+        react_type = ctx.an_react_type().getText()
+
         area = 'content'
         if ctx.an_react_descriptor():
             area = ctx.an_react_descriptor().id_or_kw().getText()
 
-        self.page.set_html(self._get_code(ctx), react=True, area=area)
+        self.page.set_html(self._get_code(ctx), react=react_type, area=area)

@@ -41,6 +41,7 @@ def generate_common_files(target_path, skeleton_dir, apps):
     has_admin = False
     has_filer = False
     has_suit = False
+    has_channels = False
     has_i18n_pages = False
     has_normal_pages = False
 
@@ -75,6 +76,9 @@ def generate_common_files(target_path, skeleton_dir, apps):
 
         if collection_set.admin:
             has_admin = True
+
+        if collection_set.channels:
+            has_channels = True
 
         if collection_set.react:
             has_react = True
@@ -193,6 +197,24 @@ def generate_common_files(target_path, skeleton_dir, apps):
                 f.write('\n')
                 f.write('Compile translations:\n')
                 f.write('django-admin compilemessages\n')
+
+    if has_channels:
+        streams = []
+        imports = ImportSet()
+        for app in apps.values():
+            if not app.channels:
+                continue
+            for page in app.pages.values():
+                if page.stream:
+                    streams.append((app, page))
+                    imports.add(f'{app.app_name}.views', f'{page.view_name}Consumer')
+        if streams:
+            generate_file(target_path, f'app/routing.py', 'channels.routing_main.tpl', context={
+                'streams': streams,
+                'imports': imports,
+            })
+
+
 
     # react
     if react:
@@ -440,6 +462,13 @@ def generate_views_py(target_path, app_name, collection_set):
         imports.add('django.views.generic', 'TemplateView')
 
         for page in collection_set.pages.values():
+            if page.stream:
+                imports.add('channels.generic.websocket', 'AsyncWebsocketConsumer')
+                imports.add('django.db.models.signals', 'post_save')
+                imports.add('channels.layers', 'get_channel_layer')
+                imports.add('asgiref.sync', 'async_to_sync')
+                imports.add('django.dispatch', 'receiver')
+                imports.add('zmei.react', 'ZmeiReactJsonEncoder')
 
             for import_spec in page.get_imports():
                 imports.add(*import_spec)
@@ -460,6 +489,7 @@ def generate_views_py(target_path, app_name, collection_set):
                     })
 
                     generated_templates.append(template_name)
+
 
     generate_file(target_path, '{}/views.py'.format(app_name), 'views.py.tpl', {
         'imports': imports.import_sting(),

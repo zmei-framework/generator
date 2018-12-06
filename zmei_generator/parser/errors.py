@@ -23,10 +23,10 @@ class GlobalScopeValidationError(ValidationError):
 
 class ValidationTokenError(ValidationError):
 
-    def __init__(self, token, message) -> None:
+    def __init__(self, token, message, pos_diff=0) -> None:
         self.token = token
 
-        super().__init__(self.token.line, self.token.column, message)
+        super().__init__(self.token.line, self.token.column + pos_diff, message)
 
 
 class PageParentValidationError(ValidationTokenError):
@@ -34,6 +34,11 @@ class PageParentValidationError(ValidationTokenError):
     def __init__(self, token, parent_page_name) -> None:
         self.parent_page_name = parent_page_name
         super().__init__(token, f"Parent page is not defined: \"{parent_page_name}\"")
+
+
+class ReactAndChannelsRequiredValidationError(ValidationTokenError):
+    def __init__(self, token, pos_diff=0) -> None:
+        super().__init__(token, f"@react and @channels annotations required to use @stream", pos_diff=pos_diff)
 
 
 class TabsSuitRequiredValidationError(ValidationTokenError):

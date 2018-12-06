@@ -80,6 +80,9 @@ class PageDef(object):
         self.themed_files = {}
 
         self.react = False
+        self.react_client = False
+        self.react_server = False
+        self.stream = False
 
         self.uri = None
         self.defined_uri = None
@@ -109,10 +112,18 @@ class PageDef(object):
         #     except KeyError as e:
         #         raise ValidationException('Page extra not found: {}, reason: {}'.format(extra.extra_name, e))
 
-
-    def set_html(self, html, react=False, area='content'):
+    def set_html(self, html, react=None, area='content'):
         from zmei_generator.extras.page.block import ReactPageBlock
-        self.react = react
+
+        if react:
+            self.react = react
+            if react == '@react_client':
+                self.react_client = True
+            elif react == '@react_server':
+                self.react_server = True
+            else:
+                self.react_client = True
+                self.react_server = True
 
         self.add_block(area, ReactPageBlock(self, html, area_name=area))
 

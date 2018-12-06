@@ -2,6 +2,8 @@ from textwrap import dedent
 
 import pytest
 from zmei_generator.parser.parser import ZmeiParser
+from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException, \
+    ReactAndChannelsRequiredValidationError
 
 
 def _(code):
@@ -84,6 +86,7 @@ def test_inherited_normal_url():
 
     assert boo.uri == '/b/'
 
+
 def test_inherited_local_url():
     cs = _("""
     
@@ -113,6 +116,7 @@ def test_inherited_local_url_i18n():
 
     assert boo.uri == '/a/b/'
     assert boo.i18n is True
+
 
 def test_page_code():
     cs = _("""
@@ -179,3 +183,39 @@ def test_page_func():
     assert boo.functions['zoo'].name == 'zoo'
     assert boo.functions['zoo'].body == 'zozo!'
 
+
+def test_page_stream_expr_no_channels():
+
+    with pytest.raises(ReactAndChannelsRequiredValidationError):
+        cs = _("""
+    
+            [boo]
+            foo:= 123 @stream
+            @react {
+                <Foo />
+            }
+        """)
+
+
+def test_page_stream_expr():
+    cs = _("""
+        @channels
+        
+        [boo]
+        foo:= 123 @stream(Article)
+        @react {
+            <Foo />
+        }
+    """)
+
+    assert len(cs.pages) == 1
+
+    boo = cs.pages['boo']
+
+    assert boo.stream is True
+
+    field = boo.page_items['foo']
+
+    assert field.expression == '123'
+    assert field.stream is True
+    assert field.stream_model == 'Article'

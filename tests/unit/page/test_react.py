@@ -33,6 +33,26 @@ def test_page_react():
     assert boo.extra_bases == ['ZmeiReactViewMixin']
 
 
+@pytest.mark.parametrize("extra_type_name, client_enabled, server_enabled", [
+    ("react", True, True),
+    ("react_client", True, False),
+    ("react_server", False, True),
+])
+def test_page_react_type(extra_type_name, client_enabled, server_enabled):
+    cs = _(f"""
+
+        [boo]
+        @{extra_type_name} {{
+            <Foo>test</Foo>
+        }}
+    """)
+
+    page_boo = cs.pages['boo']
+    assert page_boo.react is True
+    assert page_boo.react_client is client_enabled
+    assert page_boo.react_server is server_enabled
+
+
 def test_page_react_another_area():
     cs = _("""
 

@@ -26,9 +26,11 @@ from zmei_generator.fields.number import IntegerFieldDef, FloatFieldDef, Decimal
 from zmei_generator.fields.relation import RelationOneDef, RelationOne2OneDef, RelationManyDef
 from zmei_generator.fields.text import TextFieldDef, SlugFieldDef, LongTextFieldDef, RichTextFieldDef, \
     RichTextFieldWithUploadDef
-from zmei_generator.parser.errors import TabsSuitRequiredValidationError, LangsRequiredValidationError
+from zmei_generator.parser.errors import TabsSuitRequiredValidationError, LangsRequiredValidationError, \
+    ReactAndChannelsRequiredValidationError
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.gen.ZmeiLangParserListener import ZmeiLangParserListener
+from zmei_generator.extras.collection_set.channels import ChannelsCsExtraParserListener
 from zmei_generator.parser.populate_model_extras import ModelExtraListener
 from zmei_generator.parser.populate_page_crud_overrides import PageCrudOverrideExtraListener
 from zmei_generator.parser.populate_page_extras import PageExtraListener
@@ -36,6 +38,7 @@ from zmei_generator.parser.utils import BaseListener
 
 
 class PartsCollectorListener(
+    ChannelsCsExtraParserListener,
     CeleryCsExtraParserListener,
     LangsCsExtraParserListener,
     FilerCsExtraParserListener,
@@ -99,6 +102,10 @@ class PartsCollectorListener(
         val = ctx.page_field_code().getText()
 
         expr = PageExpression(field, val, self.page)
+
+        if '@stream' in val:
+            if not self.collection_set.channels:
+                raise ReactAndChannelsRequiredValidationError(token=ctx.page_field_code().start, pos_diff=val.index('@stream'))
 
         if field == 'sitemap':
             self.page.sitemap_expr = expr

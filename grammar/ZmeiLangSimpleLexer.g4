@@ -1,6 +1,7 @@
 lexer grammar ZmeiLangSimpleLexer;
 
 // Annotation types
+AN_CHANNELS: '@channels';
 AN_GET: '@get';
 AN_MENU: '@menu';
 AN_CRUD: '@crud';
@@ -14,6 +15,8 @@ AN_ERROR: '@error';
 AN_AUTH: '@auth';
 AN_MARKDOWN: '@markdown';
 AN_REACT: '@react';
+AN_REACT_CLIENT: '@react_client';
+AN_REACT_SERVER: '@react_server';
 AN_HTML: '@html';
 AN_TREE: '@tree';
 AN_DATE_TREE: '@date_tree';
@@ -32,6 +35,7 @@ AN_LANGS: '@langs';
 AN_FILER: '@filer';
 AN_ADMIN: '@admin';
 AN_SUIT: '@suit';
+
 
 WRITE_MODE: 'r' | 'rw' | 'w';
 BOOL: 'true' | 'false';

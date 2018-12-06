@@ -179,6 +179,15 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#an_channels.
+    def enterAn_channels(self, ctx:ZmeiLangParser.An_channelsContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_channels.
+    def exitAn_channels(self, ctx:ZmeiLangParser.An_channelsContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#an_suit.
     def enterAn_suit(self, ctx:ZmeiLangParser.An_suitContext):
         pass
@@ -1544,6 +1553,15 @@ class ZmeiLangParserListener(ParseTreeListener):
 
     # Exit a parse tree produced by ZmeiLangParser#an_react.
     def exitAn_react(self, ctx:ZmeiLangParser.An_reactContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_react_type.
+    def enterAn_react_type(self, ctx:ZmeiLangParser.An_react_typeContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_react_type.
+    def exitAn_react_type(self, ctx:ZmeiLangParser.An_react_typeContext):
         pass
 
 

@@ -27,8 +27,9 @@ const renderElement = (rootReducer, component, state) => {
     </Provider>
 };
 
-export const renderClient = (rootReducer, component, state, targetElement) => {
-    return ReactDOM.hydrate(renderElement(rootReducer, component, state), targetElement);
+export const renderClient = (rootReducer, component, state, targetElement, hydrate) => {
+    const render = hydrate ? ReactDOM.hydrate : ReactDOM.render;
+    return render(renderElement(rootReducer, component, state), targetElement);
 };
 
 export const renderServer = (rootReducer, component, state) => {
