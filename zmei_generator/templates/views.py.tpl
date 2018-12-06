@@ -97,6 +97,8 @@ class {{ page.view_name }}Consumer(AsyncWebsocketConsumer):
 
 {% for item in page.page_items.values() %}
 @receiver(post_save, sender={{ item.stream_model }})
+@receiver(post_delete, sender={{ item.stream_model }})
+@receiver(m2m_changed, sender={{ item.stream_model }})
 def counter_post_save_callback(sender, instance, **kwargs):
     async_to_sync(channel_layer.group_send)("page_{{ page.name }}", {
         "type": "state_update",

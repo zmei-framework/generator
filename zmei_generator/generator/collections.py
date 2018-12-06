@@ -464,7 +464,7 @@ def generate_views_py(target_path, app_name, collection_set):
         for page in collection_set.pages.values():
             if page.stream:
                 imports.add('channels.generic.websocket', 'AsyncWebsocketConsumer')
-                imports.add('django.db.models.signals', 'post_save')
+                imports.add('django.db.models.signals', 'post_save', 'post_delete', 'm2m_changed')
                 imports.add('channels.layers', 'get_channel_layer')
                 imports.add('asgiref.sync', 'async_to_sync')
                 imports.add('django.dispatch', 'receiver')
