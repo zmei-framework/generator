@@ -82,6 +82,7 @@ class PageDef(object):
         self.react = False
         self.react_client = False
         self.react_server = False
+
         self.stream = False
 
         self.uri = None

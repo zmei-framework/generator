@@ -1,6 +1,7 @@
 lexer grammar ZmeiLangSimpleLexer;
 
 // Annotation types
+AN_STREAM: '@stream';
 AN_CHANNELS: '@channels';
 AN_GET: '@get';
 AN_MENU: '@menu';

@@ -2078,6 +2078,60 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#an_stream.
+    def enterAn_stream(self, ctx:ZmeiLangParser.An_streamContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_stream.
+    def exitAn_stream(self, ctx:ZmeiLangParser.An_streamContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_stream_model.
+    def enterAn_stream_model(self, ctx:ZmeiLangParser.An_stream_modelContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_stream_model.
+    def exitAn_stream_model(self, ctx:ZmeiLangParser.An_stream_modelContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_stream_target_model.
+    def enterAn_stream_target_model(self, ctx:ZmeiLangParser.An_stream_target_modelContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_stream_target_model.
+    def exitAn_stream_target_model(self, ctx:ZmeiLangParser.An_stream_target_modelContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_stream_target_filter.
+    def enterAn_stream_target_filter(self, ctx:ZmeiLangParser.An_stream_target_filterContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_stream_target_filter.
+    def exitAn_stream_target_filter(self, ctx:ZmeiLangParser.An_stream_target_filterContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_stream_field_list.
+    def enterAn_stream_field_list(self, ctx:ZmeiLangParser.An_stream_field_listContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_stream_field_list.
+    def exitAn_stream_field_list(self, ctx:ZmeiLangParser.An_stream_field_listContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_stream_field_name.
+    def enterAn_stream_field_name(self, ctx:ZmeiLangParser.An_stream_field_nameContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_stream_field_name.
+    def exitAn_stream_field_name(self, ctx:ZmeiLangParser.An_stream_field_nameContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#an_html.
     def enterAn_html(self, ctx:ZmeiLangParser.An_htmlContext):
         pass

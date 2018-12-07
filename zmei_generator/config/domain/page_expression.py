@@ -18,9 +18,6 @@ class PageExpression(object):
 
         self.serialize = False
 
-        self.stream = False
-        self.stream_model = False
-
         if '@cached_as' in self.expression:
             self.cache_type = 'cached_as'
         elif '@cached' in self.expression:
@@ -60,12 +57,6 @@ class PageExpression(object):
                 self.expression = f'serialize({self.expression})'
             self.or_404 = True
 
-        # @rest.xxx
-        stream_params_expr = self.get_annotation_with_braces('@stream')
-        if stream_params_expr:
-            self.stream = True
-            self.page.stream = True
-            self.stream_model = stream_params_expr
 
     def get_annotation_with_braces(self, annot):
         exp = self.expression

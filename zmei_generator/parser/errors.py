@@ -38,7 +38,8 @@ class PageParentValidationError(ValidationTokenError):
 
 class ReactAndChannelsRequiredValidationError(ValidationTokenError):
     def __init__(self, token, pos_diff=0) -> None:
-        super().__init__(token, f"@react and @channels annotations required to use @stream", pos_diff=pos_diff)
+        super().__init__(token, f"@react and @channels annotations required to use @stream. Make sure you place "
+                                f"@stream after @react.", pos_diff=pos_diff)
 
 
 class TabsSuitRequiredValidationError(ValidationTokenError):

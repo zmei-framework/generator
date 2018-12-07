@@ -103,10 +103,6 @@ class PartsCollectorListener(
 
         expr = PageExpression(field, val, self.page)
 
-        if '@stream' in val:
-            if not self.collection_set.channels:
-                raise ReactAndChannelsRequiredValidationError(token=ctx.page_field_code().start, pos_diff=val.index('@stream'))
-
         if field == 'sitemap':
             self.page.sitemap_expr = expr
         else:

@@ -92,23 +92,46 @@ class {{ page.view_name }}Consumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard('page_{{ page.name }}', self.channel_name)
 
-    async def state_update(self, event):
-        await self.send(text_data=ZmeiReactJsonEncoder(view=self.scope['url_route']).encode(event['message']))
+    {% for stream_model in page.stream.models %}
+    async def state_update__{{ stream_model.stream_name }}(self, event):
+        if event['wait_db_sync']:
+            await sleep(.3)
 
-{% for item in page.page_items.values() %}
-@receiver(post_save, sender={{ item.stream_model }})
-@receiver(post_delete, sender={{ item.stream_model }})
-@receiver(m2m_changed, sender={{ item.stream_model }})
-def counter_post_save_callback(sender, instance, **kwargs):
+        serialized_state = await self.get_new_state__{{ stream_model.stream_name }}(
+            me=event['instance'],
+            url=type('url', (object,), self.scope),
+            request=type('request', (object,), self.scope),
+            kwargs=self.scope['url_route']['kwargs'],
+        )
+        if serialized_state:
+            await self.send(text_data=serialized_state)
+
+    @database_sync_to_async
+    def get_new_state__{{ stream_model.stream_name }}(self, me, url, request, kwargs):
+        {%- if stream_model.filter_expr %}
+        if not ({{ stream_model.filter_expr }}):
+            return
+        {% endif %}
+        view = {{ page.view_name }}(request=request, kwargs=kwargs)
+        data = view.get_data(url, request, inherited=False)
+        {%- if stream_model.fields %}
+        data = {key:val for key, val in data.items() if key in {{ stream_model.fields|repr }} }
+        {% endif %}
+        return ZmeiReactJsonEncoder(view=view).encode({'__state__': data})
+    {%- endfor %}
+
+
+{% for stream_model in page.stream.models %}
+@receiver(post_save, sender={{ stream_model.class_name }})
+@receiver(post_delete, sender={{ stream_model.class_name }})
+@receiver(m2m_changed, sender={{ stream_model.class_name }})
+def {{ page.name }}_change_listener(sender, signal, instance, **kwargs):
     async_to_sync(channel_layer.group_send)("page_{{ page.name }}", {
-        "type": "state_update",
-        "message": {
-            '__state__': {
-                '{{ item.key }}': {{ item.render_python_code() }}
-            }
-        }
+        "type": f"state_update__{{ stream_model.stream_name }}",
+        "wait_db_sync": signal in (post_delete, m2m_changed),
+        "instance": instance
     })
-{% endfor %}
+{%- endfor %}
 {% endif %}
 
 {% if page.handlers %}

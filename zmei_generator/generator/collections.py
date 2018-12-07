@@ -208,13 +208,11 @@ def generate_common_files(target_path, skeleton_dir, apps):
                 if page.stream:
                     streams.append((app, page))
                     imports.add(f'{app.app_name}.views', f'{page.view_name}Consumer')
-        if streams:
-            generate_file(target_path, f'app/routing.py', 'channels.routing_main.tpl', context={
-                'streams': streams,
-                'imports': imports,
-            })
 
-
+        generate_file(target_path, f'app/routing.py', 'channels.routing_main.tpl', context={
+            'streams': streams,
+            'imports': imports,
+        })
 
     # react
     if react:
@@ -466,7 +464,9 @@ def generate_views_py(target_path, app_name, collection_set):
                 imports.add('channels.generic.websocket', 'AsyncWebsocketConsumer')
                 imports.add('django.db.models.signals', 'post_save', 'post_delete', 'm2m_changed')
                 imports.add('channels.layers', 'get_channel_layer')
+                imports.add('channels.db', 'database_sync_to_async')
                 imports.add('asgiref.sync', 'async_to_sync')
+                imports.add('asyncio', 'sleep')
                 imports.add('django.dispatch', 'receiver')
                 imports.add('zmei.react', 'ZmeiReactJsonEncoder')
 
@@ -489,7 +489,6 @@ def generate_views_py(target_path, app_name, collection_set):
                     })
 
                     generated_templates.append(template_name)
-
 
     generate_file(target_path, '{}/views.py'.format(app_name), 'views.py.tpl', {
         'imports': imports.import_sting(),

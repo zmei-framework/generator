@@ -1,6 +1,8 @@
 from textwrap import dedent
 
 import pytest
+
+from zmei_generator.extras.page.stream import StreamPageExtra
 from zmei_generator.parser.parser import ZmeiParser
 from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException, \
     ReactAndChannelsRequiredValidationError
@@ -184,13 +186,38 @@ def test_page_func():
     assert boo.functions['zoo'].body == 'zozo!'
 
 
-def test_page_stream_expr_no_channels():
+def test_page_stream_expr_no_react():
+    with pytest.raises(ReactAndChannelsRequiredValidationError):
+        cs = _("""
+            @channels
+            
+            [boo]
+            foo:= 123
+            @stream(Article)
+        """)
 
+
+def test_page_stream_expr_no_channels():
     with pytest.raises(ReactAndChannelsRequiredValidationError):
         cs = _("""
     
             [boo]
-            foo:= 123 @stream
+            foo:= 123
+            @react {
+                <Foo />
+            }
+            
+            @stream(foo.Article)
+        """)
+
+
+def test_page_stream_expr_react_after_stream():
+    with pytest.raises(ReactAndChannelsRequiredValidationError):
+        cs = _("""
+    
+            [boo]
+            foo:= 123
+            @stream(foo.Article)
             @react {
                 <Foo />
             }
@@ -202,20 +229,74 @@ def test_page_stream_expr():
         @channels
         
         [boo]
-        foo:= 123 @stream(Article)
+        foo:= 123
+        
         @react {
             <Foo />
         }
+        @stream(foo.Article) 
+        
     """)
 
     assert len(cs.pages) == 1
 
     boo = cs.pages['boo']
 
-    assert boo.stream is True
+    assert boo.stream is not None
+    assert isinstance(boo.stream, StreamPageExtra)
+    assert len(boo.stream.models) == 1
 
-    field = boo.page_items['foo']
+    assert boo.stream.models[0].target == 'foo.Article'
 
-    assert field.expression == '123'
-    assert field.stream is True
-    assert field.stream_model == 'Article'
+
+def test_page_stream_expr_full_syntax():
+    cs = _("""
+        @channels
+        
+        [boo]
+        foo:= 123
+        zoo:= 123
+        goo:= 123
+        
+        @react {
+            <Foo />
+        }
+        @stream(
+            #lala{me.name=="hoho"} => foo, goo
+            #lolo
+            #lulu => *
+        )
+        
+        #lala
+        -------
+        name
+        
+        #lolo
+        -------
+        name
+
+    """)
+
+    assert len(cs.pages) == 1
+
+    boo = cs.pages['boo']
+
+    assert boo.stream is not None
+    assert isinstance(boo.stream, StreamPageExtra)
+    assert len(boo.stream.models) == 3
+
+    m1 = boo.stream.models[0]
+    m2 = boo.stream.models[1]
+    m3 = boo.stream.models[2]
+
+    assert m1.target == '#lala'
+    assert m1.filter_expr == 'me.name=="hoho"'
+    assert m1.fields == ['foo', 'goo']
+
+    assert m2.target == '#lolo'
+    assert m2.filter_expr is None
+    assert m2.fields is None
+
+    assert m3.target == '#lulu'
+    assert m3.filter_expr is None
+    assert m3.fields is None

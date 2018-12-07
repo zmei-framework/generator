@@ -15,12 +15,14 @@ import
     PageExtraCrud,
     PageExtraMenu,
     PageExtraGet,
+    PageExtraStream,
     PageExtraHtml
     ;
 
 page_annotation:
      an_html
     |an_react
+    |an_stream
     |an_get
     |an_menu
     |an_crud
