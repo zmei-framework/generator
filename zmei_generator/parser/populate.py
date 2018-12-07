@@ -30,6 +30,7 @@ from zmei_generator.parser.errors import TabsSuitRequiredValidationError, LangsR
     ReactAndChannelsRequiredValidationError
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.gen.ZmeiLangParserListener import ZmeiLangParserListener
+from zmei_generator.extras.collection_set.file import FileCsExtraParserListener
 from zmei_generator.extras.collection_set.channels import ChannelsCsExtraParserListener
 from zmei_generator.parser.populate_model_extras import ModelExtraListener
 from zmei_generator.parser.populate_page_crud_overrides import PageCrudOverrideExtraListener
@@ -38,6 +39,7 @@ from zmei_generator.parser.utils import BaseListener
 
 
 class PartsCollectorListener(
+    FileCsExtraParserListener,
     ChannelsCsExtraParserListener,
     CeleryCsExtraParserListener,
     LangsCsExtraParserListener,

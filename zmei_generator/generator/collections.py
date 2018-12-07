@@ -224,6 +224,20 @@ def generate_common_files(target_path, skeleton_dir, apps):
             for path, template_name in page.themed_files.items():
                 generate_file(target_path, f'app/templates/{path}', template_name, raw=True)
 
+    file_mapping = []
+
+    for collection_set in apps.values():
+        for name, source in collection_set.files.items():
+            file_mapping.append({
+                'kind': 'file',
+                'path': name,
+                'source': source
+            })
+
+    with open(os.path.join(target_path, '__files.json'), 'w') as f:
+        f.write(json.dumps(file_mapping))
+
+
 
 def generate(target_path, app_name: str, collection_set: CollectionSetDef, features=None):
     features = features or []

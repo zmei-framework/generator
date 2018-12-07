@@ -33,6 +33,8 @@ class CollectionSetDef(object):
         self._apps = [app_name]
         self.extras = []
 
+        self.files = {}
+
     def add_deps(self, deps):
         for dep in deps:
             if dep not in self.deps:
