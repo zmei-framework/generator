@@ -28,6 +28,8 @@ an_rest_main_part: (
         |an_rest_auth
         |an_rest_query
         |an_rest_on_create
+        |an_rest_filter_in
+        |an_rest_filter_out
         |an_rest_read_only
         |an_rest_user_field
         |an_rest_annotate
@@ -42,6 +44,8 @@ an_rest_i18n: KW_I18N COLON BOOL NL*;
 an_rest_query: KW_QUERY python_code NL*;
 
 an_rest_on_create: KW_ON_CREATE COLON? python_code NL*;
+an_rest_filter_in: KW_FILTER_IN COLON? python_code NL*;
+an_rest_filter_out: KW_FILTER_OUT COLON? python_code NL*;
 
 an_rest_read_only: KW_READ_ONLY COLON field_list_expr NL*;
 

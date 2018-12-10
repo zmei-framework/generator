@@ -30,7 +30,7 @@ class RestModelExtraParserListener(BaseListener):
     def ensure_defaults(self):
         # fields
         if not self.rest_config.fields:
-            self.rest_config.set_fields(self.rest_config.collection.filter_fields(['*']))
+            self.rest_config.set_fields(self.rest_config.collection.filter_fields(['*'], include_refs=True))
 
     def enterAn_rest(self, ctx: ZmeiLangParser.An_restContext):
         if not self.model.rest:
@@ -56,7 +56,7 @@ class RestModelExtraParserListener(BaseListener):
         self.rest_config.set_descriptor(ctx.getText())
 
     def enterAn_rest_fields(self, ctx: ZmeiLangParser.An_rest_fieldsContext):
-        self.rest_config.set_fields(self.rest_config.collection.filter_fields(self._get_fields(ctx)))
+        self.rest_config.set_fields(self.rest_config.collection.filter_fields(self._get_fields(ctx), include_refs=True))
 
     def enterAn_rest_i18n(self, ctx: ZmeiLangParser.An_rest_i18nContext):
         self.rest_config.i18n = ctx.BOOL().getText() == 'true'
@@ -73,6 +73,12 @@ class RestModelExtraParserListener(BaseListener):
 
     def enterAn_rest_on_create(self, ctx: ZmeiLangParser.An_rest_on_createContext):
         self.rest_config.on_create = self._get_code(ctx.python_code())
+
+    def enterAn_rest_filter_in(self, ctx: ZmeiLangParser.An_rest_filter_inContext):
+        self.rest_config.filter_in = self._get_code(ctx.python_code())
+
+    def enterAn_rest_filter_out(self, ctx: ZmeiLangParser.An_rest_filter_outContext):
+        self.rest_config.filter_out = self._get_code(ctx.python_code())
 
     def exitAn_rest_auth_type(self, ctx: ZmeiLangParser.An_rest_auth_typeContext):
         ref = None
@@ -151,6 +157,8 @@ class RestSerializerConfig(object):
         self.auth_method_classes = []
         self.query = 'all()'
         self.on_create = ''
+        self.filter_in = ''
+        self.filter_out = ''
         self.rest_mode = 'r'
         self.user_field = None
 
@@ -269,3 +277,11 @@ class RestSerializerConfig(object):
 
         for conf in self.extra_serializers:
             conf.configure_imports(imports)
+
+    def configure_model_imports(self, imports):
+
+        if self.collection:
+            imports.add('.models', self.collection.class_name)
+
+        for conf in self.extra_serializers:
+            conf.configure_model_imports(imports)

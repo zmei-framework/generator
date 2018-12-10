@@ -1,9 +1,11 @@
 
 from zmei_generator.config.extras import ModelExtra
+from zmei_generator.extras.model._signals import SignalBaseModelExtra
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
-class PostDeleteModelExtra(ModelExtra):
+class PostDeleteModelExtra(SignalBaseModelExtra):
+
     def get_name(cls):
         return 'post_delete'
     
@@ -16,5 +18,8 @@ class PostDeleteModelExtraParserListener(BaseListener):
         )
 
         self.model.signal_handlers.append(
-            (['django.db.models.signals', 'post_delete'], self._get_code(ctx.python_code())))
+            ([
+                ('django_query_signals', 'post_delete'),
+                ('django.db.models.signals', 'post_delete'),
+            ], self._get_code(ctx.python_code())))
 

@@ -1,9 +1,10 @@
 
 from zmei_generator.config.extras import ModelExtra
+from zmei_generator.extras.model._signals import SignalBaseModelExtra
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
-class PreDeleteModelExtra(ModelExtra):
+class PreDeleteModelExtra(SignalBaseModelExtra):
     def get_name(cls):
         return 'pre_delete'
     
@@ -16,5 +17,8 @@ class PreDeleteModelExtraParserListener(BaseListener):
         )
 
         self.model.signal_handlers.append(
-            (['django.db.models.signals', 'pre_delete'], self._get_code(ctx.python_code())))
+            ([
+                ('django_query_signals', 'pre_delete'),
+                ('django.db.models.signals', 'pre_delete'),
+            ], self._get_code(ctx.python_code())))
 

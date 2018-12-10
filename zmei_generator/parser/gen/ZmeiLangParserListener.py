@@ -908,6 +908,24 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#an_rest_filter_in.
+    def enterAn_rest_filter_in(self, ctx:ZmeiLangParser.An_rest_filter_inContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_rest_filter_in.
+    def exitAn_rest_filter_in(self, ctx:ZmeiLangParser.An_rest_filter_inContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_rest_filter_out.
+    def enterAn_rest_filter_out(self, ctx:ZmeiLangParser.An_rest_filter_outContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_rest_filter_out.
+    def exitAn_rest_filter_out(self, ctx:ZmeiLangParser.An_rest_filter_outContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#an_rest_read_only.
     def enterAn_rest_read_only(self, ctx:ZmeiLangParser.An_rest_read_onlyContext):
         pass

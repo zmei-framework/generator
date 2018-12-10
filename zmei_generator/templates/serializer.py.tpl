@@ -32,19 +32,23 @@ class {{ rest_conf.serializer_name }}Serializer(serializers.ModelSerializer):
         return item
     {% endif %}
 
-    {% if col.polymorphic %}
+    {% if col.polymorphic or rest_conf.filter_out %}
     def to_representation(self, obj):
-        """
-        Polymorphic serialization
-        """
+        {% if col.polymorphic %}
         {% for child in col.child_collections %}
         {% if child.rest %}
         if isinstance(obj, {{ child.class_name }}):
             return {{ child.class_name }}Serializer(obj, context=self.context).to_representation(obj)
         {% endif %}
         {% endfor %}
-
+        {% endif %}
+        {% if rest_conf.filter_out %}
+        data = super().to_representation(obj)
+        {{ rest_conf.filter_out|indent(8) }}
+        return data
+        {% else %}
         return super().to_representation(obj)
+        {% endif %}
     {% endif %}
 
 

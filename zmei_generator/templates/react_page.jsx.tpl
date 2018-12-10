@@ -22,7 +22,7 @@ class {{ name }} extends React.Component {
 
     reload = () => axios.get('').then(this.setState);
     {% for name, func in page.functions.items() %}
-    {{ name }} = ({% if func.args %}{{ func.render_python_args() }}{% endif %}) => () => axios.post('', {'method': '{{ name }}'{% if func.args %}, args: [{{ func.render_python_args() }}]{% else %}{% endif %}}).then(this.setState);
+    {{ name }} = ({% if func.args %}{{ func.render_python_args() }}{% endif %}) => axios.post('', {'method': '{{ name }}'{% if func.args %}, args: [{{ func.render_python_args() }}]{% else %}{% endif %}}).then(this.setState);
     {%- endfor %}
 
     render() {

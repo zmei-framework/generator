@@ -448,7 +448,8 @@ def generate_serializers_py(target_path, app_name, collection_set):
 
     for col in collection_set.collections.values():
         if col.rest:
-            imports.add('.models', col.class_name)
+            for name, rest_conf in col.rest_conf.items():
+                rest_conf.configure_model_imports(imports)
 
     generate_file(target_path, '{}/serializers.py'.format(app_name), 'serializers.py.tpl', {
         'imports': imports.import_sting(),
@@ -476,7 +477,8 @@ def generate_views_py(target_path, app_name, collection_set):
         for page in collection_set.pages.values():
             if page.stream:
                 imports.add('channels.generic.websocket', 'AsyncWebsocketConsumer')
-                imports.add('django.db.models.signals', 'post_save', 'post_delete', 'm2m_changed')
+                imports.add('django.db.models.signals', 'post_save', 'm2m_changed', 'post_delete')
+                imports.add('django_query_signals', 'post_bulk_create', 'post_delete as post_delete_bulk', 'post_get_or_create', 'post_update_or_create', 'post_update')
                 imports.add('channels.layers', 'get_channel_layer')
                 imports.add('channels.db', 'database_sync_to_async')
                 imports.add('asgiref.sync', 'async_to_sync')
@@ -518,9 +520,10 @@ def generate_models_py(target_path, app_name, collection_set):
 
     for collection in collection_set.collections.values():  # type: CollectionDef
 
-        for signal_import, code in collection.signal_handlers:
-            imports.add('django.dispatch', 'receiver')
-            imports.add(*signal_import)
+        for handlers in collection.signal_handlers:
+            for signal_import, code in handlers:
+                imports.add('django.dispatch', 'receiver')
+                imports.add(*signal_import)
 
         if collection.polymorphic and collection.tree:
             imports.add('polymorphic_tree.models', 'PolymorphicMPTTModel', 'PolymorphicTreeForeignKey')

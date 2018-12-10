@@ -292,6 +292,62 @@ def test_on_create():
     assert boo.rest_conf['inline'].on_create == 'some()'
 
 
+def test_filter_in():
+        cs = _("""
+
+            #boo
+            ----------
+            abc
+            cda
+
+            @rest.yes(
+                filter_in {
+                    3 + 3 = 4
+                }
+            )
+
+            @rest.inline(
+                filter_in := some()
+            )
+            @rest.default()
+
+        """)
+
+        boo = cs.collections['boo']
+
+        assert boo.rest_conf['default'].filter_in == ''
+        assert boo.rest_conf['yes'].filter_in == '3 + 3 = 4'
+        assert boo.rest_conf['inline'].filter_in == 'some()'
+
+
+def test_filter_out():
+        cs = _("""
+
+            #boo
+            ----------
+            abc
+            cda
+
+            @rest.yes(
+                filter_out {
+                    3 + 3 = 4
+                }
+            )
+
+            @rest.inline(
+                filter_out := some()
+            )
+            @rest.default()
+
+        """)
+
+        boo = cs.collections['boo']
+
+        assert boo.rest_conf['default'].filter_out == ''
+        assert boo.rest_conf['yes'].filter_out == '3 + 3 = 4'
+        assert boo.rest_conf['inline'].filter_out == 'some()'
+
+
 def test_auth():
     cs = _("""
     

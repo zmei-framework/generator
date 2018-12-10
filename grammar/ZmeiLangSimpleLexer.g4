@@ -43,6 +43,8 @@ WRITE_MODE: 'r' | 'rw' | 'w';
 BOOL: 'true' | 'false';
 
 KW_THEME: 'theme';
+KW_FILTER_OUT: 'filter_out';
+KW_FILTER_IN: 'filter_in';
 KW_PAGE: 'page';
 KW_LINK_SUFFIX: 'link_suffix';
 KW_URL_PREFIX: 'url_prefix';

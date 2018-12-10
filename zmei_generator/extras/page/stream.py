@@ -32,6 +32,12 @@ class StreamPageExtra(PageExtra):
 
         self.models = []
 
+    def get_required_apps(self):
+        return ['django_query_signals']
+
+    def get_required_deps(self):
+        return ['django-query-signals']
+
 
 class StreamPageExtraParserListener(BaseListener):
 

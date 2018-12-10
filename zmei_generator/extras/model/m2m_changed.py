@@ -1,9 +1,10 @@
 
 from zmei_generator.config.extras import ModelExtra
+from zmei_generator.extras.model._signals import SignalBaseModelExtra
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
-class M2mChangedModelExtra(ModelExtra):
+class M2mChangedModelExtra(SignalBaseModelExtra):
     def get_name(cls):
         return 'm2m_changed'
     
