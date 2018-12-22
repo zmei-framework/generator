@@ -16,12 +16,14 @@ import
     PageExtraMenu,
     PageExtraGet,
     PageExtraStream,
+    PageExtraFlutter,
     PageExtraHtml
     ;
 
 page_annotation:
      an_html
     |an_react
+    |an_flutter
     |an_stream
     |an_get
     |an_menu

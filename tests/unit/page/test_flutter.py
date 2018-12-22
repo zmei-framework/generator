@@ -1,6 +1,7 @@
 from textwrap import dedent
 
 import pytest
+from zmei_generator.extras.page.flutter import FlutterPageExtra
 from zmei_generator.parser.parser import ZmeiParser
 
 
@@ -27,4 +28,4 @@ def test_page_flutter():
     boo = cs.pages['boo']
 
     assert boo.name == 'boo'
-    assert boo.flutter is True
+    assert isinstance(boo.flutter, FlutterPageExtra)

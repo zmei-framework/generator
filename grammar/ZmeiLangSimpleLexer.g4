@@ -1,6 +1,7 @@
 lexer grammar ZmeiLangSimpleLexer;
 
 // Annotation types
+AN_FLUTTER: '@flutter';
 AN_FILE: '@file';
 AN_STREAM: '@stream';
 AN_CHANNELS: '@channels';

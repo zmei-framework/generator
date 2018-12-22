@@ -36,6 +36,7 @@ def generate_common_files(target_path, skeleton_dir, apps):
 
     # config
     has_react = False
+    has_flutter = False
     has_crud = False
     has_rest = False
     has_admin = False
@@ -53,10 +54,12 @@ def generate_common_files(target_path, skeleton_dir, apps):
     urls += [
         "    url(r'^admin/', admin.site.urls),",
     ]
-    react = False
     for app_name, collection_set in apps.items():
         if collection_set.react:
-            react = True
+            has_react = True
+
+        if collection_set.flutter:
+            has_flutter = True
 
         for import_def, url_def in collection_set.get_required_urls():
             urls.append(url_def)
@@ -169,7 +172,7 @@ def generate_common_files(target_path, skeleton_dir, apps):
     generate_file(target_path, 'app/templates/base.html', template_name='theme/base.html')
 
     requirements = [
-        'zmei-utils==0.1.12',
+        'zmei-utils>=0.1.13',
         'wheel',
         'django>2',
     ]
@@ -215,8 +218,12 @@ def generate_common_files(target_path, skeleton_dir, apps):
         })
 
     # react
-    if react:
+    if has_react:
         generate_react_configs(target_path, apps)
+
+    # react
+    if has_flutter:
+        generate_flutter_configs(target_path, apps)
 
     # theme files
     for collection_set in apps.values():
@@ -236,7 +243,6 @@ def generate_common_files(target_path, skeleton_dir, apps):
 
     with open(os.path.join(target_path, '__files.json'), 'w') as f:
         f.write(json.dumps(file_mapping))
-
 
 
 def generate(target_path, app_name: str, collection_set: CollectionSetDef, features=None):
@@ -332,6 +338,41 @@ def generate_react_configs(target_path, apps):
     generate_file(target_path, 'react/webpack.config.js', 'webpack.config.js.tpl', {
         'entries': entries
     })
+
+
+def generate_flutter_configs(target_path, apps):
+    generate_file(target_path, 'flutter/pubspec.yaml', 'flutter.pubspec.yaml.tpl')
+    generate_file(target_path, 'flutter/lib/main.dart', 'flutter.main.dart.tpl')
+
+    for app_name, collection_set in apps.items():
+        if collection_set.flutter:
+            for name, page in collection_set.pages.items():
+                if page.flutter:
+                    generate_file(
+                        target_path,
+                        f'flutter/lib/src/pages/{app_name}/{name}.dart',
+                        'flutter.page.dart.tpl', {
+                            'app_name': app_name,
+                            'app': collection_set,
+                            'page': page,
+                        }
+                    )
+    generate_file(target_path, 'flutter/lib/src/state.dart', 'flutter.state.dart.tpl')
+
+    generate_file(
+        target_path,
+        f'flutter/lib/src/base.dart',
+        'flutter.base.dart.tpl', {
+            'apps': apps,
+        }
+    )
+    generate_file(
+        target_path,
+        f'flutter/lib/src/routes.dart',
+        'flutter.routes.dart.tpl', {
+            'apps': apps,
+        }
+    )
 
 
 def generate_react_jsx(target_path, app_name, collection_set):
@@ -478,7 +519,8 @@ def generate_views_py(target_path, app_name, collection_set):
             if page.stream:
                 imports.add('channels.generic.websocket', 'AsyncWebsocketConsumer')
                 imports.add('django.db.models.signals', 'post_save', 'm2m_changed', 'post_delete')
-                imports.add('django_query_signals', 'post_bulk_create', 'post_delete as post_delete_bulk', 'post_get_or_create', 'post_update_or_create', 'post_update')
+                imports.add('django_query_signals', 'post_bulk_create', 'post_delete as post_delete_bulk',
+                            'post_get_or_create', 'post_update_or_create', 'post_update')
                 imports.add('channels.layers', 'get_channel_layer')
                 imports.add('channels.db', 'database_sync_to_async')
                 imports.add('asgiref.sync', 'async_to_sync')

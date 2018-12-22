@@ -1,4 +1,4 @@
-# Generated from /Users/aleksandrrudakov/dev/generator/grammar/ZmeiLangParser.g4 by ANTLR 4.7.1
+# Generated from /Users/aleksandrrudakov/dev/zmei/generator/grammar/ZmeiLangParser.g4 by ANTLR 4.7.1
 from antlr4 import *
 if __name__ is not None and "." in __name__:
     from .ZmeiLangParser import ZmeiLangParser
@@ -2165,6 +2165,15 @@ class ZmeiLangParserListener(ParseTreeListener):
 
     # Exit a parse tree produced by ZmeiLangParser#an_stream_field_name.
     def exitAn_stream_field_name(self, ctx:ZmeiLangParser.An_stream_field_nameContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_flutter.
+    def enterAn_flutter(self, ctx:ZmeiLangParser.An_flutterContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_flutter.
+    def exitAn_flutter(self, ctx:ZmeiLangParser.An_flutterContext):
         pass
 
 

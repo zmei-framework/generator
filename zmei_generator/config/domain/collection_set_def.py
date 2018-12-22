@@ -22,6 +22,7 @@ class CollectionSetDef(object):
         self.langs = False
         self.admin = False
         self.react = False
+        self.flutter = False
         self.collections = {}
         self.pages = {}
         self.react_deps = {}

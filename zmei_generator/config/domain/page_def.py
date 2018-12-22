@@ -79,6 +79,8 @@ class PageDef(object):
 
         self.themed_files = {}
 
+        self.flutter = False
+
         self.react = False
         self.react_client = False
         self.react_server = False

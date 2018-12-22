@@ -16,10 +16,12 @@ from zmei_generator.extras.page.react import ReactPageExtraParserListener
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.populate_page_crud_overrides import PageCrudOverrideExtraListener
 from zmei_generator.parser.utils import BaseListener
+from zmei_generator.extras.page.flutter import FlutterPageExtraParserListener
 from zmei_generator.extras.page.stream import StreamPageExtraParserListener
 
 
 class PageExtraListener(
+    FlutterPageExtraParserListener,
     StreamPageExtraParserListener,
     GetPageExtraParserListener,
     MenuPageExtraParserListener,
