@@ -1,7 +1,7 @@
 import sys
 
-bp = '/Users/aleksandrrudakov/dev/generator/grammar'
-lexer = '/Users/aleksandrrudakov/dev/generator/grammar/ZmeiLangSimpleLexer.g4'
+bp = '/Users/aleksandrrudakov/dev/zmei/generator/grammar'
+lexer = '/Users/aleksandrrudakov/dev/zmei/generator/grammar/ZmeiLangSimpleLexer.g4'
 
 name = sys.argv[1]
 
@@ -44,7 +44,7 @@ gr_name = 'ModelExtra' + cname
 with open(bp + '/' + gr_name + '.g4', 'w+') as f:
     f.write(tpl.format(gr_name, name, name.upper()))
 
-with open('/Users/aleksandrrudakov/dev/generator/grammar/ModelExtra.g4', 'r') as f:
+with open('/Users/aleksandrrudakov/dev/zmei/generator/grammar/ModelExtra.g4', 'r') as f:
     lines = []
     for line in f.readlines():
         if 'ModelExtraAdmin' in line:
@@ -55,10 +55,10 @@ with open('/Users/aleksandrrudakov/dev/generator/grammar/ModelExtra.g4', 'r') as
         if 'an_admin' in line:
             lines.append('    |an_' + name + '\n')
 
-with open('/Users/aleksandrrudakov/dev/generator/grammar/ModelExtra.g4', 'w') as f:
+with open('/Users/aleksandrrudakov/dev/zmei/generator/grammar/ModelExtra.g4', 'w') as f:
     f.write(''.join(lines))
 
-with open('/Users/aleksandrrudakov/dev/generator/grammar/ZmeiLangSimpleLexer.g4', 'r') as f:
+with open('/Users/aleksandrrudakov/dev/zmei/generator/grammar/ZmeiLangSimpleLexer.g4', 'r') as f:
     lines = []
     for line in f.readlines():
         lines.append(line)
@@ -66,10 +66,10 @@ with open('/Users/aleksandrrudakov/dev/generator/grammar/ZmeiLangSimpleLexer.g4'
         if '// Annotation types' in line:
             lines.append("AN_{}: '@{}';\n".format(name.upper(), name))
 
-with open('/Users/aleksandrrudakov/dev/generator/grammar/ZmeiLangSimpleLexer.g4', 'w+') as f:
+with open('/Users/aleksandrrudakov/dev/zmei/generator/grammar/ZmeiLangSimpleLexer.g4', 'w+') as f:
     f.write(''.join(lines))
 
-with open('/Users/aleksandrrudakov/dev/generator/zmei_generator/parser/populate_model_extras.py', 'r') as f:
+with open('/Users/aleksandrrudakov/dev/zmei/generator/zmei_generator/parser/populate_model_extras.py', 'r') as f:
     lines = []
     for line in f.readlines():
         lines.append(line)
@@ -80,8 +80,8 @@ with open('/Users/aleksandrrudakov/dev/generator/zmei_generator/parser/populate_
         if 'class ModelExtraListener(' in line:
             lines.append("    {}ModelExtraParserListener,\n".format(cname))
 
-with open('/Users/aleksandrrudakov/dev/generator/zmei_generator/parser/populate_model_extras.py', 'w+') as f:
+with open('/Users/aleksandrrudakov/dev/zmei/generator/zmei_generator/parser/populate_model_extras.py', 'w+') as f:
     f.write(''.join(lines))
 
-with open(f'/Users/aleksandrrudakov/dev/generator/zmei_generator/extras/model/{name}.py', 'w+') as f:
+with open(f'/Users/aleksandrrudakov/dev/zmei/generator/zmei_generator/extras/model/{name}.py', 'w+') as f:
     f.write(tpl_py.format(cname, name, cname, name, name, cname))

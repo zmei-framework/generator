@@ -1,7 +1,7 @@
 import sys
 
-bp = '/Users/aleksandrrudakov/dev/generator/grammar'
-lexer = '/Users/aleksandrrudakov/dev/generator/grammar/ZmeiLangSimpleLexer.g4'
+bp = '/Users/aleksandrrudakov/dev/zmei/generator/grammar'
+lexer = '/Users/aleksandrrudakov/dev/zmei/generator/grammar/ZmeiLangSimpleLexer.g4'
 
 name = sys.argv[1]
 
@@ -45,7 +45,7 @@ gr_name = 'CsExtra' + cname
 with open(bp + '/' + gr_name + '.g4', 'w+') as f:
     f.write(tpl.format(gr_name, name, name.upper()))
 
-with open('/Users/aleksandrrudakov/dev/generator/grammar/CsExtra.g4', 'r') as f:
+with open('/Users/aleksandrrudakov/dev/zmei/generator/grammar/CsExtra.g4', 'r') as f:
     lines = []
     for line in f.readlines():
         if 'CsExtraSuit' in line:
@@ -56,10 +56,10 @@ with open('/Users/aleksandrrudakov/dev/generator/grammar/CsExtra.g4', 'r') as f:
         if 'an_suit' in line:
             lines.append('    |an_' + name + '\n')
 
-with open('/Users/aleksandrrudakov/dev/generator/grammar/CsExtra.g4', 'w') as f:
+with open('/Users/aleksandrrudakov/dev/zmei/generator/grammar/CsExtra.g4', 'w') as f:
     f.write(''.join(lines))
 
-with open('/Users/aleksandrrudakov/dev/generator/grammar/ZmeiLangSimpleLexer.g4', 'r') as f:
+with open('/Users/aleksandrrudakov/dev/zmei/generator/grammar/ZmeiLangSimpleLexer.g4', 'r') as f:
     lines = []
     for line in f.readlines():
         lines.append(line)
@@ -67,10 +67,10 @@ with open('/Users/aleksandrrudakov/dev/generator/grammar/ZmeiLangSimpleLexer.g4'
         if '// Annotation types' in line:
             lines.append("AN_{}: '@{}';\n".format(name.upper(), name))
 
-with open('/Users/aleksandrrudakov/dev/generator/grammar/ZmeiLangSimpleLexer.g4', 'w+') as f:
+with open('/Users/aleksandrrudakov/dev/zmei/generator/grammar/ZmeiLangSimpleLexer.g4', 'w+') as f:
     f.write(''.join(lines))
 
-with open('/Users/aleksandrrudakov/dev/generator/zmei_generator/parser/populate.py', 'r') as f:
+with open('/Users/aleksandrrudakov/dev/zmei/generator/zmei_generator/parser/populate.py', 'r') as f:
     lines = []
     for line in f.readlines():
         lines.append(line)
@@ -81,8 +81,8 @@ with open('/Users/aleksandrrudakov/dev/generator/zmei_generator/parser/populate.
         if 'PartsCollectorListener(' in line:
             lines.append("    {}CsExtraParserListener,\n".format(cname))
 
-with open('/Users/aleksandrrudakov/dev/generator/zmei_generator/parser/populate.py', 'w+') as f:
+with open('/Users/aleksandrrudakov/dev/zmei/generator/zmei_generator/parser/populate.py', 'w+') as f:
     f.write(''.join(lines))
 
-with open(f'/Users/aleksandrrudakov/dev/generator/zmei_generator/extras/collection_set/{name}.py', 'w+') as f:
+with open(f'/Users/aleksandrrudakov/dev/zmei/generator/zmei_generator/extras/collection_set/{name}.py', 'w+') as f:
     f.write(tpl_py.format(cname, name, cname, name, name, cname))
