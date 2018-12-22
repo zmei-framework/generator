@@ -9,7 +9,7 @@ abstract class ScaffoldPageState extends PageState {
             appBar: AppBar(
                 title: Text(getPageName()),
             ),
-            body: data != null ? buildBody() : CircularProgressIndicator(),
+            body: data != null ? buildBody() : Center(child: CircularProgressIndicator()),
             bottomNavigationBar: BottomAppBar(
                 child: Container(
                     height: 50.0,
