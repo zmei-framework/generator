@@ -4,6 +4,9 @@ from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
 class TreeModelExtra(ModelExtra):
+    def get_required_deps(self):
+        return ['django-mptt']
+
     def get_name(cls):
         return 'tree'
     

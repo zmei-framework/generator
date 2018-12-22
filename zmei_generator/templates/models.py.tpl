@@ -67,7 +67,7 @@ class {{ col.class_name }}({% for import_str, class_name, alias in col.mixin_cla
 {% for handlers, code in col.signal_handlers %}
 {% for pkg, signal in handlers %}
 @receiver({{ signal }}, sender={{ col.class_name }}){% endfor %}
-def {{ col.ref }}_{{ signal }}_callback(sender, instance, **kwargs):
+def {{ col.ref }}_{{ signal }}_callback{{ loop.index }}(sender, instance, **kwargs):
     args = type('args', (object,), kwargs)
     {{ code|indent(4) }}
 {% endfor %}

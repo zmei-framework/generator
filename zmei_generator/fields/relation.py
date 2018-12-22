@@ -17,11 +17,6 @@ class RelationDef(FieldDef):
         self.ref_collection = None
         self.related_class = None
 
-    def prepare_field_arguemnts(self, own_args=None):
-        args = super().prepare_field_arguemnts(own_args)
-        args['on_delete'] = 'models.PROTECTED'
-        return args
-
     def post_process(self):
 
         if self.ref_collection_def:
@@ -89,12 +84,18 @@ class RelationDef(FieldDef):
 
 
 class RelationOneDef(RelationDef):
+
+    def prepare_field_arguemnts(self, own_args=None):
+        args = super().prepare_field_arguemnts(own_args)
+        args['on_delete'] = 'models.PROTECT'
+        return args
+
     def get_model_field(self):
         args = self.prepare_field_arguemnts({'related_name': self.related_name or '+'})
 
         return FieldDeclaration(
             [('django.db', 'models')],
-            'models.ForeignKey("{}", {})'.format(self.related_class, gen_args(args))
+            'models.ForeignKey("{}", {})'.format(self.related_class, gen_args(args, ['on_delete']))
         )
 
     def get_admin_widget(self):
@@ -124,7 +125,7 @@ class RelationOne2OneDef(RelationDef):
 
         return FieldDeclaration(
             [('django.db', 'models')],
-            'models.OneToOneField("{}", {}, on_delete=models.CASCADE)'.format(self.related_class, gen_args(args))
+            'models.OneToOneField("{}", {}, on_delete=models.CASCADE)'.format(self.related_class, gen_args(args, ['on_delete']))
         )
 
     def get_admin_widget(self):
@@ -157,7 +158,7 @@ class RelationManyDef(RelationDef):
 
         return FieldDeclaration(
             [('django.db', 'models')],
-            'models.ManyToManyField("{}", {})'.format(self.related_class, gen_args(args))
+            'models.ManyToManyField("{}", {})'.format(self.related_class, gen_args(args, ['on_delete']))
         )
 
     def get_admin_widget(self):

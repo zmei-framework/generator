@@ -520,8 +520,8 @@ def generate_models_py(target_path, app_name, collection_set):
 
     for collection in collection_set.collections.values():  # type: CollectionDef
 
-        for handlers in collection.signal_handlers:
-            for signal_import, code in handlers:
+        for handlers, code in collection.signal_handlers:
+            for signal_import in handlers:
                 imports.add('django.dispatch', 'receiver')
                 imports.add(*signal_import)
 

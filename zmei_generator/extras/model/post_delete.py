@@ -19,7 +19,7 @@ class PostDeleteModelExtraParserListener(BaseListener):
 
         self.model.signal_handlers.append(
             ([
-                ('django_query_signals', 'post_delete'),
+                # ('django_query_signals', 'post_delete'),
                 ('django.db.models.signals', 'post_delete'),
             ], self._get_code(ctx.python_code())))
 

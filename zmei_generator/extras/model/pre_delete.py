@@ -18,7 +18,7 @@ class PreDeleteModelExtraParserListener(BaseListener):
 
         self.model.signal_handlers.append(
             ([
-                ('django_query_signals', 'pre_delete'),
+                # ('django_query_signals', 'pre_delete'),
                 ('django.db.models.signals', 'pre_delete'),
             ], self._get_code(ctx.python_code())))
 

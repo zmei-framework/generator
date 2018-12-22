@@ -1,4 +1,6 @@
-FROM python:3.6
+FROM mysql:5.7 as mysql
+
+FROM python:3.6 as app
 
 # add mysql config before installation, so it is initialised properly
 RUN mkdir -p /etc/mysql
@@ -20,7 +22,16 @@ COPY redis.conf /etc/redis/redis.conf
 COPY uwsgi.ini /etc/uwsgi.ini
 
 COPY sv/*.conf /etc/supervisor/conf.d/
+COPY --from=mysql /entrypoint.sh /var/www/mysql_init.sh
+COPY --from=mysql /usr/local/bin/gosu /usr/local/bin/gosu
+
+ENV NMYSQL_ROOT_PASSWORD 123123
+
+#COPY mysql_init.sh /var/www/
 COPY deploy.sh /var/www/
-RUN chmod +x /var/www/deploy.sh
+RUN chmod +x /var/www/*.sh
+
+VOLUME /var/lib/mysql
+VOLUME /var/www/var
 
 CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]

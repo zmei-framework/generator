@@ -18,10 +18,10 @@ class PostSaveModelExtraParserListener(BaseListener):
 
         self.model.signal_handlers.append(
             ([
-                ('django_query_signals', 'post_bulk_create'),
+                # ('django_query_signals', 'post_bulk_create'),
                 ('django.db.models.signals', 'post_save'),
-                ('django_query_signals', 'post_get_or_create'),
-                ('django_query_signals', 'post_update_or_create'),
-                ('django_query_signals', 'post_update'),
+                # ('django_query_signals', 'post_get_or_create'),
+                # ('django_query_signals', 'post_update_or_create'),
+                # ('django_query_signals', 'post_update'),
             ], self._get_code(ctx.python_code())))
 

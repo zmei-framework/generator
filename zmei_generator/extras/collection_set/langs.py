@@ -26,6 +26,8 @@ class LangsCsExtra(CollectionSetExtra):
     def write_settings(cls, apps, f):
         _langs = {}
         for cs in apps.values():
+            if not cs.langs:
+                continue
             for code in cs.langs.langs:
                 name = LANG_INFO[code]['name_local'].capitalize()
                 _langs[code] = name

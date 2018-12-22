@@ -18,10 +18,10 @@ class PreSaveModelExtraParserListener(BaseListener):
 
         self.model.signal_handlers.append(
             ([
-                ('django_query_signals', 'pre_bulk_create'),
+                # ('django_query_signals', 'pre_bulk_create'),
                 ('django.db.models.signals', 'pre_save'),
-                ('django_query_signals', 'pre_get_or_create'),
-                ('django_query_signals', 'pre_update_or_create'),
-                ('django_query_signals', 'pre_update'),
+                # ('django_query_signals', 'pre_get_or_create'),
+                # ('django_query_signals', 'pre_update_or_create'),
+                # ('django_query_signals', 'pre_update'),
             ], self._get_code(ctx.python_code())))
 
