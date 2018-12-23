@@ -357,6 +357,15 @@ def generate_flutter_configs(target_path, apps):
                             'page': page,
                         }
                     )
+                    generate_file(
+                        target_path,
+                        f'flutter/lib/src/pages/{app_name}/{name}_ui.dart',
+                        'flutter.page.ui.dart.tpl', {
+                            'app_name': app_name,
+                            'app': collection_set,
+                            'page': page,
+                        }
+                    )
     generate_file(target_path, 'flutter/lib/src/state.dart', 'flutter.state.dart.tpl')
 
     generate_file(

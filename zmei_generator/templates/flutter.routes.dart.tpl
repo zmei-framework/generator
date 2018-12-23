@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 {% for app_name, app in apps.items() %}{% if app.flutter %}{% for name, page in app.pages.items() %}{% if page.flutter -%}
-import './pages/{{ app_name }}/{{ name }}.dart';
+import './pages/{{ app_name }}/{{ name }}_ui.dart';
 {% endif %}{% endfor %}{% endif %}{% endfor %}
 
 void routes(String baseUrl) {
@@ -14,7 +14,7 @@ void routes(String baseUrl) {
 
         routes: {
             {%- for app_name, app in apps.items() %}{% if app.flutter %}{% for name, page in app.pages.items() %}{% if page.flutter %}
-            '{{ page.uri }}': (context) => {{ app_name.capitalize() }}{{ page.view_name }}State().setUrl(baseUrl + '{{ page.uri }}').asWidget(),
+            '{{ page.uri }}': (context) => {{ app_name.capitalize() }}{{ page.view_name }}StateUi().setUrl(baseUrl + '{{ page.uri }}').asWidget(),
             {%- endif %}{% endfor %}{% endif %}{% endfor %}
         },
     ));
