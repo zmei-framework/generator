@@ -62,7 +62,7 @@ class {{ page.view_name }}({% if page.get_extra_bases() %}{{ page.get_extra_base
         {{ func.body|indent(8) }}
     {% endfor %}
     {% set code=page.render_page_code() %}{% if code or page.page_item_names %}
-    def get_data(self, url, request, inherited):
+    def get_data(self, url, request, inherited=False):
         {%- if page.parent_name %}
         data = super().get_data(url, request, inherited)
         {% else %}

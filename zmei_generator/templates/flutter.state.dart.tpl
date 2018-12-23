@@ -17,10 +17,13 @@ class PageStatefulWidget extends StatefulWidget {
 
 
 abstract class PageState extends State<PageStatefulWidget> {
+
     static String cookie = '';
 
     bool hasRemoteData = false;
     bool hasStreams = false;
+    bool reconnecting = false;
+    bool closed = false;
     IOWebSocketChannel channel;
 
     dynamic data;
@@ -46,10 +49,15 @@ abstract class PageState extends State<PageStatefulWidget> {
 
     @override
     void dispose() {
+
+        closed = true;
+
         if (channel != null) {
-            channel.sink.close(status.goingAway);
+            channel.sink.close();
             channel = null;
         }
+
+        super.dispose();
     }
 
     PageState setDataUrl(String url) {
@@ -70,13 +78,42 @@ abstract class PageState extends State<PageStatefulWidget> {
         return PageStatefulWidget(this);
     }
 
+    reconnect() async {
+        if (closed || reconnecting || channel != null) return;
+        reconnecting = true;
+
+        print('Reconnect in 3 seconds...');
+
+        await new Future.delayed(const Duration(seconds: 4));
+
+        print('Reconnecting...');
+
+        if (channel == null) {
+            listenStream();
+        }
+    }
+
     listenStream() async {
-        channel = await IOWebSocketChannel.connect(wsUrl);
+        reconnecting = false;
+
+        channel = await IOWebSocketChannel.connect(wsUrl, pingInterval: Duration(milliseconds: 1000));
+        print('Connected');
 
         channel.stream.listen((message) {
             setState(() {
                 loadData(json.decode(message)['__state__']);
             });
+        }, onDone: () {
+            print('Connection terminated');
+            channel = null;
+
+            reconnect();
+
+        }, onError: (error) {
+            print(error);
+            channel = null;
+
+            reconnect();
         });
 
     }

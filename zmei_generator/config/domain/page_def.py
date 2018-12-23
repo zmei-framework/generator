@@ -146,6 +146,10 @@ class PageDef(object):
         self.blocks[area].append(block)
 
     def get_extra_bases(self):
+        if (len(self.functions) or self.flutter) and not self.react and 'ZmeiDataViewMixin' in self.extra_bases:
+            self.extra_bases.remove('ZmeiDataViewMixin')
+            self.extra_bases.append('ZmeiRemoteInvocationViewMixin')
+
         if not self.parent_name:
             return self.extra_bases
 
@@ -237,6 +241,9 @@ class PageDef(object):
             imports.append(('django.conf', 'settings'))
             imports.append(('zmei.react', 'ZmeiReactServer'))
             imports.append(('zmei.react', 'ZmeiReactViewMixin'))
+
+        elif len(self.functions) or self.flutter:
+            imports.append(('zmei.views', 'ZmeiRemoteInvocationViewMixin'))
         else:
             imports.append(('zmei.views', 'ZmeiDataViewMixin'))
 
