@@ -3,15 +3,13 @@ import './state.dart';
 
 abstract class ScaffoldPageState extends PageState {
 
-    ScaffoldPageState(bool hasRemoteData) : super(hasRemoteData);
-
     @override
     Widget build(BuildContext context) {
         return Scaffold(
             appBar: AppBar(
                 title: Text(getPageName()),
             ),
-            body: data != null ? buildBody() : Center(child: CircularProgressIndicator()),
+            body: isDataReady() ? buildBody() : Center(child: CircularProgressIndicator()),
             bottomNavigationBar: BottomAppBar(
                 child: Container(
                     height: 50.0,
@@ -45,6 +43,12 @@ abstract class ScaffoldPageState extends PageState {
                 ),
             )
         );
+    }
+
+    bool isDataReady() {
+        if (!hasRemoteData) return true;
+
+        return data != null;
     }
 
     Widget buildBody();

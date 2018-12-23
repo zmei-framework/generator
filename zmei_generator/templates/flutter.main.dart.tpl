@@ -1,4 +1,3 @@
-
 import './src/routes.dart';
 
 void main() {

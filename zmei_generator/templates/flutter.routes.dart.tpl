@@ -14,7 +14,10 @@ void routes(String baseUrl) {
 
         routes: {
             {%- for app_name, app in apps.items() %}{% if app.flutter %}{% for name, page in app.pages.items() %}{% if page.flutter %}
-            '{{ page.uri }}': (context) => {{ app_name.capitalize() }}{{ page.view_name }}StateUi().setUrl(baseUrl + '{{ page.uri }}').asWidget(),
+            '{{ page.uri }}': (context) => {{ app_name.capitalize() }}{{ page.view_name }}StateUi()
+            {%- if page.own_item_names %}.setDataUrl(baseUrl + '{{ page.uri }}'){% endif -%}
+            {%- if page.stream %}.setWsUrl(baseUrl + '/ws/pages{{ page.uri }}'){% endif -%}
+            .asWidget(),
             {%- endif %}{% endfor %}{% endif %}{% endfor %}
         },
     ));

@@ -14,6 +14,7 @@ dependencies:
 
   flutter_markdown: ^0.2.0
   http: ^0.12.0
+  web_socket_channel: ^1.0.9
 
 
 dev_dependencies:
