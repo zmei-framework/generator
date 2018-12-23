@@ -3,6 +3,8 @@ import './state.dart';
 
 abstract class ScaffoldPageState extends PageState {
 
+    ScaffoldPageState(bool hasRemoteData) : super(hasRemoteData);
+
     @override
     Widget build(BuildContext context) {
         return Scaffold(

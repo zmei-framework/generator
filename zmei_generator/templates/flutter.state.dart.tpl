@@ -1,3 +1,5 @@
+//# generated: 141b1f119c1443611d2ded6667616db7
+
 import 'package:flutter/material.dart';
 
 import 'dart:convert';
@@ -5,7 +7,7 @@ import 'package:http/http.dart' as http;
 
 
 class PageStatefulWidget extends StatefulWidget {
-    PageState state;
+    final PageState state;
 
     PageStatefulWidget(this.state);
 
@@ -15,14 +17,22 @@ class PageStatefulWidget extends StatefulWidget {
 
 
 abstract class PageState extends State<PageStatefulWidget> {
+    final bool hasRemoteData;
+
+    PageState(this.hasRemoteData);
+
     dynamic data;
     String pageUrl = "";
+
+    void loadData(data) {}
 
     @override
     void initState() {
         super.initState();
 
-        loadPageData();
+        if (hasRemoteData) {
+            reload();
+        }
     }
 
     PageState setUrl(String url) {
@@ -35,7 +45,7 @@ abstract class PageState extends State<PageStatefulWidget> {
         return PageStatefulWidget(this);
     }
 
-    loadPageData() async {
+    reload() async {
         final response = await http.get(pageUrl, headers: {
             "Accept": "application/json"
         });

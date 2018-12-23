@@ -211,13 +211,17 @@ class PageDef(object):
         return set(names)
 
     @property
-    def page_item_names(self):
-        names = ['url']
+    def own_item_names(self):
+        names = []
         for key in self.page_items.keys():
             if key.startswith('_'):
                 key = key[1:]
             names.append(key)
         return list(names)
+
+    @property
+    def page_item_names(self):
+        return ['url'] + self.own_item_names
 
     @property
     def parent_view_name(self):
