@@ -172,7 +172,7 @@ def generate_common_files(target_path, skeleton_dir, apps):
     generate_file(target_path, 'app/templates/base.html', template_name='theme/base.html')
 
     requirements = [
-        'zmei-utils>=0.1.13',
+        'zmei-utils>=0.1.14',
         'wheel',
         'django>2',
     ]
@@ -368,6 +368,13 @@ def generate_flutter_configs(target_path, apps):
                     )
     generate_file(target_path, 'flutter/lib/src/state.dart', 'flutter.state.dart.tpl')
 
+    generate_file(
+        target_path,
+        f'flutter/lib/src/app.dart',
+        'flutter.app.dart.tpl', {
+            'apps': apps,
+        }
+    )
     generate_file(
         target_path,
         f'flutter/lib/src/base.dart',

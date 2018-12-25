@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import './state.dart';
 
-abstract class ScaffoldPageState extends PageState {
+mixin ScaffoldPageStateMixin on PageState {
 
     @override
     Widget build(BuildContext context) {
@@ -43,12 +43,6 @@ abstract class ScaffoldPageState extends PageState {
                 ),
             )
         );
-    }
-
-    bool isDataReady() {
-        if (!hasRemoteData) return true;
-
-        return data != null;
     }
 
     Widget buildBody();

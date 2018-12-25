@@ -45,12 +45,21 @@ class PageExtraListener(
         super().__init__(collection_set)
 
         self.page = None  # type: PageDef
+        self.parent = None
+        self.extend_name = False
 
     def enterPage(self, ctx: ZmeiLangParser.PageContext):
         self.page = PageDef(self.collection_set)
 
     def enterPage_name(self, ctx: ZmeiLangParser.Page_nameContext):
-        self.page = self.collection_set.pages[ctx.getText()]
+        name = ctx.getText()
+        if self.parent and self.extend_name:
+            name = f'{self.parent}_{name}'
+        self.page = self.collection_set.pages[name]
+
+    def enterPage_base(self, ctx: ZmeiLangParser.Page_baseContext):
+        self.extend_name = ctx.getText()[-2] == '~'
+        self.parent = ctx.getText()[:-2]
 
     def exitPage(self, ctx: ZmeiLangParser.PageContext):
         self.page = None

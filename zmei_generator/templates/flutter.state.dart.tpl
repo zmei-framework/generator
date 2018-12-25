@@ -1,9 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:web_socket_channel/io.dart';
-import 'package:web_socket_channel/status.dart' as status;
 
 
 class PageStatefulWidget extends StatefulWidget {
@@ -19,6 +20,7 @@ class PageStatefulWidget extends StatefulWidget {
 abstract class PageState extends State<PageStatefulWidget> {
 
     static String cookie = '';
+    static String csrf = '';
 
     bool hasRemoteData = false;
     bool hasStreams = false;
@@ -29,6 +31,12 @@ abstract class PageState extends State<PageStatefulWidget> {
     dynamic data;
     String pageUrl = "";
     String wsUrl = "";
+
+    bool isDataReady() {
+        if (!hasRemoteData) return true;
+
+        return data != null;
+    }
 
     void loadData(newState) {
         data = newState;
@@ -124,6 +132,8 @@ abstract class PageState extends State<PageStatefulWidget> {
             "Cookie": PageState.cookie
         });
 
+        print(response.headers);
+
         if (response.headers.containsKey('set-cookie')) {
             PageState.cookie = response.headers['set-cookie'];
         }
@@ -139,10 +149,13 @@ abstract class PageState extends State<PageStatefulWidget> {
     }
 
     callRemote(String method, args) async {
+        var token = Cookie.fromSetCookieValue(PageState.cookie).value;
+
         final response = await http.post(pageUrl, headers: {
             "Content-type": "application/json",
             "Accept": "application/json",
-            "Cookie": PageState.cookie
+            "Cookie": cookie,
+            "X-CSRFToken": token
         }, body: json.encode({'method': method, 'args': args}));
 
         if (response.statusCode == 200) {

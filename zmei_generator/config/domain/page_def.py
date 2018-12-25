@@ -41,6 +41,7 @@ class PageDef(object):
 
         self.template = True
         self.name = None
+        self.extend_name = False
         self.url_alias = None
         self.parent_name = None
         self.parsed_template_name = None

@@ -20,14 +20,16 @@ def test_pages():
         [boo: /lala/foo : foo/mytpl.html]
         [bar as yoo]
         [boo->foo : : {some_expr}]
+        [foo->zoo]
     
     """)
 
-    assert len(cs.pages) == 3
+    assert len(cs.pages) == 4
 
     boo = cs.page_list()[0]
     bar = cs.page_list()[1]
     foo = cs.page_list()[2]
+    zoo = cs.page_list()[3]
 
     assert boo.name == 'boo'
     assert boo.url_alias == 'boo'
@@ -39,9 +41,49 @@ def test_pages():
     assert bar.url_alias == 'yoo'
 
     assert foo.name == 'foo'
-    assert foo.parent_name == 'boo'
+    assert foo.extend_name is False
     assert foo.parent_name == 'boo'
     assert foo.parsed_template_expr == 'some_expr'
+
+    assert zoo.name == 'zoo'
+    assert zoo.parent_name == 'foo'
+    assert zoo.view_name == 'ZooView'
+
+
+def test_pages_extend_name():
+    cs = _("""
+    
+        [boo: /lala/foo : foo/mytpl.html]
+        [bar as yoo]
+        [boo~>foo : : {some_expr}]
+        [boo_foo~>zoo]
+    
+    """)
+
+    assert len(cs.pages) == 4
+
+    boo = cs.page_list()[0]
+    bar = cs.page_list()[1]
+    foo = cs.page_list()[2]
+    zoo = cs.page_list()[3]
+
+    assert boo.name == 'boo'
+    assert boo.url_alias == 'boo'
+    assert boo.uri == '/lala/foo'
+    assert boo.defined_uri == '/lala/foo'
+    assert boo.parsed_template_name == 'foo/mytpl.html'
+
+    assert bar.name == 'bar'
+    assert bar.url_alias == 'yoo'
+
+    assert foo.name == 'boo_foo'
+    assert foo.extend_name is True
+    assert foo.parent_name == 'boo'
+    assert foo.parsed_template_expr == 'some_expr'
+
+    assert zoo.name == 'boo_foo_zoo'
+    assert zoo.parent_name == 'boo_foo'
+    assert zoo.view_name == 'BooFooZooView'
 
 
 def test_home_page():

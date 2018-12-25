@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../base.dart';
+import '../../state.dart';
 {% if page.functions %}
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 {% endif %}
-abstract class {{ app_name.capitalize() }}{{ page.view_name }}State extends ScaffoldPageState {
+abstract class {{ app_name.capitalize() }}{{ page.view_name }}State extends PageState {
     {%- if page.own_item_names %}
     {% for key in (page.own_item_names) %}
     dynamic {{ key }};{% endfor %}{% endif %}
@@ -23,9 +23,4 @@ abstract class {{ app_name.capitalize() }}{{ page.view_name }}State extends Scaf
         return callRemote('{{ name }}', [{% if func.args %}{{ func.render_python_args() }}{% endif %}]);
     }
     {%- endfor %}
-
-    @override
-    String getPageName() {
-        return "{{ app_name.capitalize() }}{{ page.view_name }}";
-    }
 }
