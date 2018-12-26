@@ -21,15 +21,16 @@ def test_pages():
         [bar as yoo]
         [boo->foo : : {some_expr}]
         [foo->zoo]
-    
+        [goo]
     """)
 
-    assert len(cs.pages) == 4
+    assert len(cs.pages) == 5
 
     boo = cs.page_list()[0]
     bar = cs.page_list()[1]
     foo = cs.page_list()[2]
     zoo = cs.page_list()[3]
+    goo = cs.page_list()[4]
 
     assert boo.name == 'boo'
     assert boo.url_alias == 'boo'
@@ -49,6 +50,10 @@ def test_pages():
     assert zoo.parent_name == 'foo'
     assert zoo.view_name == 'ZooView'
 
+    assert goo.name == 'goo'
+    assert goo.parent_name is None
+    assert goo.view_name == 'GooView'
+
 
 def test_pages_extend_name():
     cs = _("""
@@ -57,15 +62,16 @@ def test_pages_extend_name():
         [bar as yoo]
         [boo~>foo : : {some_expr}]
         [boo_foo~>zoo]
-    
+        [goo]
     """)
 
-    assert len(cs.pages) == 4
+    assert len(cs.pages) == 5
 
     boo = cs.page_list()[0]
     bar = cs.page_list()[1]
     foo = cs.page_list()[2]
     zoo = cs.page_list()[3]
+    goo = cs.page_list()[4]
 
     assert boo.name == 'boo'
     assert boo.url_alias == 'boo'
@@ -84,6 +90,10 @@ def test_pages_extend_name():
     assert zoo.name == 'boo_foo_zoo'
     assert zoo.parent_name == 'boo_foo'
     assert zoo.view_name == 'BooFooZooView'
+
+    assert goo.name == 'goo'
+    assert goo.parent_name is None
+    assert goo.view_name == 'GooView'
 
 
 def test_home_page():

@@ -63,6 +63,8 @@ class PageExtraListener(
 
     def exitPage(self, ctx: ZmeiLangParser.PageContext):
         self.page = None
+        self.parent = None
+        self.extend_name = None
 
 
 
