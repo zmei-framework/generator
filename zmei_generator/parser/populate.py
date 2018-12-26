@@ -76,10 +76,9 @@ class PartsCollectorListener(
 
     def enterPage_name(self, ctx: ZmeiLangParser.Page_nameContext):
         self.page.name = ctx.getText()
-        self.page.url_alias = ctx.getText()
 
     def enterPage_alias_name(self, ctx: ZmeiLangParser.Page_alias_nameContext):
-        self.page.url_alias = ctx.getText()
+        self.page.defined_url_alias = ctx.getText()
 
     def enterPage_base(self, ctx: ZmeiLangParser.Page_baseContext):
         self.page.extend_name = ctx.getText()[-2] == '~'

@@ -42,7 +42,6 @@ class PageDef(object):
         self.template = True
         self.name = None
         self.extend_name = False
-        self.url_alias = None
         self.parent_name = None
         self.parsed_template_name = None
         self.parsed_template_expr = None
@@ -87,6 +86,8 @@ class PageDef(object):
         self.react_server = False
 
         self.stream = False
+
+        self.defined_url_alias = None
 
         self.uri = None
         self.defined_uri = None
@@ -223,6 +224,10 @@ class PageDef(object):
                 key = key[1:]
             names.append(key)
         return list(names)
+
+    @property
+    def url_alias(self):
+        return self.defined_url_alias or self.name
 
     @property
     def page_item_names(self):

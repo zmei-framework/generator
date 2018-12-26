@@ -83,6 +83,7 @@ def test_pages_extend_name():
     assert bar.url_alias == 'yoo'
 
     assert foo.name == 'boo_foo'
+    assert foo.url_alias == 'boo_foo'
     assert foo.extend_name is True
     assert foo.parent_name == 'boo'
     assert foo.parsed_template_expr == 'some_expr'
