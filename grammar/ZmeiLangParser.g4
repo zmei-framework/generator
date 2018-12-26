@@ -29,10 +29,15 @@ col_file:
 page_imports : (page_import_statement)+;
 model_imports : (model_import_statement)+;
 
-page_import_statement : KW_FROM classname KW_IMPORT import_list NL+;
-model_import_statement : KW_FROM classname KW_IMPORT import_list NL+;
+page_import_statement: import_statement;
+model_import_statement: import_statement;
 
-import_list: id_or_kw (COMA id_or_kw)*;
+import_statement: (KW_FROM import_source)? KW_IMPORT import_list NL+;
 
+import_source: DOT? classname;
+import_list: import_item (COMA import_item)*;
 
-
+import_item: (import_item_name (KW_AS import_item_alias)?) | import_item_all;
+import_item_name: classname;
+import_item_alias: id_or_kw;
+import_item_all: STAR;

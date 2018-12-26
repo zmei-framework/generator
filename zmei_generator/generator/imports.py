@@ -1,3 +1,6 @@
+from functools import reduce
+
+
 class ImportSet(object):
 
     def __init__(self) -> None:
@@ -10,8 +13,7 @@ class ImportSet(object):
             self.imports[source] = []
 
         for one in what:
-            if one not in self.imports[source]:
-                self.imports[source].append(one)
+            self.imports[source].append(one)
 
     def find_import_source(self, what):
         for import_from, whats in self.imports.items():
@@ -23,10 +25,29 @@ class ImportSet(object):
 
     def import_sting(self):
         items = self.get_items()
-        return '\n'.join(['from {} import {}'.format(source, ', '.join(what)) for source, what in items])
+
+        def format_expr(source, what):
+            expr = 'import {}'.format(', '.join(what))
+            if source:
+                expr = 'from {} {}'.format(source, expr)
+            return expr
+
+        return '\n'.join([format_expr(source, what) for source, what in items])
 
     def get_items(self):
-        return sorted(self.imports.items())
+        def simplify(a, b):
+            if b == '*':
+                a = [x for x in a if ' as ' in x]
+
+            if '*' in a and ' as ' not in b:
+                return a
+
+            if b in a:
+                return a
+
+            return a + [b]
+
+        return sorted([(source, reduce(simplify, values, [])) for source, values in self.imports.items()])
 
     def import_sting_js(self):
         items = self.get_items()

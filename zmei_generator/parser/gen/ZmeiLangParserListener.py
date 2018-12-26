@@ -53,12 +53,66 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#import_statement.
+    def enterImport_statement(self, ctx:ZmeiLangParser.Import_statementContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#import_statement.
+    def exitImport_statement(self, ctx:ZmeiLangParser.Import_statementContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#import_source.
+    def enterImport_source(self, ctx:ZmeiLangParser.Import_sourceContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#import_source.
+    def exitImport_source(self, ctx:ZmeiLangParser.Import_sourceContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#import_list.
     def enterImport_list(self, ctx:ZmeiLangParser.Import_listContext):
         pass
 
     # Exit a parse tree produced by ZmeiLangParser#import_list.
     def exitImport_list(self, ctx:ZmeiLangParser.Import_listContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#import_item.
+    def enterImport_item(self, ctx:ZmeiLangParser.Import_itemContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#import_item.
+    def exitImport_item(self, ctx:ZmeiLangParser.Import_itemContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#import_item_name.
+    def enterImport_item_name(self, ctx:ZmeiLangParser.Import_item_nameContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#import_item_name.
+    def exitImport_item_name(self, ctx:ZmeiLangParser.Import_item_nameContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#import_item_alias.
+    def enterImport_item_alias(self, ctx:ZmeiLangParser.Import_item_aliasContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#import_item_alias.
+    def exitImport_item_alias(self, ctx:ZmeiLangParser.Import_item_aliasContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#import_item_all.
+    def enterImport_item_all(self, ctx:ZmeiLangParser.Import_item_allContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#import_item_all.
+    def exitImport_item_all(self, ctx:ZmeiLangParser.Import_item_allContext):
         pass
 
 

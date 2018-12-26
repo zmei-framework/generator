@@ -60,11 +60,30 @@ class PartsCollectorListener(
         self.field_config = None  # type: FieldConfig
         self.image_size = None  # type: ImageSize
 
-    def enterPage_import_statement(self, ctx: ZmeiLangParser.Page_import_statementContext):
-        self.collection_set.page_imports.add(ctx.classname().getText(), *ctx.import_list().getText().split(','))
+        self.import_from = None
+        self.import_list = []
 
-    def enterModel_import_statement(self, ctx: ZmeiLangParser.Model_import_statementContext):
-        self.collection_set.model_imports.add(ctx.classname().getText(), *ctx.import_list().getText().split(','))
+    def enterImport_statement(self, ctx: ZmeiLangParser.Import_statementContext):
+        self.import_from = None
+        self.import_list = []
+
+    def enterImport_source(self, ctx: ZmeiLangParser.Import_sourceContext):
+        self.import_from = ctx.getText()
+
+    def enterImport_item(self, ctx: ZmeiLangParser.Import_itemContext):
+        if ctx.import_item_all():
+            name = '*'
+        else:
+            name = ctx.import_item_name().getText()
+            if ctx.import_item_alias():
+                name += ' as ' + ctx.import_item_alias().getText()
+        self.import_list.append(name)
+
+    def exitPage_import_statement(self, ctx: ZmeiLangParser.Page_import_statementContext):
+        self.collection_set.page_imports.add(self.import_from, *self.import_list)
+
+    def exitModel_import_statement(self, ctx: ZmeiLangParser.Model_import_statementContext):
+        self.collection_set.model_imports.add(self.import_from, *self.import_list)
 
     ############################################
     # Page
@@ -116,10 +135,13 @@ class PartsCollectorListener(
         func = PageFunction()
         func.name = ctx.page_function_name().getText()
         if ctx.page_function_args():
-            func.args = [x.strip() for x in ctx.page_function_args().getText().split(',')]
+            func.out_args = [x.strip() for x in ctx.page_function_args().getText().split(',')]
+            func.args = [x for x in func.out_args if x not in ('url', 'request')]
         else:
             func.args = []
-        func.body = self._get_code(ctx)
+
+        if ctx.code_block():
+            func.body = self._get_code(ctx)
 
         self.page.functions[func.name] = func
 

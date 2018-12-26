@@ -59,7 +59,11 @@ class {{ page.view_name }}({% if page.get_extra_bases() %}{{ page.get_extra_base
     {{ page.render_template_name_expr()|indent(4) }}
     {% for name, func in page.functions.items() %}
     def {{ func.python_name }}(self, url, request{% if func.args %}, {{ func.render_python_args() }}{% endif %}):
+        {% if func.body -%}
         {{ func.body|indent(8) }}
+        {%- else -%}
+        {{ func.name }}({% if func.out_args %}{{ func.render_python_args() }}{% endif %})
+        {%- endif %}
     {% endfor %}
     {% set code=page.render_page_code() %}{% if code or page.page_item_names %}
     def get_data(self, url, request, inherited=False):

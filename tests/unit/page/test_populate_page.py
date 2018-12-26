@@ -239,6 +239,59 @@ def test_page_func():
     assert boo.functions['zoo'].body == 'zozo!'
 
 
+def test_page_func_url_and_request():
+        cs = _("""
+
+            [boo]
+            lala:= 123
+
+            loo(url, request)
+
+            zoo(hoho, url, abc, request) {
+                zozo!
+            }
+        """)
+
+        assert len(cs.pages) == 1
+
+        boo = cs.pages['boo']
+
+        assert len(boo.functions) == 2
+        assert boo.functions['loo'].args == []
+        assert boo.functions['loo'].out_args == ['url', 'request']
+        assert boo.functions['loo'].name == 'loo'
+        assert boo.functions['loo'].body is None
+
+        assert boo.functions['zoo'].args == ['hoho', 'abc']
+        assert boo.functions['zoo'].out_args == ['hoho', 'url', 'abc', 'request']
+        assert boo.functions['zoo'].name == 'zoo'
+        assert boo.functions['zoo'].body == 'zozo!'
+
+
+def test_page_func_imported():
+    cs = _("""
+
+        [boo]
+        lala:= 123
+        
+        loo()
+        zoo(hoho, abc)
+    """)
+
+    assert len(cs.pages) == 1
+
+    boo = cs.pages['boo']
+
+    assert len(boo.functions) == 2
+    assert boo.functions['loo'].args == []
+    assert boo.functions['loo'].name == 'loo'
+    assert boo.functions['loo'].body is None
+
+    assert boo.functions['zoo'].args == ['hoho', 'abc']
+    assert boo.functions['zoo'].name == 'zoo'
+    assert boo.functions['zoo'].body is None
+
+
 def test_page_stream_expr_no_react():
     with pytest.raises(ReactAndChannelsRequiredValidationError):
         cs = _("""

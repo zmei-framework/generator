@@ -316,7 +316,6 @@ class CrudPageExtra(PageExtra):
             # new_page.extra_bases = []
             new_page.parent_name = base_page.name
             new_page.name = f"{base_page.name}{self.name_suffix}_{crud_page}"
-            new_page.url_alias = new_page.name
 
             if crud_page == 'create':
                 new_page.set_uri(f"{base_page.defined_uri}{self.url_prefix}{crud_page}")

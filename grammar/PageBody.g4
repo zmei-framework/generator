@@ -40,7 +40,7 @@ page_function:
     BRACE_OPEN
     page_function_args?
     BRACE_CLOSE
-    code_block
+    code_block?
     (NL+|EOF)
     ;
 
