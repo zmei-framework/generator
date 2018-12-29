@@ -29,3 +29,27 @@ def test_page_flutter():
 
     assert boo.name == 'boo'
     assert isinstance(boo.flutter, FlutterPageExtra)
+
+
+def test_page_flutter_parent_is_also_flutter():
+    cs = _("""
+    
+        [foo]
+
+        [foo->boo]
+        @flutter
+        
+        #foo
+        ------
+        lala
+    """)
+
+    assert len(cs.pages) == 2
+
+    assert cs.flutter is True
+    boo = cs.pages['boo']
+    foo = cs.pages['foo']
+
+    assert boo.name == 'boo'
+    assert isinstance(boo.flutter, FlutterPageExtra)
+    assert isinstance(foo.flutter, FlutterPageExtra)

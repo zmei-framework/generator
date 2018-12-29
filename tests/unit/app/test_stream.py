@@ -44,6 +44,6 @@ def test_simple_reuse_another_app():
 
     assert isinstance(bar.stream, StreamPageExtra)
 
-    assert bar.stream.models[0].target == '#another.foo'
-    assert bar.stream.models[1].target == '#another.boo'
+    assert bar.stream.models[0].target == 'Foo'
+    assert bar.stream.models[1].target == 'Boo'
 

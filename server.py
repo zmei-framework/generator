@@ -136,6 +136,7 @@ async def do_generate(executor, request, target_path):
 
     for app_name in request.form.get('collections').split(','):
         filename = '{}.col'.format(app_name)
+
         if not os.path.exists(os.path.join(target_path, 'col/' + filename)):
             if not os.path.exists(os.path.join(target_path, filename)):
                 raise StopGenerator('File col/{filename} or {filename} do not exist'.format(filename=filename))

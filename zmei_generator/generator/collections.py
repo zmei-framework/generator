@@ -208,9 +208,9 @@ def generate_common_files(target_path, skeleton_dir, apps):
             if not app.channels:
                 continue
             for page in app.pages.values():
-                if page.stream:
+                if page.has_streams and page.uri:
                     streams.append((app, page))
-                    imports.add(f'{app.app_name}.views', f'{page.view_name}Consumer')
+                    imports.add(f'{app.app_name}.views', f'{page.streaming_page.view_name}Consumer')
 
         generate_file(target_path, f'app/routing.py', 'channels.routing_main.tpl', context={
             'streams': streams,
@@ -377,9 +377,11 @@ def generate_flutter_configs(target_path, apps):
                             'app_name': app_name,
                             'app': collection_set,
                             'page': page,
+                            'to_camel_case': to_camel_case
                         }
                     )
     generate_file(target_path, 'flutter/lib/src/state.dart', 'flutter.state.dart.tpl')
+    generate_file(target_path, 'flutter/lib/src/utils.dart', 'flutter.utils.dart.tpl')
 
     generate_file(
         target_path,

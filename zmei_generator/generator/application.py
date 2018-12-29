@@ -21,6 +21,9 @@ class ZmeiAppParser(object):
         if not name.endswith('.col'):
             raise ValueError('Only col files allowed')
 
+        if name.startswith('col/'):
+            name = name[4:]
+
         self.files[name] = source
 
     def parse(self):

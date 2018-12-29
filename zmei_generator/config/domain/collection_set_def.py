@@ -39,41 +39,43 @@ class CollectionSetDef(object):
 
         self.files = {}
         
-    def resolve_page(self, page_name):
-        if '.' in page_name:
+    def resolve_page(self, page_name_def):
+        if '.' in page_name_def:
             if not self.application:
                 raise ValidationException(
                     'CollectionSet have no application assigned. Can not resolve reference.')
 
-            app_name, page_name = page_name.split('.', maxsplit=2)
+            app_name, page_name = page_name_def.split('.', maxsplit=2)
 
             if app_name not in self.application.collection_sets:
                 raise ValidationException(
-                    'Unknown application')
+                    f'Unknown application: {app_name}, when trying to resolve model name "{page_name_def}". '
+                    f'Available apps are: {",".join(self.application.collection_sets)}')
 
             return self.application.collection_sets[app_name].pages[page_name]
         else:
-            return self.pages[page_name]
+            return self.pages[page_name_def]
 
-    def resolve_collection(self, collection_name):
+    def resolve_collection(self, collection_name_def):
         try:
-            if '.' in collection_name:
+            if '.' in collection_name_def:
                 if not self.application:
                     raise ValidationException(
                         'CollectionSet have no application assigned. Can not resolve reference.')
 
-                app_name, collection_name = collection_name.split('.', maxsplit=2)
+                app_name, collection_name = collection_name_def.split('.', maxsplit=2)
 
                 if app_name not in self.application.collection_sets:
                     raise ValidationException(
-                        'Unknown application')
+                        f'Unknown application: {app_name}, when trying to resolve model name "{collection_name_def}". '
+                        f'Available apps are: {",".join(self.application.collection_sets)}')
 
                 return self.application.collection_sets[app_name].collections[
                     collection_name]
             else:
-                return self.collections[collection_name]
+                return self.collections[collection_name_def]
         except KeyError:
-            raise ValidationException('Reference to unknown collection: #{}'.format(collection_name))
+            raise ValidationException('Reference to unknown collection: #{}'.format(collection_name_def))
         
 
     def add_deps(self, deps):

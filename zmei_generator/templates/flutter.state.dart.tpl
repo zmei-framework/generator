@@ -1,9 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:my_app/src/utils.dart';
 
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:web_socket_channel/io.dart';
 
 
@@ -19,8 +17,7 @@ class PageStatefulWidget extends StatefulWidget {
 
 abstract class PageState extends State<PageStatefulWidget> {
 
-    static String cookie = null;
-    static String csrf = null;
+    static String cookie;
 
     bool hasRemoteData = false;
     bool hasStreams = false;
@@ -31,6 +28,11 @@ abstract class PageState extends State<PageStatefulWidget> {
     dynamic data;
     String pageUrl = "";
     String wsUrl = "";
+
+    @override
+    void initState() {
+        super.initState();
+    }
 
     bool isDataReady() {
         if (!hasRemoteData) return true;
@@ -45,7 +47,6 @@ abstract class PageState extends State<PageStatefulWidget> {
 
     @override
     void dispose() {
-
         closed = true;
 
         if (channel != null) {
@@ -92,7 +93,8 @@ abstract class PageState extends State<PageStatefulWidget> {
     listenStream() async {
         reconnecting = false;
 
-        channel = await IOWebSocketChannel.connect(wsUrl, pingInterval: Duration(milliseconds: 1000));
+        channel = await IOWebSocketChannel.connect(
+            wsUrl, pingInterval: Duration(milliseconds: 1000));
         print('Connected');
 
         channel.stream.listen((message) {
@@ -104,54 +106,31 @@ abstract class PageState extends State<PageStatefulWidget> {
             channel = null;
 
             reconnect();
-
         }, onError: (error) {
             print(error);
             channel = null;
 
             reconnect();
         });
-
     }
 
     reload() async {
-        final response = await http.get(pageUrl, headers: {
-            "Accept": "application/json",
-            "Cookie": PageState.cookie
+        var result = await httpRequest(pageUrl);
+
+        setState(() {
+            loadData(result);
         });
-
-        if (response.headers.containsKey('set-cookie')) {
-            PageState.cookie = response.headers['set-cookie'];
-        }
-
-        if (response.statusCode == 200) {
-            setState(() {
-                loadData(json.decode(response.body));
-            });
-        } else {
-            // If that response was not OK, throw an error.
-            throw Exception('Failed to load post');
-        }
     }
 
     callRemote(String method, args) async {
-        var token = Cookie.fromSetCookieValue(PageState.cookie).value;
+        var data = await httpRequest(pageUrl, post: true, body: {
+            'method': method,
+            'args': args
+        });
 
-        final response = await http.post(pageUrl, headers: {
-            "Content-type": "application/json",
-            "Accept": "application/json",
-            "Cookie": cookie,
-            "X-CSRFToken": token
-        }, body: json.encode({'method': method, 'args': args}));
-
-        if (response.headers.containsKey('set-cookie')) {
-            PageState.cookie = response.headers['set-cookie'];
-        }
-
-        if (response.statusCode == 200) {
-            Map<String, dynamic> data = json.decode(response.body);
-
-            if (data.containsKey('__error__')) throw Exception(data['__error__']);
+        if (data is Map) {
+            if (data.containsKey('__error__')) throw Exception(
+                data['__error__']);
             if (data.containsKey('__state__')) {
                 setState(() {
                     loadData(data['__state__']);
@@ -159,12 +138,8 @@ abstract class PageState extends State<PageStatefulWidget> {
 
                 return data['__state__'];
             }
-
-            return data;
-
-        } else {
-            // If that response was not OK, throw an error.
-            throw Exception('Failed to load post');
         }
+
+        return data;
     }
 }

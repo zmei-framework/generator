@@ -206,13 +206,17 @@ class PageDef(object):
     def uri(self):
         _uri = self._uri
 
+        if not _uri:
+            return
+
         if _uri.startswith('.'):
             _uri = _uri[1:]
             parent = self.get_parent()
 
             if parent:
-                _uri = '/'.join([parent.uri, _uri])
-                _uri = re.sub('/+', '/', _uri)
+                if parent.uri:
+                    _uri = '/'.join([parent.uri, _uri])
+                    _uri = re.sub('/+', '/', _uri)
 
         return _uri
 
@@ -284,6 +288,40 @@ class PageDef(object):
         return imports
 
     @property
+    def has_functions(self):
+        if len(self.functions):
+            return True
+
+        if self.get_parent():
+            return self.get_parent().has_functions
+
+        return False
+
+    @property
+    def has_streams(self):
+        if self.stream:
+            return True
+
+        if self.get_parent():
+            return self.get_parent().has_streams
+
+        return False
+
+    @property
+    def streaming_page(self):
+        if self.stream:
+            return self
+
+        if self.get_parent():
+            return self.get_parent().streaming_page
+
+        return None
+
+    @property
+    def has_data(self):
+        return len(self.page_item_names_with_parents)
+
+    @property
     def has_sitemap(self):
         return self.sitemap_expr is not None
 
@@ -296,8 +334,9 @@ class PageDef(object):
 
     @property
     def urls_line(self):
+        _uri = self.uri
 
-        uri = self._uri[1:] if self._uri.startswith('/') else self._uri
+        uri = _uri[1:] if _uri.startswith('/') else _uri
         return '^{}$'.format(uri)
 
     def render_method_headers(self, use_data=False, use_parent=False, use_url=False, use_request=False):

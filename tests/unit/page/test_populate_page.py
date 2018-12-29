@@ -292,16 +292,6 @@ def test_page_func_imported():
     assert boo.functions['zoo'].body is None
 
 
-def test_page_stream_expr_no_react():
-    with pytest.raises(ReactAndChannelsRequiredValidationError):
-        cs = _("""
-            @channels
-            
-            [boo]
-            foo:= 123
-            @stream(Article)
-        """)
-
 
 def test_page_stream_expr_no_channels():
     with pytest.raises(ReactAndChannelsRequiredValidationError):
@@ -380,6 +370,10 @@ def test_page_stream_expr_full_syntax():
         #lolo
         -------
         name
+        
+        #lulu
+        -------
+        name
 
     """)
 
@@ -395,14 +389,14 @@ def test_page_stream_expr_full_syntax():
     m2 = boo.stream.models[1]
     m3 = boo.stream.models[2]
 
-    assert m1.target == '#lala'
+    assert m1.target == 'Lala'
     assert m1.filter_expr == 'me.name=="hoho"'
     assert m1.fields == ['foo', 'goo']
 
-    assert m2.target == '#lolo'
+    assert m2.target == 'Lolo'
     assert m2.filter_expr is None
     assert m2.fields is None
 
-    assert m3.target == '#lulu'
+    assert m3.target == 'Lulu'
     assert m3.filter_expr is None
     assert m3.fields is None

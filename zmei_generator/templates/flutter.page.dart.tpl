@@ -1,13 +1,14 @@
-import 'package:flutter/material.dart';
 import '../../state.dart';
 {% if page.functions %}
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+{% endif %}{% if page.get_parent() %}
+import '../{{ page.get_parent().collection_set.app_name }}/{{ page.get_parent().name }}.dart';
 {% endif %}
-abstract class {{ app_name.capitalize() }}{{ page.view_name }}State extends PageState {
+abstract class {{ page.view_name }}State extends {% if page.get_parent() %}{{ page.get_parent().view_name }}State{% else %}PageState{% endif %} {
     {%- if page.own_item_names %}
     {% for key in (page.own_item_names) %}
-    dynamic {{ key }};{% endfor %}{% endif %}
+    dynamic {{ to_camel_case(key) }};{% endfor %}{% endif %}
 
     {% if page.own_item_names or page.stream or page.functions %}
     @override
@@ -30,7 +31,7 @@ abstract class {{ app_name.capitalize() }}{{ page.view_name }}State extends Page
     void loadData(data) {
         super.loadData(data);
     {%- for key in (page.own_item_names) %}
-        {{ key }} = data['{{ key }}'];{% endfor %}
+        {{ to_camel_case(key) }} = data['{{ key }}'];{% endfor %}
     }
     {%- endif %}
     {%- for name, func in page.functions.items() %}

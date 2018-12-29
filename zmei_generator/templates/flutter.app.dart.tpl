@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 MaterialApp buildApp(final Map<String, WidgetBuilder> routes) {
     return MaterialApp(
-        title: 'Named Routes Demo',
+        title: 'My app',
         initialRoute: '/',
 
         theme: ThemeData(

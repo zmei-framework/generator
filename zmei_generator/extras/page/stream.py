@@ -2,6 +2,7 @@ import re
 
 from zmei_generator.config.domain.collection_set_def import CollectionSetDef
 from zmei_generator.config.extras import PageExtra
+from zmei_generator.generator.imports import ImportSet
 from zmei_generator.parser.errors import ReactAndChannelsRequiredValidationError
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
@@ -53,8 +54,7 @@ class StreamPageExtraParserListener(BaseListener):
             stream
         )
 
-        if not self.page.collection_set.channels or \
-                not self.page.react:
+        if not self.page.collection_set.channels:
             raise ReactAndChannelsRequiredValidationError(token=ctx.start)
 
         self.page.stream = stream
@@ -63,7 +63,14 @@ class StreamPageExtraParserListener(BaseListener):
         super().enterAn_stream_target_model(ctx)
 
         model = StreamModel(self.page)
-        model.target = ctx.getText()
+        target = ctx.getText()
+
+        if target.startswith('#'):
+            collection = self.collection_set.resolve_collection(target[1:])
+            model.target = collection.class_name
+            self.page.imports.append((f'{collection.collection_set.app_name}.models', collection.class_name))
+        else:
+            model.target = target
 
         self.page.stream.models.append(
             model
