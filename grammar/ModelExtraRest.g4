@@ -56,7 +56,7 @@ an_rest_fields_write_mode : write_mode_expr;
 
 an_rest_auth: KW_AUTH BRACE_OPEN an_rest_auth_type (COMA an_rest_auth_type)* BRACE_CLOSE;
 an_rest_auth_type: KW_AUTH_TYPE (COLON an_rest_auth_token_model | an_rest_auth_token_class)?;
-an_rest_auth_token_model: HASH id_or_kw;
+an_rest_auth_token_model: model_ref;
 an_rest_auth_token_class: classname;
 
 

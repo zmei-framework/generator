@@ -190,12 +190,10 @@ class RestSerializerConfig(object):
             if ref:
                 if ref[0] == '#':
                     ref = ref[1:]
-                    try:
-                        ref_collection = self.collection.collection_set.collections[ref]
-                    except KeyError:
-                        raise ValidationException('@rest token model is unknown: #{}'.format(ref))
+                    ref_collection = self.collection.collection_set.resolve_collection(ref)
+
                     cls = ref_collection.class_name
-                    self.field_imports.append((f'{self.collection.collection_set.app_name}.models', cls))
+                    self.field_imports.append((f'{ref_collection.collection_set.app_name}.models', cls))
                 else:
                     cls = ref
             else:

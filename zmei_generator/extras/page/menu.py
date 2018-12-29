@@ -25,12 +25,7 @@ class MenuPageExtra(PageExtra):
 
     def render_url(self, item):
         if item.page:
-            try:
-                page = self.page.collection_set.pages[item.page]
-            except KeyError:
-                raise ValidationException(
-                    f'Invalid page reference, page do not exist: "#{item.page}" when parsing menu '
-                    f'extra "{self.descriptor}" item "{item.ref}" for page {self.page}')
+            page = self.page.collection_set.resolve_page(item.page)
 
             self.page_refs.append(
                 (item.page, item.ref, page)

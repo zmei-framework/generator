@@ -74,7 +74,7 @@ an_menu_item_page:
     BRACE_CLOSE
     ;
 
-an_menu_item_page_ref : id_or_kw ;
+an_menu_item_page_ref : (id_or_kw DOT)? id_or_kw;
 
 an_menu_label:
      STRING_DQ

@@ -85,7 +85,7 @@ an_crud_next_page_url_val:
 // model
 
 an_crud_target_model:
-    (HASH id_or_kw) | classname;
+    model_ref | classname;
 
 // filter
 

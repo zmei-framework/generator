@@ -134,6 +134,15 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#model_ref.
+    def enterModel_ref(self, ctx:ZmeiLangParser.Model_refContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#model_ref.
+    def exitModel_ref(self, ctx:ZmeiLangParser.Model_refContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#field_list_expr.
     def enterField_list_expr(self, ctx:ZmeiLangParser.Field_list_exprContext):
         pass

@@ -28,7 +28,7 @@ page_header : SQ_BRACE_OPEN
     SQ_BRACE_CLOSE
     NL? ;
 
-page_base : id_or_kw (DASH|APPROX) GT;
+page_base : (id_or_kw DOT)? id_or_kw (DASH|APPROX) GT;
 page_alias : KW_AS page_alias_name;
 
 page_alias_name : id_or_kw ;

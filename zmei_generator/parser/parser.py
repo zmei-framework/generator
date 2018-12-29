@@ -56,20 +56,32 @@ class ZmeiParser(object):
         return self.tree
 
     def populate_collection_set(self, app_name='noname'):
-        cs = CollectionSetDef(app_name)
+        cs = self.build_collection_set(app_name)
 
-        listener = PartsCollectorListener(cs)
-        model_extra_listener = ModelExtraListener(cs)
-        page_extra_listener = PageExtraListener(cs)
-
-        self.walker.walk(listener, self.tree)
+        self.process_collection_set(cs)
         cs.post_process()
 
-        self.walker.walk(model_extra_listener, self.tree)
+        self.process_model_extras(cs)
 
-        self.walker.walk(page_extra_listener, self.tree)
+        self.process_page_extras(cs)
         cs.post_process_extras()
 
+        return cs
+
+    def process_page_extras(self, cs):
+        page_extra_listener = PageExtraListener(cs)
+        self.walker.walk(page_extra_listener, self.tree)
+
+    def process_model_extras(self, cs):
+        model_extra_listener = ModelExtraListener(cs)
+        self.walker.walk(model_extra_listener, self.tree)
+
+    def process_collection_set(self, cs):
+        listener = PartsCollectorListener(cs)
+        self.walker.walk(listener, self.tree)
+
+    def build_collection_set(self, app_name):
+        cs = CollectionSetDef(app_name)
         return cs
 
     def populate_collection_set_and_errors(self, *args, **kwargs):

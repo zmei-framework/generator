@@ -20,10 +20,7 @@ class RelationDef(FieldDef):
     def post_process(self):
 
         if self.ref_collection_def:
-            try:
-                ref_collection = self.collection.collection_set.collections[self.ref_collection_def]
-            except KeyError:
-                raise ValidationException('Reference to unknown collection: #{}'.format(self.ref_collection_def))
+            ref_collection = self.collection.collection_set.resolve_collection(self.ref_collection_def)
 
             self.ref_collection = ref_collection
             self.related_class = ref_collection.class_name
@@ -34,31 +31,6 @@ class RelationDef(FieldDef):
         if self.ref_collection and self.related_name:
             self.ref_collection.fields[self.related_name] = \
                 ReferenceField(self.ref_collection, self.collection, self.related_name, self)
-
-    # def parse_options(self):
-    #     options_grammar = ref_or_class_name + Optional(
-    #         Suppress('->') + identifier.setResultsName('related_name')) + stringEnd
-    #
-    #     result = options_grammar.parseString(self.options)
-    #
-    #     self.related_name = result.related_name
-    #
-    #     if result.ref:
-    #         try:
-    #             ref_collection = self.collection.collection_set.collections[result.ref]
-    #         except KeyError:
-    #             raise ValidationException('Reference to unknown collection: #{}'.format(result.ref))
-    #         self.ref_collection = ref_collection
-    #
-    #         if self.related_name:
-    #             if self.related_name in ref_collection.fields:
-    #                 raise ValidationException('Can not override field with related field: {}'.format(self.related_name))
-    #
-    #             ref_collection.fields[self.related_name] = ReferenceField(ref_collection, self.collection, self.related_name, self)
-    #
-    #         self.related_class = ref_collection.class_name
-    #     else:
-    #         self.related_class = result.class_name
 
     @property
     def qualifier(self):

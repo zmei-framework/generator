@@ -23,7 +23,7 @@ an_stream_model:
     ;
 
 an_stream_target_model:
-    (HASH id_or_kw) | classname;
+    model_ref | classname;
 
 // filter
 

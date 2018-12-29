@@ -1,6 +1,7 @@
 from collections import namedtuple
 
 from zmei_generator.generator.imports import ImportSet
+from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
 
 
 class CollectionSetDef(object):
@@ -10,6 +11,8 @@ class CollectionSetDef(object):
     def __init__(self, app_name: str) -> None:
 
         # self.parser = parser
+        self.application = None
+
         self.app_name = app_name
         self.translatable = False
 
@@ -35,6 +38,43 @@ class CollectionSetDef(object):
         self.extras = []
 
         self.files = {}
+        
+    def resolve_page(self, page_name):
+        if '.' in page_name:
+            if not self.application:
+                raise ValidationException(
+                    'CollectionSet have no application assigned. Can not resolve reference.')
+
+            app_name, page_name = page_name.split('.', maxsplit=2)
+
+            if app_name not in self.application.collection_sets:
+                raise ValidationException(
+                    'Unknown application')
+
+            return self.application.collection_sets[app_name].pages[page_name]
+        else:
+            return self.pages[page_name]
+
+    def resolve_collection(self, collection_name):
+        try:
+            if '.' in collection_name:
+                if not self.application:
+                    raise ValidationException(
+                        'CollectionSet have no application assigned. Can not resolve reference.')
+
+                app_name, collection_name = collection_name.split('.', maxsplit=2)
+
+                if app_name not in self.application.collection_sets:
+                    raise ValidationException(
+                        'Unknown application')
+
+                return self.application.collection_sets[app_name].collections[
+                    collection_name]
+            else:
+                return self.collections[collection_name]
+        except KeyError:
+            raise ValidationException('Reference to unknown collection: #{}'.format(collection_name))
+        
 
     def add_deps(self, deps):
         for dep in deps:

@@ -90,11 +90,11 @@ class PageDef(object):
 
         self.defined_url_alias = None
 
-        self.uri = None
+        self._uri = None
         self.defined_uri = None
         self.has_uri = False
 
-        self.i18n = False
+        self._i18n = False
 
         self.crud_overrides = {}
 
@@ -102,21 +102,6 @@ class PageDef(object):
         # extras = self.collection_set.parser.get_page_extras_available()
 
         self.extras = []
-
-        # TODO: process extras
-        # for extra in parse_result.extras:
-        #
-        #     try:
-        #         extra_cls = extras[extra.extra_name]
-        #         try:
-        #             extra_instance = extra_cls(extra, self)
-        #             self.extras.append(extra_instance)
-        #
-        #         except ParseException as e:
-        #             handle_parse_exception(e, extra.extra_body,
-        #                                    '@{} expression for page "{}"'.format(extra.extra_name, self.name))
-        #     except KeyError as e:
-        #         raise ValidationException('Page extra not found: {}, reason: {}'.format(extra.extra_name, e))
 
     def set_html(self, html, react=None, area='content'):
         from zmei_generator.extras.page.block import ReactPageBlock
@@ -169,7 +154,8 @@ class PageDef(object):
     def get_parent(self):
         if self.parent_name:
             if not self._parent:
-                self._parent = self.collection_set.pages[self.parent_name]
+                self._parent = self.collection_set.resolve_page(self.parent_name)
+
             return self._parent
 
     def merge(self, page):
@@ -186,14 +172,34 @@ class PageDef(object):
         self.uri_params.append(param)
         return '(?P<{}>{})'.format(param, expr)
 
-    def set_uri(self, uri):
-        if uri.startswith('.'):
-            uri = uri[1:]
+    @property
+    def i18n(self):
+        if self._i18n:
+            return True
+
+        parent = self.get_parent()
+
+        if parent:
+            return parent.i18n
+
+        return False
+
+
+    @property
+    def uri(self):
+        _uri = self._uri
+
+        if _uri.startswith('.'):
+            _uri = _uri[1:]
             parent = self.get_parent()
 
             if parent:
-                uri = '/'.join([parent.defined_uri, uri])
-                uri = re.sub('/+', '/', uri)
+                _uri = '/'.join([parent.uri, _uri])
+                _uri = re.sub('/+', '/', _uri)
+
+        return _uri
+
+    def set_uri(self, uri):
 
         self.defined_uri = uri
         self.has_uri = bool(uri)
@@ -201,9 +207,9 @@ class PageDef(object):
         if uri:
             if uri.startswith('$'):
                 uri = uri[1:]
-                self.i18n = True
+                self._i18n = True
 
-            self.uri = re.sub(r'<(\w+)(\s*:\s*([^\>]+))?>', self._find_params, uri)
+            self._uri = re.sub(r'<(\w+)(\s*:\s*([^\>]+))?>', self._find_params, uri)
 
     @property
     def react_component_names(self):
@@ -267,7 +273,7 @@ class PageDef(object):
     @property
     def urls_line(self):
 
-        uri = self.uri[1:] if self.uri.startswith('/') else self.uri
+        uri = self._uri[1:] if self._uri.startswith('/') else self._uri
         return '^{}$'.format(uri)
 
     def render_method_headers(self, use_data=False, use_parent=False, use_url=False, use_request=False):

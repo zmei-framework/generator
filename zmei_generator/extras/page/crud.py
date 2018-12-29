@@ -118,8 +118,8 @@ class CrudPageExtra(PageExtra):
 
         # appname, model_cls, fields
         if crud.model.startswith('#'):
-            self.app_name = page.collection_set.app_name + '.models'
-            collection = page.collection_set.collections[crud.model[1:]]
+            collection = page.collection_set.resolve_collection(crud.model[1:])
+            self.app_name = collection.collection_set.app_name + '.models'
             self.model_cls = collection.class_name
             self.fields = {field.name: field.verbose_name or field.name.replace('_', ' ').capitalize() for field in
                            collection.filter_fields(crud_fields or '*') if not field.read_only}

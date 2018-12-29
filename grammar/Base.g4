@@ -76,6 +76,7 @@ id_or_kw: ID
    ;
 
 classname: id_or_kw (DOT id_or_kw)*;
+model_ref: HASH (id_or_kw DOT)? id_or_kw;
 
 field_list_expr:
     DOT? STAR (COMA EXCLUDE field_list_expr_field)*
