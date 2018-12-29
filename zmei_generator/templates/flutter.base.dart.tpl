@@ -9,7 +9,7 @@ mixin ScaffoldPageStateMixin on PageState {
             appBar: AppBar(
                 title: Text(getPageName()),
             ),
-            body: isDataReady() ? buildBody() : Center(child: CircularProgressIndicator()),
+            body: isDataReady() ? Builder(builder: buildBody) : Center(child: CircularProgressIndicator()),
             bottomNavigationBar: BottomAppBar(
                 child: Container(
                     height: 50.0,

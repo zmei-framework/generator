@@ -12,10 +12,11 @@ class PageFunction(object):
 
         self.name = None
         self.args = None
+        self.out_args = None
         self.body = None
 
-    def render_python_args(self):
-        return ', '.join(self.args)
+    def render_python_args(self, out=False):
+        return ', '.join(self.args if not out else self.out_args)
 
     @property
     def python_name(self):

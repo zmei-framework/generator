@@ -340,6 +340,18 @@ def generate_react_configs(target_path, apps):
     })
 
 
+def to_camel_case(name):
+    parts = []
+
+    for idx, part in enumerate(name.split('_')):
+        if idx != 0:
+            part = part.capitalize()
+
+        parts.append(part)
+
+    return ''.join(parts)
+
+
 def generate_flutter_configs(target_path, apps):
     generate_file(target_path, 'flutter/pubspec.yaml', 'flutter.pubspec.yaml.tpl')
     generate_file(target_path, 'flutter/lib/main.dart', 'flutter.main.dart.tpl')
@@ -355,6 +367,7 @@ def generate_flutter_configs(target_path, apps):
                             'app_name': app_name,
                             'app': collection_set,
                             'page': page,
+                            'to_camel_case': to_camel_case
                         }
                     )
                     generate_file(

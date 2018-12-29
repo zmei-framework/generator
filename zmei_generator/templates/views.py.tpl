@@ -62,7 +62,7 @@ class {{ page.view_name }}({% if page.get_extra_bases() %}{{ page.get_extra_base
         {% if func.body -%}
         {{ func.body|indent(8) }}
         {%- else -%}
-        {{ func.name }}({% if func.out_args %}{{ func.render_python_args() }}{% endif %})
+        return {{ func.name }}({% if func.out_args %}{{ func.render_python_args(out=True) }}{% endif %})
         {%- endif %}
     {% endfor %}
     {% set code=page.render_page_code() %}{% if code or page.page_item_names %}

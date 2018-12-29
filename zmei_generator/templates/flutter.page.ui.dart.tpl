@@ -4,7 +4,7 @@ import './{{ page.name }}.dart';
 
 class {{ app_name.capitalize() }}{{ page.view_name }}StateUi extends {{ app_name.capitalize() }}{{ page.view_name }}State with ScaffoldPageStateMixin {
 
-    Widget buildBody() {
+    Widget buildBody(BuildContext context) {
         return Center(
             child: Text('Data received: $data'),
         );

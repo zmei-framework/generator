@@ -19,8 +19,8 @@ class PageStatefulWidget extends StatefulWidget {
 
 abstract class PageState extends State<PageStatefulWidget> {
 
-    static String cookie = '';
-    static String csrf = '';
+    static String cookie = null;
+    static String csrf = null;
 
     bool hasRemoteData = false;
     bool hasStreams = false;
@@ -40,19 +40,7 @@ abstract class PageState extends State<PageStatefulWidget> {
 
     void loadData(newState) {
         data = newState;
-    }
-
-    @override
-    void initState() {
-        super.initState();
-
-        if (hasRemoteData) {
-            reload();
-        }
-
-        if (hasStreams) {
-            listenStream();
-        }
+        print('New state: $newState');
     }
 
     @override
@@ -132,8 +120,6 @@ abstract class PageState extends State<PageStatefulWidget> {
             "Cookie": PageState.cookie
         });
 
-        print(response.headers);
-
         if (response.headers.containsKey('set-cookie')) {
             PageState.cookie = response.headers['set-cookie'];
         }
@@ -157,6 +143,10 @@ abstract class PageState extends State<PageStatefulWidget> {
             "Cookie": cookie,
             "X-CSRFToken": token
         }, body: json.encode({'method': method, 'args': args}));
+
+        if (response.headers.containsKey('set-cookie')) {
+            PageState.cookie = response.headers['set-cookie'];
+        }
 
         if (response.statusCode == 200) {
             Map<String, dynamic> data = json.decode(response.body);

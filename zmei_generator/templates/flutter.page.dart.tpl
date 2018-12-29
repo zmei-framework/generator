@@ -9,6 +9,22 @@ abstract class {{ app_name.capitalize() }}{{ page.view_name }}State extends Page
     {% for key in (page.own_item_names) %}
     dynamic {{ key }};{% endfor %}{% endif %}
 
+    {% if page.own_item_names or page.stream or page.functions %}
+    @override
+    void initState() {
+        super.initState();
+
+        reload();
+
+        {% if page.own_item_names -%}
+        hasRemoteData = true;
+        {%- endif %}{% if page.stream -%}
+        hasStreams = true;
+        listenStream();
+        {%- endif %}
+    }
+    {% endif %}
+
     {%- if page.own_item_names %}
 
     void loadData(data) {
@@ -19,7 +35,7 @@ abstract class {{ app_name.capitalize() }}{{ page.view_name }}State extends Page
     {%- endif %}
     {%- for name, func in page.functions.items() %}
 
-    {{ name }}({% if func.args %}{{ func.render_python_args() }}{% endif %}) async {
+    {{ to_camel_case(name) }}({% if func.args %}{{ func.render_python_args() }}{% endif %}) async {
         return callRemote('{{ name }}', [{% if func.args %}{{ func.render_python_args() }}{% endif %}]);
     }
     {%- endfor %}
