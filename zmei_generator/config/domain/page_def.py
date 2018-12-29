@@ -255,7 +255,7 @@ class PageDef(object):
 
     @property
     def page_item_names(self):
-        return ['url'] + self.own_item_names
+        return self.own_item_names
 
     @property
     def parent_view_name(self):
@@ -345,9 +345,9 @@ class PageDef(object):
 
         code = self.render_method_headers(
             use_data=False,
-            use_parent='parent.' in code,
-            use_request='request.' in code,
-            use_url=True,
+            use_parent=False,
+            use_request=False,
+            use_url=False,
         ) + code
 
         if len(code.strip()) == 0:

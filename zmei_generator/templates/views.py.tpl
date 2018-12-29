@@ -72,7 +72,7 @@ class {{ page.view_name }}({% if page.get_extra_bases() %}{{ page.get_extra_base
         {% else %}
         data = {}
         {% endif %}
-        {%- if code %}{{ code|indent(8) }}{% endif %}
+        {% if code %}{{ code|indent(8) }}{% endif %}
         {%- if page.page_item_names %}
         data.update({ {% for key in (page.page_item_names) %}'{{ key }}': {{ key }}{% if not loop.last %}, {% endif %}{% endfor %} })
         {% endif %}
