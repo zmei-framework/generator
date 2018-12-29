@@ -45,11 +45,11 @@ def test_single_file():
 
     assert zoo.name == 'zoo'
     assert zoo.parent_name == 'foo'
-    assert zoo.view_name == 'ZooView'
+    assert zoo.view_name == 'MainZooView'
 
     assert goo.name == 'goo'
     assert goo.parent_name is None
-    assert goo.view_name == 'GooView'
+    assert goo.view_name == 'MainGooView'
 
 
 def test_simple_reuse_another_app():

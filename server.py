@@ -14,6 +14,7 @@ from elasticsearch import Elasticsearch
 from jwt import PyJWTError
 from sanic import Sanic
 from sanic.response import HTTPResponse, text
+from zmei_generator.generator.application import ZmeiAppParser
 
 from zmei_generator.generator.collections import generate, generate_common_files
 from zmei_generator.parser.errors import ValidationError
@@ -131,7 +132,7 @@ async def do_generate(executor, request, target_path):
     if request.form.get('features'):
         features = request.form.get('features').split(',')
 
-    all_apps = []
+    app_parser = ZmeiAppParser()
 
     for app_name in request.form.get('collections').split(','):
         filename = '{}.col'.format(app_name)
@@ -141,13 +142,24 @@ async def do_generate(executor, request, target_path):
         else:
             filename = 'col/' + filename
 
-        all_apps.append(
-            app.loop.run_in_executor(executor, generate_app, stats_listener, target_path, app_name, features, filename))
+        # all_apps.append(
+        #     app.loop.run_in_executor(executor, generate_app, stats_listener, target_path, app_name, features, filename))
 
-    all_apps = {app_name: cs for app_name, cs in await asyncio.gather(*all_apps)}
+        with open(os.path.join(target_path, filename)) as f:
+            app_parser.add_file(filename, f.read())
+
+        # collection_set = parser.populate_collection_set_and_errors(app_name)
+
+    application = app_parser.parse()
+
+    for app_name, collection_set in application.collection_sets.items():
+        generate(target_path, app_name, collection_set, features=features)
+
+
+    # all_apps = {app_name: cs for app_name, cs in await asyncio.gather(*all_apps)}
 
     skeleton_dir = os.path.join(os.path.realpath(dirname(__file__)), 'skeleton')
-    await app.loop.run_in_executor(executor, generate_common_files, target_path, skeleton_dir, all_apps)
+    await app.loop.run_in_executor(executor, generate_common_files, target_path, skeleton_dir, application.collection_sets)
 
     if 'react' in features and os.path.exists(os.path.join(target_path, 'react/package.json')):
         webpack_home = os.path.join(os.path.realpath(dirname(__file__)), 'webpack')

@@ -119,7 +119,9 @@ class PageDef(object):
         self.add_block(area, ReactPageBlock(self, html, area_name=area))
 
         if self.react:
-            self.extra_bases.remove('ZmeiDataViewMixin')
+            if 'ZmeiDataViewMixin' in self.extra_bases:
+                self.extra_bases.remove('ZmeiDataViewMixin')
+
             self.extra_bases.append('ZmeiReactViewMixin')
 
     def add_crud(self, descriptor, cls):
@@ -134,11 +136,27 @@ class PageDef(object):
         self.blocks[area].append(block)
 
     def get_extra_bases(self):
-        if (len(self.functions) or self.flutter) and not self.react and 'ZmeiDataViewMixin' in self.extra_bases:
-            self.extra_bases.remove('ZmeiDataViewMixin')
-            self.extra_bases.append('ZmeiRemoteInvocationViewMixin')
+        parent = self.get_parent()
 
-        if not self.parent_name:
+        if parent:
+            if 'ZmeiDataViewMixin' in self.extra_bases:
+                self.extra_bases.remove('ZmeiDataViewMixin')
+
+        if len(self.functions) and not self.react:
+            if parent:
+                if 'ZmeiDataViewMixin' in parent.extra_bases:
+                    parent.extra_bases.remove('ZmeiDataViewMixin')
+
+                if 'ZmeiRemoteInvocationViewMixin' not in parent.extra_bases:
+                    parent.extra_bases.append('ZmeiRemoteInvocationViewMixin')
+            else:
+                if 'ZmeiDataViewMixin' in self.extra_bases:
+                    self.extra_bases.remove('ZmeiDataViewMixin')
+
+                if 'ZmeiRemoteInvocationViewMixin' not in self.extra_bases:
+                    self.extra_bases.append('ZmeiRemoteInvocationViewMixin')
+
+        if not parent:
             return self.extra_bases
 
         all_bases = self.get_parent().get_all_bases()
@@ -183,7 +201,6 @@ class PageDef(object):
             return parent.i18n
 
         return False
-
 
     @property
     def uri(self):
@@ -245,7 +262,7 @@ class PageDef(object):
         if not self.parent_name:
             return 'TemplateView'
 
-        return self.collection_set.pages[self.parent_name].view_name
+        return self.collection_set.resolve_page(self.parent_name).view_name
 
     def get_imports(self):
         imports = self.imports
@@ -257,8 +274,12 @@ class PageDef(object):
 
         elif len(self.functions) or self.flutter:
             imports.append(('zmei.views', 'ZmeiRemoteInvocationViewMixin'))
-        else:
-            imports.append(('zmei.views', 'ZmeiDataViewMixin'))
+
+        imports.append(('zmei.views', 'ZmeiDataViewMixin'))
+
+        parent = self.get_parent()
+        if parent and parent.collection_set != self.collection_set:
+            imports.append((f'{parent.collection_set.app_name}.views', parent.view_name))
 
         return imports
 
@@ -268,7 +289,10 @@ class PageDef(object):
 
     @property
     def view_name(self):
-        return '{}View'.format(''.join([x.capitalize() for x in self.name.split('_')]))
+        return '{}{}View'.format(
+            ''.join([x.capitalize() for x in self.collection_set.app_name.split('_')]),
+            ''.join([x.capitalize() for x in self.name.split('_')])
+        )
 
     @property
     def urls_line(self):

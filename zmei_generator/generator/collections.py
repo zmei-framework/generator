@@ -572,7 +572,7 @@ def generate_views_py(target_path, app_name, collection_set):
                     generate_file(target_path, template_name, 'theme/default.html', {
                         'app_name': app_name,
                         'page': page,
-                        'parent': collection_set.pages[page.parent_name] if page.parent_name else None
+                        'parent': collection_set.resolve_page(page.parent_name) if page.parent_name else None
                     })
 
                     generated_templates.append(template_name)

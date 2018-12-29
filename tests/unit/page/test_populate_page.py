@@ -48,11 +48,11 @@ def test_pages():
 
     assert zoo.name == 'zoo'
     assert zoo.parent_name == 'foo'
-    assert zoo.view_name == 'ZooView'
+    assert zoo.view_name == 'ExampleZooView'
 
     assert goo.name == 'goo'
     assert goo.parent_name is None
-    assert goo.view_name == 'GooView'
+    assert goo.view_name == 'ExampleGooView'
 
 
 def test_pages_extend_name():
@@ -90,11 +90,11 @@ def test_pages_extend_name():
 
     assert zoo.name == 'boo_foo_zoo'
     assert zoo.parent_name == 'boo_foo'
-    assert zoo.view_name == 'BooFooZooView'
+    assert zoo.view_name == 'ExampleBooFooZooView'
 
     assert goo.name == 'goo'
     assert goo.parent_name is None
-    assert goo.view_name == 'GooView'
+    assert goo.view_name == 'ExampleGooView'
 
 
 def test_home_page():
