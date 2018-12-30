@@ -178,15 +178,15 @@ async def do_generate(executor, request, target_path):
 
         os.unlink(node_modules)
 
-    data = stats_listener.get_data()
-    data['user'] = request['user']['user_id']
-    data['files'] = data['features'].get('Col_file', 0)
-    data['models'] = data['features'].get('Col', 0)
-    data['pages'] = data['features'].get('Page', 0)
-
-    data['features'] = list(data['features'].keys())
-
-    call_later(1, send_data, data)
+    # data = stats_listener.get_data()
+    # data['user'] = request['user']['user_id']
+    # data['files'] = data['features'].get('Col_file', 0)
+    # data['models'] = data['features'].get('Col', 0)
+    # data['pages'] = data['features'].get('Page', 0)
+    #
+    # data['features'] = list(data['features'].keys())
+    #
+    # call_later(1, send_data, data)
 
 
 def generate_app(stats_listener, target_path, app_name, features, filename):
@@ -229,30 +229,30 @@ if __name__ == '__main__':
         reloader.start_watcher_thread()
 
 
-    @app.middleware('request')
-    async def auth_request(request):
-        auth = request.headers.get('authorization')
-        if not auth:
-            return text('Missing authentication token.', status=401)
-
-        try:
-            token_type, token = auth.split(' ')
-        except ValueError:
-            return text('Malformed authorization header.', status=401)
-
-        if token_type != 'JWT':
-            return text('Unsupported authorization type.', status=401)
-
-        try:
-            user = get_user(token)
-
-            if not user:
-                return text('Invalid authentication token. Can not authorise user.', status=403)
-
-            request['user'] = user
-
-        except PyJWTError as e:
-            return text(str(e), status=403)
+    # @app.middleware('request')
+    # async def auth_request(request):
+    #     auth = request.headers.get('authorization')
+    #     if not auth:
+    #         return text('Missing authentication token.', status=401)
+    #
+    #     try:
+    #         token_type, token = auth.split(' ')
+    #     except ValueError:
+    #         return text('Malformed authorization header.', status=401)
+    #
+    #     if token_type != 'JWT':
+    #         return text('Unsupported authorization type.', status=401)
+    #
+    #     try:
+    #         user = get_user(token)
+    #
+    #         if not user:
+    #             return text('Invalid authentication token. Can not authorise user.', status=403)
+    #
+    #         request['user'] = user
+    #
+    #     except PyJWTError as e:
+    #         return text(str(e), status=403)
 
 
     app.run(host='0.0.0.0', port=9000)

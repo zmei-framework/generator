@@ -1,8 +1,8 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='cratis-gen',
-    version='1.0.22',
+    name='zmei-gen',
+    version='1.1.0',
     packages=find_packages(),
 
     url='',
@@ -15,14 +15,12 @@ setup(
     package_data={
         'zmei_generator': [
             'templates/*.tpl',
-            'templates/cratis/*.tpl',
             'templates/django/*.tpl',
             'templates/theme/*.html',
         ]
     },
 
     install_requires=[
-        "termcolor",
         "markdown",
         "autopep8",
         "django",
@@ -34,19 +32,15 @@ setup(
         'jinja2',
         'sanic',
         'termcolor==1.1.0',
-        'autopep8',
         'jinja2',
-        'pyjwt',
         'defusedxml',
         'django',
-        'antlr4-python3-runtime',
-        'AoikLiveReload',
-        'aioelasticsearch',
+        'antlr4-python3-runtime'
     ],
 
     entry_points={
         'console_scripts': [
-            'zmei = zmei_generator.cli:django_gen',
+            'zmei = zmei_generator.cli.main:run',
         ]
     },
 )

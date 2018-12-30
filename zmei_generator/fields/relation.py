@@ -16,6 +16,7 @@ class RelationDef(FieldDef):
         self.related_name = None
         self.ref_collection = None
         self.related_class = None
+        self.related_app = None
 
     def post_process(self):
 
@@ -23,7 +24,7 @@ class RelationDef(FieldDef):
             ref_collection = self.collection.collection_set.resolve_collection(self.ref_collection_def)
 
             self.ref_collection = ref_collection
-            self.related_class = ref_collection.class_name
+            self.related_class = f'{ref_collection.collection_set.app_name}.{ref_collection.class_name}'
 
         if self.ref_collection and self.related_name in self.ref_collection.fields:
             raise ValidationException('Can not override field with related field: {}'.format(self.related_name))
