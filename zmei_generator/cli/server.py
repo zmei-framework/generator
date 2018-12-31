@@ -9,7 +9,6 @@ from os.path import dirname
 from zmei_generator.generator.application import ZmeiAppParser
 from zmei_generator.generator.collections import generate, generate_common_files
 from zmei_generator.generator.utils import StopGenerator
-from zmei_generator.parser.errors import ValidationError
 from zmei_generator.parser.parser import ZmeiParser
 
 

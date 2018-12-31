@@ -315,7 +315,7 @@ def collect_app_names():
             if filename.startswith('col/'):
                 filename = filename[4:]
             app_name = filename[0:-4]
-            print(app_name)
+
             collections.append(app_name)
     return collections
 
@@ -324,13 +324,11 @@ def migrate_db(apps, features=None):
     print(colored('> ', 'white', 'on_blue'), 'Migrating database')
     django_command = get_django_command(features)
 
-    for app_name in apps:
-        subprocess.run('{} makemigrations {}'.format(django_command, app_name), shell=True, check=True)
-        try:
-            subprocess.run('{} migrate'.format(django_command), shell=True, check=True)
-            # subprocess.run('{} migrate {}'.format(django_command, app_name), shell=True, check=True)
-        except subprocess.CalledProcessError:
-            pass
+    subprocess.run('{} makemigrations {}'.format(django_command, ' '.join(apps)), shell=True, check=True)
+    try:
+        subprocess.run('{} migrate'.format(django_command), shell=True, check=True)
+    except subprocess.CalledProcessError:
+        pass
 
 
 def run_django(features=None, run_host='127.0.0.1:8000'):

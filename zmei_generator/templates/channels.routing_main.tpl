@@ -9,7 +9,7 @@ application = ProtocolTypeRouter({
 
     'websocket': AuthMiddlewareStack(
         URLRouter([{% for app, page in streams %}
-            url(r'^ws/pages/{{ page.urls_line.strip('^') }}', {{ page.streaming_page.view_name }}Consumer),
-        {% endfor %}])
+            url(r'^ws/pages/{{ app.app_name }}/{{ page.name }}$', {{ page.view_name }}Consumer),
+        {%- endfor %}])
     ),
 })

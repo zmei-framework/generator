@@ -1,15 +1,11 @@
-from collections import defaultdict
-
-from time import perf_counter
-
-from antlr4 import ParseTreeWalker
-
 from zmei_generator.config.domain.collection_def import CollectionDef
 from zmei_generator.config.domain.collection_set_def import CollectionSetDef
 from zmei_generator.config.domain.field_def import FieldConfig
 from zmei_generator.config.domain.page_def import PageDef, PageFunction
 from zmei_generator.config.domain.page_expression import PageExpression
 from zmei_generator.extras.collection_set.celery import CeleryCsExtraParserListener
+from zmei_generator.extras.collection_set.channels import ChannelsCsExtraParserListener
+from zmei_generator.extras.collection_set.file import FileCsExtraParserListener
 from zmei_generator.extras.collection_set.filer import FilerCsExtraParserListener
 from zmei_generator.extras.collection_set.langs import LangsCsExtraParserListener
 from zmei_generator.extras.collection_set.suit import SuitCsExtra
@@ -28,12 +24,7 @@ from zmei_generator.fields.text import TextFieldDef, SlugFieldDef, LongTextField
     RichTextFieldWithUploadDef
 from zmei_generator.parser.errors import TabsSuitRequiredValidationError, LangsRequiredValidationError
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
-from zmei_generator.parser.gen.ZmeiLangParserListener import ZmeiLangParserListener
-from zmei_generator.extras.collection_set.file import FileCsExtraParserListener
-from zmei_generator.extras.collection_set.channels import ChannelsCsExtraParserListener
-from zmei_generator.parser.populate_model_extras import ModelExtraListener
 from zmei_generator.parser.populate_page_crud_overrides import PageCrudOverrideExtraListener
-from zmei_generator.parser.populate_page_extras import PageExtraListener
 from zmei_generator.parser.utils import BaseListener
 
 

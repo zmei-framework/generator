@@ -1,5 +1,9 @@
+
+import './src/state.dart';
 import './src/routes.dart';
 
 void main() {
-    routes("http://192.168.0.124:8000");
+    PageStateProvider.setup("http://192.168.0.124:8000");
+
+    routes();
 }

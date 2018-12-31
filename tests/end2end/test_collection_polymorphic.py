@@ -1,5 +1,3 @@
-import os
-
 import pytest
 
 
@@ -72,4 +70,4 @@ report
 """)
 @pytest.mark.zmei_before('migrate')
 def test_poly_with_admin():
-    from poly.admin import DataSourceAdmin
+    pass

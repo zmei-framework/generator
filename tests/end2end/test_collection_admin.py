@@ -2,6 +2,7 @@ import os
 
 import pytest
 
+
 @pytest.mark.zmei('sample', """
 
 #car
@@ -24,6 +25,7 @@ def test_admin_simple():
     assert issubclass(CarAdmin, ModelAdmin)
 
     assert CarAdmin.list_display == ['nr', 'mark', 'model', 'weight', 'crashed', 'painted']
+
 
 @pytest.mark.zmei_before('install', 'migrate')
 @pytest.mark.zmei('sample', """
@@ -212,6 +214,7 @@ def test_admin_inlines():
     assert CarServiceHistoryInline.model == Service
     assert CarServiceHistoryInline.fields == ['date', 'details']
     assert CarAdmin.inlines == [CarServiceHistoryInline]
+
 
 @pytest.mark.zmei_before('install', 'migrate')
 @pytest.mark.zmei('sample', """

@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:my_app/src/utils.dart';
 
@@ -14,65 +15,37 @@ class PageStatefulWidget extends StatefulWidget {
     PageState createState() => state;
 }
 
+class PageStream {
+    String streamUrl;
+    List<PageState> streamListeners;
 
-abstract class PageState extends State<PageStatefulWidget> {
-
-    static String cookie;
-
-    bool hasRemoteData = false;
-    bool hasStreams = false;
     bool reconnecting = false;
     bool closed = false;
     IOWebSocketChannel channel;
 
-    dynamic data;
-    String pageUrl = "";
-    String wsUrl = "";
-
-    @override
-    void initState() {
-        super.initState();
+    PageStream(this.streamUrl) {
+        streamListeners = List<PageState>();
     }
 
-    bool isDataReady() {
-        if (!hasRemoteData) return true;
-
-        return data != null;
-    }
-
-    void loadData(newState) {
-        data = newState;
-        print('New state: $newState');
-    }
-
-    @override
-    void dispose() {
-        closed = true;
-
-        if (channel != null) {
-            channel.sink.close();
-            channel = null;
+    subscribe(PageState page) {
+        if (channel == null) {
+            listenStream();
         }
-
-        super.dispose();
+        if (!streamListeners.contains(page)) {
+            streamListeners.add(page);
+        }
     }
 
-    PageState setDataUrl(String url) {
-        pageUrl = url;
-        hasRemoteData = true;
-
-        return this;
+    unsubscribe(PageState page) {
+        if (streamListeners.contains(page)) {
+            streamListeners.remove(page);
+        }
     }
 
-    PageState setWsUrl(String url) {
-        wsUrl = url.replaceFirst('http', 'ws');
-        hasStreams = true;
-
-        return this;
-    }
-
-    Widget asWidget() {
-        return PageStatefulWidget(this);
+    cleanUp() {
+        if (streamListeners.length == 0) {
+            closeStream();
+        }
     }
 
     reconnect() async {
@@ -93,20 +66,25 @@ abstract class PageState extends State<PageStatefulWidget> {
     listenStream() async {
         reconnecting = false;
 
+        print("Connecting to: $streamUrl");
+
         channel = await IOWebSocketChannel.connect(
-            wsUrl, pingInterval: Duration(milliseconds: 1000));
-        print('Connected');
+            streamUrl, pingInterval: Duration(milliseconds: 1000));
+
+        print('Connected: $streamUrl');
 
         channel.stream.listen((message) {
-            setState(() {
-                loadData(json.decode(message)['__state__']);
-            });
+
+            for(PageState page in streamListeners) {
+                page.onRemoteUpdate(json.decode(message));
+            }
         }, onDone: () {
-            print('Connection terminated');
+            print('Connection terminated: $streamUrl"');
             channel = null;
 
             reconnect();
         }, onError: (error) {
+            print('Connection error: $streamUrl"');
             print(error);
             channel = null;
 
@@ -114,16 +92,73 @@ abstract class PageState extends State<PageStatefulWidget> {
         });
     }
 
-    reload() async {
-        var result = await httpRequest(pageUrl);
+    closeStream() async {
+        print('Connection close: $streamUrl"');
+        closed = true;
 
-        setState(() {
-            loadData(result);
-        });
+        if (channel != null) {
+            await channel.sink.close();
+            channel = null;
+        }
+    }
+}
+
+class PageStateProvider {
+    static PageStateProvider _instance;
+
+    static PageStateProvider setup(String baseUrl) {
+        if (_instance != null) {
+            throw Exception('PageStateProvider already configured!');
+        }
+        _instance = PageStateProvider._(baseUrl);
+        return _instance;
+    }
+    static PageStateProvider getInstance() {
+        if (_instance == null) {
+            throw Exception('PageStateProvider is not configured yet!');
+        }
+        return _instance;
     }
 
-    callRemote(String method, args) async {
-        var data = await httpRequest(pageUrl, post: true, body: {
+    String baseUrl;
+    Map<String, PageStream> streams;
+
+    PageStateProvider._(this.baseUrl) {
+        streams = Map<String, PageStream>();
+    }
+
+    String formatStreamUrl(String streamUrl) {
+        return "${baseUrl.replaceFirst('http', 'ws')}$streamUrl";
+    }
+
+    subscribeStream(String streamUrl, PageState page) {
+        if (!streams.containsKey(streamUrl)) {
+            streams[streamUrl] = PageStream(formatStreamUrl(streamUrl));
+        }
+        streams[streamUrl].subscribe(page);
+    }
+
+    closeUnusedStreams() {
+        streams.forEach((url, stream) => stream.cleanUp());
+    }
+
+    unsubscribeStream(String streamUrl, PageState page) {
+        if (streams.containsKey(streamUrl)) {
+            streams[streamUrl].unsubscribe(page);
+        }
+    }
+
+    loadRemoteState(PageState page) async {
+        print("Loading data from: $baseUrl${page.getPageUrl()}");
+        var result = await httpRequest("$baseUrl${page.getPageUrl()}");
+
+        page.onRemoteUpdate(result);
+
+        return result;
+    }
+
+    callRemoteFunction(PageState page, String method, List<dynamic> args) async {
+        var data = await httpRequest("$baseUrl${page.getPageUrl()}", post: true, body: {
             'method': method,
             'args': args
         });
@@ -132,14 +167,83 @@ abstract class PageState extends State<PageStatefulWidget> {
             if (data.containsKey('__error__')) throw Exception(
                 data['__error__']);
             if (data.containsKey('__state__')) {
-                setState(() {
-                    loadData(data['__state__']);
-                });
+                page.onRemoteUpdate(data['__state__']);
 
                 return data['__state__'];
             }
         }
 
         return data;
+    }
+}
+
+abstract class PageState extends State<PageStatefulWidget> {
+
+    dynamic data;
+
+    Widget asWidget() {
+        return PageStatefulWidget(this);
+    }
+
+    String getPageUrl() {
+        throw Exception("Page has no remote url!");
+    }
+
+    bool hasRemoteData() {
+        return false;
+    }
+
+
+
+    @override
+    void initState() {
+        print('Init: $this');
+        super.initState();
+
+        if (hasRemoteData()) {
+            loadRemoteState();
+        }
+    }
+
+
+    @override
+    void dispose() {
+        super.dispose();
+        print('Dispose: $this');
+
+        PageStateProvider.getInstance().closeUnusedStreams();
+    }
+
+    bool isDataReady() {
+        if (!hasRemoteData()) return true;
+
+        return data != null;
+    }
+
+    loadData(newState) {
+        data = newState;
+        print('New state: $newState');
+    }
+
+    subscribeStream(String streamUrl) {
+        PageStateProvider.getInstance().subscribeStream(streamUrl, this);
+    }
+
+    unsubscribeStream(String streamUrl) {
+        PageStateProvider.getInstance().unsubscribeStream(streamUrl, this);
+    }
+
+    onRemoteUpdate(data) {
+        setState(() {
+            loadData(data);
+        });
+    }
+
+    loadRemoteState() async {
+        return PageStateProvider.getInstance().loadRemoteState(this);
+    }
+
+    callRemote(String method, List<dynamic> args) async {
+        return PageStateProvider.getInstance().callRemoteFunction(this, method, args);
     }
 }

@@ -208,9 +208,9 @@ def generate_common_files(target_path, skeleton_dir, apps):
             if not app.channels:
                 continue
             for page in app.pages.values():
-                if page.has_streams and page.uri:
+                if page.stream:
                     streams.append((app, page))
-                    imports.add(f'{app.app_name}.views', f'{page.streaming_page.view_name}Consumer')
+                    imports.add(f'{app.app_name}.views', f'{page.view_name}Consumer')
 
         generate_file(target_path, f'app/routing.py', 'channels.routing_main.tpl', context={
             'streams': streams,
@@ -547,12 +547,13 @@ def generate_views_py(target_path, app_name, collection_set):
         imports.add('django.views.generic', 'TemplateView')
 
         for page in collection_set.pages.values():
+            if collection_set.channels:
+                imports.add('channels.layers', 'get_channel_layer')
             if page.stream:
                 imports.add('channels.generic.websocket', 'AsyncWebsocketConsumer')
                 imports.add('django.db.models.signals', 'post_save', 'm2m_changed', 'post_delete')
                 imports.add('django_query_signals', 'post_bulk_create', 'post_delete as post_delete_bulk',
                             'post_get_or_create', 'post_update_or_create', 'post_update')
-                imports.add('channels.layers', 'get_channel_layer')
                 imports.add('channels.db', 'database_sync_to_async')
                 imports.add('asgiref.sync', 'async_to_sync')
                 imports.add('asyncio', 'sleep')
