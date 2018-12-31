@@ -35,13 +35,6 @@ class PageParentValidationError(ValidationTokenError):
         self.parent_page_name = parent_page_name
         super().__init__(token, f"Parent page is not defined: \"{parent_page_name}\"")
 
-
-class ReactAndChannelsRequiredValidationError(ValidationTokenError):
-    def __init__(self, token, pos_diff=0) -> None:
-        super().__init__(token, f"@react and @channels annotations required to use @stream. Make sure you place "
-                                f"@stream after @react.", pos_diff=pos_diff)
-
-
 class TabsSuitRequiredValidationError(ValidationTokenError):
     def __init__(self, token) -> None:
         super().__init__(token, f"@admin->tabs requires @suit feature enabled. Add \"@suit\""

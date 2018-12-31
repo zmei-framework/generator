@@ -41,11 +41,11 @@ def test_one_relation():
 
     assert a.related_name is None
     assert a.ref_collection == zoo
-    assert a.related_class == zoo.class_name
+    assert a.related_class == f'example.{zoo.class_name}'
 
     assert b.related_name == 'rel_name'
     assert b.ref_collection == zoo
-    assert b.related_class == zoo.class_name
+    assert b.related_class == f'example.{zoo.class_name}'
 
     assert c.related_name is None
     assert c.ref_collection is None

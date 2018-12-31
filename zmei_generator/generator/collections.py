@@ -557,7 +557,7 @@ def generate_views_py(target_path, app_name, collection_set):
                 imports.add('asgiref.sync', 'async_to_sync')
                 imports.add('asyncio', 'sleep')
                 imports.add('django.dispatch', 'receiver')
-                imports.add('zmei.react', 'ZmeiReactJsonEncoder')
+                imports.add('zmei.json', 'ZmeiJsonEncoder')
 
             for import_spec in page.get_imports():
                 imports.add(*import_spec)

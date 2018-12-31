@@ -121,7 +121,7 @@ class {{ page.view_name }}Consumer(AsyncWebsocketConsumer):
         {%- if stream_model.fields %}
         data = {key:val for key, val in data.items() if key in {{ stream_model.fields|repr }} }
         {% endif %}
-        return ZmeiReactJsonEncoder(view=view).encode({'__state__': data})
+        return ZmeiJsonEncoder(view=view).encode({'__state__': data})
     {%- endfor %}
 
 {% for stream_model in page.stream.models %}

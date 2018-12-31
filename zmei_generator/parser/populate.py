@@ -26,8 +26,7 @@ from zmei_generator.fields.number import IntegerFieldDef, FloatFieldDef, Decimal
 from zmei_generator.fields.relation import RelationOneDef, RelationOne2OneDef, RelationManyDef
 from zmei_generator.fields.text import TextFieldDef, SlugFieldDef, LongTextFieldDef, RichTextFieldDef, \
     RichTextFieldWithUploadDef
-from zmei_generator.parser.errors import TabsSuitRequiredValidationError, LangsRequiredValidationError, \
-    ReactAndChannelsRequiredValidationError
+from zmei_generator.parser.errors import TabsSuitRequiredValidationError, LangsRequiredValidationError
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.gen.ZmeiLangParserListener import ZmeiLangParserListener
 from zmei_generator.extras.collection_set.file import FileCsExtraParserListener

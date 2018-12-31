@@ -12,7 +12,7 @@ from pytest_forked import forked_run_report
 from zmei_generator.generator.collections import generate, generate_common_files
 from zmei_generator.parser.parser import ZmeiParser
 
-skeleton_dir = os.path.join(os.path.dirname(__file__), 'skeleton')
+skeleton_dir = os.path.join(os.path.dirname(__file__), 'zmei_generator/cli/skeleton')
 samples_dir = os.path.join(os.path.dirname(__file__), 'tests/samples')
 work_dir_prefix = os.path.join(os.path.dirname(__file__), 'tests/gen_result')
 files_dir = os.path.join(os.path.dirname(__file__), 'tests/files')
