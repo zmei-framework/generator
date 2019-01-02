@@ -5,6 +5,8 @@ import 'package:http/http.dart' as http;
 import '../{{ page.get_parent().collection_set.app_name }}/{{ page.get_parent().name }}_ui.dart';{% else %}
 import '../../state.dart';
 {% endif %}
+import '../../app.dart';
+
 abstract class {{ page.view_name }}State extends {% if page.get_parent() %}{{ page.get_parent().view_name }}StateUi{% else %}PageState{% endif %} {
     {%- if page.own_item_names %}
     {% for key in (page.own_item_names) %}
@@ -12,7 +14,7 @@ abstract class {{ page.view_name }}State extends {% if page.get_parent() %}{{ pa
     {% if page.uri %}
     @override
     String getPageUrl() {
-        return '{{ page.uri }}';
+        return App.url.{{ to_camel_case(page.collection_set.app_name) }}.{{ to_camel_case(page.name) }}({% for param in page.uri_params %}{{ to_camel_case(param) }}: url['{{ param }}']{% if not loop.last %}, {% endif %}{% endfor %});
     }
     {% if page.has_data %}
     @override

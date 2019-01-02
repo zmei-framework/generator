@@ -6,6 +6,7 @@ import './routes.dart';
 
 class App {
   static Router router;
+  static Routes url = Routes();
 }
 
 class AppComponent extends StatefulWidget {
@@ -30,7 +31,7 @@ class AppComponentState extends State<AppComponent> {
       theme: new ThemeData(
         primarySwatch: Colors.purple,
       ),
-      onGenerateRoute: Application.router.generator,
+      onGenerateRoute: App.router.generator,
     );
     print("initial route = ${app.initialRoute}");
     return app;

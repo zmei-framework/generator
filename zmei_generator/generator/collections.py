@@ -340,6 +340,10 @@ def generate_react_configs(target_path, apps):
     })
 
 
+def to_camel_case_classname(name):
+    return to_camel_case(name).capitalize()
+
+
 def to_camel_case(name):
     parts = []
 
@@ -371,6 +375,7 @@ def generate_flutter_configs(target_path, apps):
                             'app_name': app_name,
                             'app': collection_set,
                             'page': page,
+                            'format_uri': format_uri,
                             'to_camel_case': to_camel_case
                         }
                     )
@@ -420,7 +425,9 @@ def generate_flutter_configs(target_path, apps):
             'app_routes': app_routes,
             'max_len': max_len,
             'len': len,
-            'format_uri': format_uri
+            'format_uri': format_uri,
+            'to_camel_case': to_camel_case,
+            'to_camel_case_classname': to_camel_case_classname,
         }
     )
 

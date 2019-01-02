@@ -8,7 +8,7 @@ import './pages/{{ app_name }}/{{ name }}_ui.dart';
 
 routeHandler(cls) {
     return Handler(handlerFunc: (
-        BuildContext context, Map<String, List<String>> url) => cls().setUrl(url).asWidget()
+        BuildContext context, Map<String, List<String>> url) => cls().setUrl(url.map((key, val) => MapEntry(key, val[0]))).asWidget()
     );
 }
 
@@ -21,4 +21,19 @@ configureRoutes(Router router) {
     {% for uri, ui_class in app_routes.items() %}
     router.define('{{ uri }}',{{ ' ' * (max_len - len(uri)) }} handler: routeHandler(()=>{{ ui_class }}()));
     {%- endfor %}
+}
+
+
+{% for app_name, app in apps.items() %}{% if app.flutter %}
+class Routes{{ to_camel_case_classname(app_name) }} {
+    {% for name, page in app.pages.items() %}{% if page.flutter and page.uri -%}
+    String {{ to_camel_case(name) }}({% if page.uri_params %}{ {% for param in page.uri_params %}{{ to_camel_case(param) }}{% if not loop.last %}, {% endif %}{% endfor %} }{% endif %}) {
+        return '{{ format_uri(page.uri) }}'{% for param in page.uri_params %}.replaceAll(':{{ param }}', {{ to_camel_case(param) }}.toString()){% endfor %};
+    }
+    {% endif %}{% endfor %}
+}
+{% endif %}{% endfor %}
+
+class Routes { {% for app_name, app in apps.items() %}{% if app.flutter %}
+    final {{ to_camel_case(app_name) }} = Routes{{ to_camel_case_classname(app_name) }}();{% endif %}{% endfor %}
 }
