@@ -352,6 +352,10 @@ def to_camel_case(name):
     return ''.join(parts)
 
 
+def format_uri(uri):
+    return uri.replace('(?P<', ':').replace('>[^\/]+)', '')
+
+
 def generate_flutter_configs(target_path, apps):
     generate_file(target_path, 'flutter/pubspec.yaml', 'flutter.pubspec.yaml.tpl')
     generate_file(target_path, 'flutter/lib/main.dart', 'flutter.main.dart.tpl')
@@ -397,11 +401,26 @@ def generate_flutter_configs(target_path, apps):
             'apps': apps,
         }
     )
+
+    max_len = 0
+    app_routes = {}
+    for app_name, app in apps.items():
+        if app.flutter:
+            for name, page in app.pages.items():
+                if page.flutter and page.uri:
+                    uri = format_uri(page.uri)
+                    app_routes[uri] = f'{page.view_name}StateUi'
+                    max_len = max(max_len, len(uri))
+
     generate_file(
         target_path,
         f'flutter/lib/src/routes.dart',
         'flutter.routes.dart.tpl', {
             'apps': apps,
+            'app_routes': app_routes,
+            'max_len': max_len,
+            'len': len,
+            'format_uri': format_uri
         }
     )
 

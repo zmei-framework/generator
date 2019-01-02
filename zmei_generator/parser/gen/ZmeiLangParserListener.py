@@ -2240,6 +2240,15 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#an_flutter_child.
+    def enterAn_flutter_child(self, ctx:ZmeiLangParser.An_flutter_childContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_flutter_child.
+    def exitAn_flutter_child(self, ctx:ZmeiLangParser.An_flutter_childContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#an_html.
     def enterAn_html(self, ctx:ZmeiLangParser.An_htmlContext):
         pass

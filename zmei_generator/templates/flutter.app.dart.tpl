@@ -1,15 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:fluro/fluro.dart';
 
-MaterialApp buildApp(final Map<String, WidgetBuilder> routes) {
-    return MaterialApp(
-        title: 'My app',
-        initialRoute: '/',
+import './routes.dart';
 
-        theme: ThemeData(
-            primarySwatch: Colors.purple,
-        ),
 
-        routes: routes,
-    );
+class App {
+  static Router router;
 }
 
+class AppComponent extends StatefulWidget {
+  @override
+  State createState() {
+    return new AppComponentState();
+  }
+}
+
+class AppComponentState extends State<AppComponent> {
+  AppComponentState() {
+    final router = new Router();
+    configureRoutes(router);
+    App.router = router;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final app = new MaterialApp(
+      title: 'My app',
+      debugShowCheckedModeBanner: false,
+      theme: new ThemeData(
+        primarySwatch: Colors.purple,
+      ),
+      onGenerateRoute: Application.router.generator,
+    );
+    print("initial route = ${app.initialRoute}");
+    return app;
+  }
+}

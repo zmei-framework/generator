@@ -19,6 +19,12 @@ class FlutterPageExtraParserListener(BaseListener):
         self.set_flutter(self.page, extra)
         self.collection_set.flutter = True
 
+    def enterAn_flutter_child(self, ctx: ZmeiLangParser.An_flutter_childContext):
+        if ctx.BOOL().get_text() == 'true':
+            pass
+
+
+
     def set_flutter(self, page, extra):
         page.flutter = extra
 
@@ -26,4 +32,5 @@ class FlutterPageExtraParserListener(BaseListener):
             parent = page.get_parent()
             if not parent.flutter:
                 self.set_flutter(parent, extra)
+
 

@@ -1,6 +1,8 @@
 
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:my_app/src/utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dart:convert';
 import 'package:web_socket_channel/io.dart';
@@ -45,7 +47,9 @@ class PageStream {
     cleanUp() {
         if (streamListeners.length == 0) {
             closeStream();
+            return false;
         }
+        return true;
     }
 
     reconnect() async {
@@ -66,17 +70,37 @@ class PageStream {
     listenStream() async {
         reconnecting = false;
 
-        print("Connecting to: $streamUrl");
+        Map<String, dynamic> headers = Map<String, dynamic>();
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        if (prefs.getString(COOKIE_KEY) != null) {
+            for (var cookieStr in prefs.getString(COOKIE_KEY).split('|')) {
+                try {
+                    var cookie = Cookie.fromSetCookieValue(cookieStr);
+
+                    if (cookie.name == 'sessionid') {
+                        headers['Cookie'] = cookie.toString();
+                    }
+
+                } catch(e) {
+                    // Invalid
+                    if (!(e is RangeError)) {
+                        throw e;
+                    }
+                }
+            }
+
+        }
+
+        print('Connect: $streamUrl"');
 
         channel = await IOWebSocketChannel.connect(
-            streamUrl, pingInterval: Duration(milliseconds: 1000));
-
-        print('Connected: $streamUrl');
+            streamUrl,  headers: headers, pingInterval: Duration(milliseconds: 1000));
 
         channel.stream.listen((message) {
 
             for(PageState page in streamListeners) {
-                page.onRemoteUpdate(json.decode(message));
+                print('State update from websocket: $message');
+                page.onRemoteUpdate(json.decode(message)['__state__']);
             }
         }, onDone: () {
             print('Connection terminated: $streamUrl"');
@@ -138,8 +162,13 @@ class PageStateProvider {
         streams[streamUrl].subscribe(page);
     }
 
-    closeUnusedStreams() {
-        streams.forEach((url, stream) => stream.cleanUp());
+    closeUnusedStreams() async {
+        for (String url in streams.keys.toList()) {
+            final alive = streams[url].cleanUp();
+            if (!alive) {
+                streams.remove(url);
+            }
+        }
     }
 
     unsubscribeStream(String streamUrl, PageState page) {
@@ -180,6 +209,12 @@ class PageStateProvider {
 abstract class PageState extends State<PageStatefulWidget> {
 
     dynamic data;
+    Map<String, dynamic> url;
+
+    setUrl(Map<String, dynamic> params) {
+        url = params;
+        return this;
+    }
 
     Widget asWidget() {
         return PageStatefulWidget(this);
@@ -197,6 +232,7 @@ abstract class PageState extends State<PageStatefulWidget> {
 
     @override
     void initState() {
+        print('---------');
         print('Init: $this');
         super.initState();
 

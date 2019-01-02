@@ -9,6 +9,7 @@ id_or_kw: ID
    |BOOL
    |WRITE_MODE
    |KW_THEME
+   |KW_CHILD
    |KW_FILTER_OUT
    |KW_FILTER_IN
    |KW_PAGE

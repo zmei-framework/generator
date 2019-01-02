@@ -53,3 +53,44 @@ def test_page_flutter_parent_is_also_flutter():
     assert boo.name == 'boo'
     assert isinstance(boo.flutter, FlutterPageExtra)
     assert isinstance(foo.flutter, FlutterPageExtra)
+
+
+def test_page_flutter_child_if_not_marked():
+    cs = _("""
+    
+        [foo]
+        @flutter()
+
+        [foo->boo]
+    """)
+
+    assert len(cs.pages) == 2
+
+    assert cs.flutter is True
+    foo = cs.pages['foo']
+    boo = cs.pages['boo']
+
+    assert boo.name == 'boo'
+    assert isinstance(foo.flutter, FlutterPageExtra)
+    assert not boo.flutter
+
+
+def test_page_flutter_child_if_not_marked():
+    cs = _("""
+    
+        [foo]
+        @flutter(child: true)
+
+        [foo->boo]
+    """)
+
+    assert len(cs.pages) == 2
+
+    assert cs.flutter is True
+    foo = cs.pages['foo']
+    boo = cs.pages['boo']
+
+    assert boo.name == 'boo'
+    assert isinstance(foo.flutter, FlutterPageExtra)
+    assert not boo.flutter
+

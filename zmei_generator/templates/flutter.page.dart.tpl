@@ -40,7 +40,9 @@ abstract class {{ page.view_name }}State extends {% if page.get_parent() %}{{ pa
     void loadData(data) {
         super.loadData(data);
     {%- for key in (page.own_item_names) %}
-        {{ to_camel_case(key) }} = data['{{ key }}'];{% endfor %}
+        if (data.containsKey('{{ key }}')) {
+            {{ to_camel_case(key) }} = data['{{ key }}'];
+        }{% endfor %}
     }
     {%- endif %}
     {%- for name, func in page.functions.items() %}
