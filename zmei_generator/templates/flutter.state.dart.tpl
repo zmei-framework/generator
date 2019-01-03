@@ -156,9 +156,7 @@ class PageStateProvider {
     }
 
     subscribeStream(String streamUrl, PageState page) {
-        if (!streams.containsKey(streamUrl)) {
-            streams[streamUrl] = PageStream(formatStreamUrl(streamUrl));
-        }
+        streams[streamUrl] ??= PageStream(formatStreamUrl(streamUrl));
         streams[streamUrl].subscribe(page);
     }
 
@@ -172,9 +170,7 @@ class PageStateProvider {
     }
 
     unsubscribeStream(String streamUrl, PageState page) {
-        if (streams.containsKey(streamUrl)) {
-            streams[streamUrl].unsubscribe(page);
-        }
+        streams[streamUrl]?.unsubscribe(page);
     }
 
     loadRemoteState(PageState page) async {
@@ -193,9 +189,9 @@ class PageStateProvider {
         });
 
         if (data is Map) {
-            if (data.containsKey('__error__')) throw Exception(
+            if (data['__error__'] != null) throw Exception(
                 data['__error__']);
-            if (data.containsKey('__state__')) {
+            if (data['__state__'] != null) {
                 page.onRemoteUpdate(data['__state__']);
 
                 return data['__state__'];

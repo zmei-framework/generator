@@ -8,6 +8,10 @@ from zmei_generator.generator.utils import gen_args, handle_parse_exception
 
 
 class DefaultTextMixin(FieldDef):
+
+    def get_flutter_field(self):
+        return 'String'
+
     def prepare_field_arguemnts(self, own_args=None):
         args = super().prepare_field_arguemnts(own_args)
 

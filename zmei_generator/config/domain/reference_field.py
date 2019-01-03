@@ -20,6 +20,18 @@ class ReferenceField(object):
 
         self.inline = False
 
+    def get_flutter_field(self):
+        if self.target_collection:
+            return f'List<{self.target_collection.class_name}>'
+        else:
+            return 'dynamic'
+
+    def get_flutter_from_json(self, name):
+        if self.target_collection:
+            return f'data[{name}].map((item) => {self.target_collection.class_name}.fromJson(item))'
+        else:
+            return f'data[{name}]'
+
     def post_process(self):
         pass
 

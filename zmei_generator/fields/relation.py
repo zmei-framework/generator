@@ -63,6 +63,18 @@ class RelationOneDef(RelationDef):
         args['on_delete'] = 'models.PROTECT'
         return args
 
+    def get_flutter_field(self):
+        if self.ref_collection:
+            return f'{self.ref_collection.class_name}'
+        else:
+            return 'dynamic'
+
+    def get_flutter_from_json(self, name):
+        if self.ref_collection:
+            return f"{self.ref_collection.class_name}.fromJson(data['{name}'])"
+        else:
+            return f"data['{name}']"
+
     def get_model_field(self):
         args = self.prepare_field_arguemnts({'related_name': self.related_name or '+'})
 
@@ -93,6 +105,19 @@ class RelationOneDef(RelationDef):
 
 
 class RelationOne2OneDef(RelationDef):
+
+    def get_flutter_field(self):
+        if self.ref_collection:
+            return f'{self.ref_collection.class_name}'
+        else:
+            return 'dynamic'
+
+    def get_flutter_from_json(self, name):
+        if self.ref_collection:
+            return f"{self.ref_collection.class_name}.fromJson(data['{name}'])"
+        else:
+            return f"data['{name}']"
+
     def get_model_field(self):
         args = self.prepare_field_arguemnts({'related_name': self.related_name or '+'})
 
@@ -123,6 +148,19 @@ class RelationOne2OneDef(RelationDef):
 
 
 class RelationManyDef(RelationDef):
+
+    def get_flutter_field(self):
+        if self.ref_collection:
+            return f'List<{self.ref_collection.class_name}>'
+        else:
+            return 'dynamic'
+
+    def get_flutter_from_json(self, name):
+        if self.ref_collection:
+            return f"data['{name}'].map<{self.ref_collection.class_name}>((item) => {self.ref_collection.class_name}.fromJson(item)).toList()"
+        else:
+            return f"data['{name}']"
+
     def get_model_field(self):
         args = self.prepare_field_arguemnts({'related_name': self.related_name or '+'})
 

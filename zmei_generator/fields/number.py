@@ -7,6 +7,9 @@ class IntegerFieldDef(FieldDef):
 
     choices = None
 
+    def get_flutter_field(self):
+        return 'int'
+
     def get_model_field(self):
         args = self.prepare_field_arguemnts()
 
@@ -20,6 +23,10 @@ class IntegerFieldDef(FieldDef):
 
 
 class FloatFieldDef(FieldDef):
+
+    def get_flutter_field(self):
+        return 'double'
+
     def get_model_field(self):
         args = self.prepare_field_arguemnts()
 
@@ -32,6 +39,9 @@ class FloatFieldDef(FieldDef):
 class DecimalFieldDef(FieldDef):
 
     positive = False
+
+    def get_flutter_field(self):
+        return 'double'
 
     def parse_options(self):
         if isinstance(self.options, str) and self.options.strip() != '':

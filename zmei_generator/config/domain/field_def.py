@@ -89,6 +89,12 @@ class FieldDef(object):
     def get_model_field(self):
         raise NotImplementedError('Field "{}" ({}) is not yet implemented.'.format(self.type_name, type(self)))
 
+    def get_flutter_field(self):
+        return 'dynamic'
+
+    def get_flutter_from_json(self, name):
+        return f"data['{name}']"
+
     def get_admin_widget(self):
         return None
 

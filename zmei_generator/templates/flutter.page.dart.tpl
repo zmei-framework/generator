@@ -5,12 +5,20 @@ import 'package:http/http.dart' as http;
 import '../{{ page.get_parent().collection_set.app_name }}/{{ page.get_parent().name }}_ui.dart';{% else %}
 import '../../state.dart';
 {% endif %}
-import '../../app.dart';
+import '../../app.dart';{% for import in imports %}import './../../models/{{ import }}.dart';
+{% endfor %}
 
 abstract class {{ page.view_name }}State extends {% if page.get_parent() %}{{ page.get_parent().view_name }}StateUi{% else %}PageState{% endif %} {
-    {%- if page.own_item_names %}
-    {% for key in (page.own_item_names) %}
-    dynamic {{ to_camel_case(key) }};{% endfor %}{% endif %}
+
+    {% if page.own_item_names %}
+    {%- for key, (item, collection) in page_items.items() -%}
+    {% if not collection %}dynamic {{ to_camel_case(key) }};
+    {% elif item.collection_many %}List<{{ collection.class_name }}> {{ to_camel_case(key) }};
+    {% elif item.collection_dict %}Map<String, {{ collection.class_name }}> {{ to_camel_case(key) }};
+    {% else %}{{ collection.class_name }} {{ to_camel_case(key) }};
+    {% endif %}
+    {%- endfor %}
+    {%- endif %}
     {% if page.uri %}
     @override
     String getPageUrl() {
@@ -36,14 +44,16 @@ abstract class {{ page.view_name }}State extends {% if page.get_parent() %}{{ pa
         super.dispose();
     }
     {% endif %}
-
     {%- if page.own_item_names %}
-
     void loadData(data) {
         super.loadData(data);
-    {%- for key in (page.own_item_names) %}
-        if (data.containsKey('{{ key }}')) {
-            {{ to_camel_case(key) }} = data['{{ key }}'];
+        {%- for key, (item, collection) in page_items.items() %}
+        if (data['{{ key }}'] != null) {
+            {% if not collection %}{{ to_camel_case(key) }} = data['{{ key }}'];
+            {% elif item.collection_many %}{{ to_camel_case(key) }} = data['{{ key }}'].map<{{ collection.class_name }}>((item) => {{ collection.class_name }}.fromJson(item)).toList();
+            {% elif item.collection_dict %}{{ to_camel_case(key) }} = data['{{ key }}'].map<String, {{ collection.class_name }}>((key, item) => MapEntry(key, {{ collection.class_name }}.fromJson(item)));
+            {% else %}{{ to_camel_case(key) }} = {{ collection.class_name }}.fromJson(data['{{ key }}']);
+            {% endif %}
         }{% endfor %}
     }
     {%- endif %}

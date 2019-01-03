@@ -361,13 +361,56 @@ def format_uri(uri):
 
 
 def generate_flutter_configs(target_path, apps):
+    from zmei_generator.fields.relation import RelationDef
+    from zmei_generator.config.domain.reference_field import ReferenceField
+
     generate_file(target_path, 'flutter/pubspec.yaml', 'flutter.pubspec.yaml.tpl')
     generate_file(target_path, 'flutter/lib/main.dart', 'flutter.main.dart.tpl')
 
     for app_name, collection_set in apps.items():
+
+        if collection_set.collections:
+            imports = set()
+            for col in collection_set.collections.values():
+                for field in col.fields.values():
+
+                    if isinstance(field, ReferenceField) and field.target_collection:
+                        if field.target_collection.collection_set != collection_set:
+                            imports.add(field.target_collection.collection_set.app_name)
+
+                    elif isinstance(field, RelationDef) and field.ref_collection:
+                        if field.ref_collection.collection_set != collection_set:
+                            imports.add(field.ref_collection.collection_set.app_name)
+
+            generate_file(
+                target_path,
+                f'flutter/lib/src/models/{app_name}.dart',
+                'flutter.model.dart.tpl', {
+                    'app_name': app_name,
+                    'collection_set': collection_set,
+                    'to_camel_case': to_camel_case,
+                    'imports': imports
+                }
+            )
+
         if collection_set.flutter:
             for name, page in collection_set.pages.items():
                 if page.flutter:
+                    imports = set()
+
+                    page_items = {}
+                    for item_name in page.own_item_names:
+                        item = page.page_items[item_name]
+
+                        if item.collection_name:
+                            col = collection_set.resolve_collection(item.collection_name)
+                            if col.collection_set != collection_set:
+                                imports.add(col.collection_set.app_name)
+
+                            page_items[item_name] = (item, col)
+                        else:
+                            page_items[item_name] = (item, None)
+
                     generate_file(
                         target_path,
                         f'flutter/lib/src/pages/{app_name}/{name}.dart',
@@ -375,6 +418,8 @@ def generate_flutter_configs(target_path, apps):
                             'app_name': app_name,
                             'app': collection_set,
                             'page': page,
+                            'page_items': page_items,
+                            'imports': imports,
                             'format_uri': format_uri,
                             'to_camel_case': to_camel_case
                         }

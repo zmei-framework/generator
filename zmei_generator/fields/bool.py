@@ -12,6 +12,9 @@ class BooleanFieldDef(FieldDef):
 
     default = False
 
+    def get_flutter_field(self):
+        return 'bool'
+
     def get_model_field(self):
         args = self.prepare_field_arguemnts({'default': self.default})
 

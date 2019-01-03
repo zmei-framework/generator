@@ -18,6 +18,11 @@ class PageExpression(object):
 
         self.serialize = False
 
+        self.collection_name = None
+        self.collection_descriptor = None
+        self.collection_many = None
+        self.collection_dict = None
+
         if '@cached_as' in self.expression:
             self.cache_type = 'cached_as'
         elif '@cached' in self.expression:
@@ -49,13 +54,24 @@ class PageExpression(object):
         if m:
             self.expression = self.expression.replace(m.group(0), '')
             self.serialize = True
-            descriptor = m.group(2)
+            self.collection_descriptor = m.group(2)
 
-            if descriptor:
-                self.expression = f'serialize({self.expression}, "{descriptor}")'
+            self.or_404 = True
+
+        # @rest.xxx
+        m = re.search('#([_a-zA-Z0-9_]+(\.[_a-zA-Z0-9_]+)?)(\[\]|\{\})?\s*$', self.expression)
+        if m:
+            self.expression = self.expression.replace(m.group(0), '')
+
+            self.collection_name = m.group(1)
+            self.collection_many = m.group(3) == '[]'
+            self.collection_dict = m.group(3) == '{}'
+
+        if self.serialize:
+            if self.collection_descriptor:
+                self.expression = f'serialize({self.expression}, "{self.collection_descriptor}")'
             else:
                 self.expression = f'serialize({self.expression})'
-            self.or_404 = True
 
 
     def get_annotation_with_braces(self, annot):

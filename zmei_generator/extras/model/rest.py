@@ -279,7 +279,7 @@ class RestSerializerConfig(object):
     def configure_model_imports(self, imports):
 
         if self.collection:
-            imports.add('.models', self.collection.class_name)
+            imports.add(f'{self.collection.collection_set.app_name}.models', self.collection.class_name)
 
         for conf in self.extra_serializers:
             conf.configure_model_imports(imports)
