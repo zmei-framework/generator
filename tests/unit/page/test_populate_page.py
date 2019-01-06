@@ -181,7 +181,7 @@ def test_page_code():
     boo = cs.pages['boo']
 
     assert boo.name == 'boo'
-    assert boo.page_code == "That's my code!"
+    assert boo.page_code == "That's my code!\n"
 
 
 def test_page_items():

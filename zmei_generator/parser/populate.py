@@ -136,7 +136,7 @@ class PartsCollectorListener(
         self.page.functions[func.name] = func
 
     def enterPage_code(self, ctx: ZmeiLangParser.Page_codeContext):
-        self.page.page_code = self._get_code(ctx.python_code())
+        self.page.page_code = self._get_code(ctx.python_code()) + '\n'
 
     def exitPage(self, ctx: ZmeiLangParser.PageContext):
         if self.page.parent_name and self.page.extend_name:
