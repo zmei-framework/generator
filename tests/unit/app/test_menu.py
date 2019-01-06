@@ -49,4 +49,6 @@ def test_menu_cases():
     assert menu.items[1].page == 'dashboard'
 
     assert menu.render_url(menu.items[0]) == "reverse_lazy('another.index')"
+    assert menu.render_ref(menu.items[0]) == "another.index"
     assert menu.render_url(menu.items[1]) == "reverse_lazy('main.dashboard')"
+    assert menu.render_ref(menu.items[1]) == "main.dashboard"

@@ -1,14 +1,13 @@
-{% if page.cruds %}
 import 'package:flutter/material.dart';
-{% endif %}{% if page.functions %}
+{% if page.functions %}
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 {% endif %}{% if page.get_parent() %}
 import '../{{ page.get_parent().collection_set.app_name }}/{{ page.get_parent().name }}_ui.dart';{% else %}
 import '../../state.dart';
 {% endif %}
-import '../../app.dart';{% for import in imports %}import './../../models/{{ import }}.dart';
+import '../../app.dart';{% for import in imports %}import '../../models/{{ import }}.dart';
 {% endfor %}
+import '../../components/menu.dart';
 
 abstract class {{ page.view_name }}State extends {% if page.get_parent() %}{{ page.get_parent().view_name }}StateUi{% else %}PageState{% endif %} {
 
@@ -25,6 +24,13 @@ abstract class {{ page.view_name }}State extends {% if page.get_parent() %}{{ pa
     @override
     String getPageUrl() {
         return App.url.{{ to_camel_case(page.collection_set.app_name) }}.{{ to_camel_case(page.name) }}({% for param in page.uri_params %}{{ to_camel_case(param) }}: url['{{ param }}']{% if not loop.last %}, {% endif %}{% endfor %});
+    }
+
+    List<String> getUrlStack() {
+        var stack = super.getUrlStack();
+        stack.add(App.url.{{ to_camel_case(page.collection_set.app_name) }}.{{ to_camel_case(page.name) }}({% for param in page.uri_params %}{{ to_camel_case(param) }}: url['{{ param }}']{% if not loop.last %}, {% endif %}{% endfor %}));
+
+        return stack;
     }
     {% if page.has_data %}
     @override
@@ -90,4 +96,109 @@ abstract class {{ page.view_name }}State extends {% if page.get_parent() %}{{ pa
 
         {% endif %}
     }{% endfor %}{% endfor %}
+
+
+    {% if not page.get_parent() %}
+          Widget build(BuildContext context) {
+            return Scaffold(
+                appBar: buildAppBar(),
+                body: buildBodyWhenReady(),
+                floatingActionButton: buildFloatingActionButton(),
+                bottomNavigationBar: buildBottomMenu(),
+                drawer: buildDrawer()
+            );
+          }
+
+          AppBar buildAppBar() {
+            return AppBar(
+              backgroundColor: Colors.green,
+              title: Text(getPageName()),
+            );
+          }
+
+          Widget buildFloatingActionButton() {
+            return null;
+          }
+        {% if not page.menus.flutter_bottom %}
+          Widget buildBottomMenu() {
+            return null;
+          }
+        {% endif %}
+
+        {% if not page.menus.flutter_drawer %}
+          List<MenuItem> getDrawerMenuItems() {
+            return <MenuItem>[];
+          }
+        {% endif %}
+
+          List<Widget> buildDrawerItems() {
+            var drawerItems = <Widget>[];
+
+            for (var item in getDrawerMenuItems()) {
+              drawerItems.add(Builder(builder: (BuildContext context) => item.buildDrawerItem(context)));
+            }
+
+            return drawerItems;
+          }
+
+          Widget buildDrawer() {
+            List<Widget> items = buildDrawerItems();
+            if (items.length == 0) return null;
+
+            return Drawer(
+                child: SafeArea(
+                    child: ListView(
+                        padding: EdgeInsets.zero,
+                        children: buildDrawerItems()
+                    )
+                )
+            );
+          }
+
+          Widget buildBodyWhenReady() {
+            return isDataReady() ? Builder(builder: buildBody) : Center(
+                child: CircularProgressIndicator());
+          }
+
+          Widget buildBody(BuildContext context) {
+            return Center(
+              child: Text('Nothing here!\n${getPageUrl()}'),
+            );
+          }
+    {% endif %}
+
+    String getPageName() {
+        return "{{ app_name.capitalize() }}{{ page.view_name }}";
+    }
+
+    {% for menu_name, menu in page.menus.items() %}{% if menu_name.startswith('flutter_') %}
+    List<MenuItem> get{{ to_camel_case_classname(menu_name[8:]) }}MenuItems() {
+      return [
+        {% for item in menu.items %}
+        MenuItem(Icon(Icons.{% if item.args.icon %}{{ item.args.icon }}{% else %}list{% endif %}), '{{ item.label }}', App.url.{{ menu.render_ref(item) }}(){% if item.args %}{% for key, val in item.args.items() if key != 'icon' %}{% if loop.first %}, args: { {% endif %}'{{ key }}': '{{ val }}',{% if loop.first %} } {% endif %}{% endfor %}{% endif %}),
+        {% endfor %}
+      ];
+    }
+    {% endif %}{% endfor %}
+
+    {% if page.menus.flutter_bottom %}{% with menu=page.menus.flutter_bottom %}
+    Widget buildBottomMenu() {
+      final items = getBottomMenuItems();
+      int activeIndex = items.indexWhere((item) => item.isActive());
+      if (activeIndex < 0) {
+          activeIndex = 0;
+      }
+
+      return Builder(
+          builder: (BuildContext context) => BottomNavigationBar(
+                type: BottomNavigationBarType.fixed,
+                items: items.map((item) => item.buildBottomNavBarItem(context)).toList(),
+                currentIndex: activeIndex,
+                onTap: (index) {
+                  items[index].onTapped(context);
+                },
+              )
+          );
+    }
+    {% endwith %}{% endif %}
 }

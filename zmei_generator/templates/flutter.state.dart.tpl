@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dart:convert';
 import 'package:web_socket_channel/io.dart';
+import './app.dart';
 
 
 class PageStatefulWidget extends StatefulWidget {
@@ -223,10 +224,13 @@ abstract class PageState extends State<PageStatefulWidget> {
         throw Exception("Page has no remote url!");
     }
 
+    List<String> getUrlStack() {
+        return <String>[];
+    }
+
     bool hasRemoteData() {
         return false;
     }
-
 
 
     @override
@@ -238,6 +242,8 @@ abstract class PageState extends State<PageStatefulWidget> {
         if (hasRemoteData()) {
             loadRemoteState();
         }
+
+        App.urlStack = getUrlStack();
     }
 
 

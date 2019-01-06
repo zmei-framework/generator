@@ -7,6 +7,7 @@ import './routes.dart';
 class App {
     static Router router;
     static Routes url = Routes();
+    static List<String> urlStack;
 }
 
 class AppComponent extends StatefulWidget {

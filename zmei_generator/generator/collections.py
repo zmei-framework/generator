@@ -437,6 +437,7 @@ def generate_flutter_configs(target_path, apps):
                             'to_camel_case_classname': to_camel_case_classname,
                         }
                     )
+    generate_file(target_path, 'flutter/lib/src/components/menu.dart', 'flutter.cmp.menu.dart.tpl')
     generate_file(target_path, 'flutter/lib/src/state.dart', 'flutter.state.dart.tpl')
     generate_file(target_path, 'flutter/lib/src/utils.dart', 'flutter.utils.dart.tpl')
 

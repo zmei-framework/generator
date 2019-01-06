@@ -23,7 +23,7 @@ class MenuPageExtra(PageExtra):
 
         self.page_refs = []
 
-    def render_url(self, item):
+    def render_ref(self, item):
         if item.page:
             page = self.page.collection_set.resolve_page(item.page)
 
@@ -31,7 +31,11 @@ class MenuPageExtra(PageExtra):
                 (item.page, item.ref, page)
             )
 
-            return f"reverse_lazy('{page.collection_set.app_name}.{page.name}')"
+            return f"{page.collection_set.app_name}.{page.name}"
+
+    def render_url(self, item):
+        if item.page:
+            return f"reverse_lazy('{self.render_ref(item)}')"
         elif item.url:
             return item.url
         else:
@@ -46,7 +50,7 @@ class MenuPageExtra(PageExtra):
         menu_code += "'items': {\n"
         for item in self.items:
             if item.args:
-                args = ', ' + repr(item.args)
+                args = ', \'args\': ' + repr(item.args)
             else:
                 args = ''
             menu_code += f"'{item.ref}': {{'label': _({repr(item.label)}), 'link': {self.render_url(item)}{args} }},\n"
