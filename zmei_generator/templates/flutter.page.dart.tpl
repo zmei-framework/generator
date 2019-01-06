@@ -175,7 +175,7 @@ abstract class {{ page.view_name }}State extends {% if page.get_parent() %}{{ pa
     List<MenuItem> get{{ to_camel_case_classname(menu_name[8:]) }}MenuItems() {
       return [
         {% for item in menu.items %}
-        MenuItem(Icon(Icons.{% if item.args.icon %}{{ item.args.icon }}{% else %}list{% endif %}), '{{ item.label }}', App.url.{{ menu.render_ref(item) }}(){% if item.args %}{% for key, val in item.args.items() if key != 'icon' %}{% if loop.first %}, args: { {% endif %}'{{ key }}': '{{ val }}',{% if loop.first %} } {% endif %}{% endfor %}{% endif %}),
+        MenuItem(Icon(Icons.{% if item.args.icon %}{{ item.args.icon }}{% else %}list{% endif %}), '{{ item.label }}', App.url.{{ menu.render_ref(item) }}(){% if item.args %}{% for key, val in item.args.items() if key != 'icon' %}{% if loop.first %}, args: { {% endif %}'{{ key }}': '{{ val }}',{% if loop.last %} } {% endif %}{% endfor %}{% endif %}),
         {% endfor %}
       ];
     }
