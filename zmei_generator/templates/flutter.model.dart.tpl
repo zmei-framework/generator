@@ -6,7 +6,7 @@ _(t) => t;  // mock translations
 class {{ col.class_name }} {
 
     {{ col.class_name }}({ {% for field in col.fields.values() %}
-        this.{{ field.name }}{% if not loop.last %}, {% endif %}{% endfor %}
+        this.{{ to_camel_case(field.name) }}{% if not loop.last %}, {% endif %}{% endfor %}
     });
 
     int id;
@@ -19,7 +19,7 @@ class {{ col.class_name }} {
     dynamic {{ to_camel_case(field.name) }};{% endfor %}
     {% if col.display_field  -%}
     String toString() {
-        return "${{ col.display_field.name }}"
+        return "${{ col.display_field.name }}";
     }
     {% endif %}
     {%- if col.parent or col.polymorphic %}
@@ -40,7 +40,7 @@ class {{ col.class_name }} {
             id = data['id'];
         }
         {% for name, field in col.fields.items() %}if (data['{{ name }}'] != null) {
-            {{ name }} = {{ field.get_flutter_from_json(name) }};
+            {{ to_camel_case(name) }} = {{ field.get_flutter_from_json(name) }};
         }{% if not loop.last %}
         {% endif %}{% endfor %}
     }

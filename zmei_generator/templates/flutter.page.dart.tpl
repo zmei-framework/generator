@@ -1,4 +1,6 @@
-{% if page.functions %}
+{% if page.cruds %}
+import 'package:flutter/material.dart';
+{% endif %}{% if page.functions %}
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 {% endif %}{% if page.get_parent() %}
@@ -62,5 +64,30 @@ abstract class {{ page.view_name }}State extends {% if page.get_parent() %}{{ pa
     {{ to_camel_case(name) }}({% if func.args %}{{ func.render_python_args() }}{% endif %}) async {
         return callRemote('{{ name }}', [{% if func.args %}{{ func.render_python_args() }}{% endif %}]);
     }
-    {%- endfor %}
+    {% endfor %}
+    // {{ page.cruds }}
+    {%- for descriptor, crud_list in page.cruds.items() %}{%- for type, crud in crud_list.items() %}
+    Widget build{{ to_camel_case_classname(descriptor) }}{{ to_camel_case_classname(type) }}Ui(BuildContext context) {
+        {% if type == 'crud' %}
+
+            return Text('List');
+
+        {% elif type == 'crud_create' %}
+
+            return Text('Create');
+
+        {% elif type == 'crud_delete' %}
+
+            return Text('Delete');
+
+        {% elif type == 'crud_detail' %}
+
+            return Text('Detail');
+
+        {% elif type == 'crud_edit' %}
+
+            return Text('Edit');
+
+        {% endif %}
+    }{% endfor %}{% endfor %}
 }

@@ -1,3 +1,4 @@
+import _thread
 import hashlib
 import io
 import json
@@ -5,10 +6,15 @@ import os
 import re
 import signal
 import subprocess
+import sys
+import threading
 import zipfile
+
 from contextlib import contextmanager
 from glob import glob
 from io import BytesIO
+from select import select
+
 from itertools import chain
 from shutil import rmtree
 
@@ -69,7 +75,8 @@ def write_generated_file(path, source):
 
     source_prefix = ''
 
-    if path.endswith('.py') or path.endswith('.yaml') or path.endswith('_requirements.txt') or path.endswith('Dockerfile'):
+    if path.endswith('.py') or path.endswith('.yaml') or path.endswith('_requirements.txt') or path.endswith(
+            'Dockerfile'):
         # settings.py is specially designed to be overriden
         if not path.endswith('app/settings.py') \
                 and not path.endswith('app/tasks.py') \
@@ -91,7 +98,8 @@ def write_generated_file(path, source):
 
         if generated:
             if changed:
-                print(colored(' ! ', 'red', 'on_yellow'), ' ', path)
+                print(colored(f' ! {path}', 'white', 'on_red'),
+                      'Checksum failed: remove "generated" comment from file, or remove file if it is changed unintentionally')
                 return  # checksum failed. Changed by hands?
             else:
                 if file_checksum == chksum:
@@ -190,7 +198,7 @@ def clean_up_generated_files(path, file_list, remove_root=False):
         if os.path.isdir(fullpath):
             clean_up_generated_files(fullpath, file_list, remove_root=True)
         else:
-            if file[0] != '.' and file.split('.')[-1] in ('js', 'jsx', 'py', 'html'):
+            if file[0] != '.' and file.split('.')[-1] in ('js', 'jsx', 'py', 'html', 'dart'):
                 generated, changed, file_checksum = is_generated_file(fullpath)
 
                 if generated and (fullpath not in file_list):
@@ -333,6 +341,17 @@ def migrate_db(apps, features=None):
 
 def run_django(features=None, run_host='127.0.0.1:8000'):
     print(colored('> ', 'white', 'on_blue'), 'Starting django')
+
+    if os.path.exists('flutter/'):
+        if run_host.startswith('127.0.0.1:'):
+            print(colored('NB! you have a flutter application, but running django on a '
+                          f'local interface {run_host}. Flutter application is '
+                          f'not able to connect to api! use "--public": zmei gen up --public', 'white', 'on_red'))
+        else:
+            print(colored(f'Flutter api is accessible on {run_host}. Make sure to connect '
+                          f'phone to the same wifi network as your computer, if running on a real device.', 'white',
+                          'on_blue')),
+
     django_command = get_django_command(features, )
     options = ''
     if os.path.exists('app/settings_dev.py'):
@@ -461,7 +480,7 @@ def wait_for_file_changes(paths, initial=True, watch=True):
         initial_hash = files_hash(paths)
 
         while True:
-            sleep(1.0)
+            sleep(3)
             new_hash = files_hash(paths)
             if initial_hash != new_hash:
                 initial_hash = new_hash

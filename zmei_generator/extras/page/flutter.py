@@ -4,8 +4,11 @@ from zmei_generator.parser.utils import BaseListener
 
 
 class FlutterPageExtra(PageExtra):
-    # flutter
-    pass
+
+    def __init__(self, page) -> None:
+        super().__init__(page)
+
+        self.include_child = False
 
 
 class FlutterPageExtraParserListener(BaseListener):
@@ -20,17 +23,13 @@ class FlutterPageExtraParserListener(BaseListener):
         self.collection_set.flutter = True
 
     def enterAn_flutter_child(self, ctx: ZmeiLangParser.An_flutter_childContext):
-        if ctx.BOOL().get_text() == 'true':
-            pass
-
-
+        if str(ctx.BOOL()) == 'true':
+            self.page.flutter.include_child = True
 
     def set_flutter(self, page, extra):
-        page.flutter = extra
+        page._flutter = extra
 
         if page.get_parent():
             parent = page.get_parent()
-            if not parent.flutter:
+            if not parent._flutter:
                 self.set_flutter(parent, extra)
-
-

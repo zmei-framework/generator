@@ -341,7 +341,7 @@ def generate_react_configs(target_path, apps):
 
 
 def to_camel_case_classname(name):
-    return to_camel_case(name).capitalize()
+    return ''.join([x.capitalize() for x in name.split('_')])
 
 
 def to_camel_case(name):
@@ -359,13 +359,14 @@ def to_camel_case(name):
 def format_uri(uri):
     return uri.replace('(?P<', ':').replace('>[^\/]+)', '')
 
-
 def generate_flutter_configs(target_path, apps):
     from zmei_generator.fields.relation import RelationDef
     from zmei_generator.config.domain.reference_field import ReferenceField
 
     generate_file(target_path, 'flutter/pubspec.yaml', 'flutter.pubspec.yaml.tpl')
-    generate_file(target_path, 'flutter/lib/main.dart', 'flutter.main.dart.tpl')
+    generate_file(target_path, 'flutter/lib/main.dart', 'flutter.main.dart.tpl', {
+        'host': os.environ.get('ZMEI_SERVER_HOST')
+    })
 
     for app_name, collection_set in apps.items():
 
@@ -421,7 +422,8 @@ def generate_flutter_configs(target_path, apps):
                             'page_items': page_items,
                             'imports': imports,
                             'format_uri': format_uri,
-                            'to_camel_case': to_camel_case
+                            'to_camel_case': to_camel_case,
+                            'to_camel_case_classname': to_camel_case_classname,
                         }
                     )
                     generate_file(
@@ -431,7 +433,8 @@ def generate_flutter_configs(target_path, apps):
                             'app_name': app_name,
                             'app': collection_set,
                             'page': page,
-                            'to_camel_case': to_camel_case
+                            'to_camel_case': to_camel_case,
+                            'to_camel_case_classname': to_camel_case_classname,
                         }
                     )
     generate_file(target_path, 'flutter/lib/src/state.dart', 'flutter.state.dart.tpl')
@@ -441,13 +444,6 @@ def generate_flutter_configs(target_path, apps):
         target_path,
         f'flutter/lib/src/app.dart',
         'flutter.app.dart.tpl', {
-            'apps': apps,
-        }
-    )
-    generate_file(
-        target_path,
-        f'flutter/lib/src/base.dart',
-        'flutter.base.dart.tpl', {
             'apps': apps,
         }
     )

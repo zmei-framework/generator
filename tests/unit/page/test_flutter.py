@@ -72,10 +72,11 @@ def test_page_flutter_child_if_not_marked():
 
     assert boo.name == 'boo'
     assert isinstance(foo.flutter, FlutterPageExtra)
+    assert foo.flutter.include_child is False
     assert not boo.flutter
 
 
-def test_page_flutter_child_if_not_marked():
+def test_page_flutter_child_if_marked():
     cs = _("""
     
         [foo]
@@ -92,5 +93,33 @@ def test_page_flutter_child_if_not_marked():
 
     assert boo.name == 'boo'
     assert isinstance(foo.flutter, FlutterPageExtra)
-    assert not boo.flutter
+    print(foo.flutter.include_child)
+    assert foo.flutter.include_child is True
+    assert isinstance(boo.flutter, FlutterPageExtra)
+
+
+def test_page_flutter_child_if_marked_deeper():
+    cs = _("""
+    
+        [foo]
+        @flutter(child: true)
+
+        [foo->boo]
+        [boo->zoo]
+    """)
+
+    assert len(cs.pages) == 3
+
+    assert cs.flutter is True
+    foo = cs.pages['foo']
+    boo = cs.pages['boo']
+    zoo = cs.pages['zoo']
+
+    assert boo.name == 'boo'
+    assert isinstance(foo.flutter, FlutterPageExtra)
+    assert foo.flutter.include_child is True
+
+    assert isinstance(boo.flutter, FlutterPageExtra)
+    assert isinstance(zoo.flutter, FlutterPageExtra)
+    assert zoo.flutter is foo.flutter
 

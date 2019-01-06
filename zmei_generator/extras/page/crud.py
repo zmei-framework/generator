@@ -242,7 +242,9 @@ class CrudPageExtra(PageExtra):
             links = {f'crud_{x}_link': repr(f"{page.collection_set.app_name}.{page.name}{self.name_suffix}_{x}") for
                      x in
                      self.crud_pages}
-            links['crud_list_link'] = repr(f"{page.collection_set.app_name}.{page.name}")
+
+            if self.create_list:
+                links['crud_list_link'] = repr(f"{page.collection_set.app_name}.{page.name}")
 
             ctx.update(links)
 

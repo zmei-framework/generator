@@ -38,7 +38,8 @@ def gen(**args):
 
 @gen.command(help='Generate and start app')
 @click.option('--port', default='8000', help='Django host:port to run on')
-@click.option('--host', default=None, help='Django host:port to run on')
+@click.option('--ip', default='127.0.0.1', help='Django host:port to run on')
+@click.option('--public', is_flag=True, help='Run django on 0.0.0.0')
 @click.option('--live', default=False, is_flag=True, help='Reload browser on changes')
 @click.option('--celery', default=False, is_flag=True, help='Run with celery')
 def up(**args):
@@ -51,15 +52,17 @@ def up(**args):
 @click.option('--watch', is_flag=True, help='Watch for changes')
 @click.option('--webpack', is_flag=True, help='Run webpack with reload when generation ends')
 @click.option('--port', default='8000', help='Django host:port to run on')
-@click.option('--host', default=None, help='Django host:port to run on')
+@click.option('--ip', default=None, help='Django host:port to run on')
+@click.option('--public', is_flag=True, help='Run django on 0.0.0.0')
 def app_run(**kwargs):
     gen(run=True, **kwargs)
 
 
 @gen.command(help='Just generate the code')
 @click.argument('app', nargs=-1)
+@click.option('--public', is_flag=True, help='Run django on 0.0.0.0')
 def generate(app=None, **args):
-    gen(app=app or [])
+    gen(app=app or [], **args)
 
 
 @gen.command(help='Install project dependencies')
@@ -102,7 +105,8 @@ def gen(auto=False,
         webpack=False,
         nodejs=False,
         celery=False,
-        host=None,
+        public=None,
+        ip=None,
         port=8000,
         watch=False,
         up=False
@@ -112,8 +116,26 @@ def gen(auto=False,
         auto = True
         remove = True
 
-    if not host:
-        host = '127.0.0.1:{}'.format(port)
+    if public:
+        try:
+            import socket
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.connect(("8.8.8.8", 80))
+            ip = s.getsockname()[0]
+            s.close()
+
+        except Exception as e:
+            print(f'Can not run on public port: {e}')
+            return
+
+    elif not ip:
+        ip = '127.0.0.1'
+
+    host = '{}:{}'.format(ip, port)
+
+    os.environ.setdefault('ZMEI_SERVER_IP', str(ip))
+    os.environ.setdefault('ZMEI_SERVER_PORT', str(port))
+    os.environ.setdefault('ZMEI_SERVER_HOST', str(host))
 
     if up:
         install = True

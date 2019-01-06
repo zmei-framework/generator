@@ -1,5 +1,6 @@
 import io
 import os
+import subprocess
 import tempfile
 import zipfile
 from glob import glob
@@ -73,6 +74,10 @@ def do_generate(target_path, collections):
     skeleton_dir = os.path.join(os.path.realpath(dirname(__file__)), 'skeleton')
 
     generate_common_files(target_path, skeleton_dir, application.collection_sets)
+
+    flutter_dir = os.path.join(target_path, 'flutter')
+    if os.path.exists(flutter_dir):
+        subprocess.check_call(['dartfmt', '-w', '-l', '120', flutter_dir], stdout=subprocess.DEVNULL)
 
 
 def generate_app(stats_listener, target_path, app_name, features, filename):

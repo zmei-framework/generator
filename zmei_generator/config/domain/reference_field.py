@@ -28,9 +28,9 @@ class ReferenceField(object):
 
     def get_flutter_from_json(self, name):
         if self.target_collection:
-            return f'data[{name}].map((item) => {self.target_collection.class_name}.fromJson(item))'
+            return f'data[\'{name}\'].map<{self.target_collection.class_name}>((item) => {self.target_collection.class_name}.fromJson(item)).toList()'
         else:
-            return f'data[{name}]'
+            return f'data[\'{name}\']'
 
     def post_process(self):
         pass

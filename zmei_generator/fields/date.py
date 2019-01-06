@@ -14,6 +14,13 @@ class DateFieldDef(FieldDef):
 
 
 class DateTimeFieldDef(FieldDef):
+
+    def get_flutter_field(self):
+        return 'DateTime'
+
+    def get_flutter_from_json(self, name):
+        return f'DateTime.parse(data[\'{name}\'])'
+
     def get_model_field(self):
         args = self.prepare_field_arguemnts()
 

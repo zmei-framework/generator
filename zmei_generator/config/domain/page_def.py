@@ -1,5 +1,6 @@
 import os
 import re
+from functools import lru_cache
 from textwrap import dedent
 
 from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
@@ -80,7 +81,7 @@ class PageDef(object):
 
         self.themed_files = {}
 
-        self.flutter = False
+        self._flutter = False
 
         self.react = False
         self.react_client = False
@@ -232,6 +233,22 @@ class PageDef(object):
 
             self._uri = re.sub(r'<(\w+)(\s*:\s*([^\>]+))?>', self._find_params, uri)
 
+    def get_parent_flutter(self):
+        if self._flutter and self.flutter.include_child:
+            return self._flutter
+
+        if self.get_parent():
+            return self.get_parent().get_parent_flutter()
+
+    @property
+    @lru_cache(maxsize=1)
+    def flutter(self):
+        if self._flutter:
+            return self._flutter
+
+        if self.get_parent():
+            return self.get_parent().get_parent_flutter()
+
     @property
     def react_component_names(self):
         return list(self.react_pages.keys())
@@ -276,7 +293,7 @@ class PageDef(object):
             imports.append(('zmei.react', 'ZmeiReactServer'))
             imports.append(('zmei.react', 'ZmeiReactViewMixin'))
 
-        elif len(self.functions) or self.flutter:
+        elif len(self.functions) or self._flutter:
             imports.append(('zmei.views', 'ZmeiRemoteInvocationViewMixin'))
 
         imports.append(('zmei.views', 'ZmeiDataViewMixin'))

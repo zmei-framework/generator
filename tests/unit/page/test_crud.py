@@ -267,6 +267,7 @@ def test_crud_subpages():
     assert params.model == '#foo'
 
     assert len(cs.pages) == 10
+    print(boo.children)
 
     for page in boo.children:
         assert page.parent_name == boo.name
