@@ -5,8 +5,10 @@ from zmei_generator.config.domain.page_def import PageDef, PageFunction
 from zmei_generator.config.domain.page_expression import PageExpression
 from zmei_generator.extras.collection_set.celery import CeleryCsExtraParserListener
 from zmei_generator.extras.collection_set.channels import ChannelsCsExtraParserListener
+from zmei_generator.extras.collection_set.docker import DockerCsExtraParserListener
 from zmei_generator.extras.collection_set.file import FileCsExtraParserListener
 from zmei_generator.extras.collection_set.filer import FilerCsExtraParserListener
+from zmei_generator.extras.collection_set.gitlab import GitlabCsExtraParserListener
 from zmei_generator.extras.collection_set.langs import LangsCsExtraParserListener
 from zmei_generator.extras.collection_set.suit import SuitCsExtra
 from zmei_generator.extras.model.admin import AdminExtra, AdminInlineConfig
@@ -29,6 +31,8 @@ from zmei_generator.parser.utils import BaseListener
 
 
 class PartsCollectorListener(
+    GitlabCsExtraParserListener,
+    DockerCsExtraParserListener,
     FileCsExtraParserListener,
     ChannelsCsExtraParserListener,
     CeleryCsExtraParserListener,

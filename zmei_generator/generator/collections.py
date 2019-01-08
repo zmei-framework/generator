@@ -1,6 +1,8 @@
 import json
 import os
+import random
 import re
+import string
 import subprocess
 from os import unlink
 from shutil import copytree, copyfile, rmtree
@@ -39,6 +41,7 @@ def generate_common_files(target_path, skeleton_dir, apps):
     has_flutter = False
     has_crud = False
     has_rest = False
+    has_docker = False
     has_admin = False
     has_filer = False
     has_suit = False
@@ -82,6 +85,9 @@ def generate_common_files(target_path, skeleton_dir, apps):
 
         if collection_set.channels:
             has_channels = True
+
+        if collection_set.docker:
+            has_docker = True
 
         if collection_set.react:
             has_react = True
@@ -137,15 +143,19 @@ def generate_common_files(target_path, skeleton_dir, apps):
     if has_rest:
         installed_apps.append('rest_framework')
 
-    extra_classes = set()
-    for collection_set in apps.values():
+    extra_classes = list()
+    for collection_set in sorted(apps.values(), key=lambda x: x.app_name):
         installed_apps.extend(collection_set.get_required_apps())
         req_settings.update(collection_set.get_required_settings())
 
         for extra in collection_set.extras:
-            extra_classes.add(type(extra))
+            if type(extra) not in extra_classes:
+                extra_classes.append(type(extra))
 
-    installed_apps = list(set(installed_apps))
+    # remove duplicates preserving order
+    seen = set()
+    seen_add = seen.add
+    installed_apps = [x for x in installed_apps if not (x in seen or seen_add(x))]
 
     with open(os.path.join(target_path, 'app/settings.py'), 'r') as fb:
         with open(os.path.join(target_path, 'app/_settings.py'), 'a') as f:
@@ -183,7 +193,7 @@ def generate_common_files(target_path, skeleton_dir, apps):
     for collection_set in apps.values():
         requirements.extend(collection_set.get_required_deps())
 
-    requirements = list(set(requirements))
+    requirements = list(sorted(set(requirements)))
 
     # requirements
     with open(os.path.join(target_path, '_requirements.txt'), 'w') as f:
@@ -244,6 +254,28 @@ def generate_common_files(target_path, skeleton_dir, apps):
     with open(os.path.join(target_path, '__files.json'), 'w') as f:
         f.write(json.dumps(file_mapping))
 
+    if has_docker:
+        generate_file(target_path, 'requirements.prod.txt', 'docker/requirements.prod.txt.tpl', {
+            'req_file': os.environ.get('ZMEI_REQUIREMNETS_FILE', 'requirements.txt')
+        })
+        generate_file(target_path, 'app/settings_prod.py', 'docker/settings_prod.py.tpl')
+        generate_file(target_path, 'Dockerfile', 'docker/dockerfile.tpl')
+        generate_file(target_path, '.dockerignore', 'docker/dockerignore.tpl')
+        generate_file(target_path, 'docker-compose.yaml', 'docker/docker-compose.yaml.tpl')
+
+        generate_file(target_path, 'deploy/init.sh', 'docker/init.sh.tpl', {
+            'admin_pass': ''.join(random.choice(
+                string.ascii_letters + string.digits + string.punctuation.replace('"', '')) for _ in range(16)),
+            'admin_user': 'admin-' + ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(4)),
+        })
+        generate_file(target_path, 'deploy/nginx.conf', 'docker/nginx.conf.tpl')
+        generate_file(target_path, 'deploy/uwsgi.ini', 'docker/uwsgi.ini.tpl')
+
+    for collection_set in apps.values():
+        if collection_set.gitlab:
+            generate_file(target_path, 'gitlab-ci.yaml', 'gitlab/gitlab-ci.yaml.tpl', {
+                'gitlab': collection_set.gitlab,
+            })
 
 def generate(target_path, app_name: str, collection_set: CollectionSetDef, features=None):
     features = features or []
@@ -301,7 +333,8 @@ def generate(target_path, app_name: str, collection_set: CollectionSetDef, featu
         generate_admin_py(target_path, app_name, collection_set)
 
     # views
-    generate_file(target_path, '{}/__init__.py'.format(app_name), 'init.py.tpl')
+    if len(collection_set.pages) > 0 or len(collection_set.collections) > 0:
+        generate_file(target_path, '{}/__init__.py'.format(app_name), 'init.py.tpl')
 
     if collection_set.rest:
         generate_serializers_py(target_path, app_name, collection_set)
@@ -309,10 +342,11 @@ def generate(target_path, app_name: str, collection_set: CollectionSetDef, featu
     if collection_set.rest or len(collection_set.pages.values()) > 0:
         generate_views_py(target_path, app_name, collection_set)
 
-    generate_file(target_path, '{}/templates/{}/base.html'.format(app_name, app_name),
-                  template_name='theme/base_app.html', context={
-            'collection_set': collection_set,
-        })
+    if len(collection_set.pages) > 0:
+        generate_file(target_path, '{}/templates/{}/base.html'.format(app_name, app_name),
+                      template_name='theme/base_app.html', context={
+                'collection_set': collection_set,
+            })
 
     # react templates
     if collection_set.react:

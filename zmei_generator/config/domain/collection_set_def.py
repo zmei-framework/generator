@@ -1,5 +1,4 @@
 from collections import namedtuple
-
 from zmei_generator.generator.imports import ImportSet
 from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
 
@@ -18,6 +17,8 @@ class CollectionSetDef(object):
 
         self.api = False
         self.rest = False
+        self.docker = False
+        self.gitlab = False
         self.channels = False
         self.crud = False
         self.suit = False

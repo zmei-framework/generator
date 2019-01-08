@@ -1,6 +1,8 @@
 lexer grammar ZmeiLangSimpleLexer;
 
 // Annotation types
+AN_GITLAB: '@gitlab';
+AN_DOCKER: '@docker';
 AN_FLUTTER: '@flutter';
 AN_FILE: '@file';
 AN_STREAM: '@stream';

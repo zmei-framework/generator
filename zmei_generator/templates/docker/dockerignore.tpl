@@ -1,0 +1,2 @@
+.zmei-cache
+*.sqlite*

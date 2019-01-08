@@ -269,6 +269,87 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#an_docker.
+    def enterAn_docker(self, ctx:ZmeiLangParser.An_dockerContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_docker.
+    def exitAn_docker(self, ctx:ZmeiLangParser.An_dockerContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_gitlab.
+    def enterAn_gitlab(self, ctx:ZmeiLangParser.An_gitlabContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_gitlab.
+    def exitAn_gitlab(self, ctx:ZmeiLangParser.An_gitlabContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_gitlab_branch_declaration.
+    def enterAn_gitlab_branch_declaration(self, ctx:ZmeiLangParser.An_gitlab_branch_declarationContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_gitlab_branch_declaration.
+    def exitAn_gitlab_branch_declaration(self, ctx:ZmeiLangParser.An_gitlab_branch_declarationContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_gitlab_branch_name.
+    def enterAn_gitlab_branch_name(self, ctx:ZmeiLangParser.An_gitlab_branch_nameContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_gitlab_branch_name.
+    def exitAn_gitlab_branch_name(self, ctx:ZmeiLangParser.An_gitlab_branch_nameContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_gitlab_deployment_name.
+    def enterAn_gitlab_deployment_name(self, ctx:ZmeiLangParser.An_gitlab_deployment_nameContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_gitlab_deployment_name.
+    def exitAn_gitlab_deployment_name(self, ctx:ZmeiLangParser.An_gitlab_deployment_nameContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_gitlab_deployment_host.
+    def enterAn_gitlab_deployment_host(self, ctx:ZmeiLangParser.An_gitlab_deployment_hostContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_gitlab_deployment_host.
+    def exitAn_gitlab_deployment_host(self, ctx:ZmeiLangParser.An_gitlab_deployment_hostContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_gitlab_deployment_variable.
+    def enterAn_gitlab_deployment_variable(self, ctx:ZmeiLangParser.An_gitlab_deployment_variableContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_gitlab_deployment_variable.
+    def exitAn_gitlab_deployment_variable(self, ctx:ZmeiLangParser.An_gitlab_deployment_variableContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_gitlab_deployment_variable_name.
+    def enterAn_gitlab_deployment_variable_name(self, ctx:ZmeiLangParser.An_gitlab_deployment_variable_nameContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_gitlab_deployment_variable_name.
+    def exitAn_gitlab_deployment_variable_name(self, ctx:ZmeiLangParser.An_gitlab_deployment_variable_nameContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_gitlab_deployment_variable_value.
+    def enterAn_gitlab_deployment_variable_value(self, ctx:ZmeiLangParser.An_gitlab_deployment_variable_valueContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_gitlab_deployment_variable_value.
+    def exitAn_gitlab_deployment_variable_value(self, ctx:ZmeiLangParser.An_gitlab_deployment_variable_valueContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#an_suit.
     def enterAn_suit(self, ctx:ZmeiLangParser.An_suitContext):
         pass
