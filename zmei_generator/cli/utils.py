@@ -152,7 +152,7 @@ def is_generated_file(path):
         real_source = json.dumps(data, indent=4)
 
     else:
-        match = re.match('^(<!--)?({|//)?# generated: ([a-f0-9]{32})( #})?( -->)?\n\n', content)
+        match = re.match('^(<!--\s*)?({|//)?# generated: ([a-f0-9]{32})( #})?(\s*-->)?\n\n', content)
         if not match:
             return False, False, None
 

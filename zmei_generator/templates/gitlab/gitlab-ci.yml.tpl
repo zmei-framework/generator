@@ -40,7 +40,7 @@ test_images:
     - flake/
 {% endif %}
 
-{%- for config in gitlab.configs %}{% if config.coverage and config.test %}
+{%- for config in gitlab.configs %}{% if config.coverage and gitlab.test %}
 build_dev_images:
   stage: build
   dependencies:
@@ -63,7 +63,7 @@ build_prod_images:
   - docker build --target app -t "$APP_IMAGE" .
   - docker build --target nginx -t "$NGINX_IMAGE" .
   only:
-  {%- for config in gitlab.configs %}{% if (not config.coverage or not config.test) and not config.manual_deploy %}
+  {%- for config in gitlab.configs %}{% if (not config.coverage or not gitlab.test) and not config.manual_deploy %}
   - {{ config.branch }}
 {% endif %}{%- endfor %}
 push_images:
