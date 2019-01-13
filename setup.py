@@ -1,22 +1,28 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='zmei-gen',
-    version='1.1.0',
+    name='zmei-cli',
+    version='2.0.4',
     packages=find_packages(),
 
     url='',
-    license='Private',
+    license='GPLv3',
     author='Alex Rudakov',
     author_email='ribozz@gmail.com',
-    description='Cratis generator.',
+    description='Zmei-generator',
     long_description='',
 
     package_data={
         'zmei_generator': [
             'templates/*.tpl',
             'templates/django/*.tpl',
+            'templates/docker/*.tpl',
+            'templates/gitlab/*.tpl',
             'templates/theme/*.html',
+        ],
+        'zmei_generator.parser.gen': [
+            '*.interp',
+            '*.tokens',
         ]
     },
 
@@ -30,7 +36,6 @@ setup(
         'wheel',
         'click',
         'jinja2',
-        'sanic',
         'termcolor==1.1.0',
         'jinja2',
         'defusedxml',

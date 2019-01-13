@@ -1,12 +1,9 @@
 import atexit
 import os
 import signal
-import sys
 
 import click
-import requests.exceptions
 from termcolor import colored
-from terminaltables import AsciiTable
 from time import sleep
 from zmei_generator.cli.server import zmei_generate
 from zmei_generator.generator.utils import StopGenerator
@@ -15,7 +12,6 @@ from zmei_generator.parser.errors import ValidationError
 from .utils import collect_files, extract_files, collect_app_names, migrate_db, install_deps, remove_db, \
     wait_for_file_changes, run_django, run_webpack, npm_install, get_watch_paths, run_celery, run_livereload, \
     flutter_install
-import json
 
 
 @click.group()

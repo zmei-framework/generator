@@ -2,3 +2,4 @@
 
 mysqlclient
 django-redis-cache
+uwsgi

@@ -5,6 +5,7 @@ ENV PYTHONUNBUFFERED 1
 
 
 RUN mkdir -p /var/www/app/var/media
+RUN mkdir -p /var/www/app/web
 WORKDIR /var/www/app
 
 COPY *requirements*.txt /var/www/app/
@@ -16,6 +17,8 @@ COPY . /var/www/app
 
 ENV DJANGO_SETTINGS_MODULE=app.settings_prod
 RUN python manage.py collectstatic --noinput
+
+RUN chmod +x ./deploy/init.sh
 
 VOLUME /var/www/var/media
 

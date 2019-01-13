@@ -8,8 +8,8 @@ DATABASES = {
         'NAME': 'app',
         'USER': 'root',
         'PASSWORD': '123123',
-        # 'HOST': 'localhost',
-        # 'PORT': '',
+        'HOST': 'mysql',
+        'PORT': '3306',
     }
 }
 

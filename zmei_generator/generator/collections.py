@@ -135,7 +135,7 @@ def generate_common_files(target_path, skeleton_dir, apps):
 
     # settings
     req_settings = {}
-    installed_apps = list(apps.keys())
+    installed_apps = [app.app_name for app in apps.values() if len(app.pages) > 0 or len(app.collections) > 0]
 
     if has_crud:
         installed_apps.append('zmei.crud')
@@ -182,7 +182,7 @@ def generate_common_files(target_path, skeleton_dir, apps):
     generate_file(target_path, 'app/templates/base.html', template_name='theme/base.html')
 
     requirements = [
-        'zmei-utils>=0.1.14',
+        'zmei-utils>=0.1.15',
         'wheel',
         'django>2',
     ]
@@ -273,7 +273,7 @@ def generate_common_files(target_path, skeleton_dir, apps):
 
     for collection_set in apps.values():
         if collection_set.gitlab:
-            generate_file(target_path, 'gitlab-ci.yaml', 'gitlab/gitlab-ci.yaml.tpl', {
+            generate_file(target_path, '.gitlab-ci.yml', 'gitlab/gitlab-ci.yaml.tpl', {
                 'gitlab': collection_set.gitlab,
             })
 
@@ -359,7 +359,7 @@ def generate_react_configs(target_path, apps):
     for app_name, collection_set in apps.items():
         if collection_set.react:
             # entries[app_name] = ["babel-polyfill", f'./src/{app_name.capitalize()}/index.jsx']
-            entries[app_name] = [f'./src/{app_name.capitalize()}/index.jsx']
+            entries[app_name] = [f'./src/index.jsx']
 
     packages = {}
 

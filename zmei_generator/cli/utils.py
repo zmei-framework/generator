@@ -75,7 +75,7 @@ def write_generated_file(path, source):
 
     source_prefix = ''
 
-    if path.endswith('.py') or path.endswith('.yaml') or path.endswith('_requirements.txt')\
+    if path.endswith('.py') or path.endswith('.yaml') or path.endswith('.yml') or path.endswith('_requirements.txt')\
             or path.endswith('requirements.prod.txt') or path.endswith('Dockerfile'):
         # settings.py is specially designed to be overriden
         if not path.endswith('app/settings.py') \
@@ -259,6 +259,7 @@ def extract_files(dst, file_bytes):
             continue
 
         full_path = os.path.join(dst, path)
+        print(full_path)
         if write_generated_file(full_path, files.read(path).decode()):
             changed_files.append(full_path)
 

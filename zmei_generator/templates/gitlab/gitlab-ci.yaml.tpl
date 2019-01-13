@@ -31,14 +31,16 @@ deploy_{{ config.deployment }}:
     APP_STACK_NAME: {{ config.deployment }}
 
   script:
-    - export DOCKER_HOST="tcp://{{ config.hostname }}:2376"
+    {%- if config.vars.docker %}
+    - export DOCKER_HOST={{ config.vars.docker }}
+    {%- endif %}
     {%- if config.vars.key %}
     - export DOCKER_TLS_VERIFY="1"
     - export DOCKER_CERT_PATH="/root/.dockercerts"
     # extract certs (collected with "tar -czf - -C $DOCKER_CERT_PATH . |base64 |pbcopy")
     - mkdir -p $DOCKER_CERT_PATH; echo ${{ config.vars.key }} |base64 -d |tar xzf - -C $DOCKER_CERT_PATH
-    {%- endif %}{% for key, val in config.vars.items() if key != 'key' %}
-    - export {{ key }}="{{ val }}"{% endfor %}
+    {%- endif %}{% for key, val in config.vars.items() if key not in ('key', 'docker') %}
+    - export {{ key }}={{ val }}{% endfor %}
 
     # deploy
     - echo "docker stack deploy --compose-file docker-compose.yaml --with-registry-auth $APP_STACK_NAME"

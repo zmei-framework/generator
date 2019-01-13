@@ -256,3 +256,95 @@ if __name__ == '__main__':
 
 
     app.run(host='0.0.0.0', port=9000)
+
+
+async def handle_command_messages(channel, writer, local_data):
+    device_id = local_data['device_id']
+
+    queue = await channel.declare_queue(name=f'request_{device_id}', timeout=20)
+
+    async for message in queue:
+        with message.process():
+            print(message.body.decode())
+            command_id = message.body.decode()
+
+            # пишем команду или что там пршло в стрим устройства
+            writer.write('$WP+GETLOCATION+0001=0000\r\n'.encode())
+
+
+async def handle_echo(reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
+    Foo.foo += 1
+
+    connection = await aio_pika.connect_robust(host='localhost', loop=asyncio.get_event_loop())
+    channel = await connection.channel()
+
+    local_data = {
+        'device_id': None
+    }
+
+    async with InfluxDBClient(host='localhost', port=8086, username='xtrax', password='Qnwg1sAPnTh6h7Q3',
+                              database='xtrax') as influx:
+
+        loop.create_task(ask_position(writer))
+        # loop.create_task(ask_imei(writer))
+
+        while not reader.at_eof():
+            data = await reader.read(1000)
+
+            message = data
+            addr = writer.get_extra_info('peername')
+
+            # print(repr(message))
+            # print(repr(message[-4:]))
+
+            print(f"Received {message.hex()!r} from {addr!r}")
+
+            if data[0:2] == b'\xd0\xd7':
+
+                header, sequence, device_id = unpack('HHI', data)
+                print('Sync received!', sequence, device_id)
+
+                if not local_data['device_id']:
+                    local_data['device_id'] = device_id
+
+                    # загружаем остальные данные из редиски, пихаем в local_data
+
+                    loop.create_task(handle_command_messages(channel, writer, local_data))
+
+                await influx.write({
+                    "measurement": "sync",
+                    "tags": {
+                        "device_id": str(device_id),
+                    },
+                    "fields": {
+                        "sequence": sequence
+                    }
+                })
+
+                writer.write(data)
+                await writer.drain()
+
+                print(f"Send: {message.hex()!r}")
+            elif data[:3].decode('utf-8') == '$OK':
+                message = data.decode().split('+')
+                cmd_name, resp = message[2], message[3]
+                await OK_CMDS[cmd_name](influx, message[3])
+
+            else:
+                message = data.decode()
+                await OK_CMDS['GETLOCATION'](influx, message)
+
+                # тут чекаем, если у команды есть tag, то раскодируем и пишем результат в очередь:
+                command_id = 'bla bla bla'
+                await channel.default_exchange.publish(
+                    aio_pika.Message(
+                        body=f'Hello {command_id}'.encode()
+                    ), routing_key=f'response_{device_id}_{command_id}',
+                )
+
+
+    # print("Close the connection")
+    writer.close()
+
+    Foo.foo -= 1
+

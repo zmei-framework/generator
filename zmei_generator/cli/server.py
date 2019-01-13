@@ -6,6 +6,7 @@ import zipfile
 from glob import glob
 from io import BytesIO
 from os.path import dirname
+from shutil import rmtree
 
 from zmei_generator.generator.application import ZmeiAppParser
 from zmei_generator.generator.collections import generate, generate_common_files
@@ -27,9 +28,12 @@ def zmei_generate(zip_bytes, collections):
 
 def collect_files(target_path, request_files):
     paths = set(glob(f'{target_path}/**/*.*', recursive=True))
+    paths.update(glob(f'{target_path}/**/.*', recursive=True))
     paths.update(glob(f'{target_path}/**/Dockerfile', recursive=True))
     paths.update(glob(f'{target_path}/**/.babelrc', recursive=True))
     paths.update(glob(f'{target_path}/**/.dockerignore', recursive=True))
+
+    paths = [x for x in paths if '__pycache__' not in x]
 
     # # remove prefix
     tpl = len(f'{target_path}/')
