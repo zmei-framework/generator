@@ -39,11 +39,6 @@ def fill_file(file_path, context, template=None):
         f.write(data)
 
 
-def is_file_generated(filename):
-    with open(filename, 'r') as f:
-        return re.match('^\s*{#\s*generated\s*#}\s*', f.read(20))
-
-
 def field_names(fields, admin=False):
     names = []
     for field in fields:

@@ -40,16 +40,16 @@ test_images:
     - flake/
 {% endif %}
 
-{%- for config in gitlab.configs %}{% if config.deployment == 'dev' %}
+{%- for config in gitlab.configs %}{% if config.coverage and config.test %}
 build_dev_images:
   stage: build
   dependencies:
   - test_images
   script:
-  - mkdir -p web/build/coverage-report/
-  - mkdir -p web/build/style-report/
-  - cp -rf coverage/* web/build/coverage-report/
-  - cp -rf flake/* web/build/style-report/
+  - mkdir -p {{ config.vars.coverage }}coverage-report/
+  - mkdir -p {{ config.vars.coverage }}style-report/
+  - cp -rf coverage/* {{ config.vars.coverage }}coverage-report/
+  - cp -rf flake/* {{ config.vars.coverage }}style-report/
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   - docker build --target app -t "$APP_IMAGE" .
   - docker build --target nginx -t "$NGINX_IMAGE" .
@@ -63,7 +63,7 @@ build_prod_images:
   - docker build --target app -t "$APP_IMAGE" .
   - docker build --target nginx -t "$NGINX_IMAGE" .
   only:
-  {%- for config in gitlab.configs %}{% if config.deployment != 'dev' and not config.manual_deploy %}
+  {%- for config in gitlab.configs %}{% if (not config.coverage or not config.test) and not config.manual_deploy %}
   - {{ config.branch }}
 {% endif %}{%- endfor %}
 push_images:
@@ -76,14 +76,16 @@ push_images:
   {%- for config in gitlab.configs %}{% if not config.manual_deploy %}
   - {{ config.branch }}{% endif %}{%- endfor %}
 {% for config in gitlab.configs %}
-deploy_{{ config.deployment }}:
+deploy_{{ config.deployment|replace("*", "all")|replace("-", "_") }}:
   stage: deploy
   variables:
-    APP_HOSTNAME: {{ config.hostname }}
-    APP_STACK_NAME: {{ config.deployment }}
+    APP_HOSTNAME: {{ config.hostname|replace("*", "$CI_COMMIT_REF_SLUG") }}
+    APP_STACK_NAME: {{ config.deployment|replace("*", "$CI_COMMIT_REF_SLUG") }}
   environment:
-    name: {{ config.deployment }}
-    url: https://{{ config.hostname }}
+    name: {{ config.deployment|replace("*", "$CI_COMMIT_REF_SLUG") }}
+    url: https://{{ config.hostname|replace("*", "$CI_COMMIT_REF_SLUG") }}{% if not config.manual_deploy %}
+    on_stop: destroy_{{ config.deployment|replace("*", "all")|replace("-", "_") }}
+    {% endif %}
   script:
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   {%- if config.vars.docker %}
@@ -102,4 +104,22 @@ deploy_{{ config.deployment }}:
   {%- endif %}
   only:
   - {{ config.branch }}
+{% if not config.manual_deploy %}
+destroy_{{ config.deployment|replace("*", "all")|replace("-", "_") }}:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+    APP_STACK_NAME: {{ config.deployment|replace("*", "$CI_COMMIT_REF_SLUG") }}
+  script:
+  - export DOCKER_HOST="tcp://dev.negative.ee:2376"
+  - export DOCKER_TLS_VERIFY="1"
+  - export DOCKER_CERT_PATH="/root/.dockercerts"
+  # extract certs (collected with "tar -czf - -C $DOCKER_CERT_PATH . |base64 |pbcopy")
+  - mkdir -p $DOCKER_CERT_PATH; echo $DOCKER_CERT_DEV |base64 -d |tar xzf - -C $DOCKER_CERT_PATH
+  - docker stack rm $APP_STACK_NAME
+  when: manual
+  environment:
+    name: {{ config.deployment|replace("*", "$CI_COMMIT_REF_SLUG") }}
+    action: stop
+{% endif %}
 {% endfor %}

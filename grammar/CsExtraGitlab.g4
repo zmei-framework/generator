@@ -76,15 +76,24 @@ an_gitlab_branch_deploy_type:
     ;
 
 an_gitlab_branch_name:
-    id_or_kw
+     (id_or_kw
+    |DASH
+    |STAR
+    |SLASH)+
     ;
 
 an_gitlab_deployment_name:
-    id_or_kw
+    (id_or_kw
+    |DASH
+    |SLASH
+    |STAR)+
     ;
 
 an_gitlab_deployment_host:
-    classname
+    (id_or_kw
+    |DASH
+    |STAR
+    |DOT)+
     ;
 
 an_gitlab_deployment_variable:

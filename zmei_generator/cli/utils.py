@@ -86,6 +86,9 @@ def write_generated_file(path, source):
     elif path.endswith('.js') or path.endswith('.jsx') or path.endswith('.dart'):
         source_prefix = f"//# {tag}\n\n"
 
+    elif path.endswith('.md'):
+        source_prefix = f"<!-- # {tag} -->\n\n"
+
     elif path.endswith('package.json'):
         chksum = source_hash(json.dumps(json.loads(source), indent=4))
         source = json.dumps({**json.loads(source), **{PACKAGE_JSON_TOKEN: chksum}}, indent=4)
@@ -149,11 +152,11 @@ def is_generated_file(path):
         real_source = json.dumps(data, indent=4)
 
     else:
-        match = re.match('^({|//)?# generated: ([a-f0-9]{32})( #})?\n\n', content)
+        match = re.match('^(<!--)?({|//)?# generated: ([a-f0-9]{32})( #})?( -->)?\n\n', content)
         if not match:
             return False, False, None
 
-        file_chk_expected = match.group(2)
+        file_chk_expected = match.group(3)
         real_source = content[len(match.group(0)):]
 
     file_chk_real = source_hash(real_source)
@@ -259,7 +262,6 @@ def extract_files(dst, file_bytes):
             continue
 
         full_path = os.path.join(dst, path)
-        print(full_path)
         if write_generated_file(full_path, files.read(path).decode()):
             changed_files.append(full_path)
 

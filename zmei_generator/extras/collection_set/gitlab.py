@@ -29,9 +29,17 @@ class DeploymentConfig(object):
 
         self.manual_deploy = False
         self.branch = None
-        self.deployment = None
+        self.environment = None
         self.hostname = None
         self.vars = {}
+
+    @property
+    def coverage(self):
+        return 'coverage' in self.vars
+
+    @property
+    def deployment(self):
+        return self.environment.replace('/', '-')
 
 
 class GitlabCsExtra(CollectionSetExtra):
@@ -86,13 +94,20 @@ class GitlabCsExtraParserListener(BaseListener):
         self.dp.manual_deploy = ctx.getText() == '~>'
 
     def enterAn_gitlab_branch_name(self, ctx: ZmeiLangParser.An_gitlab_branch_nameContext):
-        self.dp.branch = ctx.getText()
+        val = ctx.getText()
+        if '*' in val:
+            val = val.replace('/', '\/')
+            val = val.replace('*', '.*')
+            val = f'/^{val}$/'
+        self.dp.branch = val
 
     def enterAn_gitlab_deployment_name(self, ctx: ZmeiLangParser.An_gitlab_deployment_nameContext):
-        self.dp.deployment = ctx.getText()
+        val = ctx.getText()
+        self.dp.environment = val
 
     def enterAn_gitlab_deployment_host(self, ctx: ZmeiLangParser.An_gitlab_deployment_hostContext):
-        self.dp.hostname = ctx.getText()
+        val = ctx.getText()
+        self.dp.hostname = val
 
     def enterAn_gitlab_deployment_variable(self, ctx: ZmeiLangParser.An_gitlab_deployment_variableContext):
         if self.service:
@@ -108,6 +123,12 @@ class GitlabCsExtraParserListener(BaseListener):
 
     def exitAn_gitlab_branch_declaration(self, ctx: ZmeiLangParser.An_gitlab_branch_declarationContext):
         super().exitAn_gitlab_branch_declaration(ctx)
+
+        if 'coverage' in self.dp.vars:
+            val = self.dp.vars['coverage'].strip('"\'')
+            if not val.endswith('/'):
+                val += '/'
+            self.dp.vars['coverage'] = val
 
         self.collection_set.gitlab.configs.append(self.dp)
         self.dp = None

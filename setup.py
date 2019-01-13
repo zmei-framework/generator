@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='zmei-cli',
-    version='2.0.4',
+    version='2.0.6',
     packages=find_packages(),
 
     url='',

@@ -36,6 +36,7 @@ def test_gitlab_full_config():
     assert master.hostname == 'example.com'
     assert master.vars == {}
 
+
 def test_gitlab_deploy_type():
     cs = _("""
 
@@ -63,6 +64,54 @@ def test_gitlab_deploy_type():
     assert master.deployment == 'prod'
     assert master.hostname == 'example.com'
     assert master.vars == {}
+
+
+def test_wildcard():
+    cs = _("""
+
+    @gitlab(
+        feature/lala-* => hello-review/*(
+            *.hello.dev.negative.ee:
+    
+            key=DOCKER_CERT_DEV
+            docker="tcp://dev.negative.ee:2376"
+        )
+    )
+
+    """)
+
+    assert isinstance(cs.gitlab, GitlabCsExtra)
+
+    assert len(cs.gitlab.configs) == 1
+
+    develop = cs.gitlab.configs[0]
+    assert develop.manual_deploy is False
+    assert develop.branch == '/^feature\/lala-.*$/'
+    assert develop.deployment == 'hello-review-*'
+    assert develop.environment == 'hello-review/*'
+    assert develop.hostname == '*.hello.dev.negative.ee'
+
+
+def test_artifacts():
+    cs = _("""
+
+    @gitlab(
+        develop => dev(dev.foo.example.com: coverage="lala", SERVER_PORT=3000, FOO=322)
+        master ~> prod(example.com)
+    )
+
+    """)
+
+    assert isinstance(cs.gitlab, GitlabCsExtra)
+
+    assert len(cs.gitlab.configs) == 2
+
+    develop = cs.gitlab.configs[0]
+    assert develop.coverage is True
+    assert develop.vars['coverage'] == 'lala/'
+
+    master = cs.gitlab.configs[1]
+    assert master.coverage is False
 
 
 def test_gitlab_with_tests():

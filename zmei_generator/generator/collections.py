@@ -273,12 +273,18 @@ def generate_common_files(target_path, skeleton_dir, apps):
 
     for collection_set in apps.values():
         if collection_set.gitlab:
-            generate_file(target_path, '.gitlab-ci.yml', 'gitlab/gitlab-ci.yaml.tpl', {
-                'gitlab': collection_set.gitlab,
-            })
-
-            for file in ['conftest.py', 'pytest.ini', 'requirements.dev.txt', '.flake8', '.coveragerc']:
-                generate_file(target_path, file, f'gitlab/{file}')
+            for file in [
+                '.gitlab-ci.yml',
+                'README.md',
+                'conftest.py',
+                'pytest.ini',
+                'requirements.dev.txt',
+                '.flake8',
+                '.coveragerc'
+            ]:
+                generate_file(target_path, file, f"gitlab/{file.strip('.')}.tpl", {
+                    'gitlab': collection_set.gitlab,
+                })
 
 
 def generate(target_path, app_name: str, collection_set: CollectionSetDef, features=None):
