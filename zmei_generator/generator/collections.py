@@ -277,6 +277,10 @@ def generate_common_files(target_path, skeleton_dir, apps):
                 'gitlab': collection_set.gitlab,
             })
 
+            for file in ['conftest.py', 'pytest.ini', 'requirements.dev.txt', '.flake8', '.coveragerc']:
+                generate_file(target_path, file, f'gitlab/{file}')
+
+
 def generate(target_path, app_name: str, collection_set: CollectionSetDef, features=None):
     features = features or []
 
