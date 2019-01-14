@@ -275,6 +275,7 @@ def generate_common_files(target_path, skeleton_dir, apps):
         if collection_set.gitlab:
             for file in [
                 '.gitlab-ci.yml',
+                '.gitignore',
                 'README.md'
             ]:
                 generate_file(target_path, file, f"gitlab/{file.strip('.')}.tpl", {
