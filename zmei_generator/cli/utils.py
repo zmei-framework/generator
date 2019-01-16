@@ -420,6 +420,9 @@ def remove_db(apps, features=None):
     django_command = get_django_command(features)
 
     for app_name in apps:
+        if not os.path.exists(f'{app_name}/migrations'):
+            continue
+
         filename = '{}.col'.format(app_name)
         if not os.path.exists(filename):
             print('No such collection: {}'.format(app_name))

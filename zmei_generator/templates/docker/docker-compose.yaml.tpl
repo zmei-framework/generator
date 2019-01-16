@@ -20,6 +20,17 @@ services:
 
     environment:
       DJANGO_SETTINGS_MODULE: app.settings_prod
+  {%- if has_celery %}
+  celery:
+    image: ${APP_IMAGE}
+    command: celery -A app worker -B -E -l info
+    restart: always
+    volumes:
+      - media:/var/www/var/media
+
+    environment:
+      DJANGO_SETTINGS_MODULE: app.settings_prod
+  {% endif %}
 
   nginx:
     image: ${NGINX_IMAGE}

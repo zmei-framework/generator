@@ -18,6 +18,7 @@ class CollectionSetDef(object):
         self.api = False
         self.rest = False
         self.docker = False
+        self.celery = False
         self.gitlab = False
         self.channels = False
         self.crud = False

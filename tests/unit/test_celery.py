@@ -1,6 +1,7 @@
 from textwrap import dedent
 
 import pytest
+from zmei_generator.extras.collection_set.celery import CeleryCsExtra
 
 from zmei_generator.extras.collection_set.suit import SuitCsExtra
 from zmei_generator.extras.model.admin import AdminExtra, AdminInlineConfig
@@ -20,4 +21,5 @@ def test_suit():
     """)
 
     assert 'celery' in cs.get_required_deps()
-    # assert isinstance(cs.celery, SuitCsExtra)
+
+    assert isinstance(cs.celery, CeleryCsExtra)

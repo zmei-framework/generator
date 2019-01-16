@@ -42,6 +42,7 @@ def generate_common_files(target_path, skeleton_dir, apps):
     has_crud = False
     has_rest = False
     has_docker = False
+    has_celery = False
     has_admin = False
     has_filer = False
     has_suit = False
@@ -60,6 +61,9 @@ def generate_common_files(target_path, skeleton_dir, apps):
     for app_name, collection_set in apps.items():
         if collection_set.react:
             has_react = True
+
+        if collection_set.celery:
+            has_celery = True
 
         if collection_set.flutter:
             has_flutter = True
@@ -261,7 +265,9 @@ def generate_common_files(target_path, skeleton_dir, apps):
         generate_file(target_path, 'app/settings_prod.py', 'docker/settings_prod.py.tpl')
         generate_file(target_path, 'Dockerfile', 'docker/dockerfile.tpl')
         generate_file(target_path, '.dockerignore', 'docker/dockerignore.tpl')
-        generate_file(target_path, 'docker-compose.yaml', 'docker/docker-compose.yaml.tpl')
+        generate_file(target_path, 'docker-compose.yaml', 'docker/docker-compose.yaml.tpl', {
+            'has_celery': has_celery
+        })
 
         generate_file(target_path, 'deploy/init.sh', 'docker/init.sh.tpl', {
             'admin_pass': ''.join(random.choice(

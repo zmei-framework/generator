@@ -30,6 +30,8 @@ class CeleryCsExtra(CollectionSetExtra):
 class CeleryCsExtraParserListener(BaseListener):
 
     def enterAn_celery(self, ctx: ZmeiLangParser.An_celeryContext):
+        extra = CeleryCsExtra(self.collection_set)
         self.collection_set.extras.append(
-            CeleryCsExtra(self.collection_set)
+            extra
         )
+        self.collection_set.celery = extra
