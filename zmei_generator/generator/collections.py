@@ -262,7 +262,9 @@ def generate_common_files(target_path, skeleton_dir, apps):
         generate_file(target_path, 'requirements.prod.txt', 'docker/requirements.prod.txt.tpl', {
             'req_file': os.environ.get('ZMEI_REQUIREMNETS_FILE', 'requirements.txt')
         })
-        generate_file(target_path, 'app/settings_prod.py', 'docker/settings_prod.py.tpl')
+        generate_file(target_path, 'app/settings_prod.py', 'docker/settings_prod.py.tpl', {
+            'has_celery': has_celery
+        })
         generate_file(target_path, 'Dockerfile', 'docker/dockerfile.tpl')
         generate_file(target_path, '.dockerignore', 'docker/dockerignore.tpl')
         generate_file(target_path, 'docker-compose.yaml', 'docker/docker-compose.yaml.tpl', {

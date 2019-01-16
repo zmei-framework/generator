@@ -21,7 +21,6 @@ CACHES = {
         ],
         'OPTIONS': {
             'DB': 1,
-            # 'PASSWORD': 'yadayada',
             'PARSER_CLASS': 'redis.connection.HiredisParser',
             'CONNECTION_POOL_CLASS': 'redis.BlockingConnectionPool',
             'CONNECTION_POOL_CLASS_KWARGS': {
@@ -35,5 +34,9 @@ CACHES = {
 }
 
 STATIC_ROOT = '/var/www/var/static/'
-
 MEDIA_ROOT = '/var/www/var/media/'
+
+{% if has_celery %}
+CELERY_BROKER_URL = 'redis://redis'
+CELERY_RESULT_BACKEND = 'redis://redis'
+{% endif %}
