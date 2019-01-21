@@ -1,23 +1,17 @@
 from zmei_generator.config.domain.collection_set_def import CollectionSetDef
 from zmei_generator.config.domain.page_def import PageDef
 from zmei_generator.extras.page.auth import AuthPageExtraParserListener
-from zmei_generator.extras.page.crud_create import CrudCreatePageExtraParserListener
-from zmei_generator.extras.page.crud_delete import CrudDeletePageExtraParserListener
-from zmei_generator.extras.page.crud_detail import CrudDetailPageExtraParserListener
-from zmei_generator.extras.page.crud_edit import CrudEditPageExtraParserListener
-from zmei_generator.extras.page.crud_parser import CrudPageExtraParserListener
 from zmei_generator.extras.page.error import ErrorPageExtraParserListener
+from zmei_generator.extras.page.flutter import FlutterPageExtraParserListener
 from zmei_generator.extras.page.get import GetPageExtraParserListener
 from zmei_generator.extras.page.html import HtmlPageExtraParserListener
 from zmei_generator.extras.page.markdown import MarkdownPageExtraParserListener
 from zmei_generator.extras.page.menu import MenuPageExtraParserListener
 from zmei_generator.extras.page.post import PostPageExtraParserListener
 from zmei_generator.extras.page.react import ReactPageExtraParserListener
-from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
-from zmei_generator.parser.populate_page_crud_overrides import PageCrudOverrideExtraListener
-from zmei_generator.parser.utils import BaseListener
-from zmei_generator.extras.page.flutter import FlutterPageExtraParserListener
 from zmei_generator.extras.page.stream import StreamPageExtraParserListener
+from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
+from zmei_generator.parser.utils import BaseListener
 
 
 class PageExtraListener(
@@ -25,11 +19,6 @@ class PageExtraListener(
     StreamPageExtraParserListener,
     GetPageExtraParserListener,
     MenuPageExtraParserListener,
-    CrudPageExtraParserListener,
-    CrudDetailPageExtraParserListener,
-    CrudDeletePageExtraParserListener,
-    CrudEditPageExtraParserListener,
-    CrudCreatePageExtraParserListener,
     PostPageExtraParserListener,
     ErrorPageExtraParserListener,
     AuthPageExtraParserListener,
@@ -37,7 +26,7 @@ class PageExtraListener(
     ReactPageExtraParserListener,
     HtmlPageExtraParserListener,
 
-    PageCrudOverrideExtraListener,
+    # PageCrudOverrideExtraListener,
     BaseListener
 ):
 
@@ -47,6 +36,9 @@ class PageExtraListener(
         self.page = None  # type: PageDef
         self.parent = None
         self.extend_name = False
+        self.last_crud_descriptor = None
+        self.page_stack = []
+        self.last_crud_descriptor_stack = []
 
     def enterPage(self, ctx: ZmeiLangParser.PageContext):
         self.page = PageDef(self.collection_set)
@@ -65,6 +57,46 @@ class PageExtraListener(
         self.page = None
         self.parent = None
         self.extend_name = None
+
+    # crud special
+
+    def enterAn_crud(self, ctx: ZmeiLangParser.An_crudContext):
+        self.last_crud_descriptor_stack.append(self.last_crud_descriptor)
+        self.last_crud_descriptor = ctx.an_crud_params().an_crud_descriptor().getText()
+
+    enterAn_crud_create = enterAn_crud
+    enterAn_crud_delete = enterAn_crud
+    enterAn_crud_detail = enterAn_crud
+    enterAn_crud_edit = enterAn_crud
+
+    def exitAn_crud(self, ctx: ZmeiLangParser.An_crudContext):
+        self.last_crud_descriptor = self.last_crud_descriptor_stack.pop()
+
+    exitAn_crud_create = enterAn_crud
+    exitAn_crud_delete = enterAn_crud
+    exitAn_crud_detail = enterAn_crud
+    exitAn_crud_edit = enterAn_crud
+
+    def enterAn_crud_page_override(self, ctx: ZmeiLangParser.An_crud_page_overrideContext):
+        page = self.page
+        self.page_stack.append(self.page)
+
+        crud_name = ctx.an_crud_view_name().getText()
+
+        if self.last_crud_descriptor:
+            name_suffix = f'_{self.last_crud_descriptor}'
+        else:
+            name_suffix = ''
+
+        crud_page_name = f"{page.name}{name_suffix}_{crud_name}"
+
+        print(page.name, crud_page_name, page.collection_set.pages.keys())
+        self.page = page.collection_set.pages[crud_page_name]
+
+    def exitAn_crud_page_override(self, ctx: ZmeiLangParser.An_crud_page_overrideContext):
+        self.page = self.page_stack.pop()
+
+
 
 
 

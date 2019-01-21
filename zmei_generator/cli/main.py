@@ -25,9 +25,15 @@ def run_command(cmd, show=False):
         os.system(cmd)
 
 @main.group()
+@click.option('--debug-port', default=None, help='Connect to pydevd port')
 @click.option('--src', default='.', help='Sources path')
 @click.option('--dst', default='.', help='Target path')
-def gen(**args):
+def gen(debug_port, **args):
+
+    if debug_port:
+        import pydevd
+        pydevd.settrace('localhost', port=int(debug_port), stdoutToServer=True, stderrToServer=True)
+
     # ensure_logged_in()
     pass
 

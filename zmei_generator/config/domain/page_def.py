@@ -1,6 +1,7 @@
 import os
 import re
 from functools import lru_cache
+from pprint import pprint
 from textwrap import dedent
 
 from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
@@ -78,6 +79,7 @@ class PageDef(object):
         self.functions = {}
         self.template_libs = []
         self.crud_views = {}
+        self.forms = {}
 
         self.themed_files = {}
 
@@ -103,6 +105,14 @@ class PageDef(object):
         # extras = self.collection_set.parser.get_page_extras_available()
 
         self.extras = []
+
+    def get_template_libs(self):
+        libs = self.template_libs.copy()
+
+        # crud templates have i18n tags in templates
+        if len(self.crud_views):
+            libs.append('i18n')
+        return set(libs)
 
     def set_html(self, html, react=None, area='content'):
         from zmei_generator.extras.page.block import ReactPageBlock
@@ -130,11 +140,29 @@ class PageDef(object):
             raise ValidationException('Two or more @crud annotations with same descriptor are not allowed.')
         self.crud_views[descriptor] = cls
 
-    def add_block(self, area, block):
+    def add_form(self, name, definition):
+        self.forms[name] = definition
+
+    def get_blocks(self):
+        print('Page:', self.name)
+        blocks = [(area, [(getattr(x, 'template_name', 'content'), x.sorting) for x in sorted(blocks, key=lambda block: block.sorting)]) for area, blocks in self.blocks.items()]
+        pprint(blocks)
+        return [(area, sorted(blocks, key=lambda block: block.sorting)) for area, blocks in self.blocks.items()]
+
+    def add_block(self, area, block, sorting=None):
+        block.sorting = sorting or 0
+
         if area not in self.blocks:
             self.blocks[area] = []
 
         self.blocks[area].append(block)
+
+    def get_uri_params(self):
+        params = self.uri_params.copy()
+        if self.parent_name:
+            params += self.get_parent().get_uri_params()
+
+        return params
 
     def get_extra_bases(self):
         parent = self.get_parent()

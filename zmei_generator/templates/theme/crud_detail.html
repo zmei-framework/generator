@@ -1,24 +1,24 @@
-{% load crud_utils i18n %}
-
-{% if crud.crud_list_link %}
-<a href="{% crud_link crud.crud_list_link %}">&laquo; {% trans "Back to the list" %}</a>
+{% if crud.links.list %}
+{{ '<a href="' + crud.format_link('parent') + '">&laquo; {% trans "Back to the list" %}</a>' }}
 {% endif %}
+<div>
+    <h2>{{ crud.model_name }} "{{ '{{ ' + crud.item_name + ' }}' }}"</h2>
 
-<h2>{{ crud.meta.verbose_name }} "{{ crud.item }}"</h2>
-
-<table>
-    <tbody>
-        {% for field, field_name in crud.fields.items %}
-        <tr>
-            <td>{{ field_name }}</td>
-            <td>{% crud_field crud.item field %}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
+    <table>
+        <tbody>
+            {% for field_name in crud.list_fields %}
+            <tr>
+                <td>{{ field_name }}</td>
+                <td>{{ '{{ ' + crud.item_name + '.' + field_name + ' }}' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{{ '{% if ' + crud.can_edit_item + ' %}' }}
 <p>
-    {% if crud.crud_edit_link %}<a href="{% crud_link crud.crud_edit_link crud.pk_param crud.item.pk %}">[{% trans "Edit" %}]</a>{% endif %}
+    {% if crud.links.edit %}{{ '<a href="' + crud.format_link('edit') + '">[{% trans "Edit" %}]</a>' }}{% endif %}
     |
-    {% if crud.crud_delete_link %}<a href="{% crud_link crud.crud_delete_link crud.pk_param crud.item.pk %}">[{% trans "Delete" %}]</a>{% endif %}
+    {% if crud.links.delete %}{{ '<a href="' + crud.format_link('delete') + '">[{% trans "Delete" %}]</a>' }}{% endif %}
 </p>
+{{ '{% endif %}' }}

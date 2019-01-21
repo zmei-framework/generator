@@ -7,7 +7,14 @@ from zmei_generator.generator.imports import ImportSet
 from zmei_generator.generator.utils import render_template, render_file
 
 
-class ReactPageBlock(object):
+class Block(object):
+    def __init__(self) -> None:
+        super().__init__()
+
+        self.sorting = 0
+
+
+class ReactPageBlock(Block):
     def __init__(self, page=None, source=None, area_name=None) -> None:
         super().__init__()
 
@@ -102,7 +109,7 @@ class ReactPageBlock(object):
         )
 
 
-class PageBlock(object):
+class PageBlock(Block):
     def __init__(self, theme=None, root_el=None, fields=None, source=None, area_name=None) -> None:
         super().__init__()
         self.theme = theme or 'default'
@@ -122,7 +129,7 @@ class PageBlock(object):
         return f'\n<genius:blocks theme="{self.theme}">\n    {source}\n</genius:blocks>'
 
 
-class InlineTemplatePageBlock(object):
+class InlineTemplatePageBlock(Block):
     def __init__(self, template_name, context=None) -> None:
         super().__init__()
 
@@ -133,7 +140,7 @@ class InlineTemplatePageBlock(object):
         return render_template(self.template_name, context=self.context)
 
 
-class InlineFilePageBlock(object):
+class InlineFilePageBlock(Block):
     def __init__(self, template_name) -> None:
         super().__init__()
 
@@ -143,7 +150,7 @@ class InlineFilePageBlock(object):
         return render_file(self.template_name)
 
 
-class ThemeFileIncludePageBlock(object):
+class ThemeFileIncludePageBlock(Block):
     def __init__(self, page, source, template_name, ns, theme='default', with_expr=None) -> None:
         super().__init__()
 

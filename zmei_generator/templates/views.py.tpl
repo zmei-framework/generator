@@ -35,6 +35,10 @@ rs = ZmeiReactServer()
 rs.load(settings.BASE_DIR + '/app/static/react/{{ collection_set.app_name }}.bundle.js')
 {% endif -%}
 {% for page in pages %}
+{%- for prefix, form in page.forms.items() %}
+class {{ form.get_form_name() }}({{ form.get_form_class() }}):
+    {{ form.get_form_code()|indent(8) }}
+{% endfor -%}
 class {{ page.view_name }}({% if page.get_extra_bases() %}{{ page.get_extra_bases()|join(", ") }}, {% endif %}{{ page.parent_view_name }}):
     {% if page.options %}{% for key, option in page.options.items() %}{{ key }} = {{ option }}
     {% endfor %}{% endif %}{% if page.react %}
@@ -49,12 +53,6 @@ class {{ page.view_name }}({% if page.get_extra_bases() %}{{ page.get_extra_base
     @classmethod
     def get_sitemap(cls):
         return {{ page.sitemap_expr.render_python_code() }}
-    {% endif %}
-    {%- if page.crud_views %}
-    def get_crud_views(self):
-        return ({% for cls in page.crud_views.values() %}
-            {{ cls }},{% endfor %}
-        )
     {% endif %}
     {{ page.render_template_name_expr()|indent(4) }}
     {% for name, func in page.functions.items() %}

@@ -26,8 +26,12 @@ from zmei_generator.fields.text import TextFieldDef, SlugFieldDef, LongTextField
     RichTextFieldWithUploadDef
 from zmei_generator.parser.errors import TabsSuitRequiredValidationError, LangsRequiredValidationError
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
-from zmei_generator.parser.populate_page_crud_overrides import PageCrudOverrideExtraListener
 from zmei_generator.parser.utils import BaseListener
+from zmei_generator.extras.page.crud_create import CrudCreatePageExtraParserListener
+from zmei_generator.extras.page.crud_delete import CrudDeletePageExtraParserListener
+from zmei_generator.extras.page.crud_detail import CrudDetailPageExtraParserListener
+from zmei_generator.extras.page.crud_edit import CrudEditPageExtraParserListener
+from zmei_generator.extras.page.crud_parser import CrudPageExtraParserListener
 
 
 class PartsCollectorListener(
@@ -38,7 +42,13 @@ class PartsCollectorListener(
     CeleryCsExtraParserListener,
     LangsCsExtraParserListener,
     FilerCsExtraParserListener,
-    PageCrudOverrideExtraListener,
+
+    CrudPageExtraParserListener,
+    CrudDetailPageExtraParserListener,
+    CrudDeletePageExtraParserListener,
+    CrudEditPageExtraParserListener,
+    CrudCreatePageExtraParserListener,
+
     BaseListener
 ):
 
@@ -86,9 +96,9 @@ class PartsCollectorListener(
     def enterPage(self, ctx: ZmeiLangParser.PageContext):
         self.page = PageDef(self.collection_set)
         self.page.page_items = {}
+        self.page.name = ctx.page_header().page_name().getText()
 
-    def enterPage_name(self, ctx: ZmeiLangParser.Page_nameContext):
-        self.page.name = ctx.getText()
+        self.collection_set.pages[self.page.name] = self.page
 
     def enterPage_alias_name(self, ctx: ZmeiLangParser.Page_alias_nameContext):
         self.page.defined_url_alias = ctx.getText()
@@ -146,7 +156,6 @@ class PartsCollectorListener(
         if self.page.parent_name and self.page.extend_name:
             self.page.name = f'{self.page.parent_name}_{self.page.name}'
 
-        self.collection_set.pages[self.page.name] = self.page
         self.page = None
 
 

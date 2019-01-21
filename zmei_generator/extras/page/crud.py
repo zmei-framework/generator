@@ -1,12 +1,11 @@
 import re
 from copy import copy
 
+from zmei_generator.extras.page.block import ThemeFileIncludePageBlock, InlineTemplatePageBlock
 from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
 from zmei_generator.config.domain.page_def import PageDef
 from zmei_generator.config.domain.page_expression import PageExpression
 from zmei_generator.config.extras import PageExtra
-from zmei_generator.extras.page.auth import add_page_auth
-from zmei_generator.extras.page.block import ThemeFileIncludePageBlock
 
 
 def format_field_names(names):
@@ -67,9 +66,12 @@ class CrudPageExtra(PageExtra):
     query = None
     next_page_expr = None
     item_name = None
+    items_name = None
     field_filters = None
     create_list = True
     link_suffix = ''
+
+    parent_base_page = None
 
     def __init__(self, page, params=None, descriptor=None):
         super().__init__(page)
@@ -77,6 +79,7 @@ class CrudPageExtra(PageExtra):
         self.params = params or CrudParams()
 
         self.descriptor = descriptor
+        self.parent_crud = None
 
         if page.defined_uri is None and not page.override:  # override -> allow empty urls for override @crud's functionality
             raise ValidationException('@crud annotations require page to have url')
@@ -100,9 +103,9 @@ class CrudPageExtra(PageExtra):
             next_page = None
 
         if next_page:
-            self.next_page_expr = f"return {next_page}"
+            self.next_page_expr = f"{next_page}"
         else:
-            self.next_page_expr = f"return self.request.get_full_path()" + self.link_suffix
+            self.next_page_expr = f"self.request.get_full_path()" + self.link_suffix
 
         self.field_filters = {}
         if crud.fields:
@@ -121,6 +124,8 @@ class CrudPageExtra(PageExtra):
             collection = page.collection_set.resolve_collection(crud.model[1:])
             self.app_name = collection.collection_set.app_name + '.models'
             self.model_cls = collection.class_name
+            self.model_name = collection.name or collection.class_name
+            self.model_name_plural = collection.name_plural or f'{self.model_name} items'
             self.fields = {field.name: field.verbose_name or field.name.replace('_', ' ').capitalize() for field in
                            collection.filter_fields(crud_fields or '*') if not field.read_only}
             self.list_fields = {field.name: field.verbose_name or field.name.replace('_', ' ').capitalize() for field in
@@ -129,6 +134,8 @@ class CrudPageExtra(PageExtra):
             parts = crud.model.split('.')
             self.app_name = '.'.join(parts[:-1]) + '.models'
             self.model_cls = parts[-1]
+            self.model_name = self.model_cls
+            self.model_name_plural = f'{self.model_name} items'
             self.fields = {field: field.replace('_', ' ').capitalize() for field in crud_fields}
             self.list_fields = {field: field.replace('_', ' ').capitalize() for field in
                                 crud.list_fields or crud_fields}
@@ -179,28 +186,17 @@ class CrudPageExtra(PageExtra):
             self.url_prefix = f'{self.descriptor}/'
         else:
             self.url_prefix = ''
-        if not page.defined_uri.endswith('/'):
-            self.url_prefix = '/' + self.url_prefix
+        if page.defined_uri:
+            if not page.defined_uri.endswith('/'):
+                self.url_prefix = '/' + self.url_prefix
 
         # pk
         if crud.pk_param:
             self.pk_param = crud.pk_param
-        elif self.descriptor:
-            self.pk_param = f'{self.descriptor}_pk'
-        else:
-            self.pk_param = 'pk'
 
-        # object
-        if crud.object_expr:
-            self.object_expr = 'self.object = ' + crud.object_expr
-        else:
-            self.object_expr = 'self.object = self.get_object()'
-
-        # auth
-        if crud.can_edit:
-            self.can_edit = crud.can_edit
-        else:
-            self.can_edit = repr(True)
+        self.pk_param = f'{self.name_prefix}pk'
+        self.item_name = f"{self.name_prefix}item"
+        self.items_name = f"{self.item_name}_list"
 
         # formatted_query
         if crud.query:
@@ -208,6 +204,23 @@ class CrudPageExtra(PageExtra):
             self.formatted_query = '.filter({})'.format(self.query)
         else:
             self.formatted_query = '.all()'
+
+        # object
+        if crud.object_expr:
+            self.object_expr = crud.object_expr
+        else:
+            self.object_expr = f'{self.model_cls}.objects{self.formatted_query}.get(pk=url.{self.pk_param})'
+
+        # auth
+        if crud.can_edit:
+            self.can_edit = crud.can_edit
+        else:
+            self.can_edit = repr(True)
+
+        if self.descriptor:
+            self.can_edit_item = f'{self.descriptor}_can_edit'
+        else:
+            self.can_edit_item = f'can_edit'
 
         if crud.skip:
             self.create_list = 'list' not in list(crud.skip)
@@ -219,127 +232,92 @@ class CrudPageExtra(PageExtra):
             x for x in ['detail', 'create', 'edit', 'delete'] if x not in list(crud.skip or [])
         ]
 
-    def prepare_block_fields(self, page):
-        link_extra = self.link_extra
-        if link_extra:
-            link_extra = ' ' + link_extra
+        if self.parent_crud:
+            link_crud = self.parent_crud
+            link_page = self.parent_base_page
+        else:
+            link_crud = self
+            link_page = self.page
 
-        ctx = {
-            'link_suffix': repr(self.link_suffix),
-            'can_edit': self.can_edit,
-            'fields': format_field_names(self.fields),
-            'list_fields': format_field_names(self.list_fields),
-            'link_extra': repr(link_extra),
-            # 'meta': f'{self.name_prefix}{self.item_name}_meta',
-            # 'item': repr(f"{self.context_object_name}"),
-            # 'items': repr(f"{self.context_object_name}_list"),
-            'pk_param': repr(self.pk_param),
-            'context_object_name': repr(self.context_object_name),
-            'crud_prefix': repr(str(self.name_prefix)),
-        }
+        self.links = {x: f"{link_page.collection_set.app_name}.{link_page.name}" f"{link_crud.name_suffix}_{x}" for x in
+                      link_crud.crud_pages}
 
-        if page:
-            links = {f'crud_{x}_link': repr(f"{page.collection_set.app_name}.{page.name}{self.name_suffix}_{x}") for
-                     x in
-                     self.crud_pages}
+        if self.create_list:
+            self.links['list'] = f"{link_page.collection_set.app_name}.{link_page.name}"
 
-            if self.create_list:
-                links['crud_list_link'] = repr(f"{page.collection_set.app_name}.{page.name}")
+        if self.parent_base_page:
+            self.links['parent'] = self.links['list']
 
-            ctx.update(links)
+    def format_link(self, kind):
+        if kind not in self.links:
+            return ''
 
-        return ctx
+        url = repr(self.links[kind])
+
+        for param in self.page.get_uri_params():
+            if param != self.pk_param:
+                url += f' {param}=url.{param}'
+
+        if kind in ('edit', 'detail', 'delete'):
+            url += f' {self.pk_param}={self.item_name}.pk'
+
+        return "{% url " + url + " %}" + self.link_suffix
 
     def build_pages(self, base_page):
 
-        base_page.imports.append(
-            ('zmei.views', 'CrudMultiplexerView')
-        )
-
-        if 'CrudMultiplexerView' not in base_page.get_all_bases():
-            base_page.extra_bases.append('CrudMultiplexerView')
-
-        page = None
+        base_page.add_crud(self.descriptor, self)
 
         if self.create_list:
-            page = PageDef(self.page.collection_set)
-            page.template = False
-            # page.extra_bases = []
-            # page.parent_name = base_page.name
-            page.name = f"crud_{base_page.name}{self.name_suffix}_list"
-            page.options['name'] = f"'{page.name}'"
+            base_page.template_libs.append('i18n')
 
-            page.imports.append(
-                (self.app_name, self.model_cls),
-            )
-            page.imports.append(
-                ('zmei.views', 'CrudView'),
-            )
+            base_page.page_items[self.items_name] = PageExpression(
+                self.items_name, f"{self.model_cls}.objects{self.formatted_query}", base_page)
 
-            page.extra_bases.append('CrudView')
-
-            page.page_items[f'meta'] = PageExpression(
-                f'meta', f"{self.model_cls}._meta", page)
-
-            page.page_items[f'name'] = PageExpression(
-                f'name', f"'{page.name}'", page)
-
-            # page.page_items[f'_{self.context_object_name}_list'] = PageExpression(
-            #     f'{self.context_object_name}_list', f"{se
-
-            page.page_items[f'_items'] = PageExpression(
-                f'items', f"{self.model_cls}.objects{self.formatted_query}", page)
+            base_page.page_items[self.can_edit_item] = PageExpression(
+                self.can_edit_item, self.can_edit, base_page)
 
             base_page.add_block(
                 self.block_name,
-                ThemeFileIncludePageBlock(
-                    page, "theme/crud_list.html", "list.html", ns='crud', theme=self.theme,
-                    with_expr=f' with crud=crud.{page.name}'
-                )
+
+                InlineTemplatePageBlock(f"theme/crud_list.html", {
+                    'page': base_page,
+                    'crud': self,
+                }),
+
+                sorting=100
             )
-
-            for key, val in self.prepare_block_fields(base_page).items():
-                page.page_items[key] = PageExpression(key, val, page)
-
-            base_page.add_crud(self.descriptor, page.view_name)
 
         for crud_page in self.crud_pages:
 
-            if self.descriptor:
-                override_id = f"{self.descriptor}_{crud_page}"
-            else:
-                override_id = crud_page
+            crud_page_name = f"{base_page.name}{self.name_suffix}_{crud_page}"
 
-            if override_id in base_page.crud_overrides:
-                new_page = base_page.crud_overrides[override_id]
+            if crud_page_name in base_page.collection_set.pages:
+                new_page = base_page.collection_set.pages[crud_page_name]
             else:
                 new_page = PageDef(self.page.collection_set)
-
-            # new_page.extra_bases = []
-            new_page.parent_name = base_page.name
-            new_page.name = f"{base_page.name}{self.name_suffix}_{crud_page}"
+                new_page.parent_name = base_page.name
+                new_page.name = crud_page_name
+                base_page.collection_set.pages[new_page.name] = new_page
 
             if crud_page == 'create':
-                new_page.set_uri(f"{base_page.defined_uri}{self.url_prefix}{crud_page}")
+                new_page.set_uri(f"./{self.url_prefix}{crud_page}")
             else:
-                new_page.set_uri(f"{base_page.defined_uri}{self.url_prefix}<{self.pk_param}>/{crud_page}")
+                new_page.set_uri(f"./{self.url_prefix}<{self.pk_param}>/{crud_page}")
+
+            new_page.template_libs.append('i18n')
 
             params = copy(self.params)
-            link_extra_params = "{key: val for key, val in self.kwargs.items() if key != self.pk_url_kwarg}"
+            link_extra_params = ', '.join([f"{x}=url.{x}" for x in self.page.get_uri_params() if x != self.pk_param])
 
             if crud_page not in params.next_page:
                 if 'all' not in params.next_page:
-                    params.next_page[crud_page] = f"reverse('{base_page.collection_set.app_name}.{base_page.name}', kwargs={link_extra_params})"
+                    params.next_page[
+                        crud_page] = f"'{base_page.collection_set.app_name}.{base_page.name}', {link_extra_params}"
 
             crud = crud_cls_by_name(crud_page)(new_page, params=params, descriptor=self.descriptor,
-                                               crud_parent_page_name=page.name, parent_base_page=base_page)
+                                               parent_crud=self, parent_base_page=base_page)
 
-            base_page.collection_set.pages[new_page.name] = new_page
             base_page.collection_set.extras.append(crud)
-
-        # preserve correct page order
-        if self.create_list and page:
-            page.collection_set.pages[page.name] = page
 
 
 def crud_cls_by_name(name):
@@ -359,114 +337,12 @@ def crud_cls_by_name(name):
 class BaseCrudSubpageExtra(CrudPageExtra):
     crud_page = None
 
-    def __init__(self, page, params=None, descriptor=None, crud_parent_page_name=None, parent_base_page=None):
+    def __init__(self, page, params=None, descriptor=None, parent_crud=None, parent_base_page=None):
         super().__init__(page, params, descriptor)
-        self.crud_parent_page_name = crud_parent_page_name
+        self.parent_crud = parent_crud
         self.parent_base_page = parent_base_page
 
     def build_pages(self, base_page):
+        base_page.add_crud(self.descriptor, self)
 
-        base_page.imports.append(
-            ('zmei.views', 'CrudMultiplexerView')
-        )
-        if 'CrudMultiplexerView' not in base_page.extra_bases:
-            base_page.extra_bases.append('CrudMultiplexerView')
-
-        page = PageDef(self.page.collection_set)
-        page.template = False
-
-        if self.crud_parent_page_name:
-            page.parent_name = self.crud_parent_page_name
-            page.extra_bases = []
-        else:
-            page.imports.append(
-                ('zmei.views', 'CrudView'),
-            )
-            page.extra_bases.append('CrudView')
-
-        page.name = f"crud_{base_page.name}"
-        page.options['name'] = f"'{page.name}'"
-        page.collection_set.pages[page.name] = page
-        page.imports.append(
-            (self.app_name, self.model_cls),
-        )
-
-        base_page.add_block(
-            self.block_name,
-
-            ThemeFileIncludePageBlock(
-                page,
-                f"theme/crud_{self.crud_page}.html",
-                f"{self.crud_page}.html",
-                ns='crud',
-                theme=self.theme,
-                with_expr=f' with crud=crud.{page.name}'
-            )
-        )
-        base_page.add_crud(self.descriptor, page.view_name)
-
-        page.page_items[f'name'] = PageExpression(
-            f'name', f"'{page.name}'", page)
-
-        for key, val in self.prepare_block_fields(base_page.get_parent()).items():
-            page.page_items[key] = PageExpression(key, val, page)
-
-        if self.crud_page == 'detail':
-            page.imports.append(
-                ('django.views.generic.detail', self.get_view_class_name())
-            )
-        else:
-            page.imports.append(
-                ('django.views.generic.edit', self.get_view_class_name())
-            )
-
-        if self.crud_page in ('edit', 'create') and len(self.field_filters):
-            code = "form = super().get_form(*args, **kwargs)\n"
-
-            for name, expr in self.field_filters.items():
-                code += "form.fields['{}'].queryset = {}\n".format(name, expr)
-            code += "return form\n"
-
-            page.methods['get_form'] = code
-
-        if self.crud_page in ('edit', 'delete', 'create', 'detail'):
-            page.imports.append(('django.urls', 'reverse'))
-            page.options['pk_url_kwarg'] = f"'{self.pk_param}'"
-            page.methods['get_success_url'] = self.next_page_expr
-
-        if self.crud_page in ('edit', 'delete', 'create'):
-            if self.can_edit:
-                add_page_auth(self.can_edit, page)
-
-            if self.descriptor:
-                page.options['prefix'] = f'"crud_{self.descriptor}_{self.crud_page}"'
-            else:
-                page.options['prefix'] = f'"crud_{self.crud_page}"'
-
-        if self.crud_page in ('edit', 'delete', 'create', 'detail'):
-            page.methods['get_queryset'] = "return " + self.model_cls + ".objects" + self.formatted_query
-            page.options['model'] = self.model_cls
-            page.options['context_object_name'] = f"'{self.context_object_name}'"
-
-        if self.crud_page in ('edit', 'create'):
-            page.options['fields'] = repr([key for key, val in self.fields.items()])
-
-        if self.crud_page in ('edit', 'delete', 'detail'):
-            page.methods['get'] = self.object_expr + "\nreturn super().get(self.request, *args, **kwargs)"
-            page.methods['post'] = self.object_expr + "\nreturn super().post(self.request, *args, **kwargs)"
-            if 'get_object()' not in self.object_expr:
-                page.methods['get_object'] = self.object_expr + "\nreturn self.object"
-
-        if self.crud_page in ('create',):
-            page.methods['get'] = \
-                "self.object = None\nreturn super().get(self.request, *args, **kwargs)"
-
-            page.methods['get_initial'] = f"self.object = {self.model_cls}({self.query})\nreturn super().get_initial()"
-
-        page.extra_bases.append(self.get_view_class_name())
-
-    def get_view_class_name(self):
-        if self.crud_page == 'edit':
-            return 'UpdateView'
-        else:
-            return '{}View'.format(self.crud_page.capitalize())
+        return

@@ -3,12 +3,12 @@
 {%- else -%}
 {{ "{% extends '" + app_name + "/base.html' %}" }}
 {%- endif %}
-{%- if page.template_libs %}
+{%- if page.get_template_libs() %}
 
-{{ "{% load " }}{{ ' '.join(page.template_libs) }}{{ " %}" }}
+{{ "{% load " }}{{ ' '.join(page.get_template_libs()) }}{{ " %}" }}
 {%- endif %}
 
-{% for area, blocks in page.blocks.items() -%}
+{% for area, blocks in page.get_blocks() -%}
 {{ "{% block " }}{{ area }}{{ " %}" }}
 {% for block in blocks -%}
 {% if block.name == '..' -%}
