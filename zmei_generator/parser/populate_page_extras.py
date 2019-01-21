@@ -47,6 +47,9 @@ class PageExtraListener(
         name = ctx.getText()
         if self.parent and self.extend_name:
             name = f'{self.parent}_{name}'
+
+        print(name)
+        print(self.collection_set.pages.keys())
         self.page = self.collection_set.pages[name]
 
     def enterPage_base(self, ctx: ZmeiLangParser.Page_baseContext):
@@ -62,7 +65,10 @@ class PageExtraListener(
 
     def enterAn_crud(self, ctx: ZmeiLangParser.An_crudContext):
         self.last_crud_descriptor_stack.append(self.last_crud_descriptor)
-        self.last_crud_descriptor = ctx.an_crud_params().an_crud_descriptor().getText()
+        if ctx.an_crud_params().an_crud_descriptor():
+            self.last_crud_descriptor = ctx.an_crud_params().an_crud_descriptor().getText()
+        else:
+            self.last_crud_descriptor = None
 
     enterAn_crud_create = enterAn_crud
     enterAn_crud_delete = enterAn_crud

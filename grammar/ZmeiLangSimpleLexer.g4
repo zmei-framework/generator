@@ -11,6 +11,7 @@ AN_GET: '@get';
 AN_MENU: '@menu';
 AN_CRUD: '@crud';
 AN_CRUD_DETAIL: '@crud_detail';
+AN_CRUD_LIST: '@crud_list';
 AN_CRUD_DELETE: '@crud_delete';
 AN_CRUD_EDIT: '@crud_edit';
 AN_CRUD_CREATE: '@crud_create';

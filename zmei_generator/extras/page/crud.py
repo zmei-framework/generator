@@ -343,6 +343,4 @@ class BaseCrudSubpageExtra(CrudPageExtra):
         self.parent_base_page = parent_base_page
 
     def build_pages(self, base_page):
-        base_page.add_crud(self.descriptor, self)
-
-        return
+        pass

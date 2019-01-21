@@ -12,6 +12,7 @@ import
     PageExtraCrudEdit,
     PageExtraCrudDelete,
     PageExtraCrudDetail,
+    PageExtraCrudList,
     PageExtraCrud,
     PageExtraMenu,
     PageExtraGet,
@@ -32,6 +33,7 @@ page_annotation:
     |an_crud_delete
     |an_crud_edit
     |an_crud_create
+    |an_crud_list
     |an_post
     |an_error
     |an_auth

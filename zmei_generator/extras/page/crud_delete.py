@@ -28,7 +28,6 @@ class CrudDeletePageExtra(CrudCreatePageExtra):
         return f"instance={self.item_name}"
 
     def build_pages(self, base_page: PageDef):
-
         base_page.page_items[self.item_name] = PageExpression(
             self.item_name, self.object_expr, base_page)
 

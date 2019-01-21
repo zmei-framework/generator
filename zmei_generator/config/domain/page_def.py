@@ -144,9 +144,6 @@ class PageDef(object):
         self.forms[name] = definition
 
     def get_blocks(self):
-        print('Page:', self.name)
-        blocks = [(area, [(getattr(x, 'template_name', 'content'), x.sorting) for x in sorted(blocks, key=lambda block: block.sorting)]) for area, blocks in self.blocks.items()]
-        pprint(blocks)
         return [(area, sorted(blocks, key=lambda block: block.sorting)) for area, blocks in self.blocks.items()]
 
     def add_block(self, area, block, sorting=None):

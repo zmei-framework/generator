@@ -15,6 +15,7 @@ class CrudDetailPageExtra(BaseCrudSubpageExtra):
         return 'detail'
 
     def build_pages(self, base_page):
+        base_page.add_crud(self.descriptor, self)
 
         base_page.page_items[self.item_name] = PageExpression(
             self.item_name, self.object_expr, base_page)

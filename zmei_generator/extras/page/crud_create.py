@@ -54,6 +54,8 @@ class CrudCreatePageExtra(BaseCrudSubpageExtra):
         """
 
     def build_pages(self, base_page: PageDef):
+        base_page.add_crud(self.descriptor, self)
+
         base_page.imports.append(
             ('django.forms', 'ModelForm')
         )

@@ -12,6 +12,7 @@ from zmei_generator.extras.collection_set.gitlab import GitlabCsExtraParserListe
 from zmei_generator.extras.collection_set.langs import LangsCsExtraParserListener
 from zmei_generator.extras.collection_set.suit import SuitCsExtra
 from zmei_generator.extras.model.admin import AdminExtra, AdminInlineConfig
+from zmei_generator.extras.page.crud_list import CrudListPageExtraParserListener
 from zmei_generator.fields.bool import BooleanFieldDef
 from zmei_generator.fields.custom import CustomFieldDef
 from zmei_generator.fields.date import DateFieldDef, DateTimeFieldDef, AutoNowDateTimeFieldDef, \
@@ -47,6 +48,7 @@ class PartsCollectorListener(
     CrudDetailPageExtraParserListener,
     CrudDeletePageExtraParserListener,
     CrudEditPageExtraParserListener,
+    CrudListPageExtraParserListener,
     CrudCreatePageExtraParserListener,
 
     BaseListener
@@ -98,14 +100,19 @@ class PartsCollectorListener(
         self.page.page_items = {}
         self.page.name = ctx.page_header().page_name().getText()
 
+        base_name = ctx.page_header().page_base()
+        if base_name:
+            base_name = base_name.getText()
+            self.page.extend_name = base_name[-2] == '~'
+            self.page.parent_name = base_name[:-2]
+
+        if self.page.parent_name and self.page.extend_name:
+            self.page.name = f'{self.page.parent_name}_{self.page.name}'
+
         self.collection_set.pages[self.page.name] = self.page
 
     def enterPage_alias_name(self, ctx: ZmeiLangParser.Page_alias_nameContext):
         self.page.defined_url_alias = ctx.getText()
-
-    def enterPage_base(self, ctx: ZmeiLangParser.Page_baseContext):
-        self.page.extend_name = ctx.getText()[-2] == '~'
-        self.page.parent_name = ctx.getText()[:-2]
 
     def enterPage_url(self, ctx: ZmeiLangParser.Page_urlContext):
         url = ctx.getText().strip()
@@ -153,9 +160,6 @@ class PartsCollectorListener(
         self.page.page_code = self._get_code(ctx.python_code()) + '\n'
 
     def exitPage(self, ctx: ZmeiLangParser.PageContext):
-        if self.page.parent_name and self.page.extend_name:
-            self.page.name = f'{self.page.parent_name}_{self.page.name}'
-
         self.page = None
 
 

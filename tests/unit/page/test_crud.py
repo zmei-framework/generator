@@ -45,9 +45,15 @@ def test_crud_same_descriptor():
     
             [boo: /lala]
             @crud(#foo)
+            @crud(#lala)
+            @crud(#foo)
             @crud(#boo)
             
             #boo
+            ------
+            a
+            
+            #lala
             ------
             a
             
@@ -136,8 +142,6 @@ def test_crud_subpage_parsing():
 
     boo = cs.pages['boo']
     boo_detail = cs.pages['boo_detail']
-
-    assert boo.crud_overrides['detail'] is boo_detail
 
     assert boo.page_items['zoo'].expression == '321'
 
@@ -266,7 +270,7 @@ def test_crud_subpages():
     assert isinstance(params, CrudParams)
     assert params.model == '#foo'
 
-    assert len(cs.pages) == 10
+    assert len(cs.pages) == 5
     print(boo.children)
 
     for page in boo.children:
@@ -300,7 +304,7 @@ def test_crud_subpages_skip():
 
     boo = cs.pages['boo']
 
-    assert len(cs.pages) == 6
+    assert len(cs.pages) == 3
 
     for page in boo.children:
         if page.name == 'boo_create':
@@ -764,9 +768,9 @@ def test_crud_success_page_main_create_only():
     for tname in ('create', 'delete', 'edit'):
         crud = cs.pages[f'boo_{tname}'].cruds['_'][f'crud_{tname}']
         if tname == 'create':
-            assert crud.next_page_expr == "return reverse_lazy('some_url', kwargs={'param1': self.object.pk})"
+            assert crud.next_page_expr == "reverse_lazy('some_url', kwargs={'param1': self.object.pk})"
         else:
-            assert crud.next_page_expr != "return reverse_lazy('some_url', kwargs={'param1': self.object.pk})"
+            assert crud.next_page_expr != "reverse_lazy('some_url', kwargs={'param1': self.object.pk})"
 
 
 @pytest.mark.parametrize("extra_type_name", [
@@ -856,30 +860,24 @@ def test_crud_descriptor(extra_type_name):
     assert crud.descriptor == "zoo"
 
 
-
-def test_crud_check_parents_for_extra_bases():
+def test_crud_list():
     cs = _(f"""
-        [root: /boo]
-        @crud(#foo)
 
-        [root->foo]
+        [boo: /mycrud]
+        @crud_list.zoo(#foo)
 
-
-        [foo->boo: /foo]
-        @crud(#foo)
-        
         #foo
-        -----
+        ------
         a
+        b
+        c
     """)
 
     assert cs.crud is True
 
-    root = cs.pages['root']
-    foo = cs.pages['foo']
     boo = cs.pages['boo']
+    crud = boo.cruds['zoo']['crud_list']
 
-    assert 'CrudMultiplexerView' in root.get_extra_bases()
-    assert 'CrudMultiplexerView' not in foo.get_extra_bases()
-    assert 'CrudMultiplexerView' not in boo.get_extra_bases()
+    assert crud.skip == ['detail', 'create', 'edit', 'delete']
+
 
