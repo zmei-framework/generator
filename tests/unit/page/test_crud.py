@@ -455,7 +455,12 @@ def test_crud_item_name(extra_type_name):
     assert cs.crud is True
 
     boo = cs.pages['boo']
-    crud = boo.cruds['_'][extra_type_name].params
+    crud = boo.cruds['_'][extra_type_name]
+    params = boo.cruds['_'][extra_type_name].params
+
+    assert params.item_name == "foo"
+
+    # crud.prepare_environment(params, boo)
 
     assert crud.item_name == "foo"
 

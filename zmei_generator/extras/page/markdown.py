@@ -6,22 +6,34 @@ from zmei_generator.parser.utils import BaseListener
 
 
 class MarkdownPageExtra(PageExtra):
-    # markdown
-    pass
+    def __init__(self, page) -> None:
+        super().__init__(page)
+
+        self.react_type = None
+        self.area = None
+        self.code = None
+
+    def post_process(self):
+        super().post_process()
+
+        self.page.set_html(self.code, area=self.area)
 
 
 class MarkdownPageExtraParserListener(BaseListener):
 
     def enterAn_markdown(self, ctx: ZmeiLangParser.An_markdownContext):
+        extra = MarkdownPageExtra(self.page)
         self.collection_set.extras.append(
-            MarkdownPageExtra(self.page)
+            extra
         )
 
-        area = 'content'
+        extra.area = 'content'
         if ctx.an_markdown_descriptor():
-            area = ctx.an_markdown_descriptor().id_or_kw().getText()
+            extra.area = ctx.an_markdown_descriptor().id_or_kw().getText()
 
         md = self._get_code(ctx)
         html = markdown.markdown(md)
 
-        self.page.set_html(html, area=area)
+        extra.code = html
+
+

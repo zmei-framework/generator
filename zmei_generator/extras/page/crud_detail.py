@@ -17,8 +17,15 @@ class CrudDetailPageExtra(BaseCrudSubpageExtra):
     def build_pages(self, base_page):
         base_page.add_crud(self.descriptor, self)
 
-        base_page.page_items[self.item_name] = PageExpression(
+        items = {}
+        items[self.item_name] = PageExpression(
             self.item_name, self.object_expr, base_page)
+
+        if self.append:
+            items.update(base_page.page_items)
+            base_page.page_items = items
+        else:
+            base_page.page_items.update(items)
 
         base_page.add_block(
             self.block_name,
@@ -28,7 +35,7 @@ class CrudDetailPageExtra(BaseCrudSubpageExtra):
                 'crud': self,
             }),
 
-            sorting=100
+            append=self.append
         )
 
 

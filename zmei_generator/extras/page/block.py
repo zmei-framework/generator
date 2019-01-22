@@ -13,6 +13,13 @@ class Block(object):
 
         self.sorting = 0
 
+    def render(self, area=None, index=None):
+        pass
+
+
+class BlockPlaceholder(Block):
+    pass
+
 
 class ReactPageBlock(Block):
     def __init__(self, page=None, source=None, area_name=None) -> None:

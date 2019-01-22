@@ -17,6 +17,7 @@ class RelationDef(FieldDef):
         self.ref_collection = None
         self.related_class = None
         self.related_app = None
+        self.on_delete = 'PROTECT'
 
     def post_process(self):
 
@@ -60,7 +61,7 @@ class RelationOneDef(RelationDef):
 
     def prepare_field_arguemnts(self, own_args=None):
         args = super().prepare_field_arguemnts(own_args)
-        args['on_delete'] = 'models.PROTECT'
+        args['on_delete'] = f'models.{self.on_delete}'
         return args
 
     def get_flutter_field(self):

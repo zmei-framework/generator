@@ -4,6 +4,7 @@ from functools import lru_cache
 from pprint import pprint
 from textwrap import dedent
 
+from zmei_generator.extras.page.block import BlockPlaceholder
 from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
 
 
@@ -114,7 +115,7 @@ class PageDef(object):
             libs.append('i18n')
         return set(libs)
 
-    def set_html(self, html, react=None, area='content'):
+    def set_html(self, html, react=None, area='content', sorting=0):
         from zmei_generator.extras.page.block import ReactPageBlock
 
         if react:
@@ -127,7 +128,7 @@ class PageDef(object):
                 self.react_client = True
                 self.react_server = True
 
-        self.add_block(area, ReactPageBlock(self, html, area_name=area))
+        self.add_block(area, ReactPageBlock(self, html, area_name=area), sorting=sorting)
 
         if self.react:
             if 'ZmeiDataViewMixin' in self.extra_bases:
@@ -144,13 +145,19 @@ class PageDef(object):
         self.forms[name] = definition
 
     def get_blocks(self):
-        return [(area, sorted(blocks, key=lambda block: block.sorting)) for area, blocks in self.blocks.items()]
+        return self.blocks.items()
 
-    def add_block(self, area, block, sorting=None):
-        block.sorting = sorting or 0
+    def add_block(self, area, block, append=False, sorting=0):
+        block.sorting = sorting
 
         if area not in self.blocks:
             self.blocks[area] = []
+
+        if append:
+            for index, _block in enumerate(self.blocks[area]):
+                if isinstance(_block, BlockPlaceholder):
+                    self.blocks[area].insert(index, block)
+                    return
 
         self.blocks[area].append(block)
 

@@ -41,10 +41,10 @@ class CrudCreatePageExtra(BaseCrudSubpageExtra):
         """)
 
     def get_model_fields(self):
-        return ', '.join([repr(x) for x in self.fields])
+        return '[' + ', '.join([repr(x) for x in self.fields]) + ']'
 
     def get_form_init(self):
-        return "request.POST if request.method == 'POST' else None"
+        return f"request.POST if request.method == 'POST' else None, instance={self.model_cls}({self.query})"
 
     def get_form_action(self):
         form_name = f'form{self.name_suffix}'
@@ -71,7 +71,8 @@ class CrudCreatePageExtra(BaseCrudSubpageExtra):
         # form name contains prefix in case of several forms are here
         form_name = f'form{self.name_suffix}'
 
-        base_page.page_items[form_name] = PageExpression(
+        items = {}
+        items[form_name] = PageExpression(
             form_name, f"{self.get_form_name()}({self.get_form_init()})", base_page)
 
         code = f"""
@@ -83,9 +84,6 @@ class CrudCreatePageExtra(BaseCrudSubpageExtra):
             code += f"""
                 raise RedirectAction({self.next_page_expr})
             """
-
-        base_page.page_code = base_page.page_code or ''
-        base_page.page_code += dedent(code)
 
         base_page.add_form(
             self.get_form_name(),
@@ -101,8 +99,18 @@ class CrudCreatePageExtra(BaseCrudSubpageExtra):
                 'form_name': form_name,
             }),
 
-            sorting=100
+            append=self.append
         )
+
+        base_page.page_code = base_page.page_code or ''
+
+        if self.append:
+            base_page.page_code = dedent(code) + base_page.page_code
+            items.update(base_page.page_items)
+            base_page.page_items = items
+        else:
+            base_page.page_code += dedent(code)
+            base_page.page_items.update(items)
 
     def get_template_name(self):
         return "theme/crud_create.html"

@@ -4,11 +4,8 @@ from zmei_generator.extras.page.auth import AuthPageExtraParserListener
 from zmei_generator.extras.page.error import ErrorPageExtraParserListener
 from zmei_generator.extras.page.flutter import FlutterPageExtraParserListener
 from zmei_generator.extras.page.get import GetPageExtraParserListener
-from zmei_generator.extras.page.html import HtmlPageExtraParserListener
-from zmei_generator.extras.page.markdown import MarkdownPageExtraParserListener
-from zmei_generator.extras.page.menu import MenuPageExtraParserListener
+
 from zmei_generator.extras.page.post import PostPageExtraParserListener
-from zmei_generator.extras.page.react import ReactPageExtraParserListener
 from zmei_generator.extras.page.stream import StreamPageExtraParserListener
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
@@ -18,13 +15,9 @@ class PageExtraListener(
     FlutterPageExtraParserListener,
     StreamPageExtraParserListener,
     GetPageExtraParserListener,
-    MenuPageExtraParserListener,
     PostPageExtraParserListener,
     ErrorPageExtraParserListener,
     AuthPageExtraParserListener,
-    MarkdownPageExtraParserListener,
-    ReactPageExtraParserListener,
-    HtmlPageExtraParserListener,
 
     # PageCrudOverrideExtraListener,
     BaseListener
@@ -47,9 +40,6 @@ class PageExtraListener(
         name = ctx.getText()
         if self.parent and self.extend_name:
             name = f'{self.parent}_{name}'
-
-        print(name)
-        print(self.collection_set.pages.keys())
         self.page = self.collection_set.pages[name]
 
     def enterPage_base(self, ctx: ZmeiLangParser.Page_baseContext):
@@ -96,7 +86,6 @@ class PageExtraListener(
 
         crud_page_name = f"{page.name}{name_suffix}_{crud_name}"
 
-        print(page.name, crud_page_name, page.collection_set.pages.keys())
         self.page = page.collection_set.pages[crud_page_name]
 
     def exitAn_crud_page_override(self, ctx: ZmeiLangParser.An_crud_page_overrideContext):

@@ -34,6 +34,12 @@ from zmei_generator.extras.page.crud_detail import CrudDetailPageExtraParserList
 from zmei_generator.extras.page.crud_edit import CrudEditPageExtraParserListener
 from zmei_generator.extras.page.crud_parser import CrudPageExtraParserListener
 
+from zmei_generator.extras.page.html import HtmlPageExtraParserListener
+from zmei_generator.extras.page.markdown import MarkdownPageExtraParserListener
+from zmei_generator.extras.page.menu import MenuPageExtraParserListener
+from zmei_generator.extras.page.placeholder import PlaceholderPageExtraParserListener
+from zmei_generator.extras.page.react import ReactPageExtraParserListener
+
 
 class PartsCollectorListener(
     GitlabCsExtraParserListener,
@@ -43,6 +49,13 @@ class PartsCollectorListener(
     CeleryCsExtraParserListener,
     LangsCsExtraParserListener,
     FilerCsExtraParserListener,
+
+    MenuPageExtraParserListener,
+    MarkdownPageExtraParserListener,
+    PlaceholderPageExtraParserListener,
+    ReactPageExtraParserListener,
+    HtmlPageExtraParserListener,
+
 
     CrudPageExtraParserListener,
     CrudDetailPageExtraParserListener,
@@ -453,6 +466,12 @@ class PartsCollectorListener(
             self.field = RelationOne2OneDef(self.model, self.field_config)
         if type_name == 'many':
             self.field = RelationManyDef(self.model, self.field_config)
+
+    def enterField_relation_cascade_marker(self, ctx: ZmeiLangParser.Field_relation_cascade_markerContext):
+        if ctx.getText() == '!':
+            self.field.on_delete = 'CASCADE'
+        elif ctx.getText() == '~':
+            self.field.on_delete = 'SET_NULL'
 
     def enterField_relation_target_class(self, ctx: ZmeiLangParser.Field_relation_target_classContext):
         self.field.related_class = ctx.getText()

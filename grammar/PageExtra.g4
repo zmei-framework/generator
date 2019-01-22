@@ -38,4 +38,9 @@ page_annotation:
     |an_error
     |an_auth
     |an_markdown
+    |page_priority_marker
     |NL;
+
+page_priority_marker:
+    AN_PRIORITY
+    ;

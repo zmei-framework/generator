@@ -971,6 +971,15 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#field_relation_cascade_marker.
+    def enterField_relation_cascade_marker(self, ctx:ZmeiLangParser.Field_relation_cascade_markerContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#field_relation_cascade_marker.
+    def exitField_relation_cascade_marker(self, ctx:ZmeiLangParser.Field_relation_cascade_markerContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#field_relation_target_ref.
     def enterField_relation_target_ref(self, ctx:ZmeiLangParser.Field_relation_target_refContext):
         pass
@@ -1778,6 +1787,15 @@ class ZmeiLangParserListener(ParseTreeListener):
 
     # Exit a parse tree produced by ZmeiLangParser#page_annotation.
     def exitPage_annotation(self, ctx:ZmeiLangParser.Page_annotationContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#page_priority_marker.
+    def enterPage_priority_marker(self, ctx:ZmeiLangParser.Page_priority_markerContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#page_priority_marker.
+    def exitPage_priority_marker(self, ctx:ZmeiLangParser.Page_priority_markerContext):
         pass
 
 

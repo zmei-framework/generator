@@ -109,3 +109,35 @@ def test_relation_protected_can_be_overriden():
     """)
 
     assert 'on_delete=models.CASCADE' in cs.collections['boo'].fields['a'].get_model_field()[1]
+
+
+def test_relation_behaviour():
+    cs = _("""
+
+        #boo
+        ----------
+        a: one(!#zoo)
+
+        #zoo
+        ---------
+        lala
+
+    """)
+
+    assert 'on_delete=models.CASCADE' in cs.collections['boo'].fields['a'].get_model_field()[1]
+
+
+def test_relation_behaviour_null():
+    cs = _("""
+
+        #boo
+        ----------
+        a: one(~#zoo)
+
+        #zoo
+        ---------
+        lala
+
+    """)
+
+    assert 'on_delete=models.SET_NULL' in cs.collections['boo'].fields['a'].get_model_field()[1]

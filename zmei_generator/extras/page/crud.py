@@ -195,7 +195,7 @@ class CrudPageExtra(PageExtra):
             self.pk_param = crud.pk_param
 
         self.pk_param = f'{self.name_prefix}pk'
-        self.item_name = f"{self.name_prefix}item"
+        self.item_name = crud.item_name or f"{self.name_prefix}item"
         self.items_name = f"{self.item_name}_list"
 
         # formatted_query
@@ -282,9 +282,7 @@ class CrudPageExtra(PageExtra):
                 InlineTemplatePageBlock(f"theme/crud_list.html", {
                     'page': base_page,
                     'crud': self,
-                }),
-
-                sorting=100
+                })
             )
 
         for crud_page in self.crud_pages:
@@ -292,8 +290,10 @@ class CrudPageExtra(PageExtra):
             crud_page_name = f"{base_page.name}{self.name_suffix}_{crud_page}"
 
             if crud_page_name in base_page.collection_set.pages:
+                append = True
                 new_page = base_page.collection_set.pages[crud_page_name]
             else:
+                append = False
                 new_page = PageDef(self.page.collection_set)
                 new_page.parent_name = base_page.name
                 new_page.name = crud_page_name
@@ -303,6 +303,9 @@ class CrudPageExtra(PageExtra):
                 new_page.set_uri(f"./{self.url_prefix}{crud_page}")
             else:
                 new_page.set_uri(f"./{self.url_prefix}<{self.pk_param}>/{crud_page}")
+
+            # after we have assigned uri, we can remove override flag
+            # new_page.override = False
 
             new_page.template_libs.append('i18n')
 
@@ -315,7 +318,7 @@ class CrudPageExtra(PageExtra):
                         crud_page] = f"'{base_page.collection_set.app_name}.{base_page.name}', {link_extra_params}"
 
             crud = crud_cls_by_name(crud_page)(new_page, params=params, descriptor=self.descriptor,
-                                               parent_crud=self, parent_base_page=base_page)
+                                               parent_crud=self, parent_base_page=base_page, append=append)
 
             base_page.collection_set.extras.append(crud)
 
@@ -337,8 +340,9 @@ def crud_cls_by_name(name):
 class BaseCrudSubpageExtra(CrudPageExtra):
     crud_page = None
 
-    def __init__(self, page, params=None, descriptor=None, parent_crud=None, parent_base_page=None):
+    def __init__(self, page, params=None, descriptor=None, parent_crud=None, parent_base_page=None, append=False):
         super().__init__(page, params, descriptor)
+        self.append = append
         self.parent_crud = parent_crud
         self.parent_base_page = parent_base_page
 
