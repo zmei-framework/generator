@@ -1,6 +1,7 @@
 <div>
+    {% if crud.header %}
     <h2>{{ crud.model_name_plural }}</h2>
-
+    {% endif %}
     {{ '{% if ' + crud.items_name + ' %}' }}
     <table>
         <thead>

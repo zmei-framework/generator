@@ -1,6 +1,7 @@
 from textwrap import dedent
 
 import pytest
+from zmei_generator.extras.page.crud_list import CrudListPageExtra
 
 from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
 from zmei_generator.extras.page.crud import CrudParams, CrudPageExtra
@@ -19,6 +20,7 @@ def _(code):
 
 @pytest.mark.parametrize("extra_type_name, extra_cls", [
     ("crud", CrudPageExtra),
+    ("crud_list", CrudListPageExtra),
     ("crud_create", CrudCreatePageExtra),
     ("crud_delete", CrudDeletePageExtra),
     ("crud_detail", CrudDetailPageExtra),
@@ -185,6 +187,7 @@ def test_crud_subpage_subcrud():
 
 @pytest.mark.parametrize("extra_type_name, extra_cls", [
     ("crud", CrudPageExtra),
+    ("crud_list", CrudListPageExtra),
     ("crud_create", CrudCreatePageExtra),
     ("crud_delete", CrudDeletePageExtra),
     ("crud_detail", CrudDetailPageExtra),
@@ -218,6 +221,7 @@ def test_crud_model(extra_type_name, extra_cls):
 
 @pytest.mark.parametrize("extra_type_name", [
     "crud",
+    "crud_list",
     "crud_create",
     "crud_delete",
     "crud_detail",
@@ -317,6 +321,7 @@ def test_crud_subpages_skip():
 
 @pytest.mark.parametrize("extra_type_name", [
     "crud",
+    "crud_list",
     "crud_create",
     "crud_delete",
     "crud_detail",
@@ -346,6 +351,7 @@ def test_crud_model_fields(extra_type_name):
 
 @pytest.mark.parametrize("extra_type_name", [
     "crud",
+    "crud_list",
     "crud_create",
     "crud_delete",
     "crud_detail",
@@ -376,6 +382,7 @@ def test_crud_model_fields(extra_type_name):
 
 @pytest.mark.parametrize("extra_type_name", [
     "crud",
+    "crud_list",
     "crud_create",
     "crud_delete",
     "crud_detail",
@@ -406,6 +413,7 @@ def test_crud_model_list_fields(extra_type_name):
 
 @pytest.mark.parametrize("extra_type_name", [
     "crud",
+    "crud_list",
     "crud_create",
     "crud_delete",
     "crud_detail",
@@ -434,6 +442,7 @@ def test_crud_pk_param(extra_type_name):
 
 @pytest.mark.parametrize("extra_type_name", [
     "crud",
+    "crud_list",
     "crud_create",
     "crud_delete",
     "crud_detail",
@@ -467,6 +476,7 @@ def test_crud_item_name(extra_type_name):
 
 @pytest.mark.parametrize("extra_type_name", [
     "crud",
+    "crud_list",
     "crud_create",
     "crud_delete",
     "crud_detail",
@@ -495,6 +505,7 @@ def test_crud_block(extra_type_name):
 
 @pytest.mark.parametrize("extra_type_name", [
     "crud",
+    "crud_list",
     "crud_create",
     "crud_delete",
     "crud_detail",
@@ -525,6 +536,7 @@ def test_crud_object_expr1(extra_type_name):
 
 @pytest.mark.parametrize("extra_type_name", [
     "crud",
+    "crud_list",
     "crud_create",
     "crud_delete",
     "crud_detail",
@@ -555,6 +567,127 @@ def test_crud_object_expr2(extra_type_name):
 
 @pytest.mark.parametrize("extra_type_name", [
     "crud",
+    "crud_list",
+    "crud_create",
+    "crud_delete",
+    "crud_detail",
+    "crud_edit",
+])
+def test_header(extra_type_name):
+    cs = _(f"""
+
+        [boo: /mycrud]
+        @{extra_type_name}(#foo, 
+            header: false
+        )
+
+        #foo
+        ------
+        a
+        b
+        c
+    """)
+
+    assert cs.crud is True
+
+    boo = cs.pages['boo']
+    crud = boo.cruds['_'][extra_type_name].params
+
+    assert crud.header is False
+
+
+@pytest.mark.parametrize("extra_type_name", [
+    "crud",
+    "crud_list",
+    "crud_create",
+    "crud_delete",
+    "crud_detail",
+    "crud_edit",
+])
+def test_header_default(extra_type_name):
+    cs = _(f"""
+
+        [boo: /mycrud]
+        @{extra_type_name}(#foo)
+
+        #foo
+        ------
+        a
+        b
+        c
+    """)
+
+    assert cs.crud is True
+
+    boo = cs.pages['boo']
+    crud = boo.cruds['_'][extra_type_name].params
+
+    assert crud.header is True
+
+
+@pytest.mark.parametrize("extra_type_name", [
+    "crud",
+    "crud_list",
+    "crud_create",
+    "crud_delete",
+    "crud_detail",
+    "crud_edit",
+])
+def test_list_type(extra_type_name):
+    cs = _(f"""
+
+        [boo: /mycrud]
+        @{extra_type_name}(#foo, 
+            list: stacked
+        )
+
+        #foo
+        ------
+        a
+        b
+        c
+    """)
+
+    assert cs.crud is True
+
+    boo = cs.pages['boo']
+    crud = boo.cruds['_'][extra_type_name].params
+
+    assert crud.list_type == 'stacked'
+
+
+@pytest.mark.parametrize("extra_type_name", [
+    "crud",
+    "crud_list",
+    "crud_create",
+    "crud_delete",
+    "crud_detail",
+    "crud_edit",
+])
+def test_list_type_default(extra_type_name):
+    cs = _(f"""
+
+        [boo: /mycrud]
+        @{extra_type_name}(#foo)
+
+        #foo
+        ------
+        a
+        b
+        c
+    """)
+
+    assert cs.crud is True
+
+    boo = cs.pages['boo']
+    crud = boo.cruds['_'][extra_type_name].params
+
+    assert crud.list_type == 'stacked'
+
+
+@pytest.mark.parametrize("extra_type_name", [
+    "crud",
+    "crud_list",
     "crud_create",
     "crud_delete",
     "crud_detail",
@@ -585,6 +718,7 @@ def test_crud_can_edit1(extra_type_name):
 
 @pytest.mark.parametrize("extra_type_name", [
     "crud",
+    "crud_list",
     "crud_create",
     "crud_delete",
     "crud_detail",
@@ -615,6 +749,7 @@ def test_crud_can_edit2(extra_type_name):
 
 @pytest.mark.parametrize("extra_type_name", [
     "crud",
+    "crud_list",
     "crud_create",
     "crud_delete",
     "crud_detail",
@@ -645,6 +780,7 @@ def test_crud_url_prefix(extra_type_name):
 
 @pytest.mark.parametrize("extra_type_name", [
     "crud",
+    "crud_list",
     "crud_create",
     "crud_delete",
     "crud_detail",
@@ -675,6 +811,7 @@ def test_crud_link_suffix(extra_type_name):
 
 @pytest.mark.parametrize("extra_type_name", [
     "crud",
+    "crud_list",
     "crud_create",
     "crud_delete",
     "crud_detail",
@@ -704,6 +841,7 @@ def test_crud_filter(extra_type_name):
 
 @pytest.mark.parametrize("extra_type_name", [
     "crud_create",
+    "crud_list",
     "crud_delete",
     "crud_detail",
     "crud_edit",
@@ -780,6 +918,7 @@ def test_crud_success_page_main_create_only():
 
 @pytest.mark.parametrize("extra_type_name", [
     "crud",
+    "crud_list",
     "crud_create",
     "crud_delete",
     "crud_detail",
@@ -809,6 +948,7 @@ def test_crud_success_url_dq(extra_type_name):
 
 @pytest.mark.parametrize("extra_type_name", [
     "crud",
+    "crud_list",
     "crud_create",
     "crud_delete",
     "crud_detail",
@@ -839,6 +979,7 @@ def test_crud_success_url_sq(extra_type_name):
 
 @pytest.mark.parametrize("extra_type_name", [
     "crud",
+    "crud_list",
     "crud_create",
     "crud_delete",
     "crud_detail",

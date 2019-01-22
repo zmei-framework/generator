@@ -2105,6 +2105,42 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#an_crud_list_type.
+    def enterAn_crud_list_type(self, ctx:ZmeiLangParser.An_crud_list_typeContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_crud_list_type.
+    def exitAn_crud_list_type(self, ctx:ZmeiLangParser.An_crud_list_typeContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_crud_list_type_var.
+    def enterAn_crud_list_type_var(self, ctx:ZmeiLangParser.An_crud_list_type_varContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_crud_list_type_var.
+    def exitAn_crud_list_type_var(self, ctx:ZmeiLangParser.An_crud_list_type_varContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_crud_header.
+    def enterAn_crud_header(self, ctx:ZmeiLangParser.An_crud_headerContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_crud_header.
+    def exitAn_crud_header(self, ctx:ZmeiLangParser.An_crud_headerContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_crud_header_enabled.
+    def enterAn_crud_header_enabled(self, ctx:ZmeiLangParser.An_crud_header_enabledContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_crud_header_enabled.
+    def exitAn_crud_header_enabled(self, ctx:ZmeiLangParser.An_crud_header_enabledContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#an_crud_fields_expr.
     def enterAn_crud_fields_expr(self, ctx:ZmeiLangParser.An_crud_fields_exprContext):
         pass

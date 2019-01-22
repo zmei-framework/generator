@@ -26,6 +26,8 @@ class CrudParams(object):
         self.query = None
         self.fields = None
         self.list_fields = None
+        self.list_type = 'stacked'
+        self.header = True
         self.skip = None
         self.block_name = None
         self.theme = None
@@ -46,7 +48,11 @@ class CrudPageExtra(PageExtra):
 
     crud_page = None
 
+    list_type = None
+    header = None
     link_extra = None
+    model_name = None
+    model_name_plural = None
     link_extra_params = None
     name_prefix = None
     name_suffix = None
@@ -177,6 +183,11 @@ class CrudPageExtra(PageExtra):
         if crud.theme:
             self.theme = crud.theme
 
+        if crud.list_type:
+            self.list_type = crud.list_type
+
+        self.header = crud.header
+
         # url prefix
         if crud.url_prefix:
             self.url_prefix = crud.url_prefix
@@ -279,7 +290,7 @@ class CrudPageExtra(PageExtra):
             base_page.add_block(
                 self.block_name,
 
-                InlineTemplatePageBlock(f"theme/crud_list.html", {
+                InlineTemplatePageBlock(f"theme/crud_list_{self.list_type}.html", {
                     'page': base_page,
                     'crud': self,
                 })

@@ -110,6 +110,12 @@ class CrudBasePageExtraParserListener(BaseListener):
     def enterAn_crud_can_edit(self, ctx: ZmeiLangParser.An_crud_can_editContext):
         self.crud.params.can_edit = self._get_code(ctx)
 
+    def exitAn_crud_list_type_var(self, ctx: ZmeiLangParser.An_crud_list_type_varContext):
+        self.crud.params.list_type = ctx.getText()
+
+    def exitAn_crud_header_enabled(self, ctx:ZmeiLangParser.An_crud_header_enabledContext):
+        self.crud.params.header = ctx.getText() == 'true'
+
     def enterAn_crud_target_filter(self, ctx: ZmeiLangParser.An_crud_target_filterContext):
         self.crud.params.query = self._get_code(ctx)
 

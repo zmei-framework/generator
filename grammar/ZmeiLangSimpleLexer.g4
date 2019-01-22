@@ -48,6 +48,7 @@ WRITE_MODE: 'r' | 'rw' | 'w';
 BOOL: 'true' | 'false';
 
 KW_THEME: 'theme';
+KW_HEADER: 'header';
 KW_SERVICES: 'services';
 KW_SELENIUM_PYTEST: 'selenium_pytest';
 KW_CHILD: 'child';

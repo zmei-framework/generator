@@ -31,6 +31,8 @@ an_crud_params:
         |an_crud_can_edit
         |an_crud_url_prefix
         |an_crud_link_suffix
+        |an_crud_list_type
+        |an_crud_header
         |NL
         |COMA
     )*
@@ -159,6 +161,18 @@ an_crud_view_name:
 
 an_crud_fields:
     KW_FIELDS COLON an_crud_fields_expr;
+
+an_crud_list_type:
+    KW_LIST COLON an_crud_list_type_var;
+
+an_crud_list_type_var:
+    KW_INLINE_TYPE;
+
+an_crud_header:
+    KW_HEADER COLON an_crud_header_enabled;
+
+an_crud_header_enabled:
+    BOOL;
 
 an_crud_fields_expr: an_crud_field (COMA an_crud_field)*;
 an_crud_field: an_crud_field_spec an_crud_field_filter?;

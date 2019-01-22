@@ -2,8 +2,9 @@
 {{ '<a href="' + crud.format_link('parent') + '">&laquo; {% trans "Back to the list" %}</a>' }}
 {% endif %}
 <div>
+    {% if crud.header %}
     <h2>{{ crud.model_name }} "{{ '{{ ' + crud.item_name + ' }}' }}"</h2>
-
+    {% endif %}
     <table>
         <tbody>
             {% for field_name in crud.list_fields %}
