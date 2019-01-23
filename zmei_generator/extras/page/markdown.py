@@ -1,6 +1,7 @@
 import markdown
 
 from zmei_generator.config.extras import PageExtra
+from zmei_generator.extras.page.block import InlineTemplatePageBlock
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
@@ -16,7 +17,12 @@ class MarkdownPageExtra(PageExtra):
     def post_process(self):
         super().post_process()
 
-        self.page.set_html(self.code, area=self.area)
+        self.page.add_block(
+            self.area,
+            InlineTemplatePageBlock(f"theme/content.html", {
+                'content': self.code
+            })
+        )
 
 
 class MarkdownPageExtraParserListener(BaseListener):

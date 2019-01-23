@@ -1,6 +1,7 @@
 lexer grammar ZmeiLangSimpleLexer;
 
 // Annotation types
+AN_THEME: '@theme';
 AN_PRIORITY: '@@';
 AN_GITLAB: '@gitlab';
 AN_DOCKER: '@docker';
@@ -48,6 +49,7 @@ WRITE_MODE: 'r' | 'rw' | 'w';
 BOOL: 'true' | 'false';
 
 KW_THEME: 'theme';
+KW_INSTALL: 'install';
 KW_HEADER: 'header';
 KW_SERVICES: 'services';
 KW_SELENIUM_PYTEST: 'selenium_pytest';

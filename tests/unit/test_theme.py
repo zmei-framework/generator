@@ -1,9 +1,7 @@
 from textwrap import dedent
 
 import pytest
-
 from zmei_generator.extras.collection_set.suit import SuitCsExtra
-from zmei_generator.extras.model.admin import AdminExtra, AdminInlineConfig
 from zmei_generator.parser.errors import TabsSuitRequiredValidationError
 from zmei_generator.parser.parser import ZmeiParser
 
@@ -14,31 +12,29 @@ def _(code):
     return parser.populate_collection_set('example')
 
 
-def test_suit():
+def test_theme_default():
     cs = _("""
-        @suit
+        
     """)
 
-    assert 'django-suit' in cs.get_required_deps()
-    assert 'suit' in cs.get_required_apps()
-    assert isinstance(cs.suit, SuitCsExtra)
+    assert cs.theme is None
+    assert cs.theme_install is False
 
 
-def test_app_name():
+def test_theme_change():
     cs = _("""
-        @suit("hoho!")
+        @theme(bluma)
     """)
 
-    assert cs.suit.app_name == 'hoho!'
+    assert cs.theme == 'bluma'
+    assert cs.theme_install is False
 
 
-def test_admin_tabs_no_suit():
+def test_theme_change_install():
+    cs = _("""
+        @theme(bluma, install=true)
+    """)
 
-    with pytest.raises(TabsSuitRequiredValidationError):
-        _("""
-            #boo
-            -----
-            a
-    
-            @admin(tabs: lala(a))
-        """)
+    assert cs.theme == 'bluma'
+    assert cs.theme_install is True
+

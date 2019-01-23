@@ -1,13 +1,12 @@
 {% if parent.defined_template_name -%}
 {{ "{% extends '" }}{{ parent.defined_template_name }}{{ "' %}" }}
 {%- else -%}
-{{ "{% extends '" + app_name + "/base.html' %}" }}
+{{ "{% extends '" + app_name + "/_base.html' %}" }}
 {%- endif %}
 {%- if page.get_template_libs() %}
 
 {{ "{% load " }}{{ ' '.join(page.get_template_libs()) }}{{ " %}" }}
 {%- endif %}
-
 {% for area, blocks in page.get_blocks() -%}
 {{ "{% block " }}{{ area }}{{ " %}" }}
 {% for block in blocks -%}

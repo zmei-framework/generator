@@ -1,20 +1,62 @@
+{% raw %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>New app</title>
-
-    {{ '{% block css %}{% endblock %}' }}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hello Bulma!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    {% block css %}{% endblock %}
 </head>
 <body>
 
-{{ '{% block menu_main %}{% endblock %}' }}
+{% block body %}
+{% if menu.navbar %}
+<nav class="navbar is-link" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="https://bulma.io">
+            <img src="https://bulma.io/images/bulma-logo.png"
+                 alt="Bulma: Free, open source, & modern CSS framework based on Flexbox" width="112" height="28">
+        </a>
 
-{{ '{% block content %}' }}
-Nothing here, yet!
-{{ '{% endblock %}' }}
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+    </div>
+    <div class="navbar-menu">
+        {% block menu_navbar %}{% endblock %}
+    </div>
+</nav>
+{% endif %}
+<section class="section">
+{% if menu.left %}
+<div class="columns">
+    <div class="column is-3">
+        <aside class="menu">
+            {% block menu_left %}{% endblock %}
+        </aside>
+    </div>
+    <div class="column is-9">
+{% endif %}
+        {% block content %}
+        <h1 class="title">
+            Hello World
+        </h1>
+        <p class="subtitle">
+            This is absolutely empty site!
+        </p>
+        {% endblock %}
+{% if menu.left %}
+    </div>
+</div>
+{% endif %}
+</section>
+{% endblock %}
 
-{{ '{% block js %}{% endblock %}' }}
-
+{% block js %}{% endblock %}
 </body>
 </html>
+{% endraw %}

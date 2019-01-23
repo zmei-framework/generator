@@ -1,33 +1,48 @@
 <div>
     {% if crud.header %}
-    <h2>{{ crud.model_name_plural }}</h2>
+    <h3 class="title is-3">
+        {{ crud.model_name_plural }}
+
+        {%- if crud.links.create %}
+        {{ '{% if ' + crud.can_edit_item + ' %}' }}
+        <a href="{{ crud.format_link('create') }}">
+            <span class="icon has-text-info">
+              <i class="fas fa-plus"></i>
+            </span>
+        </a>
+        {{ '{% endif %}' }}
+        {% endif %}
+    </h3>
     {% endif %}
     {{ '{% if ' + crud.items_name + ' %}' }}
         {{ '{% for ' + crud.item_name + ' in ' + crud.items_name + ' %}' }}
-        <hr>
-        <h3>
-            {% if crud.links.detail %}{{ '<a href="' + crud.format_link('detail') + '">' }}{% endif %}
-            {{ '{{ ' + crud.item_name + ' }}' }}
-            {% if crud.links.detail %}{{ '</a>' }}{% endif %}
-        </h3>
 
-        <table>
-            <tbody>
-                {% for field_name in crud.list_fields %}
-                <tr>
-                    <td>{{ field_name }}</td>
-                    <td>{{ '{{ ' + crud.item_name + '.' + field_name + ' }}' }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {{ '{% if ' + crud.can_edit_item + ' %}' }}
+        <div class="box">
+            <h3 class="title is-3">
+                {% if crud.links.detail %}{{ '<a href="' + crud.format_link('detail') + '">' }}{% endif %}
+                {{ '{{ ' + crud.item_name + ' }}' }}
+                {% if crud.links.detail %}{{ '</a>' }}{% endif %}
 
-        {% if crud.links.edit %}{{ '<a href="' + crud.format_link('edit') + '">[{% trans "Edit" %}]</a>' }} |{% endif %}
-        {% if crud.links.delete %}{{ '<a href="' + crud.format_link('delete') + '">[X]</a>' }}{% endif %}
-        {{ '{% endif %}' }}
+            </h3>
+
+            <table class="table is-bordered">
+                <tbody>
+                    {% for field_name in crud.list_fields %}
+                    <tr>
+                        <td>{{ field_name }}</td>
+                        <td>{{ '{{ ' + crud.item_name + '.' + field_name + ' }}' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {{ '{% if ' + crud.can_edit_item + ' %}' }}
+
+            {% if crud.links.edit %}{{ '<a href="' + crud.format_link('edit') + '">[{% trans "Edit" %}]</a>' }} |{% endif %}
+            {% if crud.links.delete %}{{ '<a href="' + crud.format_link('delete') + '">[X]</a>' }}{% endif %}
+            {{ '{% endif %}' }}
+        </div>
         {{ '{% endfor %}' }}
-        <hr>
+
     {{ '{% else %}' }}
     {{ '{% blocktrans with name="' + crud.model_name_plural + '" %}No {{ name }}{% endblocktrans %}' }}
     {{ '{% endif %}' }}

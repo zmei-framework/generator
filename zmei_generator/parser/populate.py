@@ -11,6 +11,7 @@ from zmei_generator.extras.collection_set.filer import FilerCsExtraParserListene
 from zmei_generator.extras.collection_set.gitlab import GitlabCsExtraParserListener
 from zmei_generator.extras.collection_set.langs import LangsCsExtraParserListener
 from zmei_generator.extras.collection_set.suit import SuitCsExtra
+from zmei_generator.extras.collection_set.theme import ThemeCsExtraParserListener
 from zmei_generator.extras.model.admin import AdminExtra, AdminInlineConfig
 from zmei_generator.extras.page.crud_list import CrudListPageExtraParserListener
 from zmei_generator.fields.bool import BooleanFieldDef
@@ -42,6 +43,7 @@ from zmei_generator.extras.page.react import ReactPageExtraParserListener
 
 
 class PartsCollectorListener(
+    ThemeCsExtraParserListener,
     GitlabCsExtraParserListener,
     DockerCsExtraParserListener,
     FileCsExtraParserListener,

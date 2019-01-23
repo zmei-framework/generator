@@ -486,10 +486,14 @@ def wait_for_file_changes(paths, initial=True, watch=True):
         initial_hash = files_hash(paths)
 
         while True:
-            sleep(3)
-            new_hash = files_hash(paths)
-            if initial_hash != new_hash:
-                initial_hash = new_hash
+            try:
+                sleep(3)
+                new_hash = files_hash(paths)
+                if initial_hash != new_hash:
+                    initial_hash = new_hash
+                    yield
+            except KeyboardInterrupt:
+                print('Reloading ... (hit ctrl+c twice to stop process)')
                 yield
 
 

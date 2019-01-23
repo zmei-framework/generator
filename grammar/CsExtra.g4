@@ -10,11 +10,13 @@ import
     CsExtraFile,
     CsExtraDocker,
     CsExtraGitlab,
+    CsExtraTheme,
     CsExtraSuit
     ;
 
 cs_annotation:
      an_suit
+    |an_theme
     |an_gitlab
     |an_docker
     |an_file

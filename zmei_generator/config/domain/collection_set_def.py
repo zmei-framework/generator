@@ -15,6 +15,9 @@ class CollectionSetDef(object):
         self.app_name = app_name
         self.translatable = False
 
+        self.theme = None
+        self.theme_install = False
+
         self.api = False
         self.rest = False
         self.docker = False

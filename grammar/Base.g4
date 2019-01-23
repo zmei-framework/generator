@@ -9,6 +9,7 @@ id_or_kw: ID
    |BOOL
    |WRITE_MODE
    |KW_THEME
+   |KW_INSTALL
    |KW_HEADER
    |KW_SERVICES
    |KW_SELENIUM_PYTEST

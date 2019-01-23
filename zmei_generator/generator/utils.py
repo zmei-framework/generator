@@ -3,7 +3,7 @@ import re
 
 import autopep8
 import jinja2
-from jinja2 import Environment, FileSystemBytecodeCache
+from jinja2 import Environment, FileSystemBytecodeCache, ChoiceLoader, FileSystemLoader
 from jinja2 import PackageLoader
 from termcolor import colored
 
@@ -65,7 +65,14 @@ def include_block(block):
     return template.render(**block.fields)
 
 
-loader = PackageLoader('zmei_generator', 'templates')
+class ThemeConfig(object):
+    theme = 'default'
+
+
+loader = ChoiceLoader([
+    FileSystemLoader('col/templates'),
+    PackageLoader('zmei_generator', 'templates')
+])
 
 block_env = Environment(loader=loader,
                         variable_start_string='<{',
@@ -117,7 +124,31 @@ def generate_file(target_path, filename, template_name, context=None, raw=False)
 def render_template(template_name, context=None):
     context = context or {}
 
-    template = env.get_template(template_name)
+    if template_name.startswith('theme/'):
+        template_name = f'theme/{ThemeConfig.theme}/{template_name[6:]}'
+
+    if '[' in template_name:
+        match = re.match('^([^\[]+)\[([^\]]+)\](.*)$', template_name)
+        if match:
+            names = [
+                ''.join([match.group(1), match.group(2), match.group(3)]),
+                ''.join([match.group(1), match.group(3)]),
+            ]
+        else:
+            names = [template_name]
+
+        template = None
+        while len(names):
+            try:
+                tpl = names.pop()
+                template = env.get_template(tpl)
+            except jinja2.exceptions.TemplateNotFound:
+                pass
+
+        if not template:
+            raise jinja2.exceptions.TemplateNotFound(f'Template not found: {template_name}')
+    else:
+        template = env.get_template(template_name)
 
     return template.render(**context)
 

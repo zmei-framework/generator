@@ -28,7 +28,7 @@ def test_page_markdown():
     boo = cs.pages['boo']
 
     assert boo.name == 'boo'
-    assert boo.blocks['content'][0].source == "<h1>test</h1>"
+    assert boo.blocks['content'][0].context['content'] == "<h1>test</h1>"
     assert boo.react is False
     assert boo.extra_bases == ['ZmeiDataViewMixin']
 
@@ -50,6 +50,6 @@ def test_page_markdown_area():
     boo = cs.pages['boo']
 
     assert boo.name == 'boo'
-    assert boo.blocks['foo'][0].source == "<h1>test</h1>"
+    assert boo.blocks['foo'][0].context['content'] == "<h1>test</h1>"
     assert boo.react is False
     assert boo.extra_bases == ['ZmeiDataViewMixin']

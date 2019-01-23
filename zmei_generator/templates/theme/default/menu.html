@@ -1,7 +1,7 @@
 <ul>
-    {% for ref, item in menu.items.items %}
+    {{ '{% for ref, item in menu.' + menu_descriptor + '.items.items %}' }}
     <li>
-        <a class="{% if item.active %}active{% endif %}" href="{{ item.link }}">{{ item.label }}</a>
+        {{ '<a class="{% if item.active %}active{% endif %}" href="{{ item.link }}">{{ item.label }}</a>' }}
     </li>
-    {% endfor %}
+    {{ '{% endfor %}' }}
 </ul>

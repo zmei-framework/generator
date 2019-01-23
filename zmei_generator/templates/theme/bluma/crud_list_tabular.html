@@ -1,9 +1,9 @@
-<div>
+<div class="box">
     {% if crud.header %}
-    <h2>{{ crud.model_name_plural }}</h2>
+    <h3 class="title is-3">{{ crud.model_name_plural }}</h3>
     {% endif %}
     {{ '{% if ' + crud.items_name + ' %}' }}
-    <table>
+    <table class="table is-striped is-fullwidth">
         <thead>
         <tr>{% for field_name in crud.list_fields %}
             <th>{{ field_name }}</th>{% endfor %}

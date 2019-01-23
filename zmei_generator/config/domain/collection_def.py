@@ -221,6 +221,10 @@ class CollectionDef(object):
         return [field for field in self.fields.values() if field.type_name not in ['ref']]
 
     @property
+    def own_fields_non_expr(self):
+        return [field for field in self.fields.values() if field.type_name not in ['ref', 'expr']]
+
+    @property
     def expression_fields(self):
         admin_list = [x.slug for x in self.admin_list]
         return [field for field in self.fields.values() if field.type_name == 'expr' and field.slug not in admin_list]

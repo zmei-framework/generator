@@ -3,7 +3,7 @@ import re
 from zmei_generator.config.domain.collection_set_def import CollectionSetDef
 from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
 from zmei_generator.config.extras import PageExtra
-from zmei_generator.extras.page.block import ThemeFileIncludePageBlock
+from zmei_generator.extras.page.block import ThemeFileIncludePageBlock, InlineTemplatePageBlock
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
@@ -70,10 +70,9 @@ class MenuPageExtra(PageExtra):
 
         self.page.add_block(
             f"menu_{self.descriptor}",
-            ThemeFileIncludePageBlock(
-                self.page, "theme/menu.html", f"menu_{self.descriptor}.html", ns='menu',
-                with_expr=f' with menu=menu.{self.descriptor}'
-            )
+            InlineTemplatePageBlock(f"theme/menu[_{self.descriptor}].html", {
+                'menu_descriptor': self.descriptor
+            })
         )
 
 

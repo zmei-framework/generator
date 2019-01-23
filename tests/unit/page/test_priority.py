@@ -1,7 +1,6 @@
 from textwrap import dedent
 
-import pytest
-from zmei_generator.extras.page.block import BlockPlaceholder, PageBlock, ReactPageBlock
+from zmei_generator.extras.page.block import BlockPlaceholder, InlineTemplatePageBlock
 from zmei_generator.parser.parser import ZmeiParser
 
 
@@ -34,18 +33,18 @@ def test_page_priority_default():
 
     assert boo.name == 'boo'
     assert len(boo.blocks['content']) == 3
-    assert boo.blocks['content'][0].source == "<h1>test</h1>"
+    assert boo.blocks['content'][0].context['content'] == "<h1>test</h1>"
     assert isinstance(boo.blocks['content'][1], BlockPlaceholder)
-    assert boo.blocks['content'][2].source == "<h1>cats</h1>"
+    assert boo.blocks['content'][2].context['content'] == "<h1>cats</h1>"
 
-    boo.add_block('content', PageBlock(source='lala'))
+    boo.add_block('content', InlineTemplatePageBlock(template_name='lala.html', context={'content': 'lala'}))
 
     assert len(boo.blocks['content']) == 4
-    assert boo.blocks['content'][0].source == "<h1>test</h1>"
+    assert boo.blocks['content'][0].context['content'] == "<h1>test</h1>"
     assert isinstance(boo.blocks['content'][1], BlockPlaceholder)
-    assert boo.blocks['content'][2].source == "<h1>cats</h1>"
-    assert isinstance(boo.blocks['content'][3], PageBlock)
-    assert boo.blocks['content'][3].source == 'lala'
+    assert boo.blocks['content'][2].context['content'] == "<h1>cats</h1>"
+    assert isinstance(boo.blocks['content'][3], InlineTemplatePageBlock)
+    assert boo.blocks['content'][3].context['content'] == 'lala'
 
 
 def test_page_priority_before_after():
@@ -71,18 +70,18 @@ def test_page_priority_before_after():
 
     assert boo.name == 'boo'
     assert len(boo.blocks['content']) == 3
-    assert boo.blocks['content'][0].source == "<h1>test</h1>"
+    assert boo.blocks['content'][0].context['content'] == "<h1>test</h1>"
     assert isinstance(boo.blocks['content'][1], BlockPlaceholder)
-    assert boo.blocks['content'][2].source == "<h1>cats</h1>"
+    assert boo.blocks['content'][2].context['content'] == "<h1>cats</h1>"
 
-    boo.add_block('content', PageBlock(source='lala'), append=True)
+    boo.add_block('content', InlineTemplatePageBlock(template_name='lala.html', context={'content': 'lala'}), append=True)
 
     assert len(boo.blocks['content']) == 4
-    assert boo.blocks['content'][0].source == "<h1>test</h1>"
-    assert isinstance(boo.blocks['content'][1], PageBlock)
-    assert boo.blocks['content'][1].source == 'lala'
+    assert boo.blocks['content'][0].context['content'] == "<h1>test</h1>"
+    assert isinstance(boo.blocks['content'][1], InlineTemplatePageBlock)
+    assert boo.blocks['content'][1].context['content'] == 'lala'
     assert isinstance(boo.blocks['content'][2], BlockPlaceholder)
-    assert boo.blocks['content'][3].source == "<h1>cats</h1>"
+    assert boo.blocks['content'][3].context['content'] == "<h1>cats</h1>"
 
 
 
@@ -104,4 +103,4 @@ def test_page_priority_markdown_and_crud():
 
     boo = cs.pages['boo']
 
-    assert isinstance(boo.blocks['content'][0], ReactPageBlock)
+    assert isinstance(boo.blocks['content'][0], InlineTemplatePageBlock)

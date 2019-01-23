@@ -115,7 +115,7 @@ class PageDef(object):
             libs.append('i18n')
         return set(libs)
 
-    def set_html(self, html, react=None, area='content', sorting=0):
+    def set_html(self, html, react=None, area='content'):
         from zmei_generator.extras.page.block import ReactPageBlock
 
         if react:
@@ -128,7 +128,7 @@ class PageDef(object):
                 self.react_client = True
                 self.react_server = True
 
-        self.add_block(area, ReactPageBlock(self, html, area_name=area), sorting=sorting)
+        self.add_block(area, ReactPageBlock(self, html, area_name=area))
 
         if self.react:
             if 'ZmeiDataViewMixin' in self.extra_bases:
@@ -147,9 +147,7 @@ class PageDef(object):
     def get_blocks(self):
         return self.blocks.items()
 
-    def add_block(self, area, block, append=False, sorting=0):
-        block.sorting = sorting
-
+    def add_block(self, area, block, append=False):
         if area not in self.blocks:
             self.blocks[area] = []
 

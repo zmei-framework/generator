@@ -370,7 +370,7 @@ def generate(target_path, app_name: str, collection_set: CollectionSetDef, featu
         generate_views_py(target_path, app_name, collection_set)
 
     if len(collection_set.pages) > 0:
-        generate_file(target_path, '{}/templates/{}/base.html'.format(app_name, app_name),
+        generate_file(target_path, '{}/templates/{}/_base.html'.format(app_name, app_name),
                       template_name='theme/base_app.html', context={
                 'collection_set': collection_set,
             })

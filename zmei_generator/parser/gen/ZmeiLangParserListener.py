@@ -404,6 +404,33 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#an_theme.
+    def enterAn_theme(self, ctx:ZmeiLangParser.An_themeContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_theme.
+    def exitAn_theme(self, ctx:ZmeiLangParser.An_themeContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_theme_install.
+    def enterAn_theme_install(self, ctx:ZmeiLangParser.An_theme_installContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_theme_install.
+    def exitAn_theme_install(self, ctx:ZmeiLangParser.An_theme_installContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_theme_name.
+    def enterAn_theme_name(self, ctx:ZmeiLangParser.An_theme_nameContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_theme_name.
+    def exitAn_theme_name(self, ctx:ZmeiLangParser.An_theme_nameContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#an_suit.
     def enterAn_suit(self, ctx:ZmeiLangParser.An_suitContext):
         pass

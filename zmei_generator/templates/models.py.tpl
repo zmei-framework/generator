@@ -18,7 +18,7 @@ class {{ col.class_name }}({% for import_str, class_name, alias in col.mixin_cla
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
     {% endif %}
 
-    {% for field in col.own_fields %}
+    {% for field in col.own_fields_non_expr %}
     {{ field.name }} = {{ field.get_model_field().declaration }}{% endfor %}
     {% for field in col.expression_fields %}
     {% if field.static %}

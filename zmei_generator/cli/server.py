@@ -10,7 +10,7 @@ from shutil import rmtree
 
 from zmei_generator.generator.application import ZmeiAppParser
 from zmei_generator.generator.collections import generate, generate_common_files
-from zmei_generator.generator.utils import StopGenerator
+from zmei_generator.generator.utils import StopGenerator, ThemeConfig
 from zmei_generator.parser.parser import ZmeiParser
 
 
@@ -69,6 +69,12 @@ def do_generate(target_path, collections):
         # collection_set = parser.populate_collection_set_and_errors(app_name)
 
     application = app_parser.parse()
+
+    ThemeConfig.theme = 'default'
+
+    for app_name, collection_set in application.collection_sets.items():
+        if collection_set.theme:
+            ThemeConfig.theme = collection_set.theme
 
     for app_name, collection_set in application.collection_sets.items():
         generate(target_path, app_name, collection_set)
