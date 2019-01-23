@@ -1,0 +1,5 @@
+<div class="navbar-start">
+{{ '{% for ref, item in menu.' + menu_descriptor + '.items.items %}' }}
+{{ '<a class="navbar-item {% if item.active %}is-active{% endif %}" href="{{ item.link }}">{{ item.label }}</a>' }}
+{{ '{% endfor %}' }}
+</div>

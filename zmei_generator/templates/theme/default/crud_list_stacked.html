@@ -1,0 +1,42 @@
+<div>
+    {% if crud.header %}
+    <h2>{{ crud.model_name_plural }}</h2>
+    {% endif %}
+    {{ '{% if ' + crud.items_name + ' %}' }}
+        {{ '{% for ' + crud.item_name + ' in ' + crud.items_name + ' %}' }}
+        <hr>
+        <h3>
+            {% if crud.links.detail %}{{ '<a href="' + crud.format_link('detail') + '">' }}{% endif %}
+            {{ '{{ ' + crud.item_name + ' }}' }}
+            {% if crud.links.detail %}{{ '</a>' }}{% endif %}
+        </h3>
+
+        <table>
+            <tbody>
+                {% for field_name in crud.list_fields %}
+                <tr>
+                    <td>{{ field_name }}</td>
+                    <td>{{ '{{ ' + crud.item_name + '.' + field_name + ' }}' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {{ '{% if ' + crud.can_edit_item + ' %}' }}
+
+        {% if crud.links.edit %}{{ '<a href="' + crud.format_link('edit') + '">[{% trans "Edit" %}]</a>' }} |{% endif %}
+        {% if crud.links.delete %}{{ '<a href="' + crud.format_link('delete') + '">[X]</a>' }}{% endif %}
+        {{ '{% endif %}' }}
+        {{ '{% endfor %}' }}
+        <hr>
+    {{ '{% else %}' }}
+    {{ '{% blocktrans with name="' + crud.model_name_plural + '" %}No {{ name }}{% endblocktrans %}' }}
+    {{ '{% endif %}' }}
+
+    {%- if crud.links.create %}
+    {{ '{% if ' + crud.can_edit_item + ' %}' }}
+    <p>
+        {{ '<a href="' + crud.format_link('create') + '">{% blocktrans with name="' + crud.model_name + '" %}Add new {{ name }}{% endblocktrans %}</a>' }}
+    </p>
+    {{ '{% endif %}' }}
+    {% endif %}
+</div>

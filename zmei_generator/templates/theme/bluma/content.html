@@ -1,0 +1,7 @@
+<ul>
+    {{ '{% for ref, item in menu.' + menu_descriptor + '.items.items %}' }}
+    <li>
+        {{ '<a class="{% if item.active %}active{% endif %}" href="{{ item.link }}">{{ item.label }}</a>' }}
+    </li>
+    {{ '{% endfor %}' }}
+</ul>

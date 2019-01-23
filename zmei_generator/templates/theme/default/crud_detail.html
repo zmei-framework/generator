@@ -1,0 +1,25 @@
+{% if crud.links.list %}
+{{ '<a href="' + crud.format_link('parent') + '">&laquo; {% trans "Back to the list" %}</a>' }}
+{% endif %}
+<div>
+    {% if crud.header %}
+    <h2>{{ crud.model_name }} "{{ '{{ ' + crud.item_name + ' }}' }}"</h2>
+    {% endif %}
+    <table>
+        <tbody>
+            {% for field_name in crud.list_fields %}
+            <tr>
+                <td>{{ field_name }}</td>
+                <td>{{ '{{ ' + crud.item_name + '.' + field_name + ' }}' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{{ '{% if ' + crud.can_edit_item + ' %}' }}
+<p>
+    {% if crud.links.edit %}{{ '<a href="' + crud.format_link('edit') + '">[{% trans "Edit" %}]</a>' }}{% endif %}
+    |
+    {% if crud.links.delete %}{{ '<a href="' + crud.format_link('delete') + '">[{% trans "Delete" %}]</a>' }}{% endif %}
+</p>
+{{ '{% endif %}' }}
