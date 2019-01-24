@@ -1,40 +1,18 @@
-
+import pkg_resources
 
 from zmei_generator.domain.collection_def import CollectionDef
 from zmei_generator.domain.collection_set_def import CollectionSetDef
-from zmei_generator.contrib.drf.extras.model.api import ApiModelExtraParserListener
-from zmei_generator.contrib.web.extras.model.order import OrderModelExtraParserListener
-from zmei_generator.contrib.drf.extras.model.rest import RestModelExtraParserListener
-from zmei_generator.contrib.web.extras.model.sortable import SortableModelExtraParserListener
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
-from zmei_generator.contrib.web.extras.model.tree import TreeModelExtraParserListener
-from zmei_generator.contrib.web.extras.model.date_tree import DateTreeModelExtraParserListener
-from zmei_generator.contrib.web.extras.model.mixin import MixinModelExtraParserListener
-from zmei_generator.contrib.web.extras.model.m2m_changed import M2mChangedModelExtraParserListener
-from zmei_generator.contrib.web.extras.model.post_delete import PostDeleteModelExtraParserListener
-from zmei_generator.contrib.web.extras.model.pre_delete import PreDeleteModelExtraParserListener
-from zmei_generator.contrib.web.extras.model.post_save import PostSaveModelExtraParserListener
-from zmei_generator.contrib.web.extras.model.pre_save import PreSaveModelExtraParserListener
-from zmei_generator.contrib.web.extras.model.clean import CleanModelExtraParserListener
+
+parsers = []
+for entry_point in pkg_resources.iter_entry_points('zmei.parser.stage1'):
+    parsers += entry_point.load()
+
+parsers.append(BaseListener)
 
 
-class ModelExtraListener(
-    TreeModelExtraParserListener,
-    DateTreeModelExtraParserListener,
-    MixinModelExtraParserListener,
-    M2mChangedModelExtraParserListener,
-    PostDeleteModelExtraParserListener,
-    PreDeleteModelExtraParserListener,
-    PostSaveModelExtraParserListener,
-    PreSaveModelExtraParserListener,
-    CleanModelExtraParserListener,
-    ApiModelExtraParserListener,
-    RestModelExtraParserListener,
-    OrderModelExtraParserListener,
-    SortableModelExtraParserListener,
-    BaseListener
-):
+class ModelExtraListener(*parsers):
 
     def __init__(self, collection_set: CollectionSetDef) -> None:
         super().__init__(collection_set)
@@ -61,6 +39,3 @@ class ModelExtraListener(
     def exitCol_name(self, ctx: ZmeiLangParser.Col_nameContext):
         self.model_extend_name = None  # type: CollectionDef
         self.model_base_name = None  # type: CollectionDef
-
-
-

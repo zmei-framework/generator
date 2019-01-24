@@ -45,6 +45,11 @@ setup(
         'zmei.grammar.pages': [f'zmei_{x} = zmei_generator.contrib.{x}.grammar.struct:pages' for x in extensions],
         'zmei.grammar.models': [f'zmei_{x} = zmei_generator.contrib.{x}.grammar.struct:models' for x in extensions],
         'zmei.grammar.cs': [f'zmei_{x} = zmei_generator.contrib.{x}.grammar.struct:collection_set' for x in extensions],
+
+
+        'zmei.parser.stage1': [
+            f'zmei_web = zmei_generator.contrib.web.parsers.all_stage1:parsers'
+        ],
     },
 )
 
