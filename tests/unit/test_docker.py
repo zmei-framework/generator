@@ -1,7 +1,6 @@
 from textwrap import dedent
 
-import pytest
-from zmei_generator.extras.collection_set.docker import DockerCsExtra
+from zmei_generator.contrib.docker.extras.collection_set.docker import DockerCsExtra
 from zmei_generator.parser.parser import ZmeiParser
 
 

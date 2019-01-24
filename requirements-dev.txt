@@ -1,0 +1,8 @@
+pytest
+pytest-cov==2.5.0
+pytest-forked
+pytest-xdist
+jinja2
+django-polymorphic
+autopep8
+termcolor

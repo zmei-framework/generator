@@ -1,0 +1,2 @@
+
+recursive-include zmei_generator *.g4 *.tpl *.html *.jar

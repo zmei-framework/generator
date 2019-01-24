@@ -2,7 +2,6 @@ from textwrap import dedent
 
 import pytest
 
-from zmei_generator.extras.model.admin import AdminExtra, AdminInlineConfig
 from zmei_generator.parser.parser import ZmeiParser
 
 

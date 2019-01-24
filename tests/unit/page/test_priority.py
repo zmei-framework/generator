@@ -1,6 +1,6 @@
 from textwrap import dedent
 
-from zmei_generator.extras.page.block import BlockPlaceholder, InlineTemplatePageBlock
+from zmei_generator.contrib.web.extras.page.block import BlockPlaceholder, InlineTemplatePageBlock
 from zmei_generator.parser.parser import ZmeiParser
 
 

@@ -1,13 +1,12 @@
 from antlr4 import *
 from antlr4.error.ErrorListener import ErrorListener
 
-from zmei_generator.config.domain.collection_set_def import CollectionSetDef
+from zmei_generator.domain.collection_set_def import CollectionSetDef
 from zmei_generator.generator.utils import handle_parse_exception
 from zmei_generator.parser.errors import ValidationError
 from zmei_generator.parser.populate import PartsCollectorListener
 from zmei_generator.parser.populate_model_extras import ModelExtraListener
 from zmei_generator.parser.populate_page_extras import PageExtraListener
-from zmei_generator.parser.stats import StatsCollector
 from .gen.ZmeiLangSimpleLexer import ZmeiLangSimpleLexer
 from .gen.ZmeiLangParser import ZmeiLangParser
 

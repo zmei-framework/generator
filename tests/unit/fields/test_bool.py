@@ -1,7 +1,6 @@
 from textwrap import dedent
 
-from zmei_generator.fields.bool import BooleanFieldDef
-from zmei_generator.fields.text import TextFieldDef, LongTextFieldDef, RichTextFieldDef, RichTextFieldWithUploadDef
+from zmei_generator.contrib.web.fields import BooleanFieldDef
 from zmei_generator.parser.parser import ZmeiParser
 
 

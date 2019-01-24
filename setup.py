@@ -1,4 +1,10 @@
+from glob import glob
+
 from setuptools import setup, find_packages
+
+prefix = 'zmei_generator/contrib/'
+suffix = '/grammar'
+extensions = [x[len(prefix):-len(suffix)] for x in glob(f'{prefix}*{suffix}')]
 
 setup(
     name='zmei-cli',
@@ -11,20 +17,6 @@ setup(
     author_email='ribozz@gmail.com',
     description='Zmei-generator',
     long_description='',
-
-    package_data={
-        'zmei_generator': [
-            'templates/*.tpl',
-            'templates/django/*.tpl',
-            'templates/docker/*.tpl',
-            'templates/gitlab/*.tpl',
-            'templates/theme/*.html',
-        ],
-        'zmei_generator.parser.gen': [
-            '*.interp',
-            '*.tokens',
-        ]
-    },
 
     install_requires=[
         "markdown",
@@ -46,7 +38,13 @@ setup(
     entry_points={
         'console_scripts': [
             'zmei = zmei_generator.cli.main:run',
-        ]
+        ],
+        'zmei.grammar.tokens': [f'zmei_{x} = zmei_generator.contrib.{x}.grammar.tokens:tokens' for x in extensions],
+        'zmei.grammar.keywords': [f'zmei_{x} = zmei_generator.contrib.{x}.grammar.tokens:keywords' for x in extensions],
+
+        'zmei.grammar.pages': [f'zmei_{x} = zmei_generator.contrib.{x}.grammar.struct:pages' for x in extensions],
+        'zmei.grammar.models': [f'zmei_{x} = zmei_generator.contrib.{x}.grammar.struct:models' for x in extensions],
+        'zmei.grammar.cs': [f'zmei_{x} = zmei_generator.contrib.{x}.grammar.struct:collection_set' for x in extensions],
     },
 )
 

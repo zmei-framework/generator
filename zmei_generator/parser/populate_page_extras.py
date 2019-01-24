@@ -1,12 +1,12 @@
-from zmei_generator.config.domain.collection_set_def import CollectionSetDef
-from zmei_generator.config.domain.page_def import PageDef
-from zmei_generator.extras.page.auth import AuthPageExtraParserListener
-from zmei_generator.extras.page.error import ErrorPageExtraParserListener
-from zmei_generator.extras.page.flutter import FlutterPageExtraParserListener
-from zmei_generator.extras.page.get import GetPageExtraParserListener
+from zmei_generator.domain.collection_set_def import CollectionSetDef
+from zmei_generator.domain.page_def import PageDef
+from zmei_generator.contrib.web.extras.page.auth import AuthPageExtraParserListener
+from zmei_generator.contrib.web.extras.page.error import ErrorPageExtraParserListener
+from zmei_generator.contrib.flutter.extras.page.flutter import FlutterPageExtraParserListener
+from zmei_generator.contrib.web.extras.page.get import GetPageExtraParserListener
 
-from zmei_generator.extras.page.post import PostPageExtraParserListener
-from zmei_generator.extras.page.stream import StreamPageExtraParserListener
+from zmei_generator.contrib.web.extras.page.post import PostPageExtraParserListener
+from zmei_generator.contrib.channels.extras.page.stream import StreamPageExtraParserListener
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 

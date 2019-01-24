@@ -1,45 +1,45 @@
-from zmei_generator.config.domain.collection_def import CollectionDef
-from zmei_generator.config.domain.collection_set_def import CollectionSetDef
-from zmei_generator.config.domain.field_def import FieldConfig
-from zmei_generator.config.domain.page_def import PageDef, PageFunction
-from zmei_generator.config.domain.page_expression import PageExpression
-from zmei_generator.extras.collection_set.celery import CeleryCsExtraParserListener
-from zmei_generator.extras.collection_set.channels import ChannelsCsExtraParserListener
-from zmei_generator.extras.collection_set.docker import DockerCsExtraParserListener
-from zmei_generator.extras.collection_set.file import FileCsExtraParserListener
-from zmei_generator.extras.collection_set.filer import FilerCsExtraParserListener
+from zmei_generator.domain.collection_def import CollectionDef
+from zmei_generator.domain.collection_set_def import CollectionSetDef
+from zmei_generator.domain.field_def import FieldConfig
+from zmei_generator.domain.page_def import PageDef, PageFunction
+from zmei_generator.domain.page_expression import PageExpression
+from zmei_generator.contrib.celery.extras.collection_set.celery import CeleryCsExtraParserListener
+from zmei_generator.contrib.channels.extras.collection_set.channels import ChannelsCsExtraParserListener
+from zmei_generator.contrib.docker.extras.collection_set.docker import DockerCsExtraParserListener
+from zmei_generator.contrib.web.extras.collection_set.file import FileCsExtraParserListener
+from zmei_generator.contrib.filer.extras.collection_set.filer import FilerCsExtraParserListener
 from zmei_generator.extras.collection_set.gitlab import GitlabCsExtraParserListener
-from zmei_generator.extras.collection_set.langs import LangsCsExtraParserListener
-from zmei_generator.extras.collection_set.suit import SuitCsExtra
-from zmei_generator.extras.collection_set.theme import ThemeCsExtraParserListener
-from zmei_generator.extras.model.admin import AdminExtra, AdminInlineConfig
-from zmei_generator.extras.page.crud_list import CrudListPageExtraParserListener
-from zmei_generator.fields.bool import BooleanFieldDef
-from zmei_generator.fields.custom import CustomFieldDef
-from zmei_generator.fields.date import DateFieldDef, DateTimeFieldDef, AutoNowDateTimeFieldDef, \
+from zmei_generator.contrib.web.extras.collection_set.langs import LangsCsExtraParserListener
+from zmei_generator.contrib.admin.extras.collection_set.suit import SuitCsExtra
+from zmei_generator.contrib.web.extras.collection_set.theme import ThemeCsExtraParserListener
+from zmei_generator.contrib.admin.extras.model.admin import AdminExtra, AdminInlineConfig
+from zmei_generator.contrib.web.extras.page.crud_list import CrudListPageExtraParserListener
+from zmei_generator.contrib.web.fields import BooleanFieldDef
+from zmei_generator.contrib.web.fields.custom import CustomFieldDef
+from zmei_generator.contrib.web.fields.date import DateFieldDef, DateTimeFieldDef, AutoNowDateTimeFieldDef, \
     AutoNowAddDateTimeFieldDef
-from zmei_generator.fields.expression import ExpressionFieldDef
-from zmei_generator.fields.filer import FilerImageFieldDef, FilerFileFieldDef, FilerFileFolderDef, \
+from zmei_generator.contrib.web.fields import ExpressionFieldDef
+from zmei_generator.contrib.filer.fields.filer import FilerImageFieldDef, FilerFileFieldDef, FilerFileFolderDef, \
     FilerImageFolderFieldDef, ImageSize
-from zmei_generator.fields.image import ImageFieldDef, SimpleFieldDef
-from zmei_generator.fields.number import IntegerFieldDef, FloatFieldDef, DecimalFieldDef
-from zmei_generator.fields.relation import RelationOneDef, RelationOne2OneDef, RelationManyDef
-from zmei_generator.fields.text import TextFieldDef, SlugFieldDef, LongTextFieldDef, RichTextFieldDef, \
+from zmei_generator.contrib.web.fields import ImageFieldDef, SimpleFieldDef
+from zmei_generator.contrib.web.fields.number import IntegerFieldDef, FloatFieldDef, DecimalFieldDef
+from zmei_generator.contrib.web.fields import RelationOneDef, RelationOne2OneDef, RelationManyDef
+from zmei_generator.contrib.web.fields import TextFieldDef, SlugFieldDef, LongTextFieldDef, RichTextFieldDef, \
     RichTextFieldWithUploadDef
 from zmei_generator.parser.errors import TabsSuitRequiredValidationError, LangsRequiredValidationError
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
-from zmei_generator.extras.page.crud_create import CrudCreatePageExtraParserListener
-from zmei_generator.extras.page.crud_delete import CrudDeletePageExtraParserListener
-from zmei_generator.extras.page.crud_detail import CrudDetailPageExtraParserListener
-from zmei_generator.extras.page.crud_edit import CrudEditPageExtraParserListener
-from zmei_generator.extras.page.crud_parser import CrudPageExtraParserListener
+from zmei_generator.contrib.web.extras.page.crud_create import CrudCreatePageExtraParserListener
+from zmei_generator.contrib.web.extras.page.crud_delete import CrudDeletePageExtraParserListener
+from zmei_generator.contrib.web.extras.page.crud_detail import CrudDetailPageExtraParserListener
+from zmei_generator.contrib.web.extras.page.crud_edit import CrudEditPageExtraParserListener
+from zmei_generator.contrib.web.extras.page.crud_parser import CrudPageExtraParserListener
 
-from zmei_generator.extras.page.html import HtmlPageExtraParserListener
-from zmei_generator.extras.page.markdown import MarkdownPageExtraParserListener
-from zmei_generator.extras.page.menu import MenuPageExtraParserListener
-from zmei_generator.extras.page.placeholder import PlaceholderPageExtraParserListener
-from zmei_generator.extras.page.react import ReactPageExtraParserListener
+from zmei_generator.contrib.web.extras.page.html import HtmlPageExtraParserListener
+from zmei_generator.contrib.web.extras.page.markdown import MarkdownPageExtraParserListener
+from zmei_generator.contrib.web.extras.page.menu import MenuPageExtraParserListener
+from zmei_generator.contrib.web.extras.page.placeholder import PlaceholderPageExtraParserListener
+from zmei_generator.contrib.react.extras.page.react import ReactPageExtraParserListener
 
 
 class PartsCollectorListener(

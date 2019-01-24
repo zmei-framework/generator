@@ -1,8 +1,5 @@
 from textwrap import dedent
 
-import pytest
-from zmei_generator.extras.collection_set.suit import SuitCsExtra
-from zmei_generator.parser.errors import TabsSuitRequiredValidationError
 from zmei_generator.parser.parser import ZmeiParser
 
 

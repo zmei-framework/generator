@@ -1,8 +1,7 @@
 from textwrap import dedent
 
-from zmei_generator.fields.date import DateFieldDef, DateTimeFieldDef, AutoNowDateTimeFieldDef, \
+from zmei_generator.contrib.web.fields.date import DateFieldDef, DateTimeFieldDef, AutoNowDateTimeFieldDef, \
     AutoNowAddDateTimeFieldDef
-from zmei_generator.fields.number import IntegerFieldDef, FloatFieldDef, DecimalFieldDef
 from zmei_generator.parser.parser import ZmeiParser
 
 

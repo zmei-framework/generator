@@ -1,10 +1,6 @@
-from textwrap import dedent
-
-import pytest
-
-from zmei_generator.extras.page.menu import MenuItem
+from zmei_generator.contrib.web.extras.page.menu import MenuItem
 from zmei_generator.generator.application import ZmeiAppParser, ZmeiApp
-from zmei_generator.parser.parser import ZmeiParser
+
 
 def test_menu_cases():
     app_parser = ZmeiAppParser()

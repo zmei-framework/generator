@@ -1,6 +1,0 @@
-pytest
-pytest-cov==2.5.0
-pytest-forked
-pytest-xdist
-
-django-polymorphic

@@ -1,15 +1,12 @@
-from textwrap import dedent
-
 import pytest
 from zmei_generator.generator.application import ZmeiApp, ZmeiAppParser
 
-from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
-from zmei_generator.extras.page.crud import CrudParams, CrudPageExtra
-from zmei_generator.extras.page.crud_create import CrudCreatePageExtra
-from zmei_generator.extras.page.crud_delete import CrudDeletePageExtra
-from zmei_generator.extras.page.crud_detail import CrudDetailPageExtra
-from zmei_generator.extras.page.crud_edit import CrudEditPageExtra
-from zmei_generator.parser.parser import ZmeiParser
+from zmei_generator.contrib.web.extras.page.crud import CrudParams, CrudPageExtra
+from zmei_generator.contrib.web.extras.page.crud_create import CrudCreatePageExtra
+from zmei_generator.contrib.web.extras.page.crud_delete import CrudDeletePageExtra
+from zmei_generator.contrib.web.extras.page.crud_detail import CrudDetailPageExtra
+from zmei_generator.contrib.web.extras.page.crud_edit import CrudEditPageExtra
+
 
 @pytest.mark.parametrize("extra_type_name, extra_cls", [
     ("crud", CrudPageExtra),

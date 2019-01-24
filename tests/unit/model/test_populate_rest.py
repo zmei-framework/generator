@@ -1,8 +1,7 @@
 from textwrap import dedent
 
-from zmei_generator.extras.model.admin import AdminExtra, AdminInlineConfig
-from zmei_generator.extras.model.api import ApiModelExtra
-from zmei_generator.extras.model.rest import RestModelExtra, RestSerializerConfig
+from zmei_generator.contrib.drf.extras.model.api import ApiModelExtra
+from zmei_generator.contrib.drf.extras.model.rest import RestModelExtra, RestSerializerConfig
 from zmei_generator.parser.parser import ZmeiParser
 
 

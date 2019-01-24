@@ -1,9 +1,7 @@
 from textwrap import dedent
 
-from zmei_generator.config.domain.reference_field import ReferenceField
-from zmei_generator.fields.bool import BooleanFieldDef
-from zmei_generator.fields.relation import RelationOneDef, RelationManyDef, RelationOne2OneDef
-from zmei_generator.fields.text import TextFieldDef, LongTextFieldDef, RichTextFieldDef, RichTextFieldWithUploadDef
+from zmei_generator.domain import ReferenceField
+from zmei_generator.contrib.web.fields import RelationOneDef, RelationManyDef, RelationOne2OneDef
 from zmei_generator.parser.parser import ZmeiParser
 
 

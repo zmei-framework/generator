@@ -319,3 +319,35 @@ def gen_args(args, raw_args=None):
             _args.append('{}={}'.format(key, val))
 
     return ', '.join(_args)
+
+
+
+
+def to_camel_case_classname(name):
+    return ''.join([x.capitalize() for x in name.split('_')])
+
+
+def to_camel_case(name):
+    parts = []
+
+    for idx, part in enumerate(name.split('_')):
+        if idx != 0:
+            part = part.capitalize()
+
+        parts.append(part)
+
+    return ''.join(parts)
+
+
+def format_uri(uri):
+    return uri.replace('(?P<', ':').replace('>[^\/]+)', '')
+
+
+
+def list_apps():
+    for filename in os.listdir('.'):
+        if os.path.isfile(filename) and filename.endswith('.col'):
+            if not re.match('^[a-zA-Z][a-zA-Z0-9_]+\.col$', filename):
+                continue
+
+            yield filename[0:-4]

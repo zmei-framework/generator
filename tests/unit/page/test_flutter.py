@@ -1,7 +1,6 @@
 from textwrap import dedent
 
-import pytest
-from zmei_generator.extras.page.flutter import FlutterPageExtra
+from zmei_generator.contrib.flutter.extras.page.flutter import FlutterPageExtra
 from zmei_generator.parser.parser import ZmeiParser
 
 
