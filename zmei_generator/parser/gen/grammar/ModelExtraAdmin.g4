@@ -46,7 +46,9 @@ an_admin_inline:
         BRACE_CLOSE)?;
 
 inline_name: id_or_kw;
-inline_type: KW_TYPE COLON (KW_INLINE_TYPE_TABULAR | KW_INLINE_TYPE_STACKED | KW_INLINE_TYPE_POLYMORPHIC);
+inline_type: KW_TYPE COLON inline_type_name;
+
+inline_type_name : (KW_INLINE_TYPE_TABULAR | KW_INLINE_TYPE_STACKED | KW_INLINE_TYPE_POLYMORPHIC) ;
 inline_extra: KW_EXTRA COLON DIGIT;
 inline_fields: KW_FIELDS COLON field_list_expr;
 

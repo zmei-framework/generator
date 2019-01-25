@@ -57,7 +57,7 @@ class AdminParserListener(BaseListener):
         self.inline = AdminInlineConfig(self.model.admin, ctx.inline_name().getText())
 
     def enterInline_type(self, ctx: ZmeiLangParser.Inline_typeContext):
-        type_name = ctx.KW_INLINE_TYPE().getText()
+        type_name = ctx.inline_type_name().getText()
 
         if type_name == 'polymorphic':
             self.model.admin.has_polymorphic_inlines = True

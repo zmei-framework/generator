@@ -55,7 +55,9 @@ an_rest_fields: KW_FIELDS COLON field_list_expr an_rest_fields_write_mode? NL*;
 an_rest_fields_write_mode : write_mode_expr;
 
 an_rest_auth: KW_AUTH BRACE_OPEN an_rest_auth_type (COMA an_rest_auth_type)* BRACE_CLOSE;
-an_rest_auth_type: (KW_AUTH_TYPE_BASIC|KW_AUTH_TYPE_SESSION|KW_AUTH_TYPE_TOKEN) (COLON an_rest_auth_token_model | an_rest_auth_token_class)?;
+an_rest_auth_type: an_rest_auth_type_name (COLON an_rest_auth_token_model | an_rest_auth_token_class)?;
+
+an_rest_auth_type_name : (KW_AUTH_TYPE_BASIC|KW_AUTH_TYPE_SESSION|KW_AUTH_TYPE_TOKEN) ;
 an_rest_auth_token_model: model_ref;
 an_rest_auth_token_class: classname;
 

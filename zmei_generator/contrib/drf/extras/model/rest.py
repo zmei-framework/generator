@@ -85,7 +85,7 @@ class RestModelExtraParserListener(BaseListener):
         if ctx.an_rest_auth_token_class():
             ref = ctx.an_rest_auth_token_class().getText()
 
-        self.rest_config.add_auth_method(ctx.KW_AUTH_TYPE().getText(), ref)
+        self.rest_config.add_auth_method(ctx.an_rest_auth_type_name().getText(), ref)
 
     def enterAn_rest_inline_decl(self, ctx: ZmeiLangParser.An_rest_inline_declContext):
         name = ctx.an_rest_inline_name().getText()

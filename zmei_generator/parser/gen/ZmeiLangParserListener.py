@@ -1124,6 +1124,15 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#inline_type_name.
+    def enterInline_type_name(self, ctx:ZmeiLangParser.Inline_type_nameContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#inline_type_name.
+    def exitInline_type_name(self, ctx:ZmeiLangParser.Inline_type_nameContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#inline_extra.
     def enterInline_extra(self, ctx:ZmeiLangParser.Inline_extraContext):
         pass
@@ -1391,6 +1400,15 @@ class ZmeiLangParserListener(ParseTreeListener):
 
     # Exit a parse tree produced by ZmeiLangParser#an_rest_auth_type.
     def exitAn_rest_auth_type(self, ctx:ZmeiLangParser.An_rest_auth_typeContext):
+        pass
+
+
+    # Enter a parse tree produced by ZmeiLangParser#an_rest_auth_type_name.
+    def enterAn_rest_auth_type_name(self, ctx:ZmeiLangParser.An_rest_auth_type_nameContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_rest_auth_type_name.
+    def exitAn_rest_auth_type_name(self, ctx:ZmeiLangParser.An_rest_auth_type_nameContext):
         pass
 
 

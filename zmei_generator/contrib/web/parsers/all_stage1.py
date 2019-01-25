@@ -1,5 +1,4 @@
 from zmei_generator.contrib.celery.extras.collection_set.celery import CeleryCsExtraParserListener
-from zmei_generator.contrib.channels.extras.collection_set.channels import ChannelsCsExtraParserListener
 from zmei_generator.contrib.docker.extras.collection_set.docker import DockerCsExtraParserListener
 from zmei_generator.contrib.filer.extras.collection_set.filer import FilerCsExtraParserListener
 from zmei_generator.contrib.gitlab.extras.collection_set.gitlab import GitlabCsExtraParserListener
@@ -35,7 +34,6 @@ parsers = [
     GitlabCsExtraParserListener,
     DockerCsExtraParserListener,
     FileCsExtraParserListener,
-    ChannelsCsExtraParserListener,
     CeleryCsExtraParserListener,
     LangsCsExtraParserListener,
     FilerCsExtraParserListener,

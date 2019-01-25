@@ -48,7 +48,22 @@ setup(
 
 
         'zmei.parser.stage1': [
-            f'zmei_web = zmei_generator.contrib.web.parsers.all_stage1:parsers'
+            f'zmei_{x} = zmei_generator.contrib.{x}.parsers.all_stage1:parsers' for x in [
+                'web',
+                'admin',
+                'channels',
+            ]
+        ],
+        'zmei.parser.stage2': [
+            f'zmei_{x} = zmei_generator.contrib.{x}.parsers.all_stage2:parsers' for x in [
+                'web'
+            ]
+        ],
+        'zmei.parser.stage3': [
+            f'zmei_{x} = zmei_generator.contrib.{x}.parsers.all_stage3:parsers' for x in [
+                'web',
+                'channels',
+            ]
         ],
     },
 )
