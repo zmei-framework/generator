@@ -7,4 +7,5 @@ import Base;
 
 an_get:
     AN_GET
+    code_block?
     ;

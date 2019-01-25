@@ -75,15 +75,16 @@ def gen(grammar_path, target_path):
 
     package = 'zmei_generator.parser.gen'
 
-    antlr_jar = '/usr/local/Cellar/antlr/4.7.1/antlr-4.7.1-complete.jar'
-    antlr = f'CLASSPATH="{antlr_jar}:" java -jar {antlr_jar}'
+    antlr_jar = 'zmei_generator/lib/antlr/antlr-4.7.2-complete.jar'
+    antlr = f'CLASSPATH="{antlr_jar}:." java -jar {antlr_jar}'
 
-    os.system(f'{antlr}  -Dlanguage=Python3 -o {target_path} -package {package} -lib {os.path.realpath(grammar_path)} -listener {lexerSrc}')
-    os.system(f'{antlr} -Dlanguage=Python3 -o {target_path} -package {package} -lib {os.path.realpath(target_path)} -listener {parserSrc}')
+    lexer_cmd = f'{antlr}  -Dlanguage=Python3 -o {target_path} -package {package} -lib {os.path.realpath(grammar_path)} -listener {os.path.realpath(lexerSrc)}'
+    os.system(lexer_cmd)
+
+    parser_cmd = f'{antlr} -Dlanguage=Python3 -o {target_path} -package {package} -lib {os.path.realpath(target_path)} -listener {os.path.realpath(parserSrc)}'
+    os.system(parser_cmd)
 
     # os.system('env')
-
-
 def replace_in_file(file, markers):
     with open(file, 'r') as f:
         content = f.read()
@@ -102,7 +103,8 @@ def build_parser():
     source_path = 'zmei_generator/ext/grammar'
     target_path = 'zmei_generator/parser/gen/grammar'
 
-    shutil.rmtree(target_path)
+    if os.path.exists(target_path):
+        shutil.rmtree(target_path)
 
     pages = collect_files('zmei.grammar.pages', target_path)
     collection_sets = collect_files('zmei.grammar.cs', target_path)
