@@ -1,4 +1,4 @@
-from zmei_generator.contrib.channels.extras.page.stream import StreamPageExtra
+from zmei_generator.contrib.channels.extras.pages.stream import StreamPageExtra
 from zmei_generator.generator.application import ZmeiApp, ZmeiAppParser
 
 

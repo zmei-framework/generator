@@ -13,7 +13,7 @@ class PlaceholderPageExtra(PageExtra):
 
 class PlaceholderPageExtraParserListener(BaseListener):
 
-    def enterPage_priority_marker(self, ctx: ZmeiLangParser.Page_priority_markerContext):
+    def enterAn_priority_marker(self, ctx: ZmeiLangParser.An_priority_markerContext):
         extra = PlaceholderPageExtra(self.page)
         self.collection_set.extras.append(
             extra

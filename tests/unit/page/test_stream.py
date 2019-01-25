@@ -1,6 +1,6 @@
 from textwrap import dedent
 
-from zmei_generator.contrib.channels.extras.page.stream import StreamPageExtra
+from zmei_generator.contrib.channels.extras.pages.stream import StreamPageExtra
 from zmei_generator.parser.parser import ZmeiParser
 
 

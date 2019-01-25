@@ -1,6 +1,6 @@
 from textwrap import dedent
 
-from zmei_generator.domain import ReferenceField
+from zmei_generator.domain.reference_field import ReferenceField
 from zmei_generator.generator.application import ZmeiAppParser, ZmeiApp
 from zmei_generator.parser.parser import ZmeiParser
 

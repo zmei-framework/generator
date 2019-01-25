@@ -9,6 +9,19 @@ def _(code):
     return parser.populate_collection_set('example')
 
 
+def test_page_minimal():
+    cs = _("""
+
+        [boo]
+    """)
+
+    assert len(cs.pages) == 1
+
+    boo = cs.page_list()[0]
+
+    assert boo.name == 'boo'
+
+
 def test_pages():
     cs = _("""
     

@@ -1,6 +1,6 @@
 from textwrap import dedent
 
-from zmei_generator.extras.collection_set.gitlab import GitlabCsExtra, SeleniumPytestConfig
+from zmei_generator.contrib.gitlab.extras.collection_set.gitlab import GitlabCsExtra, SeleniumPytestConfig
 from zmei_generator.parser.parser import ZmeiParser
 
 

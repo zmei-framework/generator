@@ -1,6 +1,6 @@
 from textwrap import dedent
 
-from zmei_generator.contrib.web.fields import ExpressionFieldDef
+from zmei_generator.contrib.web.fields.expression import ExpressionFieldDef
 from zmei_generator.parser.parser import ZmeiParser
 
 

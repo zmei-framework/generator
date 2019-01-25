@@ -1,11 +1,18 @@
+import pkg_resources
+
+from zmei_generator.domain.collection_set_def import CollectionSetDef
+from zmei_generator.domain.page_def import PageDef
+from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
+from zmei_generator.parser.utils import BaseListener
+
+parsers = []
+for entry_point in pkg_resources.iter_entry_points('zmei.parser.stage3'):
+    parsers += entry_point.load()
+
+parsers.append(BaseListener)
 
 
-class PageExtraListener(
-
-
-    # PageCrudOverrideExtraListener,
-    BaseListener
-):
+class PageExtraListener(*parsers):
 
     def __init__(self, collection_set: CollectionSetDef) -> None:
         super().__init__(collection_set)

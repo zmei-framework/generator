@@ -1,6 +1,6 @@
 from textwrap import dedent
 
-from zmei_generator.contrib.web.fields import SlugFieldDef
+from zmei_generator.contrib.web.fields.text import SlugFieldDef
 from zmei_generator.parser.parser import ZmeiParser
 
 

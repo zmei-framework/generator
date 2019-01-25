@@ -6,7 +6,7 @@ from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
 parsers = []
-for entry_point in pkg_resources.iter_entry_points('zmei.parser.stage1'):
+for entry_point in pkg_resources.iter_entry_points('zmei.parser.stage2'):
     parsers += entry_point.load()
 
 parsers.append(BaseListener)

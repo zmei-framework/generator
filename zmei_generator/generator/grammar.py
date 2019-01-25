@@ -83,6 +83,7 @@ def gen(grammar_path, target_path):
 
     # os.system('env')
 
+
 def replace_in_file(file, markers):
     with open(file, 'r') as f:
         content = f.read()
@@ -133,4 +134,3 @@ def build_parser():
 
     gen(target_path, os.path.dirname(target_path))
 
-load()

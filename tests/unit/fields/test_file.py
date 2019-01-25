@@ -2,7 +2,7 @@ from textwrap import dedent
 
 from zmei_generator.contrib.filer.fields.filer import FilerImageFieldDef, FilerFileFieldDef, FilerFileFolderDef, \
     FilerImageFolderFieldDef
-from zmei_generator.contrib.web.fields import ImageFieldDef, SimpleFieldDef
+from zmei_generator.contrib.web.fields.image import SimpleFieldDef, ImageFieldDef
 from zmei_generator.parser.parser import ZmeiParser
 
 

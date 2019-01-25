@@ -1,8 +1,8 @@
 from zmei_generator.domain.collection_def import CollectionDef
 from zmei_generator.domain.collection_set_def import FieldDeclaration
+from zmei_generator.domain.reference_field import ReferenceField
 from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
 from zmei_generator.domain.field_def import FieldDef
-from zmei_generator.domain import ReferenceField
 from zmei_generator.generator.utils import gen_args
 
 
