@@ -6,9 +6,9 @@ from zmei_generator.domain.reference_field import ReferenceField
 from zmei_generator.generator.utils import generate_file, to_camel_case, format_uri, to_camel_case_classname
 
 
-def generate(target_path, app):
-    apps = app.applications
-    # for app_name, application in app.applications.items():
+def generate(target_path, project):
+    apps = project.applications
+    # for app_name, application in project.applications.items():
 
     generate_file(target_path, 'flutter/pubspec.yaml', 'flutter.pubspec.yaml.tpl')
     generate_file(target_path, 'flutter/lib/main.dart', 'flutter.main.dart.tpl', {

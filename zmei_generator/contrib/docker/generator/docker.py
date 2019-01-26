@@ -5,7 +5,7 @@ import string
 from zmei_generator.generator.utils import generate_file
 
 
-def generate(target_path, app):
+def generate(target_path, project):
     has_docker = False
     has_celery = False
 

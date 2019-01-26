@@ -2,8 +2,8 @@ from zmei_generator.generator.imports import ImportSet
 from zmei_generator.generator.utils import generate_file
 
 
-def generate(target_path, app):
-    for app_name, application in app.applications.items():
+def generate(target_path, project):
+    for app_name, application in project.applications.items():
         index_imports = ImportSet()
 
         react_pages = []
@@ -50,14 +50,14 @@ def generate(target_path, app):
 
         entries = {}
 
-        for app_name, application in app.applications.items():
+        for app_name, application in project.applications.items():
             if application.react:
                 # entries[app_name] = ["babel-polyfill", f'./src/{app_name.capitalize()}/index.jsx']
                 entries[app_name] = [f'./src/index.jsx']
 
         packages = {}
 
-        for app_name, application in app.applications.items():
+        for app_name, application in project.applications.items():
             packages.update(application.react_deps)
 
         generate_file(target_path, 'react/package.json', 'package.json.tpl', {

@@ -2,8 +2,8 @@ from zmei_generator.generator.imports import ImportSet
 from zmei_generator.generator.utils import generate_file
 
 
-def generate(target_path, app):
-    for app_name, application in app.applications.items():
+def generate(target_path, project):
+    for app_name, application in project.applications.items():
 
         imports = ImportSet()
         imports.add('django.contrib', 'admin')

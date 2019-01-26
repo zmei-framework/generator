@@ -3,7 +3,7 @@ import os
 from zmei_generator.generator.utils import generate_file, format_file
 
 
-def generate(target_path, app):
+def generate(target_path, project):
 
     # config
     has_rest = False
@@ -18,7 +18,7 @@ def generate(target_path, app):
     urls += [
         "    url(r'^admin/', admin.site.urls),",
     ]
-    for app_name, application in app.applications.items():
+    for app_name, application in project.applications.items():
         for import_def, url_def in application.get_required_urls():
             urls.append(url_def)
             if import_def:
@@ -66,13 +66,13 @@ def generate(target_path, app):
 
     # settings
     req_settings = {}
-    installed_apps = [app.app_name for app in app.applications.values() if len(app.pages) > 0 or len(app.models) > 0]
+    installed_apps = [app.app_name for app in project.applications.values() if len(app.pages) > 0 or len(app.models) > 0]
 
     if has_rest:
         installed_apps.append('rest_framework')
 
     extra_classes = list()
-    for application in sorted(app.applications.values(), key=lambda x: x.app_name):
+    for application in sorted(project.applications.values(), key=lambda x: x.app_name):
         installed_apps.extend(application.get_required_apps())
         req_settings.update(application.get_required_settings())
 
@@ -98,13 +98,13 @@ def generate(target_path, app):
                 f.write(f'{key} = {repr(val)}\n')
 
             for extra in extra_classes:
-                extra.write_settings(app.applications, f)
+                extra.write_settings(project.applications, f)
 
     generate_file(target_path, 'app/settings.py', template_name='settings.py.tpl')
     format_file(target_path, 'app/_settings.py')
 
     for extra in extra_classes:
-        extra.generate(app.applications, target_path)
+        extra.generate(project.applications, target_path)
 
     # base template
     generate_file(target_path, 'app/templates/base.html', template_name='theme/base.html')
@@ -118,7 +118,7 @@ def generate(target_path, app):
     if has_rest:
         requirements.append('djangorestframework')
 
-    for application in app.applications.values():
+    for application in project.applications.values():
         requirements.extend(application.get_required_deps())
 
     requirements = list(sorted(set(requirements)))

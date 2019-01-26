@@ -2,10 +2,10 @@ from zmei_generator.generator.imports import ImportSet
 from zmei_generator.generator.utils import generate_file
 
 
-def generate(target_path, app):
+def generate(target_path, project):
     streams = []
     imports = ImportSet()
-    for app in app.applications.values():
+    for app in project.applications.values():
         if not app.channels:
             continue
         for page in app.pages.values():

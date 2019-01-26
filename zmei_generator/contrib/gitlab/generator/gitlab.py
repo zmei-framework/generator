@@ -1,8 +1,8 @@
 from zmei_generator.generator.utils import generate_file
 
 
-def generate(target_path, app):
-    for app_name, application in app.applications.items():
+def generate(target_path, project):
+    for app_name, application in project.applications.items():
         if application.gitlab:
             for file in [
                 '.gitlab-ci.yml',

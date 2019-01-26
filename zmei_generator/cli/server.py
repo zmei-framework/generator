@@ -73,7 +73,6 @@ def do_generate(target_path, models):
 
     for entry_point in pkg_resources.iter_entry_points('zmei.generator'):
         generate = entry_point.load()
-        print(entry_point)
         generate(target_path, application)
 
 

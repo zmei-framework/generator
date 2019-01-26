@@ -13,25 +13,19 @@ def collect_items(entry_point, display_name):
     keywords = {}
 
     for entry_point in pkg_resources.iter_entry_points(entry_point):
-        # print(dir(entry_point))
+        data = entry_point.load()
 
-        try:
-            data = entry_point.load()
+        for name, value in data.items():
+            if name in keywords_name_map:
+                print(f'Conflict: can not redefine {display_name} name "{name}"({entry_point.name}). '
+                      f'it is already defined by entry point "{keywords_name_map[name]}"')
+            if value in keywords_value_map:
+                print(f'Conflict: can not redefine {display_name} value "{value}"({entry_point.name}). '
+                      f'it is already defined by entry point "{keywords_value_map[value]}"')
 
-            for name, value in data.items():
-                if name in keywords_name_map:
-                    print(f'Conflict: can not redefine {display_name} name "{name}"({entry_point.name}). '
-                          f'it is already defined by entry point "{keywords_name_map[name]}"')
-                if value in keywords_value_map:
-                    print(f'Conflict: can not redefine {display_name} value "{value}"({entry_point.name}). '
-                          f'it is already defined by entry point "{keywords_value_map[value]}"')
-
-                keywords_name_map[name] = entry_point.name
-                keywords_value_map[value] = entry_point.name
-                keywords[name] = value
-
-        except ImportError:
-            print(entry_point)
+            keywords_name_map[name] = entry_point.name
+            keywords_value_map[value] = entry_point.name
+            keywords[name] = value
 
     return keywords
 
@@ -65,8 +59,6 @@ def collect_files(entry_point, target_path):
     return file_map
 
 def gen(grammar_path, target_path):
-
-    print(os.getcwd())
     grammar_path = grammar_path
     target_path = target_path
 
