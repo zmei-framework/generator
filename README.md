@@ -24,4 +24,11 @@ code generator that automate routine work and gently integrates generated source
 
 Source code is distributed under GNU General Public License v3.0 licence. Full licence text is available in LICENSE file.
 
+In-short about GPLv3:
+- All software that use Zmei-generator as it's part **MUST** be open-sourced as well: plugins, other generators
+ based on it, etc.
+- You **CAN NOT** take Zmei-generator and sell it as a paid service without open-sourcing it
+- But, you **CAN** use Zmei generator as a tool to write any software including private closed source software
+ 
+
 Software is free for non-commercial use. For commercial use ask for dual-licensing options. 
