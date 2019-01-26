@@ -14,4 +14,4 @@ install:
 script:
   - pytest --cov=zmei_generator/
 after_success:
-  - coveralls
+  - codecov

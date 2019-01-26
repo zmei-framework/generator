@@ -5,7 +5,7 @@ pytest-xdist
 jinja2
 autopep8
 termcolor
-coveralls
+codecov
 
 # required for end2end tests
 django-polymorphic
