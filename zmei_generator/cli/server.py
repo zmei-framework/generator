@@ -53,10 +53,10 @@ def collect_files(target_path, request_files):
     return f
 
 
-def do_generate(target_path, models):
+def do_generate(target_path, app_names):
     app_parser = ZmeiProjectParser()
 
-    for app_name in models:
+    for app_name in app_names:
         filename = '{}.col'.format(app_name)
 
         if not os.path.exists(os.path.join(target_path, 'col/' + filename)):
