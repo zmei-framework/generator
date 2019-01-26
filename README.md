@@ -50,6 +50,14 @@ See [documentation](https://zmei-framework.com/generator/).
 Read tests [unit](https://github.com/zmei-framework/generator/tree/master/tests/unit),
 [en2end](https://github.com/zmei-framework/generator/tree/master/tests/end2end).
 
+
+### Articles
+
+- [Django application in 60 seconds](https://zmei-framework.com/generator/blog/0_Zmei_quick_start.html) 
+- [Django REST & Admin with a nice theme in 60 seconds](https://zmei-framework.com/generator/blog/1_Zmei_quick_start_2.html#sec-2)
+    
+    
+[![Django application in 60 seconds](http://img.youtube.com/vi/WLwYC-rspK4/0.jpg)](https://www.youtube.com/watch?v=WLwYC-rspK4)    
     
 ## Contribution
 
