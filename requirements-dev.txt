@@ -3,6 +3,11 @@ pytest-cov==2.6.0
 pytest-forked
 pytest-xdist
 jinja2
-django-polymorphic
 autopep8
 termcolor
+coveralls
+
+# required for end2end tests
+django-polymorphic
+django-suit
+zmei-utils

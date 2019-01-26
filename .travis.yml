@@ -11,4 +11,7 @@ install:
   - pip install -r requirements-dev.txt
   - pip install .
 
-script: pytest tests/unit
+script:
+  - pytest --cov=zmei_generator/
+after_success:
+  - coveralls
