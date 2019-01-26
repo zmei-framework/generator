@@ -246,7 +246,7 @@ class CollectionDef(object):
 
     @property
     def expression_fields(self):
-        from zmei_generator.contrib.web.fields import ExpressionFieldDef
+        from zmei_generator.contrib.web.fields.expression import ExpressionFieldDef
         return [field for field in self.fields.values() if isinstance(field, ExpressionFieldDef)]
 
     @property
@@ -255,7 +255,7 @@ class CollectionDef(object):
 
     @property
     def relation_fields(self):
-        from zmei_generator.contrib.web.fields import RelationDef
+        from zmei_generator.contrib.web.fields.relation import RelationDef
         return [field for field in self.own_fields if isinstance(field, RelationDef)]
 
     def get_required_apps(self):

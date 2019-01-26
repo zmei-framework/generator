@@ -1,17 +1,16 @@
 import io
 import os
-import subprocess
 import tempfile
 import zipfile
 from glob import glob
 from io import BytesIO
 from os.path import dirname
-from shutil import rmtree
+from shutil import rmtree, copytree, copyfile
+
+import pkg_resources
 
 from zmei_generator.generator.application import ZmeiAppParser
-from zmei_generator.generator.collections import generate, generate_common_files
-from zmei_generator.generator.utils import StopGenerator, ThemeConfig
-from zmei_generator.parser.parser import ZmeiParser
+from zmei_generator.generator.utils import StopGenerator
 
 
 def zmei_generate(zip_bytes, collections):
@@ -70,36 +69,25 @@ def do_generate(target_path, collections):
 
     application = app_parser.parse()
 
-    ThemeConfig.theme = 'default'
+    copy_skeleton_files(target_path)
 
-    for app_name, collection_set in application.collection_sets.items():
-        if collection_set.theme:
-            ThemeConfig.theme = collection_set.theme
+    for entry_point in pkg_resources.iter_entry_points('zmei.generator'):
+        generate = entry_point.load()
+        print(entry_point)
+        generate(target_path, application)
 
-    for app_name, collection_set in application.collection_sets.items():
-        generate(target_path, app_name, collection_set)
 
-    # all_apps = {app_name: cs for app_name, cs in await asyncio.gather(*all_apps)}
-
+def copy_skeleton_files(target_path):
     skeleton_dir = os.path.join(os.path.realpath(dirname(__file__)), 'skeleton')
-
-    generate_common_files(target_path, skeleton_dir, application.collection_sets)
-
-    flutter_dir = os.path.join(target_path, 'flutter')
-    if os.path.exists(flutter_dir):
-        subprocess.check_call(['dartfmt', '-w', '-l', '120', flutter_dir], stdout=subprocess.DEVNULL)
-
-
-def generate_app(stats_listener, target_path, app_name, features, filename):
-    parser = ZmeiParser()
-    parser.parse_file(os.path.join(target_path, filename))
-    collection_set = parser.populate_collection_set_and_errors(app_name)
-
-    parser.collect_stats(stats_listener)
-
-    generate(target_path, app_name, collection_set, features=features)
-
-    return app_name, collection_set
+    app_dir = os.path.join(target_path, 'app')
+    manage_py = os.path.join(target_path, 'manage.py')
+    if os.path.exists(app_dir):
+        rmtree(app_dir)
+    if os.path.exists(manage_py):
+        os.unlink(manage_py)
+    copytree(os.path.join(skeleton_dir, 'app'), app_dir)
+    copyfile(os.path.join(skeleton_dir, 'manage.py'), manage_py)
+    return skeleton_dir
 
 
 def extract_files(target_path, zip_data):

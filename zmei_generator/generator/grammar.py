@@ -31,7 +31,7 @@ def collect_items(entry_point, display_name):
                 keywords[name] = value
 
         except ImportError:
-            pass
+            print(entry_point)
 
     return keywords
 

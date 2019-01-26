@@ -1,47 +1,51 @@
+from zmei_generator.domain.collection_def import CollectionDef
+from zmei_generator.domain.collection_set_def import FieldDeclaration
+from zmei_generator.domain.field_def import FieldDef
+from zmei_generator.generator.imports import ImportSet
+from zmei_generator.generator.utils import generate_file
 
 
+def generate(target_path, app):
+    for app_name, collection_set in app.collection_sets.items():
+        imports = ImportSet()
+        imports.add('django.db', 'models')
 
+        for collection in collection_set.collections.values():  # type: CollectionDef
 
-def generate_models_py(target_path, app_name, collection_set):
-    imports = ImportSet()
-    imports.add('django.db', 'models')
+            for handlers, code in collection.signal_handlers:
+                for signal_import in handlers:
+                    imports.add('django.dispatch', 'receiver')
+                    imports.add(*signal_import)
 
-    for collection in collection_set.collections.values():  # type: CollectionDef
+            if collection.polymorphic and collection.tree:
+                imports.add('polymorphic_tree.models', 'PolymorphicMPTTModel', 'PolymorphicTreeForeignKey')
+            else:
+                if collection.polymorphic:
+                    imports.add('polymorphic.models', 'PolymorphicModel')
 
-        for handlers, code in collection.signal_handlers:
-            for signal_import in handlers:
-                imports.add('django.dispatch', 'receiver')
-                imports.add(*signal_import)
+                if collection.tree:
+                    imports.add('mptt.models', 'MPTTModel', 'TreeForeignKey')
 
-        if collection.polymorphic and collection.tree:
-            imports.add('polymorphic_tree.models', 'PolymorphicMPTTModel', 'PolymorphicTreeForeignKey')
-        else:
-            if collection.polymorphic:
-                imports.add('polymorphic.models', 'PolymorphicModel')
+            if collection.validators:
+                imports.add('django.core.exceptions', 'ValidationError')
 
-            if collection.tree:
-                imports.add('mptt.models', 'MPTTModel', 'TreeForeignKey')
+            if collection.mixin_classes:
+                for import_decl in collection.mixin_classes:
+                    pkg, cls, alias = import_decl
+                    if alias != cls:
+                        cls = '{} as {}'.format(cls, alias)
+                    imports.add(*(pkg, cls))
 
-        if collection.validators:
-            imports.add('django.core.exceptions', 'ValidationError')
+            for field in collection.own_fields:  # type: FieldDef
+                model_field = field.get_model_field()
+                if model_field:
+                    import_data, model_field = model_field  # type: FieldDeclaration
 
-        if collection.mixin_classes:
-            for import_decl in collection.mixin_classes:
-                pkg, cls, alias = import_decl
-                if alias != cls:
-                    cls = '{} as {}'.format(cls, alias)
-                imports.add(*(pkg, cls))
+                    for source, what in import_data:
+                        imports.add(source, what)
 
-        for field in collection.own_fields:  # type: FieldDef
-            model_field = field.get_model_field()
-            if model_field:
-                import_data, model_field = model_field  # type: FieldDeclaration
-
-                for source, what in import_data:
-                    imports.add(source, what)
-
-    generate_file(target_path, '{}/models.py'.format(app_name), 'models.py.tpl', {
-        'imports': imports.import_sting(),
-        'collection_set': collection_set,
-        'collections': collection_set.collections.items()
-    })
+        generate_file(target_path, '{}/models.py'.format(app_name), 'models.py.tpl', {
+            'imports': imports.import_sting(),
+            'collection_set': collection_set,
+            'collections': collection_set.collections.items()
+        })

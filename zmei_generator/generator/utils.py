@@ -3,7 +3,8 @@ import re
 
 import autopep8
 import jinja2
-from jinja2 import Environment, FileSystemBytecodeCache, ChoiceLoader, FileSystemLoader
+import pkg_resources
+from jinja2 import Environment, FileSystemBytecodeCache, ChoiceLoader, FileSystemLoader, ModuleLoader
 from jinja2 import PackageLoader
 from termcolor import colored
 
@@ -69,10 +70,16 @@ class ThemeConfig(object):
     theme = 'default'
 
 
-loader = ChoiceLoader([
+loaders = [
     FileSystemLoader('col/templates'),
     PackageLoader('zmei_generator', 'templates')
-])
+]
+
+for entry_point in pkg_resources.iter_entry_points('zmei.templates'):
+    loaders.append(FileSystemLoader(entry_point.load().__path__._path))
+
+
+loader = ChoiceLoader(loaders)
 
 block_env = Environment(loader=loader,
                         variable_start_string='<{',
