@@ -53,6 +53,8 @@ Read tests [unit](https://github.com/zmei-framework/generator/tree/master/tests/
 
 ## Code sample
 
+Several nested cruds, page inheritance, simple models.
+
     @theme(bluma)
     
     [base]
@@ -69,28 +71,24 @@ Read tests [unit](https://github.com/zmei-framework/generator/tree/master/tests/
         list: tabular
     
         detail(
-    
             lala := 123
     
             @markdown {
                 # test
             }
-    
             @@
-    
+            
             @crud.comments(#cat_comment{cat_id=url.cats_pk}
                 fields: text
                 skip: edit, detail, delete
-            )
-    
+            )  
         )
     
         create(
             foo := "This is foo"
         )
     )
-    @crud.cars(#car
-    
+    @crud.cars(#car    
         detail(
             @markdown {
                 # carrrr

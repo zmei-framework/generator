@@ -1,0 +1,41 @@
+@import url("https://fonts.googleapis.com/css?family=Cardo|Montserrat|Inconsolata");
+.sphinxsidebarwrapper p.logo {
+  position: relative;
+}
+.sphinxsidebarwrapper p.logo:after {
+  display: block;
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  background: url("img/generator.svg") bottom left no-repeat;
+  background-size: 70px;
+}
+
+div.sphinxsidebar h1, div.sphinxsidebar h2, div.sphinxsidebar h3 {
+  font-family: "Cardo", serif;
+}
+
+div.sphinxsidebar ul li.toctree-l2:last-child {
+  margin-bottom: 10px;
+}
+div.sphinxsidebar ul li.toctree-l2:first-child {
+  margin-top: 5px;
+}
+div.sphinxsidebar ul li.toctree-l2 > a {
+  font-size: 90%;
+}
+
+.done {
+  text-decoration: line-through;
+  opacity: 0.8;
+}
+
+.todo {
+  background: rgba(127, 160, 123, 0.42);
+}
+
+/*# sourceMappingURL=custom.css.map */
