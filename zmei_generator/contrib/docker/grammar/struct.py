@@ -1,6 +1,6 @@
 
-collection_set = {
-    'an_docker': 'CsExtraDocker.g4',
+application = {
+    'an_docker': 'AppExtraDocker.g4',
 }
 
 models = {}

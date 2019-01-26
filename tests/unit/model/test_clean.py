@@ -6,11 +6,11 @@ from zmei_generator.parser.parser import ZmeiParser
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 
 def test_sortable():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
@@ -27,6 +27,6 @@ def test_sortable():
     
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert 'lala + 3' in boo.validators

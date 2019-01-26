@@ -2,17 +2,17 @@ from zmei_generator.domain.no_model_field import NoModelField
 
 
 class ReferenceField(object):
-    def __init__(self, collection, target_collection, name: str, source_field) -> None:
+    def __init__(self, model, target_model, name: str, source_field) -> None:
         super().__init__()
 
-        self.target_collection = target_collection
+        self.target_model = target_model
 
         self.type_name = 'ref'
         self.name = name
         self.source_field = source_field
         self.source_field_name = source_field.name
 
-        self.collection = collection
+        self.model = model
         self.display_field = False
         self.translatable = False
 
@@ -21,14 +21,14 @@ class ReferenceField(object):
         self.inline = False
 
     def get_flutter_field(self):
-        if self.target_collection:
-            return f'List<{self.target_collection.class_name}>'
+        if self.target_model:
+            return f'List<{self.target_model.class_name}>'
         else:
             return 'dynamic'
 
     def get_flutter_from_json(self, name):
-        if self.target_collection:
-            return f'data[\'{name}\'].map<{self.target_collection.class_name}>((item) => {self.target_collection.class_name}.fromJson(item)).toList()'
+        if self.target_model:
+            return f'data[\'{name}\'].map<{self.target_model.class_name}>((item) => {self.target_model.class_name}.fromJson(item)).toList()'
         else:
             return f'data[\'{name}\']'
 
@@ -38,7 +38,7 @@ class ReferenceField(object):
     def parse_options(self):
         pass
 
-    def get_model_field(self, collection):
+    def get_model_field(self, model):
         raise NoModelField()
 
     def get_admin_widget(self):
@@ -50,8 +50,8 @@ class ReferenceField(object):
     def get_rest_field(self):
         return None
 
-    def get_rest_inline_collection(self):
-        return self.target_collection
+    def get_rest_inline_model(self):
+        return self.target_model
 
     def get_required_apps(self):
         return []

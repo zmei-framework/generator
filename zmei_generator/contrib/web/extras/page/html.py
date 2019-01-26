@@ -28,7 +28,7 @@ class HtmlPageExtraParserListener(BaseListener):
 
     def enterAn_html(self, ctx: ZmeiLangParser.An_htmlContext):
         extra = HtmlPageExtra(self.page)
-        self.collection_set.extras.append(
+        self.application.extras.append(
             extra
         )
         extra.area = 'content'

@@ -10,7 +10,7 @@ class OrderModelExtra(ModelExtra):
 class OrderModelExtraParserListener(BaseListener):
 
     def enterAn_order(self, ctx: ZmeiLangParser.An_orderContext):
-        self.collection_set.extras.append(
+        self.application.extras.append(
             OrderModelExtra(self.model)
         )
         self.model.sortable = False

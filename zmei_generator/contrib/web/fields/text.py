@@ -1,4 +1,4 @@
-from zmei_generator.domain.collection_set_def import FieldDeclaration
+from zmei_generator.domain.application_def import FieldDeclaration
 from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
 from zmei_generator.domain.field_def import FieldDef
 from zmei_generator.generator.utils import gen_args
@@ -45,18 +45,18 @@ class SlugFieldDef(DefaultTextMixin, FieldDef):
             self.field_names = tuple([x.strip() for x in self.options.split(',')])
         else:
             raise ValidationException(
-                'Slug field "{}" argument should be names of another fields in same collection separated by ","'.format(
+                'Slug field "{}" argument should be names of another fields in same model separated by ","'.format(
                     self.name))
 
     def get_model_field(self):
         max_len = 0
 
         for field_name in self.field_names:
-            if field_name not in collection.all_and_inherited_fields_map:
+            if field_name not in model.all_and_inherited_fields_map:
                 raise ValidationException(
-                    'Slug field "{}" can not find field "{}" in the collection'.format(self.name, field_name))
+                    'Slug field "{}" can not find field "{}" in the model'.format(self.name, field_name))
 
-            target_field = collection.all_and_inherited_fields_map[field_name]
+            target_field = model.all_and_inherited_fields_map[field_name]
 
             if not isinstance(target_field, TextFieldDef):
                 raise ValidationException(

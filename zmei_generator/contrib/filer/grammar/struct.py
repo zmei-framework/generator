@@ -1,6 +1,6 @@
 
-collection_set = {
-    'an_filer': 'CsExtraFiler.g4',
+application = {
+    'an_filer': 'AppExtraFiler.g4',
 }
 
 models = {}

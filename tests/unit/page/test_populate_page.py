@@ -6,24 +6,24 @@ from zmei_generator.parser.parser import ZmeiParser
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 
 def test_page_minimal():
-    cs = _("""
+    app = _("""
 
         [boo]
     """)
 
-    assert len(cs.pages) == 1
+    assert len(app.pages) == 1
 
-    boo = cs.page_list()[0]
+    boo = app.page_list()[0]
 
     assert boo.name == 'boo'
 
 
 def test_pages():
-    cs = _("""
+    app = _("""
     
         [boo: /lala/foo : foo/mytpl.html]
         [bar as yoo]
@@ -32,13 +32,13 @@ def test_pages():
         [goo]
     """)
 
-    assert len(cs.pages) == 5
+    assert len(app.pages) == 5
 
-    boo = cs.page_list()[0]
-    bar = cs.page_list()[1]
-    foo = cs.page_list()[2]
-    zoo = cs.page_list()[3]
-    goo = cs.page_list()[4]
+    boo = app.page_list()[0]
+    bar = app.page_list()[1]
+    foo = app.page_list()[2]
+    zoo = app.page_list()[3]
+    goo = app.page_list()[4]
 
     assert boo.name == 'boo'
     assert boo.url_alias == 'boo'
@@ -64,7 +64,7 @@ def test_pages():
 
 
 def test_pages_extend_name():
-    cs = _("""
+    app = _("""
     
         [boo: /lala/foo : foo/mytpl.html]
         [bar as yoo]
@@ -73,13 +73,13 @@ def test_pages_extend_name():
         [goo]
     """)
 
-    assert len(cs.pages) == 5
+    assert len(app.pages) == 5
 
-    boo = cs.page_list()[0]
-    bar = cs.page_list()[1]
-    foo = cs.page_list()[2]
-    zoo = cs.page_list()[3]
-    goo = cs.page_list()[4]
+    boo = app.page_list()[0]
+    bar = app.page_list()[1]
+    foo = app.page_list()[2]
+    zoo = app.page_list()[3]
+    goo = app.page_list()[4]
 
     assert boo.name == 'boo'
     assert boo.url_alias == 'boo'
@@ -106,30 +106,30 @@ def test_pages_extend_name():
 
 
 def test_home_page():
-    cs = _("""
+    app = _("""
     
         [boo: /]
     """)
 
-    assert len(cs.pages) == 1
+    assert len(app.pages) == 1
 
-    boo = cs.page_list()[0]
+    boo = app.page_list()[0]
 
     assert boo.name == 'boo'
     assert boo.uri == '/'
 
 
 def test_i18n_url():
-    cs = _("""
+    app = _("""
     
         @langs(en, ru)
 
         [boo: $/lala/]
     """)
 
-    assert len(cs.pages) == 1
+    assert len(app.pages) == 1
 
-    boo = cs.page_list()[0]
+    boo = app.page_list()[0]
 
     assert boo.name == 'boo'
     assert boo.uri == '/lala/'
@@ -137,35 +137,35 @@ def test_i18n_url():
 
 
 def test_inherited_normal_url():
-    cs = _("""
+    app = _("""
     
         [foo: /a/]
         [foo->boo: /b/]
     """)
 
-    assert len(cs.pages) == 2
+    assert len(app.pages) == 2
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
 
     assert boo.uri == '/b/'
 
 
 def test_inherited_local_url():
-    cs = _("""
+    app = _("""
     
         [foo: /a/]
         [foo->boo: ./b/]
     """)
 
-    assert len(cs.pages) == 2
+    assert len(app.pages) == 2
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
 
     assert boo.uri == '/a/b/'
 
 
 def test_inherited_local_url_i18n():
-    cs = _("""
+    app = _("""
     
         @langs(en, ru)
 
@@ -173,32 +173,32 @@ def test_inherited_local_url_i18n():
         [foo->boo: ./b/]
     """)
 
-    assert len(cs.pages) == 2
+    assert len(app.pages) == 2
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
 
     assert boo.uri == '/a/b/'
     assert boo.i18n is True
 
 
 def test_page_code():
-    cs = _("""
+    app = _("""
 
         [boo] {
             That's my code!
         }
     """)
 
-    assert len(cs.pages) == 1
+    assert len(app.pages) == 1
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
 
     assert boo.name == 'boo'
     assert boo.page_code == "That's my code!\n"
 
 
 def test_page_items():
-    cs = _("""
+    app = _("""
 
         [boo]
         lala:= 123
@@ -206,9 +206,9 @@ def test_page_items():
         sitemap:= 321
     """)
 
-    assert len(cs.pages) == 1
+    assert len(app.pages) == 1
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
 
     assert len(boo.page_items) == 2
     assert boo.page_items['lala'].expression == '123'
@@ -219,7 +219,7 @@ def test_page_items():
 
 
 def test_page_func():
-    cs = _("""
+    app = _("""
 
         [boo]
         lala:= 123
@@ -233,9 +233,9 @@ def test_page_func():
         }
     """)
 
-    assert len(cs.pages) == 1
+    assert len(app.pages) == 1
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
 
     assert len(boo.functions) == 2
     assert boo.functions['loo'].args == []
@@ -248,7 +248,7 @@ def test_page_func():
 
 
 def test_page_func_url_and_request():
-        cs = _("""
+        app = _("""
 
             [boo]
             lala:= 123
@@ -260,9 +260,9 @@ def test_page_func_url_and_request():
             }
         """)
 
-        assert len(cs.pages) == 1
+        assert len(app.pages) == 1
 
-        boo = cs.pages['boo']
+        boo = app.pages['boo']
 
         assert len(boo.functions) == 2
         assert boo.functions['loo'].args == []
@@ -277,7 +277,7 @@ def test_page_func_url_and_request():
 
 
 def test_page_func_imported():
-    cs = _("""
+    app = _("""
 
         [boo]
         lala:= 123
@@ -286,9 +286,9 @@ def test_page_func_imported():
         zoo(hoho, abc)
     """)
 
-    assert len(cs.pages) == 1
+    assert len(app.pages) == 1
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
 
     assert len(boo.functions) == 2
     assert boo.functions['loo'].args == []

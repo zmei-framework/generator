@@ -11,7 +11,7 @@ class GetPageExtra(PageExtra):
 class GetPageExtraParserListener(BaseListener):
 
     def enterAn_get(self, ctx: ZmeiLangParser.An_getContext):
-        self.collection_set.extras.append(
+        self.application.extras.append(
             GetPageExtra(self.page)
         )
 

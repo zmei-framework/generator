@@ -2,7 +2,7 @@
 {% endfor %}
 _(t) => t;  // mock translations
 
-{% for cname, col in collection_set.collections.items() %}
+{% for cname, col in application.models.items() %}
 class {{ col.class_name }} {
 
     {{ col.class_name }}({ {% for field in col.fields.values() %}

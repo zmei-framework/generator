@@ -9,7 +9,7 @@
 #
 # from pytest_forked import forked_run_report
 #
-# from zmei_generator.generator.collections import generate, generate_common_files
+# from zmei_generator.generator.models import generate, generate_common_files
 # from zmei_generator.parser.parser import ZmeiParser
 #
 # skeleton_dir = os.path.join(os.path.dirname(__file__), 'zmei_generator/cli/skeleton')
@@ -68,19 +68,19 @@
 #
 #         parser = ZmeiParser()
 #
-#         collection_set_name = colmarker.args[0]
+#         application_name = colmarker.args[0]
 #         if len(colmarker.args) > 1:
 #             parser.parse_string(colmarker.args[1])
 #         else:
-#             col_file = '{}/{}.col'.format(samples_dir, collection_set_name)
+#             col_file = '{}/{}.col'.format(samples_dir, application_name)
 #             parser.parse_file(col_file)
 #
-#         collection_set = parser.populate_collection_set(collection_set_name)
+#         application = parser.populate_application(application_name)
 #
-#         copy('{}/dev.db'.format(files_dir), '{}/dev.db'.format(work_dir, collection_set_name))
+#         copy('{}/dev.db'.format(files_dir), '{}/dev.db'.format(work_dir, application_name))
 #
-#         generate_common_files(work_dir, skeleton_dir, {collection_set_name: collection_set})
-#         generate(work_dir, collection_set_name, collection_set)
+#         generate_common_files(work_dir, skeleton_dir, {application_name: application})
+#         generate(work_dir, application_name, application)
 #
 #         os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.settings')
 #
@@ -91,7 +91,7 @@
 #
 #         for command in commands_before:
 #             if command == 'migrate':
-#                 call_django_command('makemigrations {}'.format(collection_set_name), work_dir)
+#                 call_django_command('makemigrations {}'.format(application_name), work_dir)
 #
 #             if command == 'install':
 #                 continue

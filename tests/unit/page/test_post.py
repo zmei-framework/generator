@@ -7,23 +7,23 @@ from zmei_generator.parser.parser import ZmeiParser
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 
 def test_page_post():
-    cs = _("""
+    app = _("""
 
         [boo]
         @post
     """)
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
 
     assert boo.allow_post is True
 
 
 def test_page_post_with_code():
-    cs = _("""
+    app = _("""
 
         [boo]
         @post {
@@ -31,7 +31,7 @@ def test_page_post_with_code():
         }
     """)
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
 
     assert boo.allow_post is True
     assert boo.page_code == '\nif request.method == "POST":\n    lala'

@@ -1,6 +1,6 @@
 
-collection_set = {
-    'an_channels': 'CsExtraChannels.g4',
+application = {
+    'an_channels': 'AppExtraChannels.g4',
 }
 
 models = {}

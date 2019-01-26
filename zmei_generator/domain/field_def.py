@@ -1,4 +1,4 @@
-from zmei_generator.domain.collection_def import CollectionDef
+from zmei_generator.domain.model_def import ModelDef
 
 
 class FieldConfig(object):
@@ -17,7 +17,7 @@ class FieldConfig(object):
 
 
 class FieldDef(object):
-    def __init__(self, collection: CollectionDef, field: FieldConfig) -> None:
+    def __init__(self, model: ModelDef, field: FieldConfig) -> None:
         super().__init__()
 
         self.type_name = field.type_name
@@ -25,7 +25,7 @@ class FieldDef(object):
         self.verbose_name = field.verbose_name
         self.help = field.field_help
 
-        self.collection = collection
+        self.model = model
         self.required = field.required
         self.not_null = field.not_null
         self.unique = field.unique
@@ -42,8 +42,8 @@ class FieldDef(object):
         self.extra_args_append = False
 
         if self.translatable:
-            collection.translatable = True
-            collection.collection_set.translatable = True
+            model.translatable = True
+            model.application.translatable = True
 
         self.options = field.type_opts
 
@@ -104,7 +104,7 @@ class FieldDef(object):
     def get_rest_field(self):
         return None
 
-    def get_rest_inline_collection(self):
+    def get_rest_inline_model(self):
         return None
 
     def get_required_apps(self):

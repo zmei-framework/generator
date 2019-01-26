@@ -11,7 +11,7 @@ class SortableModelExtra(ModelExtra):
 class SortableModelExtraParserListener(BaseListener):
 
     def enterAn_sortable(self, ctx: ZmeiLangParser.An_sortableContext):
-        self.collection_set.extras.append(
+        self.application.extras.append(
             SortableModelExtra(self.model)
         )
 

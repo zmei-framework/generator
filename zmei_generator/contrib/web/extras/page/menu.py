@@ -1,4 +1,4 @@
-from zmei_generator.domain.collection_set_def import CollectionSetDef
+from zmei_generator.domain.application_def import ApplicationDef
 from zmei_generator.domain.extras import PageExtra
 from zmei_generator.contrib.web.extras.page.block import InlineTemplatePageBlock
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
@@ -22,13 +22,13 @@ class MenuPageExtra(PageExtra):
 
     def render_ref(self, item):
         if item.page:
-            page = self.page.collection_set.resolve_page(item.page)
+            page = self.page.application.resolve_page(item.page)
 
             self.page_refs.append(
                 (item.page, item.ref, page)
             )
 
-            return f"{page.collection_set.app_name}.{page.name}"
+            return f"{page.application.app_name}.{page.name}"
 
     def render_url(self, item):
         if item.page:
@@ -86,8 +86,8 @@ class MenuItem(object):
 
 
 class MenuPageExtraParserListener(BaseListener):
-    def __init__(self, collection_set: CollectionSetDef) -> None:
-        super().__init__(collection_set)
+    def __init__(self, application: ApplicationDef) -> None:
+        super().__init__(application)
 
         self.menu = None
         self.menu_item = None
@@ -95,7 +95,7 @@ class MenuPageExtraParserListener(BaseListener):
     def enterAn_menu(self, ctx: ZmeiLangParser.An_menuContext):
         self.menu = MenuPageExtra(self.page)
 
-        self.collection_set.extras.append(
+        self.application.extras.append(
             self.menu
         )
 

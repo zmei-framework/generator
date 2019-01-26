@@ -11,7 +11,7 @@ class MixinModelExtra(ModelExtra):
 class MixinModelExtraParserListener(BaseListener):
 
     def enterAn_mixin(self, ctx: ZmeiLangParser.An_mixinContext):
-        self.collection_set.extras.append(
+        self.application.extras.append(
             MixinModelExtra(self.model)
         )
 

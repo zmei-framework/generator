@@ -1,7 +1,7 @@
 
 {{ imports }}
 
-{% for cname, col in collections %}
+{% for cname, col in models %}
 class {{ col.class_name }}TranslationOptions(TranslationOptions):
     """
     {{ col.class_name }} TranslationOptions

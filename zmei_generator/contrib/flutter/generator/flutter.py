@@ -7,42 +7,42 @@ from zmei_generator.generator.utils import generate_file, to_camel_case, format_
 
 
 def generate(target_path, app):
-    apps = app.collection_sets
-    # for app_name, collection_set in app.collection_sets.items():
+    apps = app.applications
+    # for app_name, application in app.applications.items():
 
     generate_file(target_path, 'flutter/pubspec.yaml', 'flutter.pubspec.yaml.tpl')
     generate_file(target_path, 'flutter/lib/main.dart', 'flutter.main.dart.tpl', {
         'host': os.environ.get('ZMEI_SERVER_HOST')
     })
 
-    for app_name, collection_set in apps.items():
+    for app_name, application in apps.items():
 
-        if collection_set.collections:
+        if application.models:
             imports = set()
-            for col in collection_set.collections.values():
+            for col in application.models.values():
                 for field in col.fields.values():
 
-                    if isinstance(field, ReferenceField) and field.target_collection:
-                        if field.target_collection.collection_set != collection_set:
-                            imports.add(field.target_collection.collection_set.app_name)
+                    if isinstance(field, ReferenceField) and field.target_model:
+                        if field.target_model.application != application:
+                            imports.add(field.target_model.application.app_name)
 
-                    elif isinstance(field, RelationDef) and field.ref_collection:
-                        if field.ref_collection.collection_set != collection_set:
-                            imports.add(field.ref_collection.collection_set.app_name)
+                    elif isinstance(field, RelationDef) and field.ref_model:
+                        if field.ref_model.application != application:
+                            imports.add(field.ref_model.application.app_name)
 
             generate_file(
                 target_path,
                 f'flutter/lib/src/models/{app_name}.dart',
                 'flutter.model.dart.tpl', {
                     'app_name': app_name,
-                    'collection_set': collection_set,
+                    'application': application,
                     'to_camel_case': to_camel_case,
                     'imports': imports
                 }
             )
 
-        if collection_set.flutter:
-            for name, page in collection_set.pages.items():
+        if application.flutter:
+            for name, page in application.pages.items():
                 if page.flutter:
                     imports = set()
 
@@ -50,10 +50,10 @@ def generate(target_path, app):
                     for item_name in page.own_item_names:
                         item = page.page_items[item_name]
 
-                        if item.collection_name:
-                            col = collection_set.resolve_collection(item.collection_name)
-                            if col.collection_set != collection_set:
-                                imports.add(col.collection_set.app_name)
+                        if item.model_name:
+                            col = application.resolve_model(item.model_name)
+                            if col.application != application:
+                                imports.add(col.application.app_name)
 
                             page_items[item_name] = (item, col)
                         else:
@@ -64,7 +64,7 @@ def generate(target_path, app):
                         f'flutter/lib/src/pages/{app_name}/{name}.dart',
                         'flutter.page.dart.tpl', {
                             'app_name': app_name,
-                            'app': collection_set,
+                            'app': application,
                             'page': page,
                             'page_items': page_items,
                             'imports': imports,
@@ -78,7 +78,7 @@ def generate(target_path, app):
                         f'flutter/lib/src/pages/{app_name}/{name}_ui.dart',
                         'flutter.page.ui.dart.tpl', {
                             'app_name': app_name,
-                            'app': collection_set,
+                            'app': application,
                             'page': page,
                             'to_camel_case': to_camel_case,
                             'to_camel_case_classname': to_camel_case_classname,

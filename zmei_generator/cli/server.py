@@ -9,16 +9,16 @@ from shutil import rmtree, copytree, copyfile
 
 import pkg_resources
 
-from zmei_generator.generator.application import ZmeiAppParser
+from zmei_generator.generator.application import ZmeiProjectParser
 from zmei_generator.generator.utils import StopGenerator
 
 
-def zmei_generate(zip_bytes, collections):
+def zmei_generate(zip_bytes, models):
 
     with tempfile.TemporaryDirectory() as target_path:
         request_files = extract_files(target_path, zip_bytes)
 
-        do_generate(target_path, collections)
+        do_generate(target_path, models)
 
         zip_file = collect_files(target_path, request_files)
 
@@ -50,10 +50,10 @@ def collect_files(target_path, request_files):
     return f
 
 
-def do_generate(target_path, collections):
-    app_parser = ZmeiAppParser()
+def do_generate(target_path, models):
+    app_parser = ZmeiProjectParser()
 
-    for app_name in collections:
+    for app_name in models:
         filename = '{}.col'.format(app_name)
 
         if not os.path.exists(os.path.join(target_path, 'col/' + filename)):
@@ -65,7 +65,7 @@ def do_generate(target_path, collections):
         with open(os.path.join(target_path, filename)) as f:
             app_parser.add_file(filename, f.read())
 
-        # collection_set = parser.populate_collection_set_and_errors(app_name)
+        # application = parser.populate_application_and_errors(app_name)
 
     application = app_parser.parse()
 

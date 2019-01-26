@@ -1,6 +1,6 @@
 
-collection_set = {
-    'an_suit': 'CsExtraSuit.g4',
+application = {
+    'an_suit': 'AppExtraSuit.g4',
 }
 
 models = {

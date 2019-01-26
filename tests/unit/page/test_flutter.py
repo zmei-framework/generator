@@ -7,11 +7,11 @@ from zmei_generator.parser.parser import ZmeiParser
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 
 def test_page_flutter():
-    cs = _("""
+    app = _("""
 
         [boo]
         @flutter
@@ -21,17 +21,17 @@ def test_page_flutter():
         lala
     """)
 
-    assert len(cs.pages) == 1
+    assert len(app.pages) == 1
 
-    assert cs.flutter is True
-    boo = cs.pages['boo']
+    assert app.flutter is True
+    boo = app.pages['boo']
 
     assert boo.name == 'boo'
     assert isinstance(boo.flutter, FlutterPageExtra)
 
 
 def test_page_flutter_parent_is_also_flutter():
-    cs = _("""
+    app = _("""
     
         [foo]
 
@@ -43,11 +43,11 @@ def test_page_flutter_parent_is_also_flutter():
         lala
     """)
 
-    assert len(cs.pages) == 2
+    assert len(app.pages) == 2
 
-    assert cs.flutter is True
-    boo = cs.pages['boo']
-    foo = cs.pages['foo']
+    assert app.flutter is True
+    boo = app.pages['boo']
+    foo = app.pages['foo']
 
     assert boo.name == 'boo'
     assert isinstance(boo.flutter, FlutterPageExtra)
@@ -55,7 +55,7 @@ def test_page_flutter_parent_is_also_flutter():
 
 
 def test_page_flutter_child_if_not_marked():
-    cs = _("""
+    app = _("""
     
         [foo]
         @flutter()
@@ -63,11 +63,11 @@ def test_page_flutter_child_if_not_marked():
         [foo->boo]
     """)
 
-    assert len(cs.pages) == 2
+    assert len(app.pages) == 2
 
-    assert cs.flutter is True
-    foo = cs.pages['foo']
-    boo = cs.pages['boo']
+    assert app.flutter is True
+    foo = app.pages['foo']
+    boo = app.pages['boo']
 
     assert boo.name == 'boo'
     assert isinstance(foo.flutter, FlutterPageExtra)
@@ -76,7 +76,7 @@ def test_page_flutter_child_if_not_marked():
 
 
 def test_page_flutter_child_if_marked():
-    cs = _("""
+    app = _("""
     
         [foo]
         @flutter(child: true)
@@ -84,11 +84,11 @@ def test_page_flutter_child_if_marked():
         [foo->boo]
     """)
 
-    assert len(cs.pages) == 2
+    assert len(app.pages) == 2
 
-    assert cs.flutter is True
-    foo = cs.pages['foo']
-    boo = cs.pages['boo']
+    assert app.flutter is True
+    foo = app.pages['foo']
+    boo = app.pages['boo']
 
     assert boo.name == 'boo'
     assert isinstance(foo.flutter, FlutterPageExtra)
@@ -98,7 +98,7 @@ def test_page_flutter_child_if_marked():
 
 
 def test_page_flutter_child_if_marked_deeper():
-    cs = _("""
+    app = _("""
     
         [foo]
         @flutter(child: true)
@@ -107,12 +107,12 @@ def test_page_flutter_child_if_marked_deeper():
         [boo->zoo]
     """)
 
-    assert len(cs.pages) == 3
+    assert len(app.pages) == 3
 
-    assert cs.flutter is True
-    foo = cs.pages['foo']
-    boo = cs.pages['boo']
-    zoo = cs.pages['zoo']
+    assert app.flutter is True
+    foo = app.pages['foo']
+    boo = app.pages['boo']
+    zoo = app.pages['zoo']
 
     assert boo.name == 'boo'
     assert isinstance(foo.flutter, FlutterPageExtra)

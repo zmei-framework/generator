@@ -7,11 +7,11 @@ from zmei_generator.parser.parser import ZmeiParser
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 
 def test_page_priority_default():
-    cs = _("""
+    app = _("""
 
         [boo]
         @markdown {
@@ -27,9 +27,9 @@ def test_page_priority_default():
         lala
     """)
 
-    assert len(cs.pages) == 1
+    assert len(app.pages) == 1
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
 
     assert boo.name == 'boo'
     assert len(boo.blocks['content']) == 3
@@ -48,7 +48,7 @@ def test_page_priority_default():
 
 
 def test_page_priority_before_after():
-    cs = _("""
+    app = _("""
 
         [boo]
         @markdown {
@@ -64,9 +64,9 @@ def test_page_priority_before_after():
         lala
     """)
 
-    assert len(cs.pages) == 1
+    assert len(app.pages) == 1
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
 
     assert boo.name == 'boo'
     assert len(boo.blocks['content']) == 3
@@ -86,7 +86,7 @@ def test_page_priority_before_after():
 
 
 def test_page_priority_markdown_and_crud():
-    cs = _("""
+    app = _("""
 
         [boo: /]
         @markdown {
@@ -99,8 +99,8 @@ def test_page_priority_markdown_and_crud():
         lala
     """)
 
-    assert len(cs.pages) == 1
+    assert len(app.pages) == 1
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
 
     assert isinstance(boo.blocks['content'][0], InlineTemplatePageBlock)

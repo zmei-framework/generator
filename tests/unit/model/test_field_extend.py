@@ -7,11 +7,11 @@ from zmei_generator.parser.parser import ZmeiParser
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 
 def test_extend():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
@@ -23,7 +23,7 @@ def test_extend():
     
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
     field_abc = boo.fields['abc'].prepare_field_arguemnts({'max_length': 255})
     field_cda = boo.fields['cda'].prepare_field_arguemnts({'max_length': 100})
     field_efg = boo.fields['efg'].prepare_field_arguemnts({'max_length': 100})

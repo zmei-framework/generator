@@ -7,11 +7,11 @@ from zmei_generator.parser.parser import ZmeiParser
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 
 def test_page_react():
-    cs = _("""
+    app = _("""
 
         [boo]
         @react {
@@ -23,9 +23,9 @@ def test_page_react():
         lala
     """)
 
-    assert len(cs.pages) == 1
+    assert len(app.pages) == 1
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
 
     assert boo.name == 'boo'
     assert boo.blocks['content'][0].source == "<Foo>test</Foo>"
@@ -39,7 +39,7 @@ def test_page_react():
     ("react_server", False, True),
 ])
 def test_page_react_type(extra_type_name, client_enabled, server_enabled):
-    cs = _(f"""
+    app = _(f"""
 
         [boo]
         @{extra_type_name} {{
@@ -47,14 +47,14 @@ def test_page_react_type(extra_type_name, client_enabled, server_enabled):
         }}
     """)
 
-    page_boo = cs.pages['boo']
+    page_boo = app.pages['boo']
     assert page_boo.react is True
     assert page_boo.react_client is client_enabled
     assert page_boo.react_server is server_enabled
 
 
 def test_page_react_another_area():
-    cs = _("""
+    app = _("""
 
         [boo]
         @react.foo {
@@ -66,9 +66,9 @@ def test_page_react_another_area():
         lala
     """)
 
-    assert len(cs.pages) == 1
+    assert len(app.pages) == 1
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
 
     assert boo.name == 'boo'
     assert boo.blocks['foo'][0].source == "<Foo>test</Foo>"

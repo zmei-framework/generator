@@ -6,32 +6,32 @@ from zmei_generator.parser.parser import ZmeiParser
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 
 def test_theme_default():
-    cs = _("""
+    app = _("""
         
     """)
 
-    assert cs.theme is None
-    assert cs.theme_install is False
+    assert app.theme is None
+    assert app.theme_install is False
 
 
 def test_theme_change():
-    cs = _("""
+    app = _("""
         @theme(bluma)
     """)
 
-    assert cs.theme == 'bluma'
-    assert cs.theme_install is False
+    assert app.theme == 'bluma'
+    assert app.theme_install is False
 
 
 def test_theme_change_install():
-    cs = _("""
+    app = _("""
         @theme(bluma, install=true)
     """)
 
-    assert cs.theme == 'bluma'
-    assert cs.theme_install is True
+    assert app.theme == 'bluma'
+    assert app.theme_install is True
 

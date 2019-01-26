@@ -1,5 +1,5 @@
-from zmei_generator.domain.collection_def import CollectionDef
-from zmei_generator.domain.collection_set_def import FieldDeclaration
+from zmei_generator.domain.model_def import ModelDef
+from zmei_generator.domain.application_def import FieldDeclaration
 from zmei_generator.domain.reference_field import ReferenceField
 from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
 from zmei_generator.domain.field_def import FieldDef
@@ -7,32 +7,32 @@ from zmei_generator.generator.utils import gen_args
 
 
 class RelationDef(FieldDef):
-    def __init__(self, collection: CollectionDef, field) -> None:
-        super().__init__(collection, field)
+    def __init__(self, model: ModelDef, field) -> None:
+        super().__init__(model, field)
 
-        self.ref_collection_def = None  # raw data
+        self.ref_model_def = None  # raw data
 
         # filled in post process
         self.related_name = None
-        self.ref_collection = None
+        self.ref_model = None
         self.related_class = None
         self.related_app = None
         self.on_delete = 'PROTECT'
 
     def post_process(self):
 
-        if self.ref_collection_def:
-            ref_collection = self.collection.collection_set.resolve_collection(self.ref_collection_def)
+        if self.ref_model_def:
+            ref_model = self.model.application.resolve_model(self.ref_model_def)
 
-            self.ref_collection = ref_collection
-            self.related_class = f'{ref_collection.collection_set.app_name}.{ref_collection.class_name}'
+            self.ref_model = ref_model
+            self.related_class = f'{ref_model.application.app_name}.{ref_model.class_name}'
 
-        if self.ref_collection and self.related_name in self.ref_collection.fields:
+        if self.ref_model and self.related_name in self.ref_model.fields:
             raise ValidationException('Can not override field with related field: {}'.format(self.related_name))
 
-        if self.ref_collection and self.related_name:
-            self.ref_collection.fields[self.related_name] = \
-                ReferenceField(self.ref_collection, self.collection, self.related_name, self)
+        if self.ref_model and self.related_name:
+            self.ref_model.fields[self.related_name] = \
+                ReferenceField(self.ref_model, self.model, self.related_name, self)
 
     @property
     def qualifier(self):
@@ -53,8 +53,8 @@ class RelationDef(FieldDef):
     def get_rest_field(self):
         return None
 
-    def get_rest_inline_collection(self):
-        return self.ref_collection
+    def get_rest_inline_model(self):
+        return self.ref_model
 
 
 class RelationOneDef(RelationDef):
@@ -65,14 +65,14 @@ class RelationOneDef(RelationDef):
         return args
 
     def get_flutter_field(self):
-        if self.ref_collection:
-            return f'{self.ref_collection.class_name}'
+        if self.ref_model:
+            return f'{self.ref_model.class_name}'
         else:
             return 'dynamic'
 
     def get_flutter_from_json(self, name):
-        if self.ref_collection:
-            return f"{self.ref_collection.class_name}.fromJson(data['{name}'])"
+        if self.ref_model:
+            return f"{self.ref_model.class_name}.fromJson(data['{name}'])"
         else:
             return f"data['{name}']"
 
@@ -85,7 +85,7 @@ class RelationOneDef(RelationDef):
         )
 
     def get_admin_widget(self):
-        if not self.collection.collection_set.features.cratis:
+        if not self.model.application.features.cratis:
             return None
         return FieldDeclaration(
             [('django_select2.forms', 'Select2Widget')],
@@ -108,14 +108,14 @@ class RelationOneDef(RelationDef):
 class RelationOne2OneDef(RelationDef):
 
     def get_flutter_field(self):
-        if self.ref_collection:
-            return f'{self.ref_collection.class_name}'
+        if self.ref_model:
+            return f'{self.ref_model.class_name}'
         else:
             return 'dynamic'
 
     def get_flutter_from_json(self, name):
-        if self.ref_collection:
-            return f"{self.ref_collection.class_name}.fromJson(data['{name}'])"
+        if self.ref_model:
+            return f"{self.ref_model.class_name}.fromJson(data['{name}'])"
         else:
             return f"data['{name}']"
 
@@ -128,7 +128,7 @@ class RelationOne2OneDef(RelationDef):
         )
 
     def get_admin_widget(self):
-        if not self.collection.collection_set.features.cratis:
+        if not self.model.application.features.cratis:
             return None
         return FieldDeclaration(
             [('django_select2.forms', 'Select2Widget')],
@@ -151,14 +151,14 @@ class RelationOne2OneDef(RelationDef):
 class RelationManyDef(RelationDef):
 
     def get_flutter_field(self):
-        if self.ref_collection:
-            return f'List<{self.ref_collection.class_name}>'
+        if self.ref_model:
+            return f'List<{self.ref_model.class_name}>'
         else:
             return 'dynamic'
 
     def get_flutter_from_json(self, name):
-        if self.ref_collection:
-            return f"data['{name}'].map<{self.ref_collection.class_name}>((item) => {self.ref_collection.class_name}.fromJson(item)).toList()"
+        if self.ref_model:
+            return f"data['{name}'].map<{self.ref_model.class_name}>((item) => {self.ref_model.class_name}.fromJson(item)).toList()"
         else:
             return f"data['{name}']"
 
@@ -174,7 +174,7 @@ class RelationManyDef(RelationDef):
         )
 
     def get_admin_widget(self):
-        if not self.collection.collection_set.features.cratis:
+        if not self.model.application.features.cratis:
             return None
 
         return FieldDeclaration(

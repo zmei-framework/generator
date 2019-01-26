@@ -8,11 +8,11 @@ from zmei_generator.parser.parser import ZmeiParser
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 
 def test_rest_empty():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
@@ -23,20 +23,20 @@ def test_rest_empty():
     
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert isinstance(boo.rest, RestModelExtra)
     assert isinstance(boo.rest_conf['_'], RestSerializerConfig)
 
-    assert cs.rest is True
-    assert boo.rest in cs.extras
+    assert app.rest is True
+    assert boo.rest in app.extras
 
     assert boo.rest_conf['_'].serializer_name == boo.class_name
     assert boo.rest_conf['_'].parent_field is None
 
 
 def test_rest_descriminator():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
@@ -47,19 +47,19 @@ def test_rest_descriminator():
     
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert isinstance(boo.rest, RestModelExtra)
     assert isinstance(boo.rest_conf['foo'], RestSerializerConfig)
 
-    assert cs.rest is True
-    assert boo.rest in cs.extras
+    assert app.rest is True
+    assert boo.rest in app.extras
 
     assert boo.rest_conf['foo'].serializer_name == boo.class_name + 'Foo'
 
 
 def test_rest_discriminator_multiple():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
@@ -71,14 +71,14 @@ def test_rest_discriminator_multiple():
     
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert boo.rest_conf['_'].serializer_name == boo.class_name
     assert boo.rest_conf['foo'].serializer_name == boo.class_name + 'Foo'
 
 
 def test_rest_fields_field_names():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
@@ -95,19 +95,19 @@ def test_rest_fields_field_names():
     
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert boo.rest_conf['_'].descriptor == '_'
     assert boo.rest_conf['_'].descriptor_suffix == ''
-    assert boo.rest_conf['_'].collection == boo
+    assert boo.rest_conf['_'].model == boo
 
     assert boo.rest_conf['boo'].descriptor == 'boo'
     assert boo.rest_conf['boo'].descriptor_suffix == '_boo'
-    assert boo.rest_conf['boo'].collection == boo
+    assert boo.rest_conf['boo'].model == boo
 
     assert boo.rest_conf['one'].descriptor == 'one'
     assert boo.rest_conf['one'].descriptor_suffix == '_one'
-    assert boo.rest_conf['boo'].collection == boo
+    assert boo.rest_conf['boo'].model == boo
 
     assert [x.name for x in boo.rest_conf['_'].fields] == ['abc', 'cda']
     assert [x.name for x in boo.rest_conf['boo'].fields] == ['abc', 'cda']
@@ -123,7 +123,7 @@ def test_rest_fields_field_names():
 
 
 def test_rest_fields_read_only():
-    cs = _("""
+    app = _("""
 
         #boo
         ----------
@@ -141,14 +141,14 @@ def test_rest_fields_read_only():
 
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert [x.name for x in boo.rest_conf['_'].fields] == ['abc', 'cda', 'efg']
     assert boo.rest_conf['_'].read_only_fields == ['cda', 'efg']
 
 
 def test_rest_fields_simple():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
@@ -162,13 +162,13 @@ def test_rest_fields_simple():
     
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert boo.rest_conf['_'].field_names == ['id', 'cat', 'dog', 'bird']
 
 
 def test_rest_i18n():
-    cs = _("""
+    app = _("""
 
         #boo
         ----------
@@ -185,7 +185,7 @@ def test_rest_i18n():
 
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert boo.rest_conf['yes'].i18n is True
     assert boo.rest_conf['no'].i18n is False
@@ -193,7 +193,7 @@ def test_rest_i18n():
 
 
 def test_rest_mode():
-    cs = _("""
+    app = _("""
 
         #boo
         ----------
@@ -213,7 +213,7 @@ def test_rest_mode():
 
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert boo.rest_conf['r'].rest_mode == 'r'
     assert boo.rest_conf['rw'].rest_mode == 'rw'
@@ -222,7 +222,7 @@ def test_rest_mode():
 
 
 def test_user_field():
-    cs = _("""
+    app = _("""
 
         #boo
         ----------
@@ -236,14 +236,14 @@ def test_user_field():
 
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert boo.rest_conf['default'].user_field is None
     assert boo.rest_conf['yes'].user_field == 'abc'
 
 
 def test_query():
-    cs = _("""
+    app = _("""
 
         #boo
         ----------
@@ -257,14 +257,14 @@ def test_query():
 
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert boo.rest_conf['default'].query == 'all()'
     assert boo.rest_conf['yes'].query == 'filter(a=123)'
 
 
 def test_on_create():
-    cs = _("""
+    app = _("""
 
         #boo
         ----------
@@ -284,7 +284,7 @@ def test_on_create():
 
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert boo.rest_conf['default'].on_create == ''
     assert boo.rest_conf['yes'].on_create == '3 + 3 = 4'
@@ -292,7 +292,7 @@ def test_on_create():
 
 
 def test_filter_in():
-        cs = _("""
+        app = _("""
 
             #boo
             ----------
@@ -312,7 +312,7 @@ def test_filter_in():
 
         """)
 
-        boo = cs.collections['boo']
+        boo = app.models['boo']
 
         assert boo.rest_conf['default'].filter_in == ''
         assert boo.rest_conf['yes'].filter_in == '3 + 3 = 4'
@@ -320,7 +320,7 @@ def test_filter_in():
 
 
 def test_filter_out():
-        cs = _("""
+        app = _("""
 
             #boo
             ----------
@@ -340,7 +340,7 @@ def test_filter_out():
 
         """)
 
-        boo = cs.collections['boo']
+        boo = app.models['boo']
 
         assert boo.rest_conf['default'].filter_out == ''
         assert boo.rest_conf['yes'].filter_out == '3 + 3 = 4'
@@ -348,7 +348,7 @@ def test_filter_out():
 
 
 def test_auth():
-    cs = _("""
+    app = _("""
     
         #my_token
         -----------
@@ -366,7 +366,7 @@ def test_auth():
 
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert boo.rest_conf['default'].auth_method_classes == []
     assert boo.rest_conf['default'].auth_methods == {}
@@ -382,7 +382,7 @@ def test_auth():
 
 
 def test_inline():
-    cs = _("""
+    app = _("""
 
         #other
         -----------
@@ -402,7 +402,7 @@ def test_inline():
         )
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert 'abc' in boo.rest_conf['_'].inlines
     assert len(boo.rest_conf['_'].extra_serializers) == 1
@@ -410,7 +410,7 @@ def test_inline():
     assert [x.name for x in boo.rest_conf['_'].extra_serializers[0].fields] == ['lala1', 'lala3']
 
 def test_inline_default():
-    cs = _("""
+    app = _("""
 
         #other
         -----------
@@ -428,7 +428,7 @@ def test_inline_default():
         )
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert 'abc' in boo.rest_conf['_'].inlines
     assert len(boo.rest_conf['_'].extra_serializers) == 1
@@ -437,7 +437,7 @@ def test_inline_default():
 
 
 def test_annotate():
-    cs = _("""
+    app = _("""
     
         #item
         ---------
@@ -452,13 +452,13 @@ def test_annotate():
         )
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert boo.rest_conf['_'].field_names == ['id', 'item_count', 'items']
 
 
 def test_publish_default():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
@@ -468,16 +468,16 @@ def test_publish_default():
         @rest
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
-    assert cs.api is True
+    assert app.api is True
     assert isinstance(boo.api, ApiModelExtra)
 
     assert list(boo.published_apis.keys()) == ['_']
 
 
 def test_publish_by_name():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
@@ -489,16 +489,16 @@ def test_publish_by_name():
         @rest.boo
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
-    assert cs.api is True
+    assert app.api is True
     assert isinstance(boo.api, ApiModelExtra)
 
     assert list(boo.published_apis.keys()) == ['foo', 'boo']
 
 
 def test_publish_default_one():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
@@ -510,16 +510,16 @@ def test_publish_default_one():
         @rest.boo
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
-    assert cs.api is True
+    assert app.api is True
     assert isinstance(boo.api, ApiModelExtra)
 
     assert list(boo.published_apis.keys()) == ['_']
 
 
 def test_publish_all():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
@@ -531,9 +531,9 @@ def test_publish_all():
         @rest.boo
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
-    assert cs.api is True
+    assert app.api is True
     assert isinstance(boo.api, ApiModelExtra)
 
     assert list(boo.published_apis.keys()) == ['_', 'foo', 'boo']

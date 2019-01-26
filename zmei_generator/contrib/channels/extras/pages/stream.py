@@ -1,8 +1,6 @@
-
-
 import re
 
-from zmei_generator.domain.collection_set_def import CollectionSetDef
+from zmei_generator.domain.application_def import ApplicationDef
 from zmei_generator.domain.extras import PageExtra
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
@@ -42,39 +40,38 @@ class StreamPageExtra(PageExtra):
 
 class StreamPageExtraParserListener(BaseListener):
 
-
-    def __init__(self, collection_set: CollectionSetDef) -> None:
-        super().__init__(collection_set)
+    def __init__(self, application: ApplicationDef) -> None:
+        super().__init__(application)
 
         self.stream_model = None
 
     def enterAn_stream(self, ctx: ZmeiLangParser.An_streamContext):
         stream = StreamPageExtra(self.page)
-        self.collection_set.extras.append(
+        self.application.extras.append(
             stream
         )
 
-        self.page.collection_set.channels = True
+        self.page.application.channels = True
         self.page.stream = stream
 
     def enterAn_stream_target_model(self, ctx: ZmeiLangParser.An_stream_target_modelContext):
         super().enterAn_stream_target_model(ctx)
 
-        model = StreamModel(self.page)
+        stream_model = StreamModel(self.page)
         target = ctx.getText()
 
         if target.startswith('#'):
-            collection = self.collection_set.resolve_collection(target[1:])
-            model.target = collection.class_name
-            self.page.imports.append((f'{collection.collection_set.app_name}.models', collection.class_name))
+            model = self.application.resolve_model(target[1:])
+            stream_model.target = model.class_name
+            self.page.imports.append((f'{model.application.app_name}.models', model.class_name))
         else:
-            model.target = target
+            stream_model.target = target
 
         self.page.stream.models.append(
-            model
+            stream_model
         )
 
-        self.stream_model = model
+        self.stream_model = stream_model
 
     def enterAn_stream_target_filter(self, ctx: ZmeiLangParser.An_stream_target_filterContext):
         self.stream_model.filter_expr = self._get_code(ctx)
@@ -86,7 +83,3 @@ class StreamPageExtraParserListener(BaseListener):
             self.stream_model.fields = [field_name]
         else:
             self.stream_model.fields.append(field_name)
-
-
-
-

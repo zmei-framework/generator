@@ -1,6 +1,6 @@
 import re
 
-from zmei_generator.domain.collection_set_def import CollectionSetDef
+from zmei_generator.domain.application_def import ApplicationDef
 from zmei_generator.domain.page_def import PageDef
 from zmei_generator.contrib.web.extras.page.crud import CrudField, CrudPageExtra
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
@@ -9,8 +9,8 @@ from zmei_generator.parser.utils import BaseListener
 
 class CrudBasePageExtraParserListener(BaseListener):
 
-    def __init__(self, collection_set: CollectionSetDef) -> None:
-        super().__init__(collection_set)
+    def __init__(self, application: ApplicationDef) -> None:
+        super().__init__(application)
 
         self.crud = None
         self.crud_field = None
@@ -19,10 +19,10 @@ class CrudBasePageExtraParserListener(BaseListener):
 
     def extra_start(self, cls, ctx):
         extra = cls(self.page)
-        self.collection_set.extras.append(
+        self.application.extras.append(
             extra
         )
-        self.collection_set.crud = True
+        self.application.crud = True
         if self.crud:
             self.crud_stack.append(self.crud)
         self.crud = extra
@@ -52,15 +52,15 @@ class CrudBasePageExtraParserListener(BaseListener):
 
         crud_page_name = f"{page.name}{name_suffix}_{crud_name}"
 
-        if crud_page_name not in page.collection_set.pages:
-            self.page = PageDef(self.collection_set, override=True)
+        if crud_page_name not in page.application.pages:
+            self.page = PageDef(self.application, override=True)
             self.page.page_items = {}
             self.page.parent_name = page.name
             self.page.name = crud_page_name
 
-            page.collection_set.pages[crud_page_name] = self.page
+            page.application.pages[crud_page_name] = self.page
         else:
-            self.page = page.collection_set.pages[crud_page_name]
+            self.page = page.application.pages[crud_page_name]
 
     def exitAn_crud_page_override(self, ctx: ZmeiLangParser.An_crud_page_overrideContext):
         self.page = self.page_stack.pop()

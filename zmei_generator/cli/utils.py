@@ -317,18 +317,18 @@ def get_watch_paths():
 
 
 def collect_app_names():
-    collections = []
+    models = []
 
     for filename in get_collect_paths():
         if os.path.isfile(filename) and filename.endswith('.col'):
             if not re.match('^(col/)?[a-zA-Z][a-zA-Z0-9_]+\.col$', filename):
-                print('Collection file has incorrect name: {}'.format(filename))
+                print('Model file has incorrect name: {}'.format(filename))
             if filename.startswith('col/'):
                 filename = filename[4:]
             app_name = filename[0:-4]
 
-            collections.append(app_name)
-    return collections
+            models.append(app_name)
+    return models
 
 
 def migrate_db(apps, features=None):
@@ -425,7 +425,7 @@ def remove_db(apps, features=None):
 
         filename = '{}.col'.format(app_name)
         if not os.path.exists(filename):
-            print('No such collection: {}'.format(app_name))
+            print('No such model: {}'.format(app_name))
         app_name = app_name
 
         print(colored('> ', 'white', 'on_blue'), 'Unapplying migrations')

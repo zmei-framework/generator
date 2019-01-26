@@ -3,12 +3,12 @@ from zmei_generator.generator.utils import generate_file
 
 
 def generate(target_path, app):
-    for app_name, collection_set in app.collection_sets.items():
+    for app_name, application in app.applications.items():
         index_imports = ImportSet()
 
         react_pages = []
 
-        for page in collection_set.pages.values():
+        for page in application.pages.values():
             if page.react:
                 for name, (imports, body, source) in page.react_components.items():
                     generate_file(target_path, 'react/src/{}/Components/{}.jsx'.format(app_name.capitalize(), name),
@@ -50,15 +50,15 @@ def generate(target_path, app):
 
         entries = {}
 
-        for app_name, collection_set in app.collection_sets.items():
-            if collection_set.react:
+        for app_name, application in app.applications.items():
+            if application.react:
                 # entries[app_name] = ["babel-polyfill", f'./src/{app_name.capitalize()}/index.jsx']
                 entries[app_name] = [f'./src/index.jsx']
 
         packages = {}
 
-        for app_name, collection_set in app.collection_sets.items():
-            packages.update(collection_set.react_deps)
+        for app_name, application in app.applications.items():
+            packages.update(application.react_deps)
 
         generate_file(target_path, 'react/package.json', 'package.json.tpl', {
             'packages': packages

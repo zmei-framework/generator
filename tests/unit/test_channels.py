@@ -7,27 +7,27 @@ from zmei_generator.parser.parser import ZmeiParser
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 
 def test_channels_enabled():
-    cs = _("""
+    app = _("""
 
         @channels
     """)
 
-    assert cs.channels is True
+    assert app.channels is True
 
 
 def test_channels_disabled():
-    cs = _("""
+    app = _("""
     """)
 
-    assert cs.channels is False
+    assert app.channels is False
 
 
 def test_channels_disabled_real_example():
-    cs = _("""
+    app = _("""
         [index: /]
         messages:= Message.objects.all()
         
@@ -50,4 +50,4 @@ def test_channels_disabled_real_example():
 
     """)
 
-    assert cs.channels is False
+    assert app.channels is False

@@ -6,11 +6,11 @@ from zmei_generator.parser.parser import ZmeiParser
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 
 def test_models():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
@@ -22,10 +22,10 @@ def test_models():
     
     """)
 
-    assert len(cs.collections) == 2
+    assert len(app.models) == 2
 
-    boo = cs.collections['boo']
-    foo = cs.collections['foo_bar']
+    boo = app.models['boo']
+    foo = app.models['foo_bar']
 
     assert boo.ref == 'boo'
     assert boo.short_ref == 'boo'
@@ -37,7 +37,7 @@ def test_models():
 
 
 def test_model_parents():
-    cs = _("""
+    app = _("""
 
         #boo
         ----------
@@ -53,15 +53,15 @@ def test_model_parents():
 
     """)
 
-    assert len(cs.collections) == 3
+    assert len(app.models) == 3
 
-    boo = cs.collections['boo']
-    foo = cs.collections['foo']
-    zoo = cs.collections['boo_zoo']
+    boo = app.models['boo']
+    foo = app.models['foo']
+    zoo = app.models['boo_zoo']
 
     assert boo.polymorphic
-    assert foo in boo.child_collections
-    assert zoo in boo.child_collections
+    assert foo in boo.child_models
+    assert zoo in boo.child_models
 
     assert foo.parent == boo
     assert zoo.parent == boo
@@ -71,7 +71,7 @@ def test_model_parents():
 
 
 def test_model_names():
-    cs = _("""
+    app = _("""
 
         #foo: "Сосиска редиска"
         ----------
@@ -83,10 +83,10 @@ def test_model_names():
 
     """)
 
-    assert len(cs.collections) == 2
+    assert len(app.models) == 2
 
-    foo = cs.collections['foo']
-    boo = cs.collections['boo']
+    foo = app.models['foo']
+    boo = app.models['boo']
 
     assert foo.ref == 'foo'
     assert foo.name == 'Сосиска редиска'
@@ -97,7 +97,7 @@ def test_model_names():
 
 
 def test_to_string():
-    cs = _("""
+    app = _("""
 
         #foo
         ----------
@@ -106,15 +106,15 @@ def test_to_string():
 
     """)
 
-    assert len(cs.collections) == 1
+    assert len(app.models) == 1
 
-    foo = cs.collections['foo']
+    foo = app.models['foo']
 
     assert foo.to_string == 'lolo {title}'
 
 
 def test_verbose_name():
-    cs = _("""
+    app = _("""
 
         #foo
         ----------
@@ -125,9 +125,9 @@ def test_verbose_name():
 
     """)
 
-    assert len(cs.collections) == 1
+    assert len(app.models) == 1
 
-    foo = cs.collections['foo']
+    foo = app.models['foo']
 
     assert foo.fields['title'].verbose_name == 'This is title'
     assert foo.fields['title2'].verbose_name == 'This is title2'
@@ -136,7 +136,7 @@ def test_verbose_name():
 
 
 def test_help():
-    cs = _("""
+    app = _("""
 
         #foo
         ----------
@@ -147,9 +147,9 @@ def test_help():
 
     """)
 
-    assert len(cs.collections) == 1
+    assert len(app.models) == 1
 
-    foo = cs.collections['foo']
+    foo = app.models['foo']
 
     assert foo.fields['title'].help == 'This is title'
     assert foo.fields['title2'].help == 'This is title2'
@@ -158,7 +158,7 @@ def test_help():
 
 
 def test_help_and_verbose_name():
-    cs = _("""
+    app = _("""
 
         #foo
         ----------
@@ -166,16 +166,16 @@ def test_help_and_verbose_name():
 
     """)
 
-    assert len(cs.collections) == 1
+    assert len(app.models) == 1
 
-    foo = cs.collections['foo']
+    foo = app.models['foo']
 
     assert foo.fields['title'].verbose_name == 'This is title'
     assert foo.fields['title'].help == 'Definitely is'
 
 
 def test_modifiers():
-    cs = _("""
+    app = _("""
         @langs(en)
 
         #foo
@@ -189,9 +189,9 @@ def test_modifiers():
 
     """)
 
-    assert len(cs.collections) == 1
+    assert len(app.models) == 1
 
-    foo = cs.collections['foo']
+    foo = app.models['foo']
 
     assert foo.fields['a'].translatable is True
     assert foo.fields['b'].display_field is True
@@ -202,7 +202,7 @@ def test_modifiers():
 
 
 def test_modifiers_all():
-    cs = _("""
+    app = _("""
         @langs(en)
 
         #foo
@@ -211,9 +211,9 @@ def test_modifiers_all():
 
     """)
 
-    assert len(cs.collections) == 1
+    assert len(app.models) == 1
 
-    foo = cs.collections['foo']
+    foo = app.models['foo']
 
     assert foo.translatable is True
 
@@ -226,7 +226,7 @@ def test_modifiers_all():
 
 
 def test_translatable_parent():
-    cs = _("""
+    app = _("""
         @langs(en)
 
         #foo
@@ -243,11 +243,11 @@ def test_translatable_parent():
 
     """)
 
-    assert len(cs.collections) == 3
+    assert len(app.models) == 3
 
-    foo = cs.collections['foo']
-    boo = cs.collections['boo']
-    zoo = cs.collections['zoo']
+    foo = app.models['foo']
+    boo = app.models['boo']
+    zoo = app.models['zoo']
 
     assert foo.translatable is True
     assert boo.translatable is True

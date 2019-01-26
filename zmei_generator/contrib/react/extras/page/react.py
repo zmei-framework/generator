@@ -25,7 +25,7 @@ class ReactPageExtraParserListener(BaseListener):
     def enterAn_react(self, ctx: ZmeiLangParser.An_reactContext):
         extra = ReactPageExtra(self.page)
 
-        self.collection_set.extras.append(extra)
+        self.application.extras.append(extra)
 
         extra.react_type = ctx.an_react_type().getText()
         extra.code = self._get_code(ctx)

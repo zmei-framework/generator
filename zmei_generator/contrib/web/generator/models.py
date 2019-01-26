@@ -1,42 +1,42 @@
-from zmei_generator.domain.collection_def import CollectionDef
-from zmei_generator.domain.collection_set_def import FieldDeclaration
+from zmei_generator.domain.model_def import ModelDef
+from zmei_generator.domain.application_def import FieldDeclaration
 from zmei_generator.domain.field_def import FieldDef
 from zmei_generator.generator.imports import ImportSet
 from zmei_generator.generator.utils import generate_file
 
 
 def generate(target_path, app):
-    for app_name, collection_set in app.collection_sets.items():
+    for app_name, application in app.applications.items():
         imports = ImportSet()
         imports.add('django.db', 'models')
 
-        for collection in collection_set.collections.values():  # type: CollectionDef
+        for model in application.models.values():  # type: ModelDef
 
-            for handlers, code in collection.signal_handlers:
+            for handlers, code in model.signal_handlers:
                 for signal_import in handlers:
                     imports.add('django.dispatch', 'receiver')
                     imports.add(*signal_import)
 
-            if collection.polymorphic and collection.tree:
+            if model.polymorphic and model.tree:
                 imports.add('polymorphic_tree.models', 'PolymorphicMPTTModel', 'PolymorphicTreeForeignKey')
             else:
-                if collection.polymorphic:
+                if model.polymorphic:
                     imports.add('polymorphic.models', 'PolymorphicModel')
 
-                if collection.tree:
+                if model.tree:
                     imports.add('mptt.models', 'MPTTModel', 'TreeForeignKey')
 
-            if collection.validators:
+            if model.validators:
                 imports.add('django.core.exceptions', 'ValidationError')
 
-            if collection.mixin_classes:
-                for import_decl in collection.mixin_classes:
+            if model.mixin_classes:
+                for import_decl in model.mixin_classes:
                     pkg, cls, alias = import_decl
                     if alias != cls:
                         cls = '{} as {}'.format(cls, alias)
                     imports.add(*(pkg, cls))
 
-            for field in collection.own_fields:  # type: FieldDef
+            for field in model.own_fields:  # type: FieldDef
                 model_field = field.get_model_field()
                 if model_field:
                     import_data, model_field = model_field  # type: FieldDeclaration
@@ -46,6 +46,6 @@ def generate(target_path, app):
 
         generate_file(target_path, '{}/models.py'.format(app_name), 'models.py.tpl', {
             'imports': imports.import_sting(),
-            'collection_set': collection_set,
-            'collections': collection_set.collections.items()
+            'application': application,
+            'models': application.models.items()
         })

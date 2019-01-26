@@ -31,7 +31,7 @@ text
 
 """)
 @pytest.mark.zmei_before('migrate')
-def test_page_with_collection():
+def test_page_with_model():
     from page1.views import Page1HomeView
     view = Page1HomeView(request=HttpRequest(), kwargs={})
 

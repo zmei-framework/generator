@@ -24,7 +24,7 @@ class PageFunction(object):
 
 
 class PageDef(object):
-    def __init__(self, collection_set, override=False) -> None:
+    def __init__(self, application, override=False) -> None:
         super().__init__()
 
         self.override = override
@@ -32,8 +32,8 @@ class PageDef(object):
         # self.raw_ = parse_result
         self._parent = None
 
-        """:type: CollectionSetDef"""
-        self.collection_set = collection_set
+        """:type: ApplicationDef"""
+        self.application = application
 
         self.rss = None
         self.auth = False
@@ -57,7 +57,7 @@ class PageDef(object):
 
         self.allow_post = False
 
-        if self.parent_name and self.parent_name not in self.collection_set.pages:
+        if self.parent_name and self.parent_name not in self.application.pages:
             raise ValidationException('Parent "{}" for page "{}" does not exist'.format(self.parent_name, self.name))
 
         self.uri_params = []
@@ -100,7 +100,7 @@ class PageDef(object):
         self.crud_overrides = {}
 
         self.page_items = {}
-        # extras = self.collection_set.parser.get_page_extras_available()
+        # extras = self.application.parser.get_page_extras_available()
 
         self.extras = []
 
@@ -200,7 +200,7 @@ class PageDef(object):
     def get_parent(self):
         if self.parent_name:
             if not self._parent:
-                self._parent = self.collection_set.resolve_page(self.parent_name)
+                self._parent = self.application.resolve_page(self.parent_name)
 
             return self._parent
 
@@ -310,7 +310,7 @@ class PageDef(object):
         if not self.parent_name:
             return 'TemplateView'
 
-        return self.collection_set.resolve_page(self.parent_name).view_name
+        return self.application.resolve_page(self.parent_name).view_name
 
     def get_imports(self):
         imports = self.imports
@@ -326,8 +326,8 @@ class PageDef(object):
         imports.append(('zmei.views', 'ZmeiDataViewMixin'))
 
         parent = self.get_parent()
-        if parent and parent.collection_set != self.collection_set:
-            imports.append((f'{parent.collection_set.app_name}.views', parent.view_name))
+        if parent and parent.application != self.application:
+            imports.append((f'{parent.application.app_name}.views', parent.view_name))
 
         return imports
 
@@ -372,7 +372,7 @@ class PageDef(object):
     @property
     def view_name(self):
         return '{}{}View'.format(
-            ''.join([x.capitalize() for x in self.collection_set.app_name.split('_')]),
+            ''.join([x.capitalize() for x in self.application.app_name.split('_')]),
             ''.join([x.capitalize() for x in self.name.split('_')])
         )
 
@@ -448,7 +448,7 @@ class PageDef(object):
         elif self.parsed_template_name:
             return '{}'.format(self.parsed_template_name)
         else:
-            return '{}/{}.html'.format(self.collection_set.app_name, self.name)
+            return '{}/{}.html'.format(self.application.app_name, self.name)
 
     def render_template_name_expr(self):
         if not self.template:

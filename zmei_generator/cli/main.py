@@ -180,7 +180,7 @@ def gen(auto=False,
 
 
         try:
-            files = zmei_generate(files, collections=app)
+            files = zmei_generate(files, models=app)
         except (NotImplementedError, ValidationError) as e:
             print(e)
             continue
@@ -189,7 +189,7 @@ def gen(auto=False,
             print(e.description)
             continue
 
-        # files = zmei.generate(files, collections=app)
+        # files = zmei.generate(files, models=app)
         # if up and os.path.exists('app/celery.py'):
         #     celery = True
 

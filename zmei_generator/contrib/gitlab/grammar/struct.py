@@ -1,6 +1,6 @@
 
-collection_set = {
-    'an_gitlab': 'CsExtraGitlab.g4',
+application = {
+    'an_gitlab': 'AppExtraGitlab.g4',
 }
 
 models = {}

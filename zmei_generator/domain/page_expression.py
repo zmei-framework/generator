@@ -18,10 +18,10 @@ class PageExpression(object):
 
         self.serialize = False
 
-        self.collection_name = None
-        self.collection_descriptor = None
-        self.collection_many = None
-        self.collection_dict = None
+        self.model_name = None
+        self.model_descriptor = None
+        self.model_many = None
+        self.model_dict = None
 
         if '@cached_as' in self.expression:
             self.cache_type = 'cached_as'
@@ -54,7 +54,7 @@ class PageExpression(object):
         if m:
             self.expression = self.expression.replace(m.group(0), '')
             self.serialize = True
-            self.collection_descriptor = m.group(2)
+            self.model_descriptor = m.group(2)
 
             self.or_404 = True
 
@@ -63,13 +63,13 @@ class PageExpression(object):
         if m:
             self.expression = self.expression.replace(m.group(0), '')
 
-            self.collection_name = m.group(1)
-            self.collection_many = m.group(3) == '[]'
-            self.collection_dict = m.group(3) == '{}'
+            self.model_name = m.group(1)
+            self.model_many = m.group(3) == '[]'
+            self.model_dict = m.group(3) == '{}'
 
         if self.serialize:
-            if self.collection_descriptor:
-                self.expression = f'serialize({self.expression}, "{self.collection_descriptor}")'
+            if self.model_descriptor:
+                self.expression = f'serialize({self.expression}, "{self.model_descriptor}")'
             else:
                 self.expression = f'serialize({self.expression})'
 
@@ -118,12 +118,12 @@ class PageExpression(object):
         return exp_inside
 
 
-    def find_collection_by_ref(self, ref):
+    def find_model_by_ref(self, ref):
         try:
-            return self.page.collection_set.collections[ref]
+            return self.page.application.models[ref]
         except KeyError:
             raise ValidationException(
-                'Can not parese page expression. Collection not found by ref: {} when parsing page: {}\n\n'
+                'Can not parese page expression. Model not found by ref: {} when parsing page: {}\n\n'
                 '[..{}..]\n...\n{}: {}\n'.format(
                     '#' + ref,
                     self.page.name,
@@ -135,8 +135,8 @@ class PageExpression(object):
     def get_imports(self):
         imports = []
         for match in re.findall(r'#(\w+)\.', self.expression):
-            col = self.find_collection_by_ref(match)
-            imports.append(('{}.models'.format(col.collection_set.app_name), col.class_name))
+            col = self.find_model_by_ref(match)
+            imports.append(('{}.models'.format(col.application.app_name), col.class_name))
 
         if self.or_404:
             imports.append(('django.core.exceptions', 'ObjectDoesNotExist'))
@@ -158,7 +158,7 @@ class PageExpression(object):
 
     def render_python_code(self):
         def replace_col_names(match):
-            return '{}.objects.'.format(self.find_collection_by_ref(match.group(1)).class_name)
+            return '{}.objects.'.format(self.find_model_by_ref(match.group(1)).class_name)
 
         expr = self.expression.strip()
         expr = re.sub(r'#(\w+)\.', replace_col_names, expr)

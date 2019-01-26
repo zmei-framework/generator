@@ -10,7 +10,7 @@ class M2mChangedModelExtra(SignalBaseModelExtra):
 class M2mChangedModelExtraParserListener(BaseListener):
 
     def enterAn_m2m_changed(self, ctx: ZmeiLangParser.An_m2m_changedContext):
-        self.collection_set.extras.append(
+        self.application.extras.append(
             M2mChangedModelExtra(self.model)
         )
 

@@ -6,11 +6,11 @@ from zmei_generator.parser.parser import ZmeiParser
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 
 def test_admin_simple():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
@@ -21,13 +21,13 @@ def test_admin_simple():
     
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert boo.admin.class_declaration == 'ModelAdmin'
 
 
 def test_admin_i18n():
-    cs = _("""
+    app = _("""
         @langs(en)
         
         #boo
@@ -39,13 +39,13 @@ def test_admin_i18n():
     
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert boo.admin.class_declaration == 'TabbedTranslationAdmin'
 
 
 def test_admin_poly():
-    cs = _("""
+    app = _("""
 
         #boo
         ----------
@@ -60,8 +60,8 @@ def test_admin_poly():
 
     """)
 
-    boo = cs.collections['boo']
-    foo1 = cs.collections['foo1']
+    boo = app.models['boo']
+    foo1 = app.models['foo1']
 
     assert boo.admin.class_declaration == 'PolymorphicParentModelAdmin'
 
@@ -69,7 +69,7 @@ def test_admin_poly():
 
 
 def test_admin_poly__non_poly_child():
-    cs = _("""
+    app = _("""
 
         #boo
         ----------
@@ -83,8 +83,8 @@ def test_admin_poly__non_poly_child():
 
     """)
 
-    boo = cs.collections['boo']
-    foo1 = cs.collections['foo1']
+    boo = app.models['boo']
+    foo1 = app.models['foo1']
 
     assert boo.admin.class_declaration == 'ModelAdmin'
 
@@ -92,7 +92,7 @@ def test_admin_poly__non_poly_child():
 
 
 def test_admin_poly_inline():
-    cs = _("""
+    app = _("""
     
         #zoo
         ------
@@ -112,7 +112,7 @@ def test_admin_poly_inline():
 
     """)
 
-    zoo = cs.collections['zoo']
+    zoo = app.models['zoo']
 
     assert zoo.admin.class_declaration == \
         'PolymorphicInlineSupportMixin, ModelAdmin'

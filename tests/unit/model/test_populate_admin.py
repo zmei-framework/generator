@@ -7,11 +7,11 @@ from zmei_generator.parser.parser import ZmeiParser
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 
 def test_admin_empty():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
@@ -22,16 +22,16 @@ def test_admin_empty():
     
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert isinstance(boo.admin, AdminExtra)
-    assert cs.admin is True
+    assert app.admin is True
 
-    assert boo.admin in cs.extras
+    assert boo.admin in app.extras
 
 
 def test_admin_one_line():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
@@ -42,15 +42,15 @@ def test_admin_one_line():
     
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert isinstance(boo.admin, AdminExtra)
-    assert cs.admin is True
+    assert app.admin is True
     assert [x.name for x in boo.admin.admin_list] == ['abc', 'cda']
 
 
 def test_admin_with_parent():
-    cs = _("""
+    app = _("""
     
         #foo
         ----------
@@ -65,15 +65,15 @@ def test_admin_with_parent():
     
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert isinstance(boo.admin, AdminExtra)
-    assert cs.admin is True
+    assert app.admin is True
     assert [x.name for x in boo.admin.admin_list] == ['a', 'b', 'c']
 
 
 def test_admin_with_parent_local_only():
-    cs = _("""
+    app = _("""
     
         #foo
         ----------
@@ -88,15 +88,15 @@ def test_admin_with_parent_local_only():
     
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert isinstance(boo.admin, AdminExtra)
-    assert cs.admin is True
+    assert app.admin is True
     assert [x.name for x in boo.admin.admin_list] == ['b', 'c']
 
 
 def test_admin_plain_list():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
@@ -112,15 +112,15 @@ def test_admin_plain_list():
     
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert isinstance(boo.admin, AdminExtra)
-    assert cs.admin is True
+    assert app.admin is True
     assert [x.name for x in boo.admin.admin_list] == ['weight', 'size_x', 'size_y', 'color_front']
 
 
 def test_admin_exclude():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
@@ -136,15 +136,15 @@ def test_admin_exclude():
     
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert isinstance(boo.admin, AdminExtra)
-    assert cs.admin is True
+    assert app.admin is True
     assert [x.name for x in boo.admin.admin_list] == ['weight', 'size_y', 'color_back']
 
 
 def test_admin_exclude_wildcard():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
@@ -160,15 +160,15 @@ def test_admin_exclude_wildcard():
     
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert isinstance(boo.admin, AdminExtra)
-    assert cs.admin is True
+    assert app.admin is True
     assert [x.name for x in boo.admin.admin_list] == ['weight', 'size_x', 'size_y']
 
 
 def test_admin_include_wildcard():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
@@ -184,15 +184,15 @@ def test_admin_include_wildcard():
     
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert isinstance(boo.admin, AdminExtra)
-    assert cs.admin is True
+    assert app.admin is True
     assert [x.name for x in boo.admin.admin_list] == ['weight', 'size_x', 'size_y']
 
 
 def test_admin_list():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
@@ -210,10 +210,10 @@ def test_admin_list():
     
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert isinstance(boo.admin, AdminExtra)
-    assert cs.admin is True
+    assert app.admin is True
     assert [x.name for x in boo.admin.admin_list] == ['abc', 'cda']
     assert [x.name for x in boo.admin.read_only] == ['abc', 'cda']
     assert [x.name for x in boo.admin.list_editable] == ['abc', 'cda']
@@ -223,7 +223,7 @@ def test_admin_list():
 
 
 def test_admin_tabs_all():
-    cs = _("""
+    app = _("""
         @suit
         
         #boo
@@ -238,7 +238,7 @@ def test_admin_tabs_all():
 
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert boo.admin.tabs == ['foo']
     assert boo.admin.tab_names == {'foo': 'Foo'}
@@ -250,7 +250,7 @@ def test_admin_tabs_all():
 
 
 def test_admin_tabs_inherited():
-    cs = _("""
+    app = _("""
         @suit
         
         #boo
@@ -271,7 +271,7 @@ def test_admin_tabs_inherited():
 
     """)
 
-    foo = cs.collections['foo']
+    foo = app.models['foo']
 
     assert foo.admin.tabs == ['general', 'foo']
     assert foo.admin.tab_names == {'general': 'General', 'foo': 'Foo'}
@@ -284,7 +284,7 @@ def test_admin_tabs_inherited():
 
 
 def test_admin_tabs_inherited_merged():
-    cs = _("""
+    app = _("""
         @suit
 
         #data_source
@@ -309,7 +309,7 @@ def test_admin_tabs_inherited_merged():
 
     """)
 
-    foo = cs.collections['db_data_source']
+    foo = app.models['db_data_source']
 
     assert foo.admin.tab_fields == {
         'name': 'general',
@@ -320,7 +320,7 @@ def test_admin_tabs_inherited_merged():
     assert foo.admin.tabs == ['general']
     assert foo.admin.tab_names == {'general': 'General'}
 
-    foo = cs.collections['report_data_source']
+    foo = app.models['report_data_source']
 
     assert foo.admin.tab_fields == {
         'name': 'general',
@@ -332,7 +332,7 @@ def test_admin_tabs_inherited_merged():
 
 
 def test_admin_tabs_all_but_some():
-    cs = _("""
+    app = _("""
         @suit
         
         #boo
@@ -348,7 +348,7 @@ def test_admin_tabs_all_but_some():
 
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert boo.admin.tabs == ['foo', 'lolo']
     assert boo.admin.tab_names == {'foo': 'Foo', 'lolo': 'Lolo'}
@@ -361,7 +361,7 @@ def test_admin_tabs_all_but_some():
 
 
 def test_admin_tabs_verbose_name():
-    cs = _("""
+    app = _("""
         @suit
         
         #boo
@@ -376,7 +376,7 @@ def test_admin_tabs_verbose_name():
 
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert boo.admin.tabs == ['foo']
     assert boo.admin.tab_names == {'foo': 'Фу'}
@@ -388,7 +388,7 @@ def test_admin_tabs_verbose_name():
 
 
 def test_admin_tabs_left_to_general():
-    cs = _("""
+    app = _("""
         @suit
         
         #boo
@@ -403,7 +403,7 @@ def test_admin_tabs_left_to_general():
 
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert boo.admin.tabs == ['general', 'foo']
     assert boo.admin.tab_names == {'general': 'General', 'foo': 'Foo'}
@@ -415,7 +415,7 @@ def test_admin_tabs_left_to_general():
 
 
 def test_admin_tabs_with_fields():
-    cs = _("""
+    app = _("""
     @suit
     
     #car
@@ -434,7 +434,7 @@ def test_admin_tabs_with_fields():
 
     """)
 
-    boo = cs.collections['car']
+    boo = app.models['car']
 
     assert boo.admin.tabs == ['main', 'options']
     assert boo.admin.tab_fields == {
@@ -447,7 +447,7 @@ def test_admin_tabs_with_fields():
 
 
 def test_admin_inline_simple():
-    cs = _("""
+    app = _("""
     #foo
     -------
     a
@@ -465,16 +465,16 @@ def test_admin_inline_simple():
     
     """)
 
-    foo = cs.collections['foo']
-    bar = cs.collections['bar']
+    foo = app.models['foo']
+    bar = app.models['bar']
 
     assert len(foo.admin.inlines) == 1
     inline = foo.admin.inlines[0]
 
     assert isinstance(inline, AdminInlineConfig)
     assert inline.extra_count == 0
-    assert inline.collection == foo
-    assert inline.target_collection == bar
+    assert inline.model == foo
+    assert inline.target_model == bar
     assert inline.inline_type == 'tabular'
     assert inline.inline_name == 'lala'
     assert inline.source_field_name == 'rel'
@@ -482,7 +482,7 @@ def test_admin_inline_simple():
 
 
 def test_admin_inline_inheritance():
-    cs = _("""
+    app = _("""
     
     #data_source
     --------------
@@ -506,16 +506,16 @@ def test_admin_inline_inheritance():
     @admin
     """)
 
-    data_source = cs.collections['data_source']
-    db_data_source = cs.collections['db_data_source']
-    data_source_field = cs.collections['data_source_field']
+    data_source = app.models['data_source']
+    db_data_source = app.models['db_data_source']
+    data_source_field = app.models['data_source_field']
 
     assert len(db_data_source.admin.inlines) == 1
     inline = db_data_source.admin.inlines[0]
 
     assert isinstance(inline, AdminInlineConfig)
-    assert inline.collection == data_source
-    assert inline.target_collection == data_source_field
+    assert inline.model == data_source
+    assert inline.target_model == data_source_field
     assert inline.inline_type == 'tabular'
     assert inline.inline_name == 'fields'
     assert inline.source_field_name == 'data_source'
@@ -523,7 +523,7 @@ def test_admin_inline_inheritance():
 
 
 def test_admin_inline_endclass_with_parent():
-    cs = _("""
+    app = _("""
     
     
     #data_source
@@ -549,15 +549,15 @@ def test_admin_inline_endclass_with_parent():
     name
     """)
 
-    db_data_source = cs.collections['db_data_source']
-    table = cs.collections['table']
+    db_data_source = app.models['db_data_source']
+    table = app.models['table']
 
     assert len(db_data_source.admin.inlines) == 1
     inline = db_data_source.admin.inlines[0]
 
     assert isinstance(inline, AdminInlineConfig)
-    assert inline.collection == db_data_source
-    assert inline.target_collection == table
+    assert inline.model == db_data_source
+    assert inline.target_model == table
     assert inline.inline_type == 'tabular'
     assert inline.inline_name == 'tables'
     assert inline.source_field_name == 'data_source'
@@ -565,7 +565,7 @@ def test_admin_inline_endclass_with_parent():
 
 
 def test_admin_inline_details():
-    cs = _("""
+    app = _("""
     
     #foo
     -------
@@ -588,8 +588,8 @@ def test_admin_inline_details():
     
     """)
 
-    foo = cs.collections['foo']
-    bar = cs.collections['bar']
+    foo = app.models['foo']
+    bar = app.models['bar']
 
     assert len(foo.admin.inlines) == 1
     inline = foo.admin.inlines[0]
@@ -601,7 +601,7 @@ def test_admin_inline_details():
 
 
 def test_admin_inline_tab():
-    cs = _("""
+    app = _("""
     @suit
     
     #foo
@@ -626,8 +626,8 @@ def test_admin_inline_tab():
     
     """)
 
-    foo = cs.collections['foo']
-    bar = cs.collections['bar']
+    foo = app.models['foo']
+    bar = app.models['bar']
 
     assert len(foo.admin.inlines) == 1
     inline = foo.admin.inlines[0]
@@ -642,7 +642,7 @@ def test_admin_inline_tab():
 
 
 def test_admin_js_css():
-    cs = _("""
+    app = _("""
 
     #foo
     -------
@@ -657,7 +657,7 @@ def test_admin_js_css():
 
     """)
 
-    foo = cs.collections['foo']
+    foo = app.models['foo']
 
     assert foo.admin.css == [
         "foo.css", "another/boo.css"

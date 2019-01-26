@@ -29,7 +29,7 @@ class MarkdownPageExtraParserListener(BaseListener):
 
     def enterAn_markdown(self, ctx: ZmeiLangParser.An_markdownContext):
         extra = MarkdownPageExtra(self.page)
-        self.collection_set.extras.append(
+        self.application.extras.append(
             extra
         )
 

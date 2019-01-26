@@ -1,10 +1,10 @@
-from zmei_generator.domain.collection_def import CollectionDef
+from zmei_generator.domain.model_def import ModelDef
 from zmei_generator.domain.field_def import FieldDef
 
 
 class ExpressionFieldDef(FieldDef):
-    def __init__(self, collection: CollectionDef, field) -> None:
-        super().__init__(collection, field)
+    def __init__(self, model: ModelDef, field) -> None:
+        super().__init__(model, field)
 
         self.type_name = 'expr'
         self.read_only = True

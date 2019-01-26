@@ -173,7 +173,7 @@ def format_file(target_path, filename):
         f.write(autopep8.fix_code(code))
 
 
-def generate_feature(target_path, package_name: str, feature_name: str, collection_set, extra_context=None):
+def generate_feature(target_path, package_name: str, feature_name: str, application, extra_context=None):
     """
     Generates new feature
 
@@ -185,7 +185,7 @@ def generate_feature(target_path, package_name: str, feature_name: str, collecti
 
     sitemap_imports = ImportSet()
 
-    for page in collection_set.pages.values():
+    for page in application.pages.values():
         if page.has_sitemap:
             sitemap_imports.add(f'{package_name}.views', page.view_name)
 
@@ -197,7 +197,7 @@ def generate_feature(target_path, package_name: str, feature_name: str, collecti
         'feature_name': feature_name,
         'package_name': package_name,
         'sitemap_imports': sitemap_imports.import_sting(),
-        'collection_set': None,
+        'application': None,
     }
     if extra_context:
         context.update(extra_context)
@@ -205,7 +205,7 @@ def generate_feature(target_path, package_name: str, feature_name: str, collecti
     generate_file(target_path, filepath, 'cratis/feature.py.tpl', context)
 
 
-def generate_urls_file(target_path, app_name, collection_set, pages, i18n=False):
+def generate_urls_file(target_path, app_name, application, pages, i18n=False):
     url_imports = ImportSet()
     url_imports.add('django.conf.urls', 'url')
 
@@ -215,7 +215,7 @@ def generate_urls_file(target_path, app_name, collection_set, pages, i18n=False)
     context = {
         'i18n': i18n,
         'package_name': app_name,
-        'collection_set': collection_set,
+        'application': application,
         'pages': pages,
         'url_imports': url_imports.import_sting(),
     }
@@ -225,20 +225,20 @@ def generate_urls_file(target_path, app_name, collection_set, pages, i18n=False)
     generate_file(target_path, filepath, 'urls.py.tpl', context)
 
 
-def generate_urls_rest(target_path, app_name, collection_set):
+def generate_urls_rest(target_path, app_name, application):
     url_imports = ImportSet()
     url_imports.add('django.conf.urls', 'url')
     url_imports.add('django.conf.urls', 'include')
     url_imports.add('rest_framework', 'routers')
 
-    for name, collection in collection_set.collections.items():
-        if collection.api:
-            for rest_conf in collection.published_apis.values():
+    for name, model in application.models.items():
+        if model.api:
+            for rest_conf in model.published_apis.values():
                 url_imports.add('.views', f'{rest_conf.serializer_name}ViewSet')
 
     context = {
         'package_name': app_name,
-        'collection_set': collection_set,
+        'application': application,
         'url_imports': url_imports.import_sting(),
     }
 

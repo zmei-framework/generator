@@ -1,6 +1,6 @@
 {{ "{% extends 'base.html' %}}" }}
 
-{% if collection_set.react %}
-{{ '{% block css %}' }}<link media="all" rel="stylesheet" href="/static/react/{{ collection_set.app_name }}.bundle.css" />{{ '{% endblock %}' }}
-{{ '{% block js %}' }}<script type="text/javascript" src="/static/react/{{ collection_set.app_name }}.bundle.js"></script>{{ '{% endblock %}' }}
+{% if application.react %}
+{{ '{% block css %}' }}<link media="all" rel="stylesheet" href="/static/react/{{ application.app_name }}.bundle.css" />{{ '{% endblock %}' }}
+{{ '{% block js %}' }}<script type="text/javascript" src="/static/react/{{ application.app_name }}.bundle.js"></script>{{ '{% endblock %}' }}
 {% endif %}

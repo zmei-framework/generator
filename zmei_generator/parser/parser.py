@@ -1,7 +1,7 @@
 from antlr4 import *
 from antlr4.error.ErrorListener import ErrorListener
 
-from zmei_generator.domain.collection_set_def import CollectionSetDef
+from zmei_generator.domain.application_def import ApplicationDef
 from zmei_generator.generator.utils import handle_parse_exception
 from zmei_generator.parser.errors import ValidationError
 from zmei_generator.parser.populate import PartsCollectorListener
@@ -54,38 +54,38 @@ class ZmeiParser(object):
 
         return self.tree
 
-    def populate_collection_set(self, app_name='noname'):
-        cs = self.build_collection_set(app_name)
+    def populate_application(self, app_name='noname'):
+        app = self.build_application(app_name)
 
-        self.process_collection_set(cs)
-        cs.post_process()
+        self.process_application(app)
+        app.post_process()
 
-        self.process_model_extras(cs)
+        self.process_model_extras(app)
 
-        self.process_page_extras(cs)
-        cs.post_process_extras()
+        self.process_page_extras(app)
+        app.post_process_extras()
 
-        return cs
+        return app
 
-    def process_page_extras(self, cs):
-        page_extra_listener = PageExtraListener(cs)
+    def process_page_extras(self, app):
+        page_extra_listener = PageExtraListener(app)
         self.walker.walk(page_extra_listener, self.tree)
 
-    def process_model_extras(self, cs):
-        model_extra_listener = ModelExtraListener(cs)
+    def process_model_extras(self, app):
+        model_extra_listener = ModelExtraListener(app)
         self.walker.walk(model_extra_listener, self.tree)
 
-    def process_collection_set(self, cs):
-        listener = PartsCollectorListener(cs)
+    def process_application(self, app):
+        listener = PartsCollectorListener(app)
         self.walker.walk(listener, self.tree)
 
-    def build_collection_set(self, app_name):
-        cs = CollectionSetDef(app_name)
-        return cs
+    def build_application(self, app_name):
+        app = ApplicationDef(app_name)
+        return app
 
-    def populate_collection_set_and_errors(self, *args, **kwargs):
+    def populate_application_and_errors(self, *args, **kwargs):
         try:
-            return self.populate_collection_set(*args, **kwargs)
+            return self.populate_application(*args, **kwargs)
 
         except ValidationError as e:
             if self.filename:

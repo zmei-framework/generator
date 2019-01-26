@@ -1,8 +1,8 @@
 
-collection_set = {
-    'an_file': 'collection_set/CsExtraFile.g4',
-    'an_theme': 'collection_set/CsExtraTheme.g4',
-    'an_langs': 'collection_set/CsExtraLangs.g4',
+application = {
+    'an_file': 'application/AppExtraFile.g4',
+    'an_theme': 'application/AppExtraTheme.g4',
+    'an_langs': 'application/AppExtraLangs.g4',
 }
 
 models = {

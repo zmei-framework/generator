@@ -3,13 +3,13 @@ from zmei_generator.generator.utils import generate_file
 
 
 def generate(target_path, app):
-    for app_name, collection_set in app.collection_sets.items():
+    for app_name, application in app.applications.items():
 
         imports = ImportSet()
         imports.add('django.contrib', 'admin')
         imports.add('django', 'forms')
 
-        for col in collection_set.collections.values():
+        for col in application.models.values():
             if not col.admin:
                 continue
 
@@ -19,7 +19,7 @@ def generate(target_path, app):
                 imports.add(*class_import)
 
             if col.polymorphic:
-                for child in col.child_collections:
+                for child in col.child_models:
                     imports.add('{}.models'.format(app_name), child.class_name)
 
             # inlines
@@ -28,14 +28,14 @@ def generate(target_path, app):
                     imports.add(*declaration)
 
                 if inline.inline_type == 'polymorphic':
-                    for target_collection in inline.target_collection.child_collections:
+                    for target_model in inline.target_model.child_models:
 
-                        if target_collection.translatable:
+                        if target_model.translatable:
                             imports.add('cratis_i18n.admin', 'TranslatableInlineModelAdmin')
 
-                        imports.add('{}.models'.format(app_name), target_collection.class_name)
+                        imports.add('{}.models'.format(app_name), target_model.class_name)
 
-                imports.add('{}.models'.format(app_name), inline.target_collection.class_name)
+                imports.add('{}.models'.format(app_name), inline.target_model.class_name)
 
             for field in col.fields.values():
                 if field.get_admin_widget():
@@ -46,7 +46,7 @@ def generate(target_path, app):
 
         generate_file(target_path, '{}/admin.py'.format(app_name), 'admin.py.tpl', {
             'imports': imports.import_sting(),
-            'collection_set': collection_set,
-            'collections': [(name, col) for name, col in collection_set.collections.items() if col.admin]
+            'application': application,
+            'models': [(name, col) for name, col in application.models.items() if col.admin]
         })
 

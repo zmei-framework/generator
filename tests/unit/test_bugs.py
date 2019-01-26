@@ -6,11 +6,11 @@ from zmei_generator.parser.parser import ZmeiParser
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 
 def test_admin_empty():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
@@ -29,13 +29,13 @@ def test_admin_empty():
     
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert boo is not None
 
 
 def test_reuse_of_last_state_error():
-    cs = _("""
+    app = _("""
     
         #query
         --------
@@ -60,6 +60,6 @@ def test_reuse_of_last_state_error():
     
     """)
 
-    boo = cs.collections['query']
+    boo = app.models['query']
 
     assert boo is not None

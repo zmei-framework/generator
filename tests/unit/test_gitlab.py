@@ -1,17 +1,17 @@
 from textwrap import dedent
 
-from zmei_generator.contrib.gitlab.extras.collection_set.gitlab import GitlabCsExtra, SeleniumPytestConfig
+from zmei_generator.contrib.gitlab.extras.application.gitlab import GitlabAppExtra, SeleniumPytestConfig
 from zmei_generator.parser.parser import ZmeiParser
 
 
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 
 def test_gitlab_full_config():
-    cs = _("""
+    app = _("""
 
     @gitlab(
         develop => dev(dev.foo.example.com: SERVER_PORT=3000, FOO=322)
@@ -20,17 +20,17 @@ def test_gitlab_full_config():
 
     """)
 
-    assert isinstance(cs.gitlab, GitlabCsExtra)
+    assert isinstance(app.gitlab, GitlabAppExtra)
 
-    assert len(cs.gitlab.configs) == 2
+    assert len(app.gitlab.configs) == 2
 
-    develop = cs.gitlab.configs[0]
+    develop = app.gitlab.configs[0]
     assert develop.branch == 'develop'
     assert develop.deployment == 'dev'
     assert develop.hostname == 'dev.foo.example.com'
     assert develop.vars == {'SERVER_PORT': "3000", 'FOO': "322"}
 
-    master = cs.gitlab.configs[1]
+    master = app.gitlab.configs[1]
     assert master.branch == 'master'
     assert master.deployment == 'prod'
     assert master.hostname == 'example.com'
@@ -38,7 +38,7 @@ def test_gitlab_full_config():
 
 
 def test_gitlab_deploy_type():
-    cs = _("""
+    app = _("""
 
     @gitlab(
         develop => dev(dev.foo.example.com: SERVER_PORT=3000, FOO=322)
@@ -47,18 +47,18 @@ def test_gitlab_deploy_type():
 
     """)
 
-    assert isinstance(cs.gitlab, GitlabCsExtra)
+    assert isinstance(app.gitlab, GitlabAppExtra)
 
-    assert len(cs.gitlab.configs) == 2
+    assert len(app.gitlab.configs) == 2
 
-    develop = cs.gitlab.configs[0]
+    develop = app.gitlab.configs[0]
     assert develop.manual_deploy is False
     assert develop.branch == 'develop'
     assert develop.deployment == 'dev'
     assert develop.hostname == 'dev.foo.example.com'
     assert develop.vars == {'SERVER_PORT': "3000", 'FOO': "322"}
 
-    master = cs.gitlab.configs[1]
+    master = app.gitlab.configs[1]
     assert master.manual_deploy is True
     assert master.branch == 'master'
     assert master.deployment == 'prod'
@@ -67,7 +67,7 @@ def test_gitlab_deploy_type():
 
 
 def test_wildcard():
-    cs = _("""
+    app = _("""
 
     @gitlab(
         feature/lala-* => hello-review/*(
@@ -80,11 +80,11 @@ def test_wildcard():
 
     """)
 
-    assert isinstance(cs.gitlab, GitlabCsExtra)
+    assert isinstance(app.gitlab, GitlabAppExtra)
 
-    assert len(cs.gitlab.configs) == 1
+    assert len(app.gitlab.configs) == 1
 
-    develop = cs.gitlab.configs[0]
+    develop = app.gitlab.configs[0]
     assert develop.manual_deploy is False
     assert develop.branch == '/^feature\/lala-.*$/'
     assert develop.deployment == 'hello-review-*'
@@ -93,7 +93,7 @@ def test_wildcard():
 
 
 def test_artifacts():
-    cs = _("""
+    app = _("""
 
     @gitlab(
         develop => dev(dev.foo.example.com: coverage="lala", SERVER_PORT=3000, FOO=322)
@@ -102,20 +102,20 @@ def test_artifacts():
 
     """)
 
-    assert isinstance(cs.gitlab, GitlabCsExtra)
+    assert isinstance(app.gitlab, GitlabAppExtra)
 
-    assert len(cs.gitlab.configs) == 2
+    assert len(app.gitlab.configs) == 2
 
-    develop = cs.gitlab.configs[0]
+    develop = app.gitlab.configs[0]
     assert develop.coverage is True
     assert develop.vars['coverage'] == 'lala/'
 
-    master = cs.gitlab.configs[1]
+    master = app.gitlab.configs[1]
     assert master.coverage is False
 
 
 def test_gitlab_with_tests():
-    cs = _("""
+    app = _("""
 
     @gitlab(
         selenium_pytest(
@@ -131,28 +131,28 @@ def test_gitlab_with_tests():
 
     """)
 
-    assert isinstance(cs.gitlab, GitlabCsExtra)
+    assert isinstance(app.gitlab, GitlabAppExtra)
 
-    assert len(cs.gitlab.configs) == 1
+    assert len(app.gitlab.configs) == 1
 
-    master = cs.gitlab.configs[0]
+    master = app.gitlab.configs[0]
     assert master.branch == 'master'
     assert master.deployment == 'prod'
     assert master.hostname == 'example.com'
     assert master.vars == {}
 
-    assert isinstance(cs.gitlab.test, SeleniumPytestConfig)
+    assert isinstance(app.gitlab.test, SeleniumPytestConfig)
 
-    assert list(cs.gitlab.test.services.keys()) == ['rabbitmq', 'redis', 'influxdb']
-    assert cs.gitlab.test.services['redis'].vars == {'image': '"ololo/test:123"'}
-    assert cs.gitlab.test.vars == {
+    assert list(app.gitlab.test.services.keys()) == ['rabbitmq', 'redis', 'influxdb']
+    assert app.gitlab.test.services['redis'].vars == {'image': '"ololo/test:123"'}
+    assert app.gitlab.test.vars == {
         'SOME_INFLUX_HOST': "influxdb",
         'SOME_RABBITMQ_HOST': "rabbitmq",
         'SOME_REDIS_HOST': "redis",
     }
 
 def test_can_parse_full_config():
-    cs = _("""
+    app = _("""
 
     @docker
     @gitlab(
@@ -188,4 +188,4 @@ def test_can_parse_full_config():
 
     """)
 
-    assert isinstance(cs.gitlab, GitlabCsExtra)
+    assert isinstance(app.gitlab, GitlabAppExtra)

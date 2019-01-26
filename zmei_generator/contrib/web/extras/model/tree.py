@@ -14,17 +14,17 @@ class TreeModelExtra(ModelExtra):
 class TreeModelExtraParserListener(BaseListener):
 
     def enterAn_tree(self, ctx: ZmeiLangParser.An_treeContext):
-        self.collection_set.extras.append(
+        self.application.extras.append(
             TreeModelExtra(self.model)
         )
 
         self.model.tree = True
 
-        self.collection_set.add_deps([
+        self.application.add_deps([
             'django-mptt',
             'django-polymorphic-tree',
         ])
-        self.collection_set.add_apps([
+        self.application.add_apps([
             'mptt',
             'polymorphic_tree',
             'polymorphic',

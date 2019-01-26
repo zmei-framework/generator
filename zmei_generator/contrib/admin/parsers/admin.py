@@ -1,14 +1,14 @@
-from zmei_generator.contrib.admin.extras.collection_set.suit import SuitCsExtra
+from zmei_generator.contrib.admin.extras.application.suit import SuitAppExtra
 from zmei_generator.contrib.admin.extras.model.admin import AdminExtra, AdminInlineConfig
-from zmei_generator.domain.collection_set_def import CollectionSetDef
+from zmei_generator.domain.application_def import ApplicationDef
 from zmei_generator.parser.errors import TabsSuitRequiredValidationError
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
 
 class AdminParserListener(BaseListener):
-    def __init__(self, collection_set: CollectionSetDef) -> None:
-        super().__init__(collection_set)
+    def __init__(self, application: ApplicationDef) -> None:
+        super().__init__(application)
 
         self.inline = None  # type
 
@@ -18,8 +18,8 @@ class AdminParserListener(BaseListener):
 
     def enterAn_admin(self, ctx: ZmeiLangParser.An_adminContext):
         self.model.admin = AdminExtra(self.model)
-        self.collection_set.admin = True
-        self.collection_set.extras.append(self.model.admin)
+        self.application.admin = True
+        self.application.extras.append(self.model.admin)
 
     def enterAn_admin_list(self, ctx: ZmeiLangParser.An_admin_listContext):
         self.model.admin.admin_list = self.model.filter_fields(self._get_fields(ctx))
@@ -40,7 +40,7 @@ class AdminParserListener(BaseListener):
         self.model.admin.fields = self.model.filter_fields(self._get_fields(ctx))
 
     def enterAn_admin_tabs(self, ctx: ZmeiLangParser.An_admin_tabsContext):
-        if not self.collection_set.suit:
+        if not self.application.suit:
             raise TabsSuitRequiredValidationError(ctx.start)
 
     def enterAn_admin_tab(self, ctx: ZmeiLangParser.An_admin_tabContext):
@@ -85,9 +85,9 @@ class AdminParserListener(BaseListener):
     # Suit
 
     def enterAn_suit(self, ctx: ZmeiLangParser.An_suitContext):
-        suit = SuitCsExtra(self.collection_set)
-        self.collection_set.extras.append(suit)
-        self.collection_set.suit = suit
+        suit = SuitAppExtra(self.application)
+        self.application.extras.append(suit)
+        self.application.suit = suit
 
     def enterAn_suit_app_name(self, ctx: ZmeiLangParser.An_suit_app_nameContext):
-        self.collection_set.suit.app_name = ctx.getText().strip('"\'')
+        self.application.suit.app_name = ctx.getText().strip('"\'')

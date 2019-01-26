@@ -1,5 +1,4 @@
 import os
-from shutil import copytree, copyfile, rmtree
 
 from zmei_generator.generator.utils import generate_file, format_file
 
@@ -19,14 +18,14 @@ def generate(target_path, app):
     urls += [
         "    url(r'^admin/', admin.site.urls),",
     ]
-    for app_name, collection_set in app.collection_sets.items():
-        for import_def, url_def in collection_set.get_required_urls():
+    for app_name, application in app.applications.items():
+        for import_def, url_def in application.get_required_urls():
             urls.append(url_def)
             if import_def:
                 imports.add(import_def)
 
-        if collection_set.pages:
-            for page in collection_set.pages.values():
+        if application.pages:
+            for page in application.pages.values():
                 if page.i18n:
                     has_i18n_pages = True
                 else:
@@ -36,7 +35,7 @@ def generate(target_path, app):
                 urls.append(f"    url(r'^', include({app_name}.urls)),")
                 imports.add(f'{app_name}.urls')
 
-        if collection_set.api:
+        if application.api:
             has_rest = True
             urls.append(f"    url(r'^api/', include({app_name}.urls_rest)),")
             imports.add(f'{app_name}.urls_rest')
@@ -67,17 +66,17 @@ def generate(target_path, app):
 
     # settings
     req_settings = {}
-    installed_apps = [app.app_name for app in app.collection_sets.values() if len(app.pages) > 0 or len(app.collections) > 0]
+    installed_apps = [app.app_name for app in app.applications.values() if len(app.pages) > 0 or len(app.models) > 0]
 
     if has_rest:
         installed_apps.append('rest_framework')
 
     extra_classes = list()
-    for collection_set in sorted(app.collection_sets.values(), key=lambda x: x.app_name):
-        installed_apps.extend(collection_set.get_required_apps())
-        req_settings.update(collection_set.get_required_settings())
+    for application in sorted(app.applications.values(), key=lambda x: x.app_name):
+        installed_apps.extend(application.get_required_apps())
+        req_settings.update(application.get_required_settings())
 
-        for extra in collection_set.extras:
+        for extra in application.extras:
             if type(extra) not in extra_classes:
                 extra_classes.append(type(extra))
 
@@ -99,13 +98,13 @@ def generate(target_path, app):
                 f.write(f'{key} = {repr(val)}\n')
 
             for extra in extra_classes:
-                extra.write_settings(app.collection_sets, f)
+                extra.write_settings(app.applications, f)
 
     generate_file(target_path, 'app/settings.py', template_name='settings.py.tpl')
     format_file(target_path, 'app/_settings.py')
 
     for extra in extra_classes:
-        extra.generate(app.collection_sets, target_path)
+        extra.generate(app.applications, target_path)
 
     # base template
     generate_file(target_path, 'app/templates/base.html', template_name='theme/base.html')
@@ -119,8 +118,8 @@ def generate(target_path, app):
     if has_rest:
         requirements.append('djangorestframework')
 
-    for collection_set in app.collection_sets.values():
-        requirements.extend(collection_set.get_required_deps())
+    for application in app.applications.values():
+        requirements.extend(application.get_required_deps())
 
     requirements = list(sorted(set(requirements)))
 

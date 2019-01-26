@@ -1,21 +1,21 @@
 from textwrap import dedent
 
-from zmei_generator.generator.application import ZmeiAppParser
+from zmei_generator.generator.application import ZmeiProjectParser
 from zmei_generator.parser.parser import ZmeiParser
 
 
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 
 def test_simple_page():
-    cs = _("""
+    app = _("""
         [boo: /]
     """)
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
 
     assert boo.get_extra_bases() == [
         'ZmeiDataViewMixin'
@@ -23,14 +23,14 @@ def test_simple_page():
 
 
 def test_simple_inherited_page():
-    cs = _("""
+    app = _("""
         [boo: /]
         [boo->foo: /]
         
     """)
 
-    boo = cs.pages['boo']
-    foo = cs.pages['foo']
+    boo = app.pages['boo']
+    foo = app.pages['foo']
 
     assert boo.get_extra_bases() == [
         'ZmeiDataViewMixin'
@@ -39,16 +39,16 @@ def test_simple_inherited_page():
     assert foo.get_extra_bases() == []
 
 def test_simple_inherited2_page():
-    cs = _("""
+    app = _("""
         [boo: /]
         [boo->foo: /]
         [foo->zoo: /]
         
     """)
 
-    boo = cs.pages['boo']
-    foo = cs.pages['foo']
-    zoo = cs.pages['zoo']
+    boo = app.pages['boo']
+    foo = app.pages['foo']
+    zoo = app.pages['zoo']
 
     assert boo.get_extra_bases() == [
         'ZmeiDataViewMixin'
@@ -58,7 +58,7 @@ def test_simple_inherited2_page():
 
 
 def test_simple_inherited2_page_with_functions():
-    cs = _("""
+    app = _("""
         [boo: /]
         loo()
         
@@ -70,9 +70,9 @@ def test_simple_inherited2_page_with_functions():
         
     """)
 
-    boo = cs.pages['boo']
-    foo = cs.pages['foo']
-    zoo = cs.pages['zoo']
+    boo = app.pages['boo']
+    foo = app.pages['foo']
+    zoo = app.pages['zoo']
 
     assert boo.get_extra_bases() == [
         'ZmeiRemoteInvocationViewMixin'
@@ -82,7 +82,7 @@ def test_simple_inherited2_page_with_functions():
 
 
 def test_long_inherited_page():
-    app_parser = ZmeiAppParser()
+    app_parser = ZmeiProjectParser()
     app_parser.add_file('main.col', """    
             [bar: /bar]
         """)
@@ -94,8 +94,8 @@ def test_long_inherited_page():
 
     app = app_parser.parse()
 
-    main_app = app.get_collection_set('main')
-    another_app = app.get_collection_set('another')
+    main_app = app.get_application('main')
+    another_app = app.get_application('another')
 
     bar = main_app.pages['bar']
     boo = another_app.pages['boo']
@@ -113,7 +113,7 @@ def test_long_inherited_page():
 
 
 def test_long_inherited_page_with_functions():
-    app_parser = ZmeiAppParser()
+    app_parser = ZmeiProjectParser()
     app_parser.add_file('main.col', """    
             [bar: /bar]
             boo()
@@ -129,8 +129,8 @@ def test_long_inherited_page_with_functions():
 
     app = app_parser.parse()
 
-    main_app = app.get_collection_set('main')
-    another_app = app.get_collection_set('another')
+    main_app = app.get_application('main')
+    another_app = app.get_application('another')
 
     bar = main_app.pages['bar']
     boo = another_app.pages['boo']

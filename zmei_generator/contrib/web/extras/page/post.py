@@ -12,7 +12,7 @@ class PostPageExtra(PageExtra):
 class PostPageExtraParserListener(BaseListener):
 
     def enterAn_post(self, ctx: ZmeiLangParser.An_postContext):
-        self.collection_set.extras.append(
+        self.application.extras.append(
             PostPageExtra(self.page)
         )
 

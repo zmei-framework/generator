@@ -2,7 +2,7 @@ from textwrap import dedent
 
 import pytest
 
-from zmei_generator.contrib.admin.extras.collection_set.suit import SuitCsExtra
+from zmei_generator.contrib.admin.extras.application.suit import SuitAppExtra
 from zmei_generator.parser.errors import TabsSuitRequiredValidationError
 from zmei_generator.parser.parser import ZmeiParser
 
@@ -10,25 +10,25 @@ from zmei_generator.parser.parser import ZmeiParser
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 
 def test_suit():
-    cs = _("""
+    app = _("""
         @suit
     """)
 
-    assert 'django-suit' in cs.get_required_deps()
-    assert 'suit' in cs.get_required_apps()
-    assert isinstance(cs.suit, SuitCsExtra)
+    assert 'django-suit' in app.get_required_deps()
+    assert 'suit' in app.get_required_apps()
+    assert isinstance(app.suit, SuitAppExtra)
 
 
 def test_app_name():
-    cs = _("""
+    app = _("""
         @suit("hoho!")
     """)
 
-    assert cs.suit.app_name == 'hoho!'
+    assert app.suit.app_name == 'hoho!'
 
 
 def test_admin_tabs_no_suit():

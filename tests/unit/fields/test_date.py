@@ -8,18 +8,18 @@ from zmei_generator.parser.parser import ZmeiParser
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 
 def test_date_field():
-    cs = _("""
+    app = _("""
 
         #boo
         ----------
         a: date
     """)
 
-    a = cs.collections['boo'].fields['a']
+    a = app.models['boo'].fields['a']
 
     assert isinstance(a, DateFieldDef)
 
@@ -27,14 +27,14 @@ def test_date_field():
 
 
 def test_datetime_field():
-    cs = _("""
+    app = _("""
 
         #boo
         ----------
         a: datetime
     """)
 
-    a = cs.collections['boo'].fields['a']
+    a = app.models['boo'].fields['a']
 
     assert isinstance(a, DateTimeFieldDef)
 
@@ -42,14 +42,14 @@ def test_datetime_field():
 
 
 def test_update_time_field():
-    cs = _("""
+    app = _("""
 
         #boo
         ----------
         a: update_time
     """)
 
-    a = cs.collections['boo'].fields['a']
+    a = app.models['boo'].fields['a']
 
     assert isinstance(a, AutoNowDateTimeFieldDef)
 
@@ -58,14 +58,14 @@ def test_update_time_field():
 
 
 def test_create_time_field():
-    cs = _("""
+    app = _("""
 
         #boo
         ----------
         a: create_time
     """)
 
-    a = cs.collections['boo'].fields['a']
+    a = app.models['boo'].fields['a']
 
     assert isinstance(a, AutoNowAddDateTimeFieldDef)
 
@@ -74,7 +74,7 @@ def test_create_time_field():
 
 
 def test_auto_fields_are_read_only():
-    cs = _("""
+    app = _("""
 
         #data_set_order
         -----------------
@@ -89,6 +89,6 @@ def test_auto_fields_are_read_only():
         )
     """)
 
-    admin = cs.collections['data_set_order'].admin
+    admin = app.models['data_set_order'].admin
 
     assert [x.name for x in admin.read_only] == ['ref_id', 'success', 'created']

@@ -11,7 +11,7 @@ class CleanModelExtra(ModelExtra):
 class CleanModelExtraParserListener(BaseListener):
 
     def enterAn_clean(self, ctx: ZmeiLangParser.An_cleanContext):
-        self.collection_set.extras.append(
+        self.application.extras.append(
             CleanModelExtra(self.model)
         )
 

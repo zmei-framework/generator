@@ -1,6 +1,6 @@
 
-collection_set = {
-    'an_celery': 'CsExtraCelery.g4',
+application = {
+    'an_celery': 'AppExtraCelery.g4',
 }
 
 models = {}

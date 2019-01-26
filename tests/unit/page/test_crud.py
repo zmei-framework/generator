@@ -15,7 +15,7 @@ from zmei_generator.parser.parser import ZmeiParser
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 
 @pytest.mark.parametrize("extra_type_name, extra_cls", [
@@ -28,7 +28,7 @@ def _(code):
 ])
 def test_crud_no_uri_on_crud(extra_type_name, extra_cls):
     with pytest.raises(ValidationException):
-        cs = _(f"""
+        app = _(f"""
     
             [boo]
             @{extra_type_name}(#foo)
@@ -43,7 +43,7 @@ def test_crud_no_uri_on_crud(extra_type_name, extra_cls):
 
 def test_crud_same_descriptor():
     with pytest.raises(ValidationException):
-        cs = _(f"""
+        app = _(f"""
     
             [boo: /lala]
             @crud(#foo)
@@ -67,7 +67,7 @@ def test_crud_same_descriptor():
 
 def test_crud_same_descriptor_different_annotations():
     with pytest.raises(ValidationException):
-        cs = _(f"""
+        app = _(f"""
     
             [boo: /lala]
             @crud(#foo)
@@ -84,7 +84,7 @@ def test_crud_same_descriptor_different_annotations():
 
 
 def test_crud_diff_descriptor():
-    cs = _(f"""
+    app = _(f"""
 
         [boo: /lala]
         @crud(#foo)
@@ -101,7 +101,7 @@ def test_crud_diff_descriptor():
 
 
 def test_crud_page_parsing():
-    cs = _("""
+    app = _("""
 
         [boo: /mycrud]        
         lala := 123
@@ -113,13 +113,13 @@ def test_crud_page_parsing():
         a
     """)
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
 
     assert boo.page_items['lala'].expression == '123'
 
 
 def test_crud_subpage_parsing():
-    cs = _("""
+    app = _("""
 
         [boo: /mycrud]
         zoo := 321
@@ -140,10 +140,10 @@ def test_crud_subpage_parsing():
         a
     """)
 
-    assert cs.crud is True
+    assert app.crud is True
 
-    boo = cs.pages['boo']
-    boo_detail = cs.pages['boo_detail']
+    boo = app.pages['boo']
+    boo_detail = app.pages['boo_detail']
 
     assert boo.page_items['zoo'].expression == '321'
 
@@ -153,7 +153,7 @@ def test_crud_subpage_parsing():
 
 
 def test_crud_subpage_subcrud():
-    cs = _("""
+    app = _("""
 
         [boo: /mycrud]
         zoo := 321
@@ -176,10 +176,10 @@ def test_crud_subpage_subcrud():
         a
     """)
 
-    assert cs.crud is True
+    assert app.crud is True
 
-    boo = cs.pages['boo']
-    boo_detail = cs.pages['boo_detail']
+    boo = app.pages['boo']
+    boo_detail = app.pages['boo_detail']
     #
     assert boo.page_items['zoo'].expression == '321'
     assert boo_detail.page_items['lala'].expression == '123'
@@ -194,7 +194,7 @@ def test_crud_subpage_subcrud():
     ("crud_edit", CrudEditPageExtra),
 ])
 def test_crud_model(extra_type_name, extra_cls):
-    cs = _(f"""
+    app = _(f"""
 
         [boo: /mycrud]
         @{extra_type_name}(#foo)
@@ -206,9 +206,9 @@ def test_crud_model(extra_type_name, extra_cls):
         c
     """)
 
-    assert cs.crud is True
+    assert app.crud is True
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
     crud = boo.cruds['_'][extra_type_name]
     assert isinstance(crud, extra_cls)
 
@@ -228,7 +228,7 @@ def test_crud_model(extra_type_name, extra_cls):
     "crud_edit",
 ])
 def test_crud_theme(extra_type_name):
-    cs = _(f"""
+    app = _(f"""
 
         [boo: /mycrud]
         @{extra_type_name}(
@@ -244,7 +244,7 @@ def test_crud_theme(extra_type_name):
         c
     """)
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
 
     params = boo.cruds['_'][extra_type_name].params
 
@@ -252,7 +252,7 @@ def test_crud_theme(extra_type_name):
 
 
 def test_crud_subpages():
-    cs = _(f"""
+    app = _(f"""
 
         [boo: /mycrud]
         @crud(#foo)
@@ -264,9 +264,9 @@ def test_crud_subpages():
         c
     """)
 
-    assert cs.crud is True
+    assert app.crud is True
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
     assert isinstance(boo.cruds['_']['crud'], CrudPageExtra)
 
     params = boo.cruds['_']['crud'].params
@@ -274,7 +274,7 @@ def test_crud_subpages():
     assert isinstance(params, CrudParams)
     assert params.model == '#foo'
 
-    assert len(cs.pages) == 5
+    assert len(app.pages) == 5
     print(boo.children)
 
     for page in boo.children:
@@ -294,7 +294,7 @@ def test_crud_subpages():
 
 
 def test_crud_subpages_skip():
-    cs = _(f"""
+    app = _(f"""
 
         [boo: /mycrud]
         @crud(#foo, skip: delete, edit)
@@ -306,9 +306,9 @@ def test_crud_subpages_skip():
         c
     """)
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
 
-    assert len(cs.pages) == 3
+    assert len(app.pages) == 3
 
     for page in boo.children:
         if page.name == 'boo_create':
@@ -328,7 +328,7 @@ def test_crud_subpages_skip():
     "crud_edit",
 ])
 def test_crud_model_fields(extra_type_name):
-    cs = _(f"""
+    app = _(f"""
 
         [boo: /mycrud]
         @{extra_type_name}(#foo, fields: *, ^b)
@@ -340,9 +340,9 @@ def test_crud_model_fields(extra_type_name):
         c
     """)
 
-    assert cs.crud is True
+    assert app.crud is True
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
     crud = boo.cruds['_'][extra_type_name]
 
     assert list(crud.fields.keys()) == ['a', 'c']
@@ -358,7 +358,7 @@ def test_crud_model_fields(extra_type_name):
     "crud_edit",
 ])
 def test_crud_model_fields(extra_type_name):
-    cs = _(f"""
+    app = _(f"""
 
         [boo: /mycrud]
         @{extra_type_name}(#foo, fields: a, b{{lala}})
@@ -370,9 +370,9 @@ def test_crud_model_fields(extra_type_name):
         c
     """)
 
-    assert cs.crud is True
+    assert app.crud is True
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
     crud = boo.cruds['_'][extra_type_name]
 
     assert list(crud.fields.keys()) == ['a', 'b']
@@ -389,7 +389,7 @@ def test_crud_model_fields(extra_type_name):
     "crud_edit",
 ])
 def test_crud_model_list_fields(extra_type_name):
-    cs = _(f"""
+    app = _(f"""
 
         [boo: /mycrud]
         @{extra_type_name}(#foo, fields: *, ^b list_fields: *, ^c)
@@ -401,9 +401,9 @@ def test_crud_model_list_fields(extra_type_name):
         c
     """)
 
-    assert cs.crud is True
+    assert app.crud is True
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
     crud = boo.cruds['_'][extra_type_name]
 
     assert list(crud.fields.keys()) == ['a', 'c']
@@ -420,7 +420,7 @@ def test_crud_model_list_fields(extra_type_name):
     "crud_edit",
 ])
 def test_crud_pk_param(extra_type_name):
-    cs = _(f"""
+    app = _(f"""
 
         [boo: /mycrud]
         @{extra_type_name}(#foo, pk_param: foo)
@@ -432,9 +432,9 @@ def test_crud_pk_param(extra_type_name):
         c
     """)
 
-    assert cs.crud is True
+    assert app.crud is True
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
     crud = boo.cruds['_'][extra_type_name].params
 
     assert crud.pk_param == "foo"
@@ -449,7 +449,7 @@ def test_crud_pk_param(extra_type_name):
     "crud_edit",
 ])
 def test_crud_item_name(extra_type_name):
-    cs = _(f"""
+    app = _(f"""
 
         [boo: /mycrud]
         @{extra_type_name}(#foo, item_name: foo)
@@ -461,9 +461,9 @@ def test_crud_item_name(extra_type_name):
         c
     """)
 
-    assert cs.crud is True
+    assert app.crud is True
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
     crud = boo.cruds['_'][extra_type_name]
     params = boo.cruds['_'][extra_type_name].params
 
@@ -483,7 +483,7 @@ def test_crud_item_name(extra_type_name):
     "crud_edit",
 ])
 def test_crud_block(extra_type_name):
-    cs = _(f"""
+    app = _(f"""
 
         [boo: /mycrud]
         @{extra_type_name}(#foo, block: foo)
@@ -495,9 +495,9 @@ def test_crud_block(extra_type_name):
         c
     """)
 
-    assert cs.crud is True
+    assert app.crud is True
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
     crud = boo.cruds['_'][extra_type_name].params
 
     assert crud.block_name == "foo"
@@ -512,7 +512,7 @@ def test_crud_block(extra_type_name):
     "crud_edit",
 ])
 def test_crud_object_expr1(extra_type_name):
-    cs = _(f"""
+    app = _(f"""
 
         [boo: /mycrud]
         @{extra_type_name}(#foo, 
@@ -526,9 +526,9 @@ def test_crud_object_expr1(extra_type_name):
         c
     """)
 
-    assert cs.crud is True
+    assert app.crud is True
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
     crud = boo.cruds['_'][extra_type_name].params
 
     assert crud.object_expr == "request.user"
@@ -543,7 +543,7 @@ def test_crud_object_expr1(extra_type_name):
     "crud_edit",
 ])
 def test_crud_object_expr2(extra_type_name):
-    cs = _(f"""
+    app = _(f"""
 
         [boo: /mycrud]
         @{extra_type_name}(#foo, 
@@ -557,9 +557,9 @@ def test_crud_object_expr2(extra_type_name):
         c
     """)
 
-    assert cs.crud is True
+    assert app.crud is True
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
     crud = boo.cruds['_'][extra_type_name].params
 
     assert crud.object_expr == "request.user"
@@ -574,7 +574,7 @@ def test_crud_object_expr2(extra_type_name):
     "crud_edit",
 ])
 def test_header(extra_type_name):
-    cs = _(f"""
+    app = _(f"""
 
         [boo: /mycrud]
         @{extra_type_name}(#foo, 
@@ -588,9 +588,9 @@ def test_header(extra_type_name):
         c
     """)
 
-    assert cs.crud is True
+    assert app.crud is True
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
     crud = boo.cruds['_'][extra_type_name].params
 
     assert crud.header is False
@@ -605,7 +605,7 @@ def test_header(extra_type_name):
     "crud_edit",
 ])
 def test_header_default(extra_type_name):
-    cs = _(f"""
+    app = _(f"""
 
         [boo: /mycrud]
         @{extra_type_name}(#foo)
@@ -617,9 +617,9 @@ def test_header_default(extra_type_name):
         c
     """)
 
-    assert cs.crud is True
+    assert app.crud is True
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
     crud = boo.cruds['_'][extra_type_name].params
 
     assert crud.header is True
@@ -634,7 +634,7 @@ def test_header_default(extra_type_name):
     "crud_edit",
 ])
 def test_list_type(extra_type_name):
-    cs = _(f"""
+    app = _(f"""
 
         [boo: /mycrud]
         @{extra_type_name}(#foo, 
@@ -648,9 +648,9 @@ def test_list_type(extra_type_name):
         c
     """)
 
-    assert cs.crud is True
+    assert app.crud is True
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
     crud = boo.cruds['_'][extra_type_name].params
 
     assert crud.list_type == 'stacked'
@@ -665,7 +665,7 @@ def test_list_type(extra_type_name):
     "crud_edit",
 ])
 def test_list_type_default(extra_type_name):
-    cs = _(f"""
+    app = _(f"""
 
         [boo: /mycrud]
         @{extra_type_name}(#foo)
@@ -677,9 +677,9 @@ def test_list_type_default(extra_type_name):
         c
     """)
 
-    assert cs.crud is True
+    assert app.crud is True
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
     crud = boo.cruds['_'][extra_type_name].params
 
     assert crud.list_type == 'stacked'
@@ -694,7 +694,7 @@ def test_list_type_default(extra_type_name):
     "crud_edit",
 ])
 def test_crud_can_edit1(extra_type_name):
-    cs = _(f"""
+    app = _(f"""
 
         [boo: /mycrud]
         @{extra_type_name}(#foo, 
@@ -708,9 +708,9 @@ def test_crud_can_edit1(extra_type_name):
         c
     """)
 
-    assert cs.crud is True
+    assert app.crud is True
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
     crud = boo.cruds['_'][extra_type_name].params
 
     assert crud.can_edit == "request.user"
@@ -725,7 +725,7 @@ def test_crud_can_edit1(extra_type_name):
     "crud_edit",
 ])
 def test_crud_can_edit2(extra_type_name):
-    cs = _(f"""
+    app = _(f"""
 
         [boo: /mycrud]
         @{extra_type_name}(#foo, 
@@ -739,9 +739,9 @@ def test_crud_can_edit2(extra_type_name):
         c
     """)
 
-    assert cs.crud is True
+    assert app.crud is True
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
     crud = boo.cruds['_'][extra_type_name].params
 
     assert crud.can_edit == "request.user"
@@ -756,7 +756,7 @@ def test_crud_can_edit2(extra_type_name):
     "crud_edit",
 ])
 def test_crud_url_prefix(extra_type_name):
-    cs = _(f"""
+    app = _(f"""
 
         [boo: /mycrud]
         @{extra_type_name}(#foo, 
@@ -770,9 +770,9 @@ def test_crud_url_prefix(extra_type_name):
         c
     """)
 
-    assert cs.crud is True
+    assert app.crud is True
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
     crud = boo.cruds['_'][extra_type_name].params
 
     assert crud.url_prefix == "this/is/custom/prefix/"
@@ -787,7 +787,7 @@ def test_crud_url_prefix(extra_type_name):
     "crud_edit",
 ])
 def test_crud_link_suffix(extra_type_name):
-    cs = _(f"""
+    app = _(f"""
 
         [boo: /mycrud]
         @{extra_type_name}(#foo, 
@@ -801,9 +801,9 @@ def test_crud_link_suffix(extra_type_name):
         c
     """)
 
-    assert cs.crud is True
+    assert app.crud is True
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
     crud = boo.cruds['_'][extra_type_name].params
 
     assert crud.link_suffix == "category=url.category"
@@ -818,7 +818,7 @@ def test_crud_link_suffix(extra_type_name):
     "crud_edit",
 ])
 def test_crud_filter(extra_type_name):
-    cs = _(f"""
+    app = _(f"""
 
         [boo: /mycrud]
         @{extra_type_name}(#foo{{lala.lolo}})
@@ -830,9 +830,9 @@ def test_crud_filter(extra_type_name):
         c
     """)
 
-    assert cs.crud is True
+    assert app.crud is True
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
     crud = boo.cruds['_'][extra_type_name]
 
     assert crud.params.query == "lala.lolo"
@@ -847,7 +847,7 @@ def test_crud_filter(extra_type_name):
     "crud_edit",
 ])
 def test_crud_success_page(extra_type_name):
-    cs = _(f"""
+    app = _(f"""
 
         [boo: /mycrud]
         @{extra_type_name}(#foo
@@ -861,16 +861,16 @@ def test_crud_success_page(extra_type_name):
         c
     """)
 
-    assert cs.crud is True
+    assert app.crud is True
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
     crud = boo.cruds['_'][extra_type_name]
 
     assert crud.params.next_page == {'all': "reverse_lazy('some_url', kwargs={'param1': self.object.pk})"}
 
 
 def test_crud_success_page_main():
-    cs = _(f"""
+    app = _(f"""
 
         [boo: /mycrud]
         @crud(#foo
@@ -884,15 +884,15 @@ def test_crud_success_page_main():
         c
     """)
 
-    assert cs.crud is True
+    assert app.crud is True
 
     for tname in ('create', 'delete', 'edit'):
-        crud = cs.pages[f'boo_{tname}'].cruds['_'][f'crud_{tname}']
+        crud = app.pages[f'boo_{tname}'].cruds['_'][f'crud_{tname}']
         assert crud.params.next_page == {'all': "reverse_lazy('some_url', kwargs={'param1': self.object.pk})"}
 
 
 def test_crud_success_page_main_create_only():
-    cs = _(f"""
+    app = _(f"""
 
         [boo: /mycrud]
         @crud(#foo
@@ -906,10 +906,10 @@ def test_crud_success_page_main_create_only():
         c
     """)
 
-    assert cs.crud is True
+    assert app.crud is True
 
     for tname in ('create', 'delete', 'edit'):
-        crud = cs.pages[f'boo_{tname}'].cruds['_'][f'crud_{tname}']
+        crud = app.pages[f'boo_{tname}'].cruds['_'][f'crud_{tname}']
         if tname == 'create':
             assert crud.next_page_expr == "reverse_lazy('some_url', kwargs={'param1': self.object.pk})"
         else:
@@ -925,7 +925,7 @@ def test_crud_success_page_main_create_only():
     "crud_edit",
 ])
 def test_crud_success_url_dq(extra_type_name):
-    cs = _(f"""
+    app = _(f"""
 
         [boo: /mycrud]
         @{extra_type_name}(#foo
@@ -939,9 +939,9 @@ def test_crud_success_url_dq(extra_type_name):
         c
     """)
 
-    assert cs.crud is True
+    assert app.crud is True
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
     crud = boo.cruds['_'][extra_type_name]
 
     assert crud.params.next_page == {'all': '"https://google.com/"'}
@@ -955,7 +955,7 @@ def test_crud_success_url_dq(extra_type_name):
     "crud_edit",
 ])
 def test_crud_success_url_sq(extra_type_name):
-    cs = _(f"""
+    app = _(f"""
 
         [boo: /mycrud]
         @{extra_type_name}(#foo
@@ -969,9 +969,9 @@ def test_crud_success_url_sq(extra_type_name):
         c
     """)
 
-    assert cs.crud is True
+    assert app.crud is True
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
     crud = boo.cruds['_'][extra_type_name]
 
     assert crud.params.next_page == {'all': "'https://google.com/'"}
@@ -986,7 +986,7 @@ def test_crud_success_url_sq(extra_type_name):
     "crud_edit",
 ])
 def test_crud_descriptor(extra_type_name):
-    cs = _(f"""
+    app = _(f"""
 
         [boo: /mycrud]
         @{extra_type_name}.zoo(#foo)
@@ -998,16 +998,16 @@ def test_crud_descriptor(extra_type_name):
         c
     """)
 
-    assert cs.crud is True
+    assert app.crud is True
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
     crud = boo.cruds['zoo'][extra_type_name]
 
     assert crud.descriptor == "zoo"
 
 
 def test_crud_list():
-    cs = _(f"""
+    app = _(f"""
 
         [boo: /mycrud]
         @crud_list.zoo(#foo)
@@ -1019,9 +1019,9 @@ def test_crud_list():
         c
     """)
 
-    assert cs.crud is True
+    assert app.crud is True
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
     crud = boo.cruds['zoo']['crud_list']
 
     assert crud.skip == ['detail', 'create', 'edit', 'delete']

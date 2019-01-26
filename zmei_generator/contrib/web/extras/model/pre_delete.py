@@ -10,7 +10,7 @@ class PreDeleteModelExtra(SignalBaseModelExtra):
 class PreDeleteModelExtraParserListener(BaseListener):
 
     def enterAn_pre_delete(self, ctx: ZmeiLangParser.An_pre_deleteContext):
-        self.collection_set.extras.append(
+        self.application.extras.append(
             PreDeleteModelExtra(self.model)
         )
 

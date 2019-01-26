@@ -3,10 +3,10 @@ from zmei_generator.generator.utils import generate_file, generate_urls_file
 
 
 def generate(target_path, app):
-    for app_name, collection_set in app.collection_sets.items():
+    for app_name, application in app.applications.items():
         imports = ImportSet()
 
-        for col in collection_set.collections.values():
+        for col in application.models.values():
             imports.add('{}.models'.format(app_name), col.class_name)
 
             if not col.rest:
@@ -16,11 +16,11 @@ def generate(target_path, app):
                 rest_conf.configure_imports(imports)
 
         generated_templates = []
-        if len(collection_set.pages.items()) > 0:
+        if len(application.pages.items()) > 0:
             imports.add('django.views.generic', 'TemplateView')
 
-            for page in collection_set.pages.values():
-                if collection_set.channels:
+            for page in application.pages.values():
+                if application.channels:
                     imports.add('channels.layers', 'get_channel_layer')
                 if page.stream:
                     imports.add('channels.generic.websocket', 'AsyncWebsocketConsumer')
@@ -48,44 +48,44 @@ def generate(target_path, app):
                         generate_file(target_path, template_name, 'theme/default.html', {
                             'app_name': app_name,
                             'page': page,
-                            'parent': collection_set.resolve_page(page.parent_name) if page.parent_name else None
+                            'parent': application.resolve_page(page.parent_name) if page.parent_name else None
                         })
 
                         generated_templates.append(template_name)
 
         generate_file(target_path, '{}/views.py'.format(app_name), 'views.py.tpl', {
             'imports': imports.import_sting(),
-            'collection_set': collection_set,
-            'collections': [(name, col) for name, col in collection_set.collections.items() if col.rest],
-            'pages': collection_set.pages.values()
+            'application': application,
+            'models': [(name, col) for name, col in application.models.items() if col.rest],
+            'pages': application.pages.values()
         })
 
 
         # urls
-        pages_i18n = [page for page in collection_set.pages.values() if page.has_uri and page.i18n]
+        pages_i18n = [page for page in application.pages.values() if page.has_uri and page.i18n]
         if len(pages_i18n) > 0:
             generate_urls_file(
                 target_path,
                 app_name,
-                collection_set,
+                application,
                 pages_i18n,
                 i18n=True
             )
 
         # urls i18n
-        pages = [page for page in collection_set.pages.values() if page.has_uri and not page.i18n]
-        if collection_set.pages:
+        pages = [page for page in application.pages.values() if page.has_uri and not page.i18n]
+        if application.pages:
             generate_urls_file(
                 target_path,
                 app_name,
-                collection_set,
+                application,
                 pages,
                 i18n=False
             )
 
-        if len(collection_set.pages) > 0:
+        if len(application.pages) > 0:
             generate_file(target_path, '{}/templates/{}/_base.html'.format(app_name, app_name),
                           template_name='theme/base_app.html', context={
-                    'collection_set': collection_set,
+                    'application': application,
                 })
 

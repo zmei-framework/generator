@@ -14,9 +14,9 @@ from elasticsearch import Elasticsearch
 from jwt import PyJWTError
 from sanic import Sanic
 from sanic.response import HTTPResponse, text
-from zmei_generator.generator.application import ZmeiAppParser
+from zmei_generator.generator.application import ZmeiProjectParser
 
-from zmei_generator.generator.collections import generate, generate_common_files
+from zmei_generator.generator.models import generate, generate_common_files
 from zmei_generator.parser.errors import ValidationError
 from zmei_generator.generator.utils import StopGenerator
 from zmei_generator.parser.parser import ZmeiParser
@@ -132,9 +132,9 @@ async def do_generate(executor, request, target_path):
     if request.form.get('features'):
         features = request.form.get('features').split(',')
 
-    app_parser = ZmeiAppParser()
+    app_parser = ZmeiProjectParser()
 
-    for app_name in request.form.get('collections').split(','):
+    for app_name in request.form.get('models').split(','):
         filename = '{}.col'.format(app_name)
 
         if not os.path.exists(os.path.join(target_path, 'col/' + filename)):
@@ -149,18 +149,18 @@ async def do_generate(executor, request, target_path):
         with open(os.path.join(target_path, filename)) as f:
             app_parser.add_file(filename, f.read())
 
-        # collection_set = parser.populate_collection_set_and_errors(app_name)
+        # application = parser.populate_application_and_errors(app_name)
 
     application = app_parser.parse()
 
-    for app_name, collection_set in application.collection_sets.items():
-        generate(target_path, app_name, collection_set, features=features)
+    for app_name, application in application.applications.items():
+        generate(target_path, app_name, application, features=features)
 
 
-    # all_apps = {app_name: cs for app_name, cs in await asyncio.gather(*all_apps)}
+    # all_apps = {app_name: app for app_name, app in await asyncio.gather(*all_apps)}
 
     skeleton_dir = os.path.join(os.path.realpath(dirname(__file__)), 'skeleton')
-    await app.loop.run_in_executor(executor, generate_common_files, target_path, skeleton_dir, application.collection_sets)
+    await app.loop.run_in_executor(executor, generate_common_files, target_path, skeleton_dir, application.applications)
 
     if 'react' in features and os.path.exists(os.path.join(target_path, 'react/package.json')):
         webpack_home = os.path.join(os.path.realpath(dirname(__file__)), 'webpack')
@@ -192,13 +192,13 @@ async def do_generate(executor, request, target_path):
 def generate_app(stats_listener, target_path, app_name, features, filename):
     parser = ZmeiParser()
     parser.parse_file(os.path.join(target_path, filename))
-    collection_set = parser.populate_collection_set_and_errors(app_name)
+    application = parser.populate_application_and_errors(app_name)
 
     parser.collect_stats(stats_listener)
 
-    generate(target_path, app_name, collection_set, features=features)
+    generate(target_path, app_name, application, features=features)
 
-    return app_name, collection_set
+    return app_name, application
 
 
 def extract_files(target_path, request):

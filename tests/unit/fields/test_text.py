@@ -8,11 +8,11 @@ from zmei_generator.parser.parser import ZmeiParser
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 
 def test_text_field():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
@@ -22,17 +22,17 @@ def test_text_field():
         d: str(?, choices=foo,bar,baz)
     """)
 
-    a = cs.collections['boo'].fields['a']
+    a = app.models['boo'].fields['a']
 
     assert isinstance(a, TextFieldDef)
     assert a.max_length == 100
 
-    b = cs.collections['boo'].fields['b']
+    b = app.models['boo'].fields['b']
 
     assert isinstance(b, TextFieldDef)
     assert b.max_length == 255
 
-    c = cs.collections['boo'].fields['c']
+    c = app.models['boo'].fields['c']
 
     assert isinstance(c, TextFieldDef)
     assert c.max_length == 6
@@ -42,7 +42,7 @@ def test_text_field():
         ('abcdef', 'Яба яба'),
     )
 
-    d = cs.collections['boo'].fields['d']
+    d = app.models['boo'].fields['d']
 
     assert isinstance(d, TextFieldDef)
     assert d.choices == (
@@ -52,39 +52,39 @@ def test_text_field():
     )
 
 def test_longtext_field():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
         a: text
     """)
 
-    a = cs.collections['boo'].fields['a']
+    a = app.models['boo'].fields['a']
 
     assert isinstance(a, LongTextFieldDef)
 
 
 def test_html_field():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
         a: html
     """)
 
-    a = cs.collections['boo'].fields['a']
+    a = app.models['boo'].fields['a']
 
     assert isinstance(a, RichTextFieldDef)
 
 
 def test_html_media_field():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
         a: html_media
     """)
 
-    a = cs.collections['boo'].fields['a']
+    a = app.models['boo'].fields['a']
 
     assert isinstance(a, RichTextFieldWithUploadDef)

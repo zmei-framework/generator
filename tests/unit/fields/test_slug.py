@@ -7,11 +7,11 @@ from zmei_generator.parser.parser import ZmeiParser
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 
 def test_slug_field():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
@@ -20,7 +20,7 @@ def test_slug_field():
         c: slug(a,b)
     """)
 
-    c = cs.collections['boo'].fields['c']
+    c = app.models['boo'].fields['c']
 
     assert isinstance(c, SlugFieldDef)
     assert c.field_names == ['a', 'b']

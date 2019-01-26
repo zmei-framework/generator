@@ -1,4 +1,4 @@
-from zmei_generator.domain.collection_set_def import FieldDeclaration
+from zmei_generator.domain.application_def import FieldDeclaration
 from zmei_generator.domain.reference_field import ReferenceField
 from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
 from zmei_generator.domain.extras import Extra
@@ -7,10 +7,10 @@ from zmei_generator.contrib.web.fields.date import AutoNowDateTimeFieldDef, Auto
 
 class AdminExtra(Extra):
 
-    def __init__(self, collection) -> None:
+    def __init__(self, model) -> None:
         super().__init__()
 
-        self.collection = collection
+        self.model = model
 
         # fields for different purposes
         self.admin_list = None
@@ -51,7 +51,7 @@ class AdminExtra(Extra):
         until all Reference fields are created
         """
 
-        fields = self.collection.filter_fields(fields_expr, include_refs=True)
+        fields = self.model.filter_fields(fields_expr, include_refs=True)
 
         self.add_tab_fieldset(name, verbose_name, fields, prepend)
 
@@ -72,7 +72,7 @@ class AdminExtra(Extra):
 
     def check_tab_consistency(self):
         general_fields = []
-        for field in (self.fields or self.collection.all_fields):
+        for field in (self.fields or self.model.all_fields):
 
             if field.name not in self.tab_fields:
                 general_fields.append(field)
@@ -81,11 +81,11 @@ class AdminExtra(Extra):
             self.add_tab_fieldset('general', 'General', general_fields, prepend=True)
 
     def post_process(self):
-        if self.collection.parent and self.collection.parent.admin:
-            self.tab_fields = self.collection.parent.admin.tab_fields.copy()
-            self.tabs = self.collection.parent.admin.tabs.copy()
-            self.tab_names = self.collection.parent.admin.tab_names.copy()
-            self.inlines.extend(self.collection.parent.admin.inlines.copy())
+        if self.model.parent and self.model.parent.admin:
+            self.tab_fields = self.model.parent.admin.tab_fields.copy()
+            self.tabs = self.model.parent.admin.tabs.copy()
+            self.tab_names = self.model.parent.admin.tab_names.copy()
+            self.inlines.extend(self.model.parent.admin.inlines.copy())
 
         for tab in self.tabs_raw:
             self.add_tab(*tab)
@@ -103,7 +103,7 @@ class AdminExtra(Extra):
             inline.post_process()
 
         # check for auto-fields
-        for field in self.collection.all_and_inherited_fields_map.values():
+        for field in self.model.all_and_inherited_fields_map.values():
             if isinstance(field, (AutoNowDateTimeFieldDef, AutoNowAddDateTimeFieldDef)):
                 if not self.read_only:
                     self.read_only = []
@@ -115,11 +115,11 @@ class AdminExtra(Extra):
         fields = []
         for name, tab_name in self.tab_fields.items():
             # skip references
-            if isinstance(self.collection.all_and_inherited_fields_map[name], ReferenceField):
+            if isinstance(self.model.all_and_inherited_fields_map[name], ReferenceField):
                 continue
 
             if tab_name == tab:
-                fields.append(self.collection.all_and_inherited_fields_map[name])
+                fields.append(self.model.all_and_inherited_fields_map[name])
 
         return fields
 
@@ -137,26 +137,26 @@ class AdminExtra(Extra):
         if self.has_polymorphic_inlines:
             classes.append(('polymorphic.admin', 'PolymorphicInlineSupportMixin'))
 
-        if self.collection.parent:
+        if self.model.parent:
             classes.append(('polymorphic.admin', 'PolymorphicChildModelAdmin'))
             model_admin_added = True
 
-        elif self.collection.polymorphic:
-            children_have_admins = len([x for x in self.collection.child_collections if x.admin]) > 0
+        elif self.model.polymorphic:
+            children_have_admins = len([x for x in self.model.child_models if x.admin]) > 0
 
             if children_have_admins:
                 classes.append(('polymorphic.admin', 'PolymorphicParentModelAdmin'))
                 model_admin_added = True
 
-        if self.collection.sortable:
+        if self.model.sortable:
             classes.append(('suit.admin', 'SortableModelAdmin'))
             model_admin_added = True
 
-        if self.collection.tree:
+        if self.model.tree:
             classes.append(('mptt.admin', 'DraggableMPTTAdmin'))
             model_admin_added = True
 
-        if self.collection.translatable:
+        if self.model.translatable:
             classes.append(('modeltranslation.admin', 'TabbedTranslationAdmin'))
             model_admin_added = True
 
@@ -173,7 +173,7 @@ class AdminExtra(Extra):
 class AdminInlineConfig(object):
     def __init__(self, admin, name):
         self.admin = admin
-        self.collection = admin.collection
+        self.model = admin.model
         self.inline_name = name
         self.fields_expr = ['*']
         self.extra_count = 0
@@ -181,18 +181,18 @@ class AdminInlineConfig(object):
 
         self.field = None
         self.source_field_name = None
-        self.target_collection = None
+        self.target_model = None
         self.field_set = None
         self.tab = None
 
     def post_process(self):
-        collection = self.admin.collection
+        model = self.admin.model
 
-        if not collection.check_field_exists(self.inline_name):
+        if not model.check_field_exists(self.inline_name):
             raise ValidationException(
                 'Field name specified for admin inline: "{}" does not exist'.format(self.inline_name))
 
-        field = collection.all_and_inherited_fields_map[self.inline_name]
+        field = model.all_and_inherited_fields_map[self.inline_name]
 
         if not isinstance(field, ReferenceField):
             raise ValidationException(
@@ -201,14 +201,14 @@ class AdminInlineConfig(object):
 
         self.field = field
         self.source_field_name = field.source_field_name
-        self.target_collection = field.target_collection
+        self.target_model = field.target_model
 
-        self.field_set = [f for f in field.target_collection.filter_fields(self.fields_expr) if f.name != self.source_field_name]
+        self.field_set = [f for f in field.target_model.filter_fields(self.fields_expr) if f.name != self.source_field_name]
 
         if self.extra_count:
             if self.extra_count > 0 and self.inline_type == 'polymorphic':
                 raise ValidationException('{}->{}: When using inline type "polymorphic" extra must be 0'.format(
-                    self.collection.name,
+                    self.model.name,
                     self.inline_name
                 ))
 
@@ -219,7 +219,7 @@ class AdminInlineConfig(object):
     @property
     def class_name(self):
         return '{}{}Inline'.format(
-            self.collection.class_name,
+            self.model.class_name,
             ''.join([x.capitalize() for x in self.inline_name.split('_')])
         )
 
@@ -229,22 +229,22 @@ class AdminInlineConfig(object):
         declarations = []
 
         if self.inline_type == 'tabular':
-            if self.target_collection.sortable:
+            if self.target_model.sortable:
                 declarations.append(FieldDeclaration('suit.admin', 'SortableTabularInline'))
             else:
                 declarations.append(FieldDeclaration('django.contrib.admin', 'TabularInline'))
         elif self.inline_type == 'polymorphic':
-            if self.target_collection.sortable:
+            if self.target_model.sortable:
                 declarations.append(FieldDeclaration('cratis_admin.admin', 'StackedPolymorphicSortableInline'))
             else:
                 declarations.append(FieldDeclaration('polymorphic.admin', 'StackedPolymorphicInline'))
         else:
-            if self.target_collection.sortable:
+            if self.target_model.sortable:
                 declarations.append(FieldDeclaration('suit.admin', 'SortableStackedInline'))
             else:
                 declarations.append(FieldDeclaration('django.contrib.admin', 'StackedInline'))
 
-        # if self.target_collection.translatable:
+        # if self.target_model.translatable:
         #     declarations.append(FieldDeclaration('modeltranslation.admin', 'TranslationInlineModelAdmin'))
 
         return declarations

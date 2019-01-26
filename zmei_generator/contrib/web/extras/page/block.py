@@ -50,14 +50,14 @@ class ReactPageBlock(Block):
 
         if len(self.react_components) > 0 or self.is_child_of_react_page:
             self.page.react = True
-            self.page.collection_set.react = True
+            self.page.application.react = True
 
             self.page.page_component_name = f'Page{self.page.name.capitalize()}{self.area_name.capitalize()}'
 
     def collect_components(self, el):
         if re.match('^[A-Z][a-z0-9]+', el.tag):
 
-            import_source, what = self.page.collection_set.react_imports.find_import_source(el.tag)
+            import_source, what = self.page.application.react_imports.find_import_source(el.tag)
 
             if import_source:
                 self.react_components_imports.add(import_source, what)

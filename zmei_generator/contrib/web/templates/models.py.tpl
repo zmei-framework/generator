@@ -1,12 +1,12 @@
 
 {{ imports }}
 
-{{ collection_set.model_imports }}
+{{ application.model_imports }}
 
 from django.utils.translation import gettext_lazy as _
 
 
-{% for cname, col in collections %}
+{% for cname, col in models %}
 class {{ col.class_name }}({% for import_str, class_name, alias in col.mixin_classes %}{{ alias }}, {% endfor %}{{ col.model_class_declaration }}):
     """
     {{ col.class_name }}

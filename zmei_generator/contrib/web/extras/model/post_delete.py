@@ -11,7 +11,7 @@ class PostDeleteModelExtra(SignalBaseModelExtra):
 class PostDeleteModelExtraParserListener(BaseListener):
 
     def enterAn_post_delete(self, ctx: ZmeiLangParser.An_post_deleteContext):
-        self.collection_set.extras.append(
+        self.application.extras.append(
             PostDeleteModelExtra(self.model)
         )
 

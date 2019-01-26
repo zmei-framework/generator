@@ -1,4 +1,4 @@
-from zmei_generator.domain.collection_set_def import FieldDeclaration, CollectionSetDef
+from zmei_generator.domain.application_def import FieldDeclaration, ApplicationDef
 from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
 from zmei_generator.domain.extras import ModelExtra
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
@@ -18,8 +18,8 @@ class RestModelExtra(ModelExtra):
 
 
 class RestModelExtraParserListener(BaseListener):
-    def __init__(self, collection_set: CollectionSetDef) -> None:
-        super().__init__(collection_set)
+    def __init__(self, application: ApplicationDef) -> None:
+        super().__init__(application)
 
         self.rest_config = None
         self.rest_config_stack = []
@@ -27,13 +27,13 @@ class RestModelExtraParserListener(BaseListener):
     def ensure_defaults(self):
         # fields
         if not self.rest_config.fields:
-            self.rest_config.set_fields(self.rest_config.collection.filter_fields(['*'], include_refs=True))
+            self.rest_config.set_fields(self.rest_config.model.filter_fields(['*'], include_refs=True))
 
     def enterAn_rest(self, ctx: ZmeiLangParser.An_restContext):
         if not self.model.rest:
             self.model.rest = RestModelExtra(self.model)
-            self.collection_set.rest = True
-            self.collection_set.extras.append(self.model.rest)
+            self.application.rest = True
+            self.application.extras.append(self.model.rest)
 
         self.rest_config = RestSerializerConfig(self.model.class_name, self.model)
 
@@ -53,7 +53,7 @@ class RestModelExtraParserListener(BaseListener):
         self.rest_config.set_descriptor(ctx.getText())
 
     def enterAn_rest_fields(self, ctx: ZmeiLangParser.An_rest_fieldsContext):
-        self.rest_config.set_fields(self.rest_config.collection.filter_fields(self._get_fields(ctx), include_refs=True))
+        self.rest_config.set_fields(self.rest_config.model.filter_fields(self._get_fields(ctx), include_refs=True))
 
     def enterAn_rest_i18n(self, ctx: ZmeiLangParser.An_rest_i18nContext):
         self.rest_config.i18n = ctx.BOOL().getText() == 'true'
@@ -91,21 +91,21 @@ class RestModelExtraParserListener(BaseListener):
         name = ctx.an_rest_inline_name().getText()
         field = self.rest_config.fields_index[name]
 
-        inline_collection = field.get_rest_inline_collection()
-        if not inline_collection:
+        inline_model = field.get_rest_inline_model()
+        if not inline_model:
             raise ValidationException('field "{}" can not be used as inline'.format(field.name))
 
-        serializer_name = self.rest_config.serializer_name + '_Inline' + inline_collection.class_name
+        serializer_name = self.rest_config.serializer_name + '_Inline' + inline_model.class_name
 
-        new_config = RestSerializerConfig(serializer_name, inline_collection, field)
+        new_config = RestSerializerConfig(serializer_name, inline_model, field)
 
         self.rest_config.inlines[name] = new_config
 
         self.rest_config.extra_serializers.append(new_config)
 
         self.rest_config.field_imports.append(
-            FieldDeclaration('{}.models'.format(inline_collection.collection_set.app_name),
-                             inline_collection.class_name))
+            FieldDeclaration('{}.models'.format(inline_model.application.app_name),
+                             inline_model.class_name))
 
         self.rest_config.field_declarations.append(
             (field.name, '{}Serializer(many={}, read_only={})'.format(serializer_name, repr(field.is_many),
@@ -118,7 +118,7 @@ class RestModelExtraParserListener(BaseListener):
         self.rest_config = self.rest_config_stack.pop()
 
     def enterAn_rest_read_only(self, ctx: ZmeiLangParser.An_rest_read_onlyContext):
-        self.rest_config.read_only_fields = [f.name for f in self.rest_config.collection.filter_fields(self._get_fields(ctx))]
+        self.rest_config.read_only_fields = [f.name for f in self.rest_config.model.filter_fields(self._get_fields(ctx))]
 
     def enterAn_rest_annotate_count(self, ctx: ZmeiLangParser.An_rest_annotate_countContext):
         field = ctx.an_rest_annotate_count_field().getText()
@@ -137,12 +137,12 @@ class RestModelExtraParserListener(BaseListener):
 
 class RestSerializerConfig(object):
 
-    def __init__(self, serializer_name, collection, parent_field=None) -> None:
+    def __init__(self, serializer_name, model, parent_field=None) -> None:
         self.descriptor = '_'
         self.fields = None
         self.fields_index = {}
         self.i18n = False
-        self.collection = collection
+        self.model = model
         self.parent_field = parent_field
         self.serializer_name = serializer_name
 
@@ -187,10 +187,10 @@ class RestSerializerConfig(object):
             if ref:
                 if ref[0] == '#':
                     ref = ref[1:]
-                    ref_collection = self.collection.collection_set.resolve_collection(ref)
+                    ref_model = self.model.application.resolve_model(ref)
 
-                    cls = ref_collection.class_name
-                    self.field_imports.append((f'{ref_collection.collection_set.app_name}.models', cls))
+                    cls = ref_model.class_name
+                    self.field_imports.append((f'{ref_model.application.app_name}.models', cls))
                 else:
                     cls = ref
             else:
@@ -275,8 +275,8 @@ class RestSerializerConfig(object):
 
     def configure_model_imports(self, imports):
 
-        if self.collection:
-            imports.add(f'{self.collection.collection_set.app_name}.models', self.collection.class_name)
+        if self.model:
+            imports.add(f'{self.model.application.app_name}.models', self.model.class_name)
 
         for conf in self.extra_serializers:
             conf.configure_model_imports(imports)

@@ -1,6 +1,6 @@
 import pkg_resources
 
-from zmei_generator.domain.collection_set_def import CollectionSetDef
+from zmei_generator.domain.application_def import ApplicationDef
 from zmei_generator.domain.page_def import PageDef
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
@@ -14,8 +14,8 @@ parsers.append(BaseListener)
 
 class PageExtraListener(*parsers):
 
-    def __init__(self, collection_set: CollectionSetDef) -> None:
-        super().__init__(collection_set)
+    def __init__(self, application: ApplicationDef) -> None:
+        super().__init__(application)
 
         self.page = None  # type: PageDef
         self.parent = None
@@ -25,13 +25,13 @@ class PageExtraListener(*parsers):
         self.last_crud_descriptor_stack = []
 
     def enterPage(self, ctx: ZmeiLangParser.PageContext):
-        self.page = PageDef(self.collection_set)
+        self.page = PageDef(self.application)
 
     def enterPage_name(self, ctx: ZmeiLangParser.Page_nameContext):
         name = ctx.getText()
         if self.parent and self.extend_name:
             name = f'{self.parent}_{name}'
-        self.page = self.collection_set.pages[name]
+        self.page = self.application.pages[name]
 
     def enterPage_base(self, ctx: ZmeiLangParser.Page_baseContext):
         self.extend_name = ctx.getText()[-2] == '~'
@@ -77,7 +77,7 @@ class PageExtraListener(*parsers):
 
         crud_page_name = f"{page.name}{name_suffix}_{crud_name}"
 
-        self.page = page.collection_set.pages[crud_page_name]
+        self.page = page.application.pages[crud_page_name]
 
     def exitAn_crud_page_override(self, ctx: ZmeiLangParser.An_crud_page_overrideContext):
         self.page = self.page_stack.pop()

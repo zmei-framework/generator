@@ -10,7 +10,7 @@ class PostSaveModelExtra(SignalBaseModelExtra):
 class PostSaveModelExtraParserListener(BaseListener):
 
     def enterAn_post_save(self, ctx: ZmeiLangParser.An_post_saveContext):
-        self.collection_set.extras.append(
+        self.application.extras.append(
             PostSaveModelExtra(self.model)
         )
 

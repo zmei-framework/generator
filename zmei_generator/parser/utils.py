@@ -1,15 +1,15 @@
 from textwrap import dedent
 
-from zmei_generator.domain.collection_set_def import CollectionSetDef
+from zmei_generator.domain.application_def import ApplicationDef
 from zmei_generator.parser.gen.ZmeiLangParserListener import ZmeiLangParserListener
 
 
 class BaseListener(ZmeiLangParserListener):
 
-    def __init__(self, collection_set: CollectionSetDef) -> None:
+    def __init__(self, application: ApplicationDef) -> None:
         super().__init__()
 
-        self.collection_set = collection_set
+        self.application = application
 
     def _get_code(self, ctx):
         if ctx.code_block():

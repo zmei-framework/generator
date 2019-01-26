@@ -15,12 +15,12 @@ class FlutterPageExtraParserListener(BaseListener):
 
     def enterAn_flutter(self, ctx: ZmeiLangParser.An_flutterContext):
         extra = FlutterPageExtra(self.page)
-        self.collection_set.extras.append(
+        self.application.extras.append(
             extra
         )
 
         self.set_flutter(self.page, extra)
-        self.collection_set.flutter = True
+        self.application.flutter = True
 
     def enterAn_flutter_child(self, ctx: ZmeiLangParser.An_flutter_childContext):
         if str(ctx.BOOL()) == 'true':

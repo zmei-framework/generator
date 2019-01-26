@@ -107,11 +107,11 @@ def build_parser():
         shutil.rmtree(target_path)
 
     pages = collect_files('zmei.grammar.pages', target_path)
-    collection_sets = collect_files('zmei.grammar.cs', target_path)
+    applications = collect_files('zmei.grammar.app', target_path)
     models = collect_files('zmei.grammar.models', target_path)
     shutil.copytree(source_path, target_path)
 
-    for source_file, target_file in itertools.chain.from_iterable(map(lambda x: x.values(), (pages, models, collection_sets))):
+    for source_file, target_file in itertools.chain.from_iterable(map(lambda x: x.values(), (pages, models, applications))):
         shutil.copy(source_file, target_file)
 
     replace_in_file('zmei_generator/parser/gen/grammar/PageExtra.g4', {
@@ -122,9 +122,9 @@ def build_parser():
         '// {EXTRA_IMPORTS}': ',\n    '.join([os.path.basename(x[0])[:-3] for x in models.values()]),
         '// {EXTRA_ANNOT}': ' ' + '\n    |'.join(models.keys()),
     })
-    replace_in_file('zmei_generator/parser/gen/grammar/CsExtra.g4', {
-        '// {EXTRA_IMPORTS}': ',\n    '.join([os.path.basename(x[0])[:-3] for x in collection_sets.values()]),
-        '// {EXTRA_ANNOT}': ' ' + '\n    |'.join(collection_sets.keys()),
+    replace_in_file('zmei_generator/parser/gen/grammar/AppExtra.g4', {
+        '// {EXTRA_IMPORTS}': ',\n    '.join([os.path.basename(x[0])[:-3] for x in applications.values()]),
+        '// {EXTRA_ANNOT}': ' ' + '\n    |'.join(applications.keys()),
     })
     replace_in_file('zmei_generator/parser/gen/grammar/ZmeiLangSimpleLexer.g4', {
         '// {KEYWORDS}': '\n'.join([f"{name}: '{val}';" for name, val in keywords.items()]),

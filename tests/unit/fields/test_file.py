@@ -9,18 +9,18 @@ from zmei_generator.parser.parser import ZmeiParser
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 
 def test_image_field():
-    cs = _("""
+    app = _("""
 
         #boo
         ----------
         a: image(default=300x300|crop|upscale, foo=1024x600|crop)
     """)
 
-    a = cs.collections['boo'].fields['a']
+    a = app.models['boo'].fields['a']
 
     assert isinstance(a, ImageFieldDef)
     assert len(a.sizes) == 2
@@ -35,66 +35,66 @@ def test_image_field():
 
 
 def test_filer_image_field():
-    cs = _("""
+    app = _("""
 
         #boo
         ----------
         a: filer_image
     """)
 
-    a = cs.collections['boo'].fields['a']
+    a = app.models['boo'].fields['a']
 
     assert isinstance(a, FilerImageFieldDef)
 
 
 def test_filer_file_field():
-    cs = _("""
+    app = _("""
 
         #boo
         ----------
         a: filer_file
     """)
 
-    a = cs.collections['boo'].fields['a']
+    a = app.models['boo'].fields['a']
 
     assert isinstance(a, FilerFileFieldDef)
 
 
 def test_file_field():
-    cs = _("""
+    app = _("""
 
         #boo
         ----------
         a: file
     """)
 
-    a = cs.collections['boo'].fields['a']
+    a = app.models['boo'].fields['a']
 
     assert isinstance(a, SimpleFieldDef)
 
 
 def test_folder_field():
-    cs = _("""
+    app = _("""
 
         #boo
         ----------
         a: filer_folder
     """)
 
-    a = cs.collections['boo'].fields['a']
+    a = app.models['boo'].fields['a']
 
     assert isinstance(a, FilerFileFolderDef)
 
 
 def test_image_folder_field():
-    cs = _("""
+    app = _("""
 
         #boo
         ----------
         a: filer_image_folder(default=300x300|crop|upscale, foo=1024x600|crop)
     """)
 
-    a = cs.collections['boo'].fields['a']
+    a = app.models['boo'].fields['a']
 
     assert isinstance(a, FilerImageFolderFieldDef)
     assert len(a.sizes) == 2

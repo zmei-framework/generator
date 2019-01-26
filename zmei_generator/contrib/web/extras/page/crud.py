@@ -127,15 +127,15 @@ class CrudPageExtra(PageExtra):
 
         # appname, model_cls, fields
         if crud.model.startswith('#'):
-            collection = page.collection_set.resolve_collection(crud.model[1:])
-            self.app_name = collection.collection_set.app_name + '.models'
-            self.model_cls = collection.class_name
-            self.model_name = collection.name or collection.class_name
-            self.model_name_plural = collection.name_plural or f'{self.model_name} items'
+            model = page.application.resolve_model(crud.model[1:])
+            self.app_name = model.application.app_name + '.models'
+            self.model_cls = model.class_name
+            self.model_name = model.name or model.class_name
+            self.model_name_plural = model.name_plural or f'{self.model_name} items'
             self.fields = {field.name: field.verbose_name or field.name.replace('_', ' ').capitalize() for field in
-                           collection.filter_fields(crud_fields or '*') if not field.read_only}
+                           model.filter_fields(crud_fields or '*') if not field.read_only}
             self.list_fields = {field.name: field.verbose_name or field.name.replace('_', ' ').capitalize() for field in
-                                collection.filter_fields(crud.list_fields or crud_fields or '*') if not field.read_only}
+                                model.filter_fields(crud.list_fields or crud_fields or '*') if not field.read_only}
         else:
             parts = crud.model.split('.')
             self.app_name = '.'.join(parts[:-1]) + '.models'
@@ -250,11 +250,11 @@ class CrudPageExtra(PageExtra):
             link_crud = self
             link_page = self.page
 
-        self.links = {x: f"{link_page.collection_set.app_name}.{link_page.name}" f"{link_crud.name_suffix}_{x}" for x in
+        self.links = {x: f"{link_page.application.app_name}.{link_page.name}" f"{link_crud.name_suffix}_{x}" for x in
                       link_crud.crud_pages}
 
         if self.create_list:
-            self.links['list'] = f"{link_page.collection_set.app_name}.{link_page.name}"
+            self.links['list'] = f"{link_page.application.app_name}.{link_page.name}"
 
         if self.parent_base_page:
             self.links['parent'] = self.links['list']
@@ -300,15 +300,15 @@ class CrudPageExtra(PageExtra):
 
             crud_page_name = f"{base_page.name}{self.name_suffix}_{crud_page}"
 
-            if crud_page_name in base_page.collection_set.pages:
+            if crud_page_name in base_page.application.pages:
                 append = True
-                new_page = base_page.collection_set.pages[crud_page_name]
+                new_page = base_page.application.pages[crud_page_name]
             else:
                 append = False
-                new_page = PageDef(self.page.collection_set)
+                new_page = PageDef(self.page.application)
                 new_page.parent_name = base_page.name
                 new_page.name = crud_page_name
-                base_page.collection_set.pages[new_page.name] = new_page
+                base_page.application.pages[new_page.name] = new_page
 
             if crud_page == 'create':
                 new_page.set_uri(f"./{self.url_prefix}{crud_page}")
@@ -326,12 +326,12 @@ class CrudPageExtra(PageExtra):
             if crud_page not in params.next_page:
                 if 'all' not in params.next_page:
                     params.next_page[
-                        crud_page] = f"'{base_page.collection_set.app_name}.{base_page.name}', {link_extra_params}"
+                        crud_page] = f"'{base_page.application.app_name}.{base_page.name}', {link_extra_params}"
 
             crud = crud_cls_by_name(crud_page)(new_page, params=params, descriptor=self.descriptor,
                                                parent_crud=self, parent_base_page=base_page, append=append)
 
-            base_page.collection_set.extras.append(crud)
+            base_page.application.extras.append(crud)
 
 
 def crud_cls_by_name(name):

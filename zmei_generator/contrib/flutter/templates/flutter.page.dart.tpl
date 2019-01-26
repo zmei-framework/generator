@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 {% if page.functions %}
 import 'dart:convert';
 {% endif %}{% if page.get_parent() %}
-import '../{{ page.get_parent().collection_set.app_name }}/{{ page.get_parent().name }}_ui.dart';{% else %}
+import '../{{ page.get_parent().application.app_name }}/{{ page.get_parent().name }}_ui.dart';{% else %}
 import '../../state.dart';
 {% endif %}
 import '../../app.dart';{% for import in imports %}import '../../models/{{ import }}.dart';
@@ -12,23 +12,23 @@ import '../../components/menu.dart';
 abstract class {{ page.view_name }}State extends {% if page.get_parent() %}{{ page.get_parent().view_name }}StateUi{% else %}PageState{% endif %} {
 
     {% if page.own_item_names %}
-    {%- for key, (item, collection) in page_items.items() -%}
-    {% if not collection %}dynamic {{ to_camel_case(key) }};
-    {% elif item.collection_many %}List<{{ collection.class_name }}> {{ to_camel_case(key) }};
-    {% elif item.collection_dict %}Map<String, {{ collection.class_name }}> {{ to_camel_case(key) }};
-    {% else %}{{ collection.class_name }} {{ to_camel_case(key) }};
+    {%- for key, (item, model) in page_items.items() -%}
+    {% if not model %}dynamic {{ to_camel_case(key) }};
+    {% elif item.model_many %}List<{{ model.class_name }}> {{ to_camel_case(key) }};
+    {% elif item.model_dict %}Map<String, {{ model.class_name }}> {{ to_camel_case(key) }};
+    {% else %}{{ model.class_name }} {{ to_camel_case(key) }};
     {% endif %}
     {%- endfor %}
     {%- endif %}
     {% if page.uri %}
     @override
     String getPageUrl() {
-        return App.url.{{ to_camel_case(page.collection_set.app_name) }}.{{ to_camel_case(page.name) }}({% for param in page.uri_params %}{{ to_camel_case(param) }}: url['{{ param }}']{% if not loop.last %}, {% endif %}{% endfor %});
+        return App.url.{{ to_camel_case(page.application.app_name) }}.{{ to_camel_case(page.name) }}({% for param in page.uri_params %}{{ to_camel_case(param) }}: url['{{ param }}']{% if not loop.last %}, {% endif %}{% endfor %});
     }
 
     List<String> getUrlStack() {
         var stack = super.getUrlStack();
-        stack.add(App.url.{{ to_camel_case(page.collection_set.app_name) }}.{{ to_camel_case(page.name) }}({% for param in page.uri_params %}{{ to_camel_case(param) }}: url['{{ param }}']{% if not loop.last %}, {% endif %}{% endfor %}));
+        stack.add(App.url.{{ to_camel_case(page.application.app_name) }}.{{ to_camel_case(page.name) }}({% for param in page.uri_params %}{{ to_camel_case(param) }}: url['{{ param }}']{% if not loop.last %}, {% endif %}{% endfor %}));
 
         return stack;
     }
@@ -42,25 +42,25 @@ abstract class {{ page.view_name }}State extends {% if page.get_parent() %}{{ pa
     {% if page.stream %}
     @override
     void initState() {
-        subscribeStream('/ws/pages/{{ page.collection_set.app_name }}/{{ page.name }}');
+        subscribeStream('/ws/pages/{{ page.application.app_name }}/{{ page.name }}');
         super.initState();
     }
 
     @override
     void dispose() {
-        unsubscribeStream('/ws/pages/{{ page.collection_set.app_name }}/{{ page.name }}');
+        unsubscribeStream('/ws/pages/{{ page.application.app_name }}/{{ page.name }}');
         super.dispose();
     }
     {% endif %}
     {%- if page.own_item_names %}
     void loadData(data) {
         super.loadData(data);
-        {%- for key, (item, collection) in page_items.items() %}
+        {%- for key, (item, model) in page_items.items() %}
         if (data['{{ key }}'] != null) {
-            {% if not collection %}{{ to_camel_case(key) }} = data['{{ key }}'];
-            {% elif item.collection_many %}{{ to_camel_case(key) }} = data['{{ key }}'].map<{{ collection.class_name }}>((item) => {{ collection.class_name }}.fromJson(item)).toList();
-            {% elif item.collection_dict %}{{ to_camel_case(key) }} = data['{{ key }}'].map<String, {{ collection.class_name }}>((key, item) => MapEntry(key, {{ collection.class_name }}.fromJson(item)));
-            {% else %}{{ to_camel_case(key) }} = {{ collection.class_name }}.fromJson(data['{{ key }}']);
+            {% if not model %}{{ to_camel_case(key) }} = data['{{ key }}'];
+            {% elif item.model_many %}{{ to_camel_case(key) }} = data['{{ key }}'].map<{{ model.class_name }}>((item) => {{ model.class_name }}.fromJson(item)).toList();
+            {% elif item.model_dict %}{{ to_camel_case(key) }} = data['{{ key }}'].map<String, {{ model.class_name }}>((key, item) => MapEntry(key, {{ model.class_name }}.fromJson(item)));
+            {% else %}{{ to_camel_case(key) }} = {{ model.class_name }}.fromJson(data['{{ key }}']);
             {% endif %}
         }{% endfor %}
     }

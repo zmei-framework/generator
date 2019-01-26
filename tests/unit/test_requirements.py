@@ -9,11 +9,11 @@ from zmei_generator.parser.parser import ZmeiParser
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 
 def test_polymorphic():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
@@ -25,12 +25,12 @@ def test_polymorphic():
     
     """)
 
-    assert 'django-polymorphic' in cs.get_required_deps()
-    assert 'polymorphic' in cs.get_required_apps()
+    assert 'django-polymorphic' in app.get_required_deps()
+    assert 'polymorphic' in app.get_required_apps()
 
 
 def test_i18n():
-    cs = _("""
+    app = _("""
         @langs(en)
     
         #boo
@@ -39,12 +39,12 @@ def test_i18n():
     
     """)
 
-    assert cs.translatable is True
+    assert app.translatable is True
 
-    print(cs.get_required_deps())
+    print(app.get_required_deps())
 
-    assert 'django-modeltranslation==0.13-beta1' in cs.get_required_deps()
-    assert 'modeltranslation' in cs.get_required_apps()
+    assert 'django-modeltranslation==0.13-beta1' in app.get_required_deps()
+    assert 'modeltranslation' in app.get_required_apps()
 
 
 def test_i18n_no_annot():
@@ -57,13 +57,13 @@ def test_i18n_no_annot():
 
 #
 # def test_filer():
-#     cs = _("""
+#     app = _("""
 #
 #         @filer
 #
 #     """)
 #
-#     assert 'django-filer' in cs.get_required_deps()
-#     assert 'filer' in cs.get_required_apps()
-#     assert 'easy_thumbnails' in cs.get_required_apps()
-#     assert 'mptt' in cs.get_required_apps()
+#     assert 'django-filer' in app.get_required_deps()
+#     assert 'filer' in app.get_required_apps()
+#     assert 'easy_thumbnails' in app.get_required_apps()
+#     assert 'mptt' in app.get_required_apps()

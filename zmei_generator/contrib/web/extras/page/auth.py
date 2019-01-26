@@ -13,7 +13,7 @@ class AuthPageExtra(PageExtra):
 class AuthPageExtraParserListener(BaseListener):
 
     def enterAn_auth(self, ctx: ZmeiLangParser.An_authContext):
-        self.collection_set.extras.append(
+        self.application.extras.append(
             AuthPageExtra(self.page)
         )
         expr = None

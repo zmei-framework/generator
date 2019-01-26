@@ -1,12 +1,12 @@
 {{ imports }}
-{{ collection_set.page_imports }}
-{% if collection_set.channels %}
+{{ application.page_imports }}
+{% if application.channels %}
 channel_layer = get_channel_layer()
 {% endif %}
 
 from django.utils.translation import gettext_lazy as _
 
-{% for cname, col in collections %}
+{% for cname, col in models %}
 {% for rest_conf in col.published_apis.values() %}
 
 {% if rest_conf.auth_methods.token %}
@@ -30,9 +30,9 @@ class {{ rest_conf.serializer_name }}ViewSet({{ rest_conf.rest_class[1] }}):
         return {{ col.class_name }}.objects.{{ rest_conf.query }}{% if rest_conf.user_field %}.filter({{ rest_conf.user_field }}=self.request.user){% endif %}{% if rest_conf.annotations %}.annotate({{ rest_conf.annotations|join(", ") }}){% endif %}
 {% endfor %}
 {% endfor %}
-{%- if collection_set.react %}
+{%- if application.react %}
 rs = ZmeiReactServer()
-rs.load(settings.BASE_DIR + '/app/static/react/{{ collection_set.app_name }}.bundle.js')
+rs.load(settings.BASE_DIR + '/app/static/react/{{ application.app_name }}.bundle.js')
 {% endif -%}
 {% for page in pages %}
 {%- for prefix, form in page.forms.items() %}
@@ -145,7 +145,7 @@ from django.conf import urls
 {% for handler_code in page.handlers %}
 from django.conf.urls import handler{{ handler_code }}
 handler_{{ handler_code }}_view = {{ page.view_name }}.as_view()
-setattr(urls, 'handler{{ handler_code }}', '{{ collection_set.app_name }}.views.handler_{{ handler_code }}_view')
+setattr(urls, 'handler{{ handler_code }}', '{{ application.app_name }}.views.handler_{{ handler_code }}_view')
 {% endfor %}
 {% endif %}
 

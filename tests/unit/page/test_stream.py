@@ -7,11 +7,11 @@ from zmei_generator.parser.parser import ZmeiParser
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 
 def test_page_stream_expr():
-    cs = _("""
+    app = _("""
         [boo]
         foo:= 123
         
@@ -19,11 +19,11 @@ def test_page_stream_expr():
         
     """)
 
-    assert cs.channels is True
+    assert app.channels is True
 
-    assert len(cs.pages) == 1
+    assert len(app.pages) == 1
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
 
     assert boo.stream is not None
     assert isinstance(boo.stream, StreamPageExtra)
@@ -33,7 +33,7 @@ def test_page_stream_expr():
 
 
 def test_page_stream_expr_full_syntax():
-    cs = _("""
+    app = _("""
         @channels
         
         [boo]
@@ -64,9 +64,9 @@ def test_page_stream_expr_full_syntax():
 
     """)
 
-    assert len(cs.pages) == 1
+    assert len(app.pages) == 1
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
 
     assert boo.stream is not None
     assert isinstance(boo.stream, StreamPageExtra)

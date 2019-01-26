@@ -1,7 +1,7 @@
 from zmei_generator.parser.parser import ZmeiParser
 
 
-class ZmeiAppParser(object):
+class ZmeiProjectParser(object):
 
     def __init__(self) -> None:
         super().__init__()
@@ -27,50 +27,50 @@ class ZmeiAppParser(object):
         self.files[name] = source
 
     def parse(self):
-        app = ZmeiApp()
+        project = ZmeiProject()
 
         # initialise parsers
         parsers = {}
         for file_name, source in self.files.items():
-            app_name, parser = self._parse_file(app, file_name, source)
+            app_name, parser = self._parse_file(project, file_name, source)
             parsers[app_name] = parser
 
-        # parse collection set
+        # parse model set
         for app_name, parser in parsers.items():
-            cs = parser.build_collection_set(app_name)
-            parser.process_collection_set(cs)
+            app = parser.build_application(app_name)
+            parser.process_application(app)
 
-            app.add_cs(app_name, cs)
+            project.add_application(app_name, app)
 
         # post process (relation late-binding mostly)
-        for cs in app.collection_sets.values():
-            cs.post_process()
+        for app in project.applications.values():
+            app.post_process()
 
         # model extras parsing
         for app_name, parser in parsers.items():
-            parser.process_model_extras(app.collection_sets[app_name])
+            parser.process_model_extras(project.applications[app_name])
 
         # page parsing
         for app_name, parser in parsers.items():
-            parser.process_page_extras(app.collection_sets[app_name])
+            parser.process_page_extras(project.applications[app_name])
 
         # page extras parsing
-        for cs in app.collection_sets.values():
-            cs.post_process_extras()
+        for app in project.applications.values():
+            app.post_process_extras()
 
-        return app
+        return project
 
 
-class ZmeiApp(object):
+class ZmeiProject(object):
 
     def __init__(self) -> None:
         super().__init__()
 
-        self.collection_sets = {}
+        self.applications = {}
 
-    def add_cs(self, name, collection_set):
-        collection_set.application = self
-        self.collection_sets[name] = collection_set
+    def add_application(self, name, application):
+        application.application = self
+        self.applications[name] = application
 
-    def get_collection_set(self, name):
-        return self.collection_sets[name]
+    def get_application(self, name):
+        return self.applications[name]

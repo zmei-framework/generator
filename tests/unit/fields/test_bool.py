@@ -7,11 +7,11 @@ from zmei_generator.parser.parser import ZmeiParser
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 
 def test_bool_field():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
@@ -20,9 +20,9 @@ def test_bool_field():
         ~c: bool(false)
     """)
 
-    a = cs.collections['boo'].fields['a']
-    b = cs.collections['boo'].fields['b']
-    c = cs.collections['boo'].fields['c']
+    a = app.models['boo'].fields['a']
+    b = app.models['boo'].fields['b']
+    c = app.models['boo'].fields['c']
 
     assert isinstance(a, BooleanFieldDef)
     assert isinstance(b, BooleanFieldDef)

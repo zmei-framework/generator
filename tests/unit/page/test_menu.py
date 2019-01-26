@@ -7,11 +7,11 @@ from zmei_generator.parser.parser import ZmeiParser
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 
 def test_menu_cases():
-    cs = _("""
+    app = _("""
 
         [base]
         @menu.main(
@@ -23,7 +23,7 @@ def test_menu_cases():
         [base->dashboard: /dashboard]
     """)
 
-    base = cs.pages['base']
+    base = app.pages['base']
 
     menu = base.menus['main']
 
@@ -44,7 +44,7 @@ def test_menu_cases():
 
 
 def test_menu_url():
-    cs = _("""
+    app = _("""
 
         [base]
         @menu.main(
@@ -52,7 +52,7 @@ def test_menu_url():
         )
     """)
 
-    base = cs.pages['base']
+    base = app.pages['base']
 
     menu = base.menus['main']
 
@@ -65,7 +65,7 @@ def test_menu_url():
 
 
 def test_menu_expr():
-    cs = _("""
+    app = _("""
 
         [base]
         @menu.main(
@@ -73,7 +73,7 @@ def test_menu_expr():
         )
     """)
 
-    base = cs.pages['base']
+    base = app.pages['base']
 
     menu = base.menus['main']
 
@@ -86,7 +86,7 @@ def test_menu_expr():
 
 
 def test_menu_args():
-    cs = _("""
+    app = _("""
 
         [base]
         @menu.main(
@@ -95,7 +95,7 @@ def test_menu_args():
         )
     """)
 
-    base = cs.pages['base']
+    base = app.pages['base']
 
     menu = base.menus['main']
 

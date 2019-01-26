@@ -7,11 +7,11 @@ from zmei_generator.parser.parser import ZmeiParser
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 
 def test_int_field():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
@@ -20,11 +20,11 @@ def test_int_field():
         d: int(choices=foo,bar,baz)
     """)
 
-    b = cs.collections['boo'].fields['b']
+    b = app.models['boo'].fields['b']
 
     assert isinstance(b, IntegerFieldDef)
 
-    c = cs.collections['boo'].fields['c']
+    c = app.models['boo'].fields['c']
 
     assert isinstance(c, IntegerFieldDef)
     assert c.choices == (
@@ -33,7 +33,7 @@ def test_int_field():
         (5, 'Яба яба'),
     )
 
-    d = cs.collections['boo'].fields['d']
+    d = app.models['boo'].fields['d']
 
     assert isinstance(d, IntegerFieldDef)
     assert d.choices == (
@@ -44,26 +44,26 @@ def test_int_field():
 
 
 def test_float_field():
-    cs = _("""
+    app = _("""
 
         #boo
         ----------
         a: float
     """)
 
-    a = cs.collections['boo'].fields['a']
+    a = app.models['boo'].fields['a']
 
     assert isinstance(a, FloatFieldDef)
 
 
 def test_decimal_field():
-    cs = _("""
+    app = _("""
 
         #boo
         ----------
         a: decimal
     """)
 
-    a = cs.collections['boo'].fields['a']
+    a = app.models['boo'].fields['a']
 
     assert isinstance(a, DecimalFieldDef)

@@ -1,8 +1,8 @@
 from zmei_generator.contrib.web.fields.custom import CustomFieldDef
 from zmei_generator.contrib.web.fields.expression import ExpressionFieldDef
 from zmei_generator.contrib.web.fields.text import TextFieldDef
-from zmei_generator.domain.collection_def import CollectionDef
-from zmei_generator.domain.collection_set_def import CollectionSetDef
+from zmei_generator.domain.model_def import ModelDef
+from zmei_generator.domain.application_def import ApplicationDef
 from zmei_generator.domain.field_def import FieldConfig
 from zmei_generator.parser.errors import LangsRequiredValidationError
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
@@ -10,10 +10,10 @@ from zmei_generator.parser.utils import BaseListener
 
 
 class ModelParserListener(BaseListener):
-    def __init__(self, collection_set: CollectionSetDef) -> None:
-        super().__init__(collection_set)
+    def __init__(self, application: ApplicationDef) -> None:
+        super().__init__(application)
 
-        self.model = None  # type: CollectionDef
+        self.model = None  # type: ModelDef
         self.field = None  # type
         self.field_config = None  # type: FieldConfig
 
@@ -22,7 +22,7 @@ class ModelParserListener(BaseListener):
     ############################################
 
     def enterCol(self, ctx: ZmeiLangParser.ColContext):
-        self.model = CollectionDef(self.collection_set)
+        self.model = ModelDef(self.application)
 
     def enterCol_name(self, ctx: ZmeiLangParser.Col_nameContext):
         ref = ctx.getText().strip()
@@ -58,7 +58,7 @@ class ModelParserListener(BaseListener):
         self.model.to_string = ctx.getText().strip()[2:-1].strip()
 
     def exitCol(self, ctx: ZmeiLangParser.ColContext):
-        self.collection_set.collections[self.model.ref] = self.model
+        self.application.models[self.model.ref] = self.model
         self.model = None
 
     ############################################
@@ -77,7 +77,7 @@ class ModelParserListener(BaseListener):
     def enterCol_modifier(self, ctx: ZmeiLangParser.Col_modifierContext):
         m = ctx.getText()
         if m == "$":
-            if not self.collection_set.langs:
+            if not self.application.langs:
                 raise LangsRequiredValidationError(ctx.start)
 
             self.field_config.translatable = True

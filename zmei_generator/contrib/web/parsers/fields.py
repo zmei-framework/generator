@@ -8,14 +8,14 @@ from zmei_generator.contrib.web.fields.number import IntegerFieldDef, FloatField
 from zmei_generator.contrib.web.fields.relation import RelationOneDef, RelationOne2OneDef, RelationManyDef
 from zmei_generator.contrib.web.fields.text import TextFieldDef, SlugFieldDef, LongTextFieldDef, RichTextFieldDef, \
     RichTextFieldWithUploadDef
-from zmei_generator.domain.collection_set_def import CollectionSetDef
+from zmei_generator.domain.application_def import ApplicationDef
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
 
 class FieldsParserListener(BaseListener):
-    def __init__(self, collection_set: CollectionSetDef) -> None:
-        super().__init__(collection_set)
+    def __init__(self, application: ApplicationDef) -> None:
+        super().__init__(application)
 
         self.image_size = None  # type: ImageSize
 
@@ -203,7 +203,7 @@ class FieldsParserListener(BaseListener):
         self.field.related_class = ctx.getText()
 
     def enterField_relation_target_ref(self, ctx: ZmeiLangParser.Field_relation_target_refContext):
-        self.field.ref_collection_def = ctx.getText()[1:]
+        self.field.ref_model_def = ctx.getText()[1:]
 
     def enterField_relation_related_name(self, ctx: ZmeiLangParser.Field_relation_related_nameContext):
         related_name = ctx.getText()[2:].strip()

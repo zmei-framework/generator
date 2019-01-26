@@ -1,4 +1,4 @@
-from zmei_generator.domain.collection_set_def import CollectionSetDef
+from zmei_generator.domain.application_def import ApplicationDef
 from zmei_generator.domain.page_def import PageDef, PageFunction
 from zmei_generator.domain.page_expression import PageExpression
 from zmei_generator.parser.errors import LangsRequiredValidationError
@@ -7,8 +7,8 @@ from zmei_generator.parser.utils import BaseListener
 
 
 class PageParserListener(BaseListener):
-    def __init__(self, collection_set: CollectionSetDef) -> None:
-        super().__init__(collection_set)
+    def __init__(self, application: ApplicationDef) -> None:
+        super().__init__(application)
 
         self.page = None  # type: PageDef
 
@@ -17,7 +17,7 @@ class PageParserListener(BaseListener):
     ############################################
 
     def enterPage(self, ctx: ZmeiLangParser.PageContext):
-        self.page = PageDef(self.collection_set)
+        self.page = PageDef(self.application)
         self.page.page_items = {}
         self.page.name = ctx.page_header().page_name().getText()
 
@@ -30,7 +30,7 @@ class PageParserListener(BaseListener):
         if self.page.parent_name and self.page.extend_name:
             self.page.name = f'{self.page.parent_name}_{self.page.name}'
 
-        self.collection_set.pages[self.page.name] = self.page
+        self.application.pages[self.page.name] = self.page
 
     def enterPage_alias_name(self, ctx: ZmeiLangParser.Page_alias_nameContext):
         self.page.defined_url_alias = ctx.getText()
@@ -38,7 +38,7 @@ class PageParserListener(BaseListener):
     def enterPage_url(self, ctx: ZmeiLangParser.Page_urlContext):
         url = ctx.getText().strip()
         if url[0] == '$':
-            if not self.collection_set.langs:
+            if not self.application.langs:
                 raise LangsRequiredValidationError(ctx.start)
         self.page.set_uri(url)
 

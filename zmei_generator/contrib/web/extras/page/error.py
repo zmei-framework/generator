@@ -10,7 +10,7 @@ class ErrorPageExtra(PageExtra):
 class ErrorPageExtraParserListener(BaseListener):
 
     def enterAn_error(self, ctx: ZmeiLangParser.An_errorContext):
-        self.collection_set.extras.append(
+        self.application.extras.append(
             ErrorPageExtra(self.page)
         )
 

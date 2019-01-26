@@ -1,5 +1,5 @@
-from zmei_generator.domain.collection_def import CollectionDef
-from zmei_generator.domain.collection_set_def import FieldDeclaration
+from zmei_generator.domain.model_def import ModelDef
+from zmei_generator.domain.application_def import FieldDeclaration
 from zmei_generator.domain.field_def import FieldDef, FieldConfig
 from zmei_generator.generator.utils import gen_args
 
@@ -33,8 +33,8 @@ class DateTimeFieldDef(FieldDef):
 
 class AutoNowDateTimeFieldDef(DateTimeFieldDef):
 
-    def __init__(self, collection: CollectionDef, field: FieldConfig) -> None:
-        super().__init__(collection, field)
+    def __init__(self, model: ModelDef, field: FieldConfig) -> None:
+        super().__init__(model, field)
 
         self.read_only = True
 
@@ -46,8 +46,8 @@ class AutoNowDateTimeFieldDef(DateTimeFieldDef):
 
 class AutoNowAddDateTimeFieldDef(DateTimeFieldDef):
 
-    def __init__(self, collection: CollectionDef, field: FieldConfig) -> None:
-        super().__init__(collection, field)
+    def __init__(self, model: ModelDef, field: FieldConfig) -> None:
+        super().__init__(model, field)
 
         self.read_only = True
 

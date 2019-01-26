@@ -8,11 +8,11 @@ from zmei_generator.parser.parser import ZmeiParser
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 @pytest.mark.skip
 def test_db_handlers():
-    cs = _("""
+    app = _("""
     
         #boo
         ----------
@@ -41,7 +41,7 @@ def test_db_handlers():
     
     """)
 
-    boo = cs.collections['boo']
+    boo = app.models['boo']
 
     assert boo.signal_handlers[0] == ([('django.db.models.signals', 'pre_save')], 'lala + 1')
     assert boo.signal_handlers[1] == ([('django.db.models.signals', 'post_save')], 'lala + 2')

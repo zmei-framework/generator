@@ -7,7 +7,7 @@ import './../../app.dart';
     {% if page.uri %}
     Widget buildBody(BuildContext context) {
         return Center(
-            child: Text('{{ page.collection_set.app_name }}.{{ page.name }}: Nothing here!'),
+            child: Text('{{ page.application.app_name }}.{{ page.name }}: Nothing here!'),
         );
     }
     {% endif %}

@@ -11,7 +11,7 @@ class DateTreeModelExtra(ModelExtra):
 class DateTreeModelExtraParserListener(BaseListener):
 
     def enterAn_date_tree(self, ctx: ZmeiLangParser.An_date_treeContext):
-        self.collection_set.extras.append(
+        self.application.extras.append(
             DateTreeModelExtra(self.model)
         )
 

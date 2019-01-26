@@ -7,11 +7,11 @@ from zmei_generator.parser.parser import ZmeiParser
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 
 def test_page_markdown():
-    cs = _("""
+    app = _("""
 
         [boo]
         @markdown {
@@ -23,9 +23,9 @@ def test_page_markdown():
         lala
     """)
 
-    assert len(cs.pages) == 1
+    assert len(app.pages) == 1
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
 
     assert boo.name == 'boo'
     assert boo.blocks['content'][0].context['content'] == "<h1>test</h1>"
@@ -33,7 +33,7 @@ def test_page_markdown():
     assert boo.extra_bases == ['ZmeiDataViewMixin']
 
 def test_page_markdown_area():
-    cs = _("""
+    app = _("""
 
         [boo]
         @markdown.foo {
@@ -45,9 +45,9 @@ def test_page_markdown_area():
         lala
     """)
 
-    assert len(cs.pages) == 1
+    assert len(app.pages) == 1
 
-    boo = cs.pages['boo']
+    boo = app.pages['boo']
 
     assert boo.name == 'boo'
     assert boo.blocks['foo'][0].context['content'] == "<h1>test</h1>"

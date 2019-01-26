@@ -75,17 +75,17 @@ setup(
             'zmei_react = zmei_generator.contrib.react.grammar.struct:models',
             'zmei_channels = zmei_generator.contrib.channels.grammar.struct:models'
         ],
-        'zmei.grammar.cs': [
-            'zmei_docker = zmei_generator.contrib.docker.grammar.struct:collection_set',
-            'zmei_gitlab = zmei_generator.contrib.gitlab.grammar.struct:collection_set',
-            'zmei_web = zmei_generator.contrib.web.grammar.struct:collection_set',
-            'zmei_admin = zmei_generator.contrib.admin.grammar.struct:collection_set',
-            'zmei_flutter = zmei_generator.contrib.flutter.grammar.struct:collection_set',
-            'zmei_drf = zmei_generator.contrib.drf.grammar.struct:collection_set',
-            'zmei_filer = zmei_generator.contrib.filer.grammar.struct:collection_set',
-            'zmei_celery = zmei_generator.contrib.celery.grammar.struct:collection_set',
-            'zmei_react = zmei_generator.contrib.react.grammar.struct:collection_set',
-            'zmei_channels = zmei_generator.contrib.channels.grammar.struct:collection_set'
+        'zmei.grammar.app': [
+            'zmei_docker = zmei_generator.contrib.docker.grammar.struct:application',
+            'zmei_gitlab = zmei_generator.contrib.gitlab.grammar.struct:application',
+            'zmei_web = zmei_generator.contrib.web.grammar.struct:application',
+            'zmei_admin = zmei_generator.contrib.admin.grammar.struct:application',
+            'zmei_flutter = zmei_generator.contrib.flutter.grammar.struct:application',
+            'zmei_drf = zmei_generator.contrib.drf.grammar.struct:application',
+            'zmei_filer = zmei_generator.contrib.filer.grammar.struct:application',
+            'zmei_celery = zmei_generator.contrib.celery.grammar.struct:application',
+            'zmei_react = zmei_generator.contrib.react.grammar.struct:application',
+            'zmei_channels = zmei_generator.contrib.channels.grammar.struct:application'
         ],
         'zmei.parser.stage1': [
             'zmei_web = zmei_generator.contrib.web.parsers.all_stage1:parsers',

@@ -1,5 +1,5 @@
 
-collection_set = {}
+application = {}
 
 models = {
     'an_api': 'ModelExtraApi.g4',

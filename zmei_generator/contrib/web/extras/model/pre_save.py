@@ -10,7 +10,7 @@ class PreSaveModelExtra(SignalBaseModelExtra):
 class PreSaveModelExtraParserListener(BaseListener):
 
     def enterAn_pre_save(self, ctx: ZmeiLangParser.An_pre_saveContext):
-        self.collection_set.extras.append(
+        self.application.extras.append(
             PreSaveModelExtra(self.model)
         )
 

@@ -1,20 +1,20 @@
 from textwrap import dedent
 
-from zmei_generator.contrib.docker.extras.collection_set.docker import DockerCsExtra
+from zmei_generator.contrib.docker.extras.application.docker import DockerAppExtra
 from zmei_generator.parser.parser import ZmeiParser
 
 
 def _(code):
     parser = ZmeiParser()
     parser.parse_string(dedent(code))
-    return parser.populate_collection_set('example')
+    return parser.populate_application('example')
 
 
 def test_docker_enabled():
-    cs = _("""
+    app = _("""
 
         @docker
     """)
 
-    assert isinstance(cs.docker, DockerCsExtra)
+    assert isinstance(app.docker, DockerAppExtra)
 

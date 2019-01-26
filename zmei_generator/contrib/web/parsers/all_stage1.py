@@ -1,11 +1,11 @@
-from zmei_generator.contrib.celery.extras.collection_set.celery import CeleryCsExtraParserListener
-from zmei_generator.contrib.docker.extras.collection_set.docker import DockerCsExtraParserListener
-from zmei_generator.contrib.filer.extras.collection_set.filer import FilerCsExtraParserListener
-from zmei_generator.contrib.gitlab.extras.collection_set.gitlab import GitlabCsExtraParserListener
+from zmei_generator.contrib.celery.extras.application.celery import CeleryAppExtraParserListener
+from zmei_generator.contrib.docker.extras.application.docker import DockerAppExtraParserListener
+from zmei_generator.contrib.filer.extras.application.filer import FilerAppExtraParserListener
+from zmei_generator.contrib.gitlab.extras.application.gitlab import GitlabAppExtraParserListener
 from zmei_generator.contrib.react.extras.page.react import ReactPageExtraParserListener
-from zmei_generator.contrib.web.extras.collection_set.file import FileCsExtraParserListener
-from zmei_generator.contrib.web.extras.collection_set.langs import LangsCsExtraParserListener
-from zmei_generator.contrib.web.extras.collection_set.theme import ThemeCsExtraParserListener
+from zmei_generator.contrib.web.extras.application.file import FileAppExtraParserListener
+from zmei_generator.contrib.web.extras.application.langs import LangsAppExtraParserListener
+from zmei_generator.contrib.web.extras.application.theme import ThemeAppExtraParserListener
 from zmei_generator.contrib.web.extras.page.crud_create import CrudCreatePageExtraParserListener
 from zmei_generator.contrib.web.extras.page.crud_delete import CrudDeletePageExtraParserListener
 from zmei_generator.contrib.web.extras.page.crud_detail import CrudDetailPageExtraParserListener
@@ -30,13 +30,13 @@ parsers = [
 
 
     # extras
-    ThemeCsExtraParserListener,
-    GitlabCsExtraParserListener,
-    DockerCsExtraParserListener,
-    FileCsExtraParserListener,
-    CeleryCsExtraParserListener,
-    LangsCsExtraParserListener,
-    FilerCsExtraParserListener,
+    ThemeAppExtraParserListener,
+    GitlabAppExtraParserListener,
+    DockerAppExtraParserListener,
+    FileAppExtraParserListener,
+    CeleryAppExtraParserListener,
+    LangsAppExtraParserListener,
+    FilerAppExtraParserListener,
 
     MenuPageExtraParserListener,
     MarkdownPageExtraParserListener,

@@ -32,11 +32,11 @@ class ApiModelExtraParserListener(BaseListener):
 
     def enterAn_api(self, ctx: ZmeiLangParser.An_apiContext):
         extra = ApiModelExtra(self.model)
-        self.collection_set.extras.append(
+        self.application.extras.append(
             extra
         )
 
-        self.collection_set.api = True
+        self.application.api = True
         self.model.api = extra
 
     def enterAn_api_name(self, ctx: ZmeiLangParser.An_api_nameContext):
