@@ -50,76 +50,22 @@ See [documentation](https://zmei-framework.com/generator/).
 Read tests [unit](https://github.com/zmei-framework/generator/tree/master/tests/unit),
 [en2end](https://github.com/zmei-framework/generator/tree/master/tests/end2end).
 
+    
+## Contribution
 
-## Code sample
+Contributions are highly appreciated. Project is huge and it is hard to develop it alone.
 
-Several nested cruds, page inheritance, simple models.
+You can contribute by:
+- Improve [documentation](https://github.com/zmei-framework/generator/tree/master/docs)
+- Test, write bug reports, propose features
+- Add new features
+- Fix bugs, improve code base, add your features
+- Write articles, blog-posts with your experience using the generator
+- Write plugins, improve existing ones
 
-    @theme(bluma)
-    
-    [base]
-    @menu.navbar (
-        "Home": page(index)
-        "Another": page(another)
-    )
-    
-    [base->index: /]
-    @markdown {
-        # This is cats!
-    }
-    @crud.cats(#cat
-        list: tabular
-    
-        detail(
-            lala := 123
-    
-            @markdown {
-                # test
-            }
-            @@
-            
-            @crud.comments(#cat_comment{cat_id=url.cats_pk}
-                fields: text
-                skip: edit, detail, delete
-            )  
-        )
-    
-        create(
-            foo := "This is foo"
-        )
-    )
-    @crud.cars(#car    
-        detail(
-            @markdown {
-                # carrrr
-            }
-        )
-    )
-    
-    [base->another: /another]
-    
-    #cat
-    -------
-    =name
-    age: int
-    
-    
-    #car
-    -------
-    =model
-    year: int
-    color: str(?, choices=green,red,blue)
-    
-    
-    #cat_comment
-    ----------
-    date: create_time
-    cat: one(!#cat)
-    text: text
-    
-## Contributing
+Pull requests, please. Ask me, if you don't know where to start.
 
-Contributing guide will be here soon... stay tuned!
+Sorry, no contribution docs yet. Will fix it shortly...
 
 ## Authors
 
