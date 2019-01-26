@@ -1,9 +1,12 @@
 from zmei_generator.generator.imports import ImportSet
-from zmei_generator.generator.utils import generate_file, generate_urls_file
+from zmei_generator.generator.utils import generate_file, generate_urls_file, ThemeConfig
 
 
 def generate(target_path, project):
     for app_name, application in project.applications.items():
+        if not len(application.pages):
+            continue
+
         imports = ImportSet()
 
         for col in application.models.values():

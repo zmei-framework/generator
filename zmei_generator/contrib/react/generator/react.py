@@ -4,6 +4,10 @@ from zmei_generator.generator.utils import generate_file
 
 def generate(target_path, project):
     for app_name, application in project.applications.items():
+
+        if not application.react:
+            continue
+
         index_imports = ImportSet()
 
         react_pages = []

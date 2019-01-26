@@ -4,6 +4,10 @@ from zmei_generator.generator.utils import generate_file
 
 def generate(target_path, project):
     for app_name, application in project.applications.items():
+        has_i18n = any([x.translatable for x in application.models.values()])
+        if not has_i18n:
+            continue
+
         imports = ImportSet()
         imports.add('modeltranslation.translator', 'translator')
         imports.add('modeltranslation.translator', 'TranslationOptions')

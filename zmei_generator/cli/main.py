@@ -189,10 +189,6 @@ def gen(auto=False,
             print(e.description)
             continue
 
-        # files = zmei.generate(files, models=app)
-        # if up and os.path.exists('app/celery.py'):
-        #     celery = True
-
         changed = extract_files(dst, files)
 
         if up and os.path.exists('react'):

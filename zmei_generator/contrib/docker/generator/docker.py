@@ -2,12 +2,16 @@ import os
 import random
 import string
 
+from zmei_generator.generator.application import ZmeiProject
 from zmei_generator.generator.utils import generate_file
 
 
-def generate(target_path, project):
-    has_docker = False
-    has_celery = False
+def generate(target_path, project: ZmeiProject):
+    has_docker = any([app.docker for app in project.applications.values()])
+    has_celery = any([app.celery for app in project.applications.values()])
+
+    if not has_docker:
+        return
 
     generate_file(target_path, 'requirements.prod.txt', 'docker/requirements.prod.txt.tpl', {
         'req_file': os.environ.get('ZMEI_REQUIREMNETS_FILE', 'requirements.txt')

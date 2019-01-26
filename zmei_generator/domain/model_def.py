@@ -25,6 +25,10 @@ class ModelDef(object):
         self.name_plural = None
         self.to_string = None
 
+        #
+        # TODO: move platform-specific fields out of definition
+        #
+
         self.polymorphic = False
         self.parent = None
         self.child_models = []

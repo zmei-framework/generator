@@ -15,6 +15,9 @@ from zmei_generator.generator.utils import StopGenerator
 
 def zmei_generate(zip_bytes, models):
 
+    # TODO: remove zip packing/unpacking. It comes from old remote protocol.
+    # TODO: NOw it is not needed anymore.
+
     with tempfile.TemporaryDirectory() as target_path:
         request_files = extract_files(target_path, zip_bytes)
 

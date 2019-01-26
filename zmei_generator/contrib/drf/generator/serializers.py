@@ -4,6 +4,8 @@ from zmei_generator.generator.utils import generate_file
 
 def generate(target_path, project):
     for app_name, application in project.applications.items():
+        if not application.api:
+            continue
 
         imports = ImportSet()
         imports.add('rest_framework', 'serializers')

@@ -8,7 +8,11 @@ from zmei_generator.generator.utils import generate_file, to_camel_case, format_
 
 def generate(target_path, project):
     apps = project.applications
-    # for app_name, application in project.applications.items():
+
+    has_flutter = any([app.flutter for app in project.applications.values()])
+
+    if not has_flutter:
+        return
 
     generate_file(target_path, 'flutter/pubspec.yaml', 'flutter.pubspec.yaml.tpl')
     generate_file(target_path, 'flutter/lib/main.dart', 'flutter.main.dart.tpl', {

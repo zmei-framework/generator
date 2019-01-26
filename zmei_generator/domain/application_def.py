@@ -13,7 +13,12 @@ class ApplicationDef(object):
         self.application = None
 
         self.app_name = app_name
+
         self.translatable = False
+
+        #
+        # TODO: move platform-specific fields out of definition
+        #
 
         self.theme = None
         self.theme_install = False
