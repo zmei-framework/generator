@@ -24,3 +24,11 @@ after_script:
 
 after_success:
   - codecov
+
+deploy:
+  provider: pypi
+  user: ribozz
+  password:
+    secure: UOvyGyKR8aJnQ9w53kdpe96kAkelO7m/SEwjnyGvPOMxjhthsJ4MlxiQONMSwJZSKIzx0hMz2FbeqsBkbtjx3d0ma6QZgSIw5lVmZT/ubpmuZFs4cSuOXsSVTU/rfxV1oiin6RTXJucvXJ6u3Gqe3CsMJm3YHzQuwUvnIwIQ0RMJeY4OgFnDjwNu3f3sjdpZirtXzXOm1qLB1FxLumOwdYiKTGMD3GsiMkDJmvaaJmkYXRNO8sTbCkt0SDrsgMMrEhJ7iWG2nQDTCuzPNFARmwRw8evF7hlwD8pAVZUfeYUMKPGqGauy6Hega6CyH6yCxmOIUYaJhvTUI04JJJ5VcJc1F768mrk41nfdi72VywX/cFzXdNgWdInx34WWowf/D/AhCiUZK4ti3x7fv/zKKP32ZqH60+t4B4qMMPhycNdfafWI95FKPZl3righVUpbmRaO7Tjcsjflf04lUwx+vplvIWrLOfX0yz0Fu9U8NhAOsJssy+Dv2+8QK4/aDIsrtKxwq8OYpSSCOxemsw73UF3pw1SbAGL4v4AZcgA8/CQYih/lcDYGgBqtylynv5eSm/d+sTYvMb5Ak/SxOrnHfokaxaZqRufqLxOaIkO/WHudPDmqAyq+fWpCYpWCZmM9PtSgIKf0ooyrSyHDjLK1v+ffP42xW/R1NkB+FZwZQCs=
+  on:
+    tags: true
