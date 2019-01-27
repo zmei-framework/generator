@@ -9,12 +9,8 @@ from shutil import rmtree, copytree, copyfile
 
 import pkg_resources
 
-from zmei_generator.generator.application import ZmeiProjectParser
-from zmei_generator.generator.utils import StopGenerator
-
 
 def zmei_generate(zip_bytes, models):
-
     # TODO: remove zip packing/unpacking. It comes from old remote protocol.
     # TODO: NOw it is not needed anymore.
 
@@ -54,6 +50,9 @@ def collect_files(target_path, request_files):
 
 
 def do_generate(target_path, app_names):
+    from zmei_generator.generator.application import ZmeiProjectParser
+    from zmei_generator.generator.utils import StopGenerator
+
     app_parser = ZmeiProjectParser()
 
     for app_name in app_names:

@@ -1,4 +1,4 @@
-
+import hashlib
 import itertools
 import os
 import shutil
@@ -58,7 +58,8 @@ def collect_files(entry_point, target_path):
 
     return file_map
 
-def gen(grammar_path, target_path):
+
+def gen(generator_path, grammar_path, target_path):
     grammar_path = grammar_path
     target_path = target_path
 
@@ -67,16 +68,24 @@ def gen(grammar_path, target_path):
 
     package = 'zmei_generator.parser.gen'
 
-    antlr_jar = 'zmei_generator/lib/antlr/antlr-4.7.2-complete.jar'
+    antlr_jar = f'{generator_path}/lib/antlr/antlr-4.7.2-complete.jar'
     antlr = f'CLASSPATH="{antlr_jar}:." java -jar {antlr_jar}'
 
+    print('Generating parser...')
+
     lexer_cmd = f'{antlr}  -Dlanguage=Python3 -o {target_path} -package {package} -lib {os.path.realpath(grammar_path)} -listener {os.path.realpath(lexerSrc)}'
-    os.system(lexer_cmd)
+    print(lexer_cmd)
+    if os.system(lexer_cmd) != 0:
+        return False
 
     parser_cmd = f'{antlr} -Dlanguage=Python3 -o {target_path} -package {package} -lib {os.path.realpath(target_path)} -listener {os.path.realpath(parserSrc)}'
-    os.system(parser_cmd)
+    print(parser_cmd)
+    if os.system(parser_cmd) != 0:
+        return False
 
-    # os.system('env')
+    return True
+
+
 def replace_in_file(file, markers):
     with open(file, 'r') as f:
         content = f.read()
@@ -88,12 +97,39 @@ def replace_in_file(file, markers):
         f.write(content)
 
 
+import zmei_generator
+generator_path = os.path.dirname(zmei_generator.__file__)
+chk_txt = os.path.join(generator_path, 'parser/gen/grammar/chk.txt')
+
+
+def get_definition_hash():
+    hash_md5 = hashlib.md5()
+    for ep in [f'zmei.grammar.{x}' for x in ['tokens', 'keywords', 'pages', 'models', 'app']]:
+        for entry_point in pkg_resources.iter_entry_points(ep):
+            hash_md5.update(str(entry_point).encode())
+    return hash_md5.hexdigest()
+
+
+def is_parser_declaration_changed():
+    if not os.path.exists(chk_txt):
+        return True
+
+    with open(chk_txt) as f:
+        if f.read() != get_definition_hash():
+            return False
+
+
+def write_declaration_hash():
+    with open(chk_txt, 'w') as f:
+        f.write(get_definition_hash())
+
+
 def build_parser():
     keywords = collect_items('zmei.grammar.keywords', 'keyword')
     tokens = collect_items('zmei.grammar.tokens', 'token')
 
-    source_path = 'zmei_generator/ext/grammar'
-    target_path = 'zmei_generator/parser/gen/grammar'
+    source_path = f'{generator_path}/ext/grammar'
+    target_path = f'{generator_path}/parser/gen/grammar'
 
     if os.path.exists(target_path):
         shutil.rmtree(target_path)
@@ -103,28 +139,33 @@ def build_parser():
     models = collect_files('zmei.grammar.models', target_path)
     shutil.copytree(source_path, target_path)
 
-    for source_file, target_file in itertools.chain.from_iterable(map(lambda x: x.values(), (pages, models, applications))):
+    for source_file, target_file in itertools.chain.from_iterable(
+            map(lambda x: x.values(), (pages, models, applications))):
         shutil.copy(source_file, target_file)
 
-    replace_in_file('zmei_generator/parser/gen/grammar/PageExtra.g4', {
+    replace_in_file(f'{generator_path}/parser/gen/grammar/PageExtra.g4', {
         '// {EXTRA_IMPORTS}': ',\n    '.join([os.path.basename(x[0])[:-3] for x in pages.values()]),
         '// {EXTRA_ANNOT}': ' ' + '\n    |'.join(pages.keys()),
     })
-    replace_in_file('zmei_generator/parser/gen/grammar/ModelExtra.g4', {
+    replace_in_file(f'{generator_path}/parser/gen/grammar/ModelExtra.g4', {
         '// {EXTRA_IMPORTS}': ',\n    '.join([os.path.basename(x[0])[:-3] for x in models.values()]),
         '// {EXTRA_ANNOT}': ' ' + '\n    |'.join(models.keys()),
     })
-    replace_in_file('zmei_generator/parser/gen/grammar/AppExtra.g4', {
+    replace_in_file(f'{generator_path}/parser/gen/grammar/AppExtra.g4', {
         '// {EXTRA_IMPORTS}': ',\n    '.join([os.path.basename(x[0])[:-3] for x in applications.values()]),
         '// {EXTRA_ANNOT}': ' ' + '\n    |'.join(applications.keys()),
     })
-    replace_in_file('zmei_generator/parser/gen/grammar/ZmeiLangSimpleLexer.g4', {
+    replace_in_file(f'{generator_path}/parser/gen/grammar/ZmeiLangSimpleLexer.g4', {
         '// {KEYWORDS}': '\n'.join([f"{name}: '{val}';" for name, val in keywords.items()]),
         '// {TOKENS}': '\n'.join([f"{name}: '{val}';" for name, val in tokens.items()]),
     })
-    replace_in_file('zmei_generator/parser/gen/grammar/Base.g4', {
+    replace_in_file(f'{generator_path}/parser/gen/grammar/Base.g4', {
         '// {KEYWORDS}': '|' + '\n   |'.join(keywords.keys()),
     })
 
-    gen(target_path, os.path.dirname(target_path))
+    if not gen(generator_path, target_path, os.path.dirname(target_path)):
+        return False
 
+    write_declaration_hash()
+
+    return True

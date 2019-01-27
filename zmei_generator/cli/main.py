@@ -1,18 +1,20 @@
 import atexit
 import os
 import signal
+from pprint import pprint
 
 import click
+import pkg_resources
 from termcolor import colored
 from time import sleep
 from zmei_generator.cli.server import zmei_generate
+from zmei_generator.generator.grammar import build_parser, is_parser_declaration_changed
 from zmei_generator.generator.utils import StopGenerator
 from zmei_generator.parser.errors import ValidationError
 
 from .utils import collect_files, extract_files, collect_app_names, migrate_db, install_deps, remove_db, \
     wait_for_file_changes, run_django, run_webpack, npm_install, get_watch_paths, run_celery, run_livereload, \
     flutter_install
-
 
 @click.group()
 def main(**args):
@@ -23,6 +25,7 @@ def run_command(cmd, show=False):
     print(cmd)
     if not show:
         os.system(cmd)
+
 
 @main.group()
 @click.option('--debug-port', default=None, help='Connect to pydevd port')
@@ -36,6 +39,11 @@ def gen(debug_port, **args):
 
     # ensure_logged_in()
     pass
+
+
+@main.command(help='Generate parser definition')
+def build():
+    build_parser()
 
 
 @gen.command(help='Generate and start app')
@@ -147,6 +155,12 @@ def gen(auto=False,
 
     if not app or len(app) == 0:
         app = collect_app_names()
+
+    # Generate parser if something new is installed
+    if is_parser_declaration_changed():
+        if not build_parser():
+            print('Can not generate parser definition, sorry.')
+            return
 
     src = os.path.realpath(src)
     dst = os.path.realpath(dst)

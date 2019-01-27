@@ -7,8 +7,6 @@
 Zmei generator is started as simple scaffolding tool for Django. Now it is powerfull
 code generator that automate routine work and gently integrates generated sources into your custom code.
 
-Keep it [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself)!
-
 ## Features
 
 - Quick create configured Django project
