@@ -15,6 +15,8 @@ setup(
     description='Zmei-generator',
     long_description='',
 
+    include_package_data=True,
+
     install_requires=[
         "markdown",
         "autopep8",
@@ -119,7 +121,6 @@ setup(
             'zmei_celery = zmei_generator.contrib.celery.templates',
             'zmei_react = zmei_generator.contrib.react.templates',
             'zmei_channels = zmei_generator.contrib.channels.templates',
-            
             'zmei_theme_bluma = zmei_generator.contrib.themes.bluma.templates',
             'zmei_theme_default = zmei_generator.contrib.themes.default.templates',
         ]
