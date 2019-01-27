@@ -1,10 +1,11 @@
+import os
 from glob import glob
 
 from setuptools import setup, find_packages
 
 setup(
     name='zmei-cli',
-    version='2.0.11',
+    version=os.environ.get('TRAVIS_TAG', 'dev'),
     packages=find_packages(),
 
     url='',
