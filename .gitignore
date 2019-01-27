@@ -67,3 +67,6 @@ _build
 /gen
 /htmlcov
 tests/gen_result/
+
+coverage.xml
+cc-test-reporter
