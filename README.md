@@ -54,6 +54,10 @@ Read tests [unit](https://github.com/zmei-framework/generator/tree/master/tests/
 
 - [Django application in 60 seconds](https://zmei-framework.com/generator/blog/0_Zmei_quick_start.html) 
 - [Django REST & Admin with a nice theme in 60 seconds](https://zmei-framework.com/generator/blog/1_Zmei_quick_start_2.html#sec-2)
+
+## Plugins
+
+- [Flutter plugin](https://github.com/zmei-framework/zmei-gen-flutter)
     
 ## Contribution
 
