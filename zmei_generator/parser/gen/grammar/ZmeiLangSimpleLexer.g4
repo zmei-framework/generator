@@ -9,7 +9,6 @@ AN_DOCKER: '@docker';
 AN_API: '@api';
 AN_REST: '@rest';
 AN_FILER: '@filer';
-AN_FLUTTER: '@flutter';
 AN_GITLAB: '@gitlab';
 AN_REACT: '@react';
 AN_REACT_CLIENT: '@react_client';

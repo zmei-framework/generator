@@ -4,7 +4,6 @@ options { tokenVocab=ZmeiLangSimpleLexer; }
 
 import
     PageExtraStream,
-    PageExtraFlutter,
     PageExtraReact,
     PageExtraHtml,
     PageExtraMarkdown,
@@ -24,7 +23,6 @@ import
 
 page_annotation:
      an_stream
-    |an_flutter
     |an_react
     |an_html
     |an_markdown

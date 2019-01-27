@@ -116,7 +116,7 @@ def is_parser_declaration_changed():
 
     with open(chk_txt) as f:
         if f.read() != get_definition_hash():
-            return False
+            return True
 
 
 def write_declaration_hash():
