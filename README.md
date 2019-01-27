@@ -1,4 +1,4 @@
-<img align="right" src="logo.png">
+<img align="right" width="33.3%" src="logo.png">
 
 # Zmei code generator
 
