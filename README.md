@@ -1,3 +1,5 @@
+<img align="right" src="logo.png">
+
 # Zmei code generator
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/38ef9b69c0a0927285a2/maintainability)](https://codeclimate.com/github/zmei-framework/generator/maintainability)
