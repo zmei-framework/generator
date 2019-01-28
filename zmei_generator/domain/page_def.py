@@ -71,6 +71,7 @@ class PageDef(object):
         self.menus = {}
         self.blocks = {}
         self.cruds = {}
+        self.react = False
         self.react_components = {}
         self.page_component_name = None
         self.react_pages = {}
@@ -100,9 +101,11 @@ class PageDef(object):
         self.crud_overrides = {}
 
         self.page_items = {}
-        # extras = self.application.parser.get_page_extras_available()
 
-        self.extras = []
+        self._extras = {}
+
+    def register_extra(self, extra):
+        self.extras[extr]
 
     def get_template_libs(self):
         libs = self.template_libs.copy()
@@ -111,27 +114,6 @@ class PageDef(object):
         if len(self.crud_views):
             libs.append('i18n')
         return set(libs)
-
-    def set_html(self, html, react=None, area='content'):
-        from zmei_generator.contrib.web.extras.page.block import ReactPageBlock
-
-        if react:
-            self.react = react
-            if react == '@react_client':
-                self.react_client = True
-            elif react == '@react_server':
-                self.react_server = True
-            else:
-                self.react_client = True
-                self.react_server = True
-
-        self.add_block(area, ReactPageBlock(self, html, area_name=area))
-
-        if self.react:
-            if 'ZmeiDataViewMixin' in self.extra_bases:
-                self.extra_bases.remove('ZmeiDataViewMixin')
-
-            self.extra_bases.append('ZmeiReactViewMixin')
 
     def add_crud(self, descriptor, cls):
         if descriptor in self.crud_views:

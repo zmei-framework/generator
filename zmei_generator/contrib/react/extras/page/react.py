@@ -14,24 +14,19 @@ class ReactPageExtra(PageExtra):
     def get_required_deps(self):
         return ['py_mini_racer']
 
-    def post_process(self):
-        super().post_process()
-
-        self.page.set_html(self.code, react=self.react_type, area=self.area)
-
 
 class ReactPageExtraParserListener(BaseListener):
 
     def enterAn_react(self, ctx: ZmeiLangParser.An_reactContext):
         extra = ReactPageExtra(self.page)
-
         self.application.extras.append(extra)
-
         extra.react_type = ctx.an_react_type().getText()
-        extra.code = self._get_code(ctx)
+        #
+        # if self.react:
+        #     if 'ZmeiDataViewMixin' in self.extra_bases:
+        #         self.extra_bases.remove('ZmeiDataViewMixin')
+        #
+        #     self.extra_bases.append('ZmeiReactViewMixin')
 
-        extra.area = 'content'
-        if ctx.an_react_descriptor():
-            extra.area = ctx.an_react_descriptor().id_or_kw().getText()
 
 

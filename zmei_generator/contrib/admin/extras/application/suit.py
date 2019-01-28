@@ -1,6 +1,6 @@
 import json
 
-from zmei_generator.domain.application_extra import ApplicationExtra
+from zmei_generator.domain.extras import ApplicationExtra
 
 
 class SuitAppExtra(ApplicationExtra):

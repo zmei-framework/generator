@@ -24,6 +24,14 @@ class Extra(object):
         pass
 
 
+class ApplicationExtra(Extra):
+
+    def __init__(self, application):
+        super().__init__()
+
+        self.application = application
+
+
 class ModelExtra(Extra):
 
     def __init__(self, model) -> None:
@@ -38,3 +46,9 @@ class PageExtra(Extra):
         super().__init__()
 
         self.page = page
+
+
+class Extendable(object):
+
+    def register_extension(self):
+        pass

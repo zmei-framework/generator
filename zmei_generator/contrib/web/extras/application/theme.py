@@ -1,5 +1,5 @@
 
-from zmei_generator.domain.application_extra import ApplicationExtra
+from zmei_generator.domain.extras import ApplicationExtra
 from zmei_generator.generator.utils import ThemeConfig
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
