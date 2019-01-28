@@ -35,7 +35,7 @@ def find_package_data(*allowed_extensions):
 
 setup(
     name='zmei-cli',
-    version='2.1.2',
+    version='2.1.3',
     packages=find_packages(),
 
     url='',
