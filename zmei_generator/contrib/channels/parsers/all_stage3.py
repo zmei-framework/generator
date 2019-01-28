@@ -1,5 +1,5 @@
-from zmei_generator.contrib.channels.extras.pages.stream import StreamPageExtraParserListener
+from zmei_generator.contrib.channels.extensions.pages.stream import StreamPageExtensionParserListener
 
 parsers = [
-    StreamPageExtraParserListener,
+    StreamPageExtensionParserListener,
 ]

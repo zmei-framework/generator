@@ -1,11 +1,11 @@
-parser grammar AppExtra;
+parser grammar AppExtension;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 
 import
-    // {EXTRA_IMPORTS}
+    // {EXTENSION_IMPORTS}
     ;
 
 cs_annotation:
-    // {EXTRA_ANNOT}
+    // {EXTENSION_ANNOT}
     |NL;

@@ -1,23 +1,23 @@
-parser grammar ModelExtra;
+parser grammar ModelExtension;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 
 
 import
-    ModelExtraAdmin,
-    ModelExtraApi,
-    ModelExtraRest,
-    ModelExtraOrder,
-    ModelExtraClean,
-    ModelExtraPreDelete,
-    ModelExtraTree,
-    ModelExtraMixin,
-    ModelExtraDateTree,
-    ModelExtraM2mChanged,
-    ModelExtraPostSave,
-    ModelExtraPreSave,
-    ModelExtraPostDelete,
-    ModelExtraSortable
+    ModelExtensionAdmin,
+    ModelExtensionApi,
+    ModelExtensionRest,
+    ModelExtensionOrder,
+    ModelExtensionClean,
+    ModelExtensionPreDelete,
+    ModelExtensionTree,
+    ModelExtensionMixin,
+    ModelExtensionDateTree,
+    ModelExtensionM2mChanged,
+    ModelExtensionPostSave,
+    ModelExtensionPreSave,
+    ModelExtensionPostDelete,
+    ModelExtensionSortable
     ;
 
 model_annotation:

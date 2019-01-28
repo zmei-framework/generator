@@ -24,10 +24,10 @@ compact way and generate most of application code in an automatic way.
 
    intro
    col
-   col_extras
+   col_extensions
    models
-   model_extras
+   model_extensions
    pages
-   page_extras
+   page_extensions
    crud
    syntax

@@ -4,7 +4,7 @@ options { tokenVocab=ZmeiLangSimpleLexer; }
 
 import Base,
        PageBody,
-       PageExtra
+       PageExtension
        ;
 
 /**************************

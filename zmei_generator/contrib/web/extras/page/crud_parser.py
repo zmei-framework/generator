@@ -2,12 +2,12 @@ import re
 
 from zmei_generator.domain.application_def import ApplicationDef
 from zmei_generator.domain.page_def import PageDef
-from zmei_generator.contrib.web.extras.page.crud import CrudField, CrudPageExtra
+from zmei_generator.contrib.web.extensions.page.crud import CrudField, CrudPageExtension
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
 
-class CrudBasePageExtraParserListener(BaseListener):
+class CrudBasePageExtensionParserListener(BaseListener):
 
     def __init__(self, application: ApplicationDef) -> None:
         super().__init__(application)
@@ -17,17 +17,17 @@ class CrudBasePageExtraParserListener(BaseListener):
         self.page_stack = []
         self.crud_stack = []
 
-    def extra_start(self, cls, ctx):
-        extra = cls(self.page)
-        self.application.extras.append(
-            extra
+    def extension_start(self, cls, ctx):
+        extension = cls(self.page)
+        self.application.extensions.append(
+            extension
         )
         self.application.crud = True
         if self.crud:
             self.crud_stack.append(self.crud)
-        self.crud = extra
+        self.crud = extension
 
-    def extra_end(self, cls, ctx):
+    def extension_end(self, cls, ctx):
         if len(self.crud_stack):
             self.crud = self.crud_stack.pop()
         else:
@@ -143,10 +143,10 @@ class CrudBasePageExtraParserListener(BaseListener):
         self.crud.params.next_page[event] = code
 
 
-class CrudPageExtraParserListener(CrudBasePageExtraParserListener):
+class CrudPageExtensionParserListener(CrudBasePageExtensionParserListener):
 
     def enterAn_crud(self, ctx: ZmeiLangParser.An_crudContext):
-        self.extra_start(CrudPageExtra, ctx)
+        self.extension_start(CrudPageExtension, ctx)
 
     def exitAn_crud(self, ctx: ZmeiLangParser.An_crudContext):
-        self.extra_end(CrudPageExtra, ctx)
+        self.extension_end(CrudPageExtension, ctx)

@@ -1,5 +1,5 @@
 
-parser grammar PageExtraError;
+parser grammar PageExtensionError;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 

@@ -1,5 +1,5 @@
 
-parser grammar ModelExtraPreSave;
+parser grammar ModelExtensionPreSave;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 

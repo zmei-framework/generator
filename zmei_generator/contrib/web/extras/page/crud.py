@@ -1,11 +1,11 @@
 import re
 from copy import copy
 
-from zmei_generator.contrib.web.extras.page.block import InlineTemplatePageBlock
+from zmei_generator.contrib.web.extensions.page.block import InlineTemplatePageBlock
 from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
 from zmei_generator.domain.page_def import PageDef
 from zmei_generator.domain.page_expression import PageExpression
-from zmei_generator.domain.extras import PageExtra
+from zmei_generator.domain.extensions import PageExtension
 
 
 def format_field_names(names):
@@ -36,12 +36,12 @@ class CrudParams(object):
         self.object_expr = None
         self.can_edit = None
         self.item_name = None
-        self.link_extra = None
+        self.link_extension = None
         self.link_suffix = None
         self.next_page = {}
 
 
-class CrudPageExtra(PageExtra):
+class CrudPageExtension(PageExtension):
     @classmethod
     def get_name(cls):
         return 'crud'
@@ -50,10 +50,10 @@ class CrudPageExtra(PageExtra):
 
     list_type = None
     header = None
-    link_extra = None
+    link_extension = None
     model_name = None
     model_name_plural = None
-    link_extra_params = None
+    link_extension_params = None
     name_prefix = None
     name_suffix = None
     block_name = None
@@ -148,17 +148,17 @@ class CrudPageExtra(PageExtra):
             if not self.fields:
                 raise ValidationException('@crud -> fields for external models are required: {}'.format(crud.model))
 
-        # link extra
-        if crud.link_extra:
-            self.link_extra = crud.link_extra
-            link_extra_params = []
-            for item in re.split('\s+', self.link_extra):
+        # link extension
+        if crud.link_extension:
+            self.link_extension = crud.link_extension
+            link_extension_params = []
+            for item in re.split('\s+', self.link_extension):
                 key, val = item.split('=')
-                link_extra_params.append(f"'{key}': {val}")
-            self.link_extra_params = ', '.join(link_extra_params)
+                link_extension_params.append(f"'{key}': {val}")
+            self.link_extension_params = ', '.join(link_extension_params)
         else:
-            self.link_extra = ''
-            self.link_extra_params = ''
+            self.link_extension = ''
+            self.link_extension_params = ''
 
         if crud.link_suffix:
             self.link_suffix = crud.link_suffix
@@ -321,34 +321,34 @@ class CrudPageExtra(PageExtra):
             new_page.template_libs.append('i18n')
 
             params = copy(self.params)
-            link_extra_params = ', '.join([f"{x}=url.{x}" for x in self.page.get_uri_params() if x != self.pk_param])
+            link_extension_params = ', '.join([f"{x}=url.{x}" for x in self.page.get_uri_params() if x != self.pk_param])
 
             if crud_page not in params.next_page:
                 if 'all' not in params.next_page:
                     params.next_page[
-                        crud_page] = f"'{base_page.application.app_name}.{base_page.name}', {link_extra_params}"
+                        crud_page] = f"'{base_page.application.app_name}.{base_page.name}', {link_extension_params}"
 
             crud = crud_cls_by_name(crud_page)(new_page, params=params, descriptor=self.descriptor,
                                                parent_crud=self, parent_base_page=base_page, append=append)
 
-            base_page.application.extras.append(crud)
+            base_page.application.extensions.append(crud)
 
 
 def crud_cls_by_name(name):
-    from zmei_generator.contrib.web.extras.page.crud_create import CrudCreatePageExtra
-    from zmei_generator.contrib.web.extras.page.crud_delete import CrudDeletePageExtra
-    from zmei_generator.contrib.web.extras.page.crud_detail import CrudDetailPageExtra
-    from zmei_generator.contrib.web.extras.page.crud_edit import CrudEditPageExtra
+    from zmei_generator.contrib.web.extensions.page.crud_create import CrudCreatePageExtension
+    from zmei_generator.contrib.web.extensions.page.crud_delete import CrudDeletePageExtension
+    from zmei_generator.contrib.web.extensions.page.crud_detail import CrudDetailPageExtension
+    from zmei_generator.contrib.web.extensions.page.crud_edit import CrudEditPageExtension
 
     return dict((
-        ("create", CrudCreatePageExtra),
-        ("delete", CrudDeletePageExtra),
-        ("detail", CrudDetailPageExtra),
-        ("edit", CrudEditPageExtra),
+        ("create", CrudCreatePageExtension),
+        ("delete", CrudDeletePageExtension),
+        ("detail", CrudDetailPageExtension),
+        ("edit", CrudEditPageExtension),
     ))[name]
 
 
-class BaseCrudSubpageExtra(CrudPageExtra):
+class BaseCrudSubpageExtension(CrudPageExtension):
     crud_page = None
 
     def __init__(self, page, params=None, descriptor=None, parent_crud=None, parent_base_page=None, append=False):

@@ -1,18 +1,18 @@
-from zmei_generator.contrib.web.extras.model._signals import SignalBaseModelExtra
+from zmei_generator.contrib.web.extensions.model._signals import SignalBaseModelExtension
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
-class PostDeleteModelExtra(SignalBaseModelExtra):
+class PostDeleteModelExtension(SignalBaseModelExtension):
 
     def get_name(cls):
         return 'post_delete'
     
 
-class PostDeleteModelExtraParserListener(BaseListener):
+class PostDeleteModelExtensionParserListener(BaseListener):
 
     def enterAn_post_delete(self, ctx: ZmeiLangParser.An_post_deleteContext):
-        self.application.extras.append(
-            PostDeleteModelExtra(self.model)
+        self.application.extensions.append(
+            PostDeleteModelExtension(self.model)
         )
 
         self.model.signal_handlers.append(

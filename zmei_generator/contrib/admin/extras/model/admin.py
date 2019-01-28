@@ -1,11 +1,11 @@
 from zmei_generator.domain.application_def import FieldDeclaration
 from zmei_generator.domain.reference_field import ReferenceField
 from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
-from zmei_generator.domain.extras import Extra
+from zmei_generator.domain.extensions import Extension
 from zmei_generator.contrib.web.fields.date import AutoNowDateTimeFieldDef, AutoNowAddDateTimeFieldDef
 
 
-class AdminExtra(Extra):
+class AdminExtension(Extension):
 
     def __init__(self, model) -> None:
         super().__init__()
@@ -176,7 +176,7 @@ class AdminInlineConfig(object):
         self.model = admin.model
         self.inline_name = name
         self.fields_expr = ['*']
-        self.extra_count = 0
+        self.extension_count = 0
         self.inline_type = 'tabular'
 
         self.field = None
@@ -205,9 +205,9 @@ class AdminInlineConfig(object):
 
         self.field_set = [f for f in field.target_model.filter_fields(self.fields_expr) if f.name != self.source_field_name]
 
-        if self.extra_count:
-            if self.extra_count > 0 and self.inline_type == 'polymorphic':
-                raise ValidationException('{}->{}: When using inline type "polymorphic" extra must be 0'.format(
+        if self.extension_count:
+            if self.extension_count > 0 and self.inline_type == 'polymorphic':
+                raise ValidationException('{}->{}: When using inline type "polymorphic" extension must be 0'.format(
                     self.model.name,
                     self.inline_name
                 ))

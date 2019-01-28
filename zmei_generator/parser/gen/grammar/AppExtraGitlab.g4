@@ -1,5 +1,5 @@
 
-parser grammar AppExtraGitlab;
+parser grammar AppExtensionGitlab;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 

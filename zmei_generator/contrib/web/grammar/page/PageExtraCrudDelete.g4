@@ -1,10 +1,10 @@
 
-parser grammar PageExtraCrudDelete;
+parser grammar PageExtensionCrudDelete;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 
 import Base,
-       PageExtraCrud
+       PageExtensionCrud
        ;
 
 an_crud_delete:

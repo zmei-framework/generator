@@ -138,7 +138,7 @@ A field name may not contain spaces, so it is sometimes useful to provide descri
 Custom options
 ^^^^^^^^^^^^^^^^
 
-When generator is not powerful enough for you, you can add extra options to fields::
+When generator is not powerful enough for you, you can add extension options to fields::
 
     #boo
     ----------
@@ -173,7 +173,7 @@ Annotations are super-powers in Zmei generator. They add different abilities to 
     @api
 
 
-Read more about extras in the :ref:`ModelExtras` section.
+Read more about extensions in the :ref:`ModelExtensions` section.
 
 
 

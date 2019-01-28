@@ -1,19 +1,19 @@
-from zmei_generator.domain.extras import PageExtra
+from zmei_generator.domain.extensions import PageExtension
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 from textwrap import indent
 
 
-class PostPageExtra(PageExtra):
+class PostPageExtension(PageExtension):
     # post
     pass
 
 
-class PostPageExtraParserListener(BaseListener):
+class PostPageExtensionParserListener(BaseListener):
 
     def enterAn_post(self, ctx: ZmeiLangParser.An_postContext):
-        self.application.extras.append(
-            PostPageExtra(self.page)
+        self.application.extensions.append(
+            PostPageExtension(self.page)
         )
 
         self.page.allow_post = True

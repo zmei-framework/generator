@@ -123,10 +123,10 @@ class ModelParserListener(BaseListener):
         self.field.expression = expr
 
     def enterCol_field_extend_append(self, ctx: ZmeiLangParser.Col_field_extend_appendContext):
-        self.field.extra_args_append = True
+        self.field.extension_args_append = True
 
     def enterCol_field_extend(self, ctx: ZmeiLangParser.Col_field_extendContext):
-        self.field.extra_args = self._get_code(ctx)
+        self.field.extension_args = self._get_code(ctx)
 
     # Custom
 

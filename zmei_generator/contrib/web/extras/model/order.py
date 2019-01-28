@@ -1,17 +1,17 @@
 
-from zmei_generator.domain.extras import ModelExtra
+from zmei_generator.domain.extensions import ModelExtension
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
 
-class OrderModelExtra(ModelExtra):
+class OrderModelExtension(ModelExtension):
     pass
 
-class OrderModelExtraParserListener(BaseListener):
+class OrderModelExtensionParserListener(BaseListener):
 
     def enterAn_order(self, ctx: ZmeiLangParser.An_orderContext):
-        self.application.extras.append(
-            OrderModelExtra(self.model)
+        self.application.extensions.append(
+            OrderModelExtension(self.model)
         )
         self.model.sortable = False
 

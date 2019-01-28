@@ -1,9 +1,9 @@
-from zmei_generator.domain.extras import ApplicationExtra
+from zmei_generator.domain.extensions import ApplicationExtension
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
 
-class FilerAppExtra(ApplicationExtra):
+class FilerAppExtension(ApplicationExtension):
 
     @classmethod
     def get_name(cls):
@@ -30,11 +30,11 @@ class FilerAppExtra(ApplicationExtra):
             ] + self.application.suit.menu
 
 
-class FilerAppExtraParserListener(BaseListener):
+class FilerAppExtensionParserListener(BaseListener):
 
     def enterAn_filer(self, ctx: ZmeiLangParser.An_filerContext):
-        self.application.filer = FilerAppExtra(self.application)
+        self.application.filer = FilerAppExtension(self.application)
 
-        self.application.extras.append(
+        self.application.extensions.append(
             self.application.filer
         )

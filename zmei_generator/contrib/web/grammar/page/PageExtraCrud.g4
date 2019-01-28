@@ -1,5 +1,5 @@
 
-parser grammar PageExtraCrud;
+parser grammar PageExtensionCrud;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 

@@ -1,9 +1,9 @@
-from zmei_generator.domain.extras import ApplicationExtra
+from zmei_generator.domain.extensions import ApplicationExtension
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
 
-class ChannelsAppExtra(ApplicationExtra):
+class ChannelsAppExtension(ApplicationExtension):
     def get_name(cls):
         return 'channels'
 
@@ -24,10 +24,10 @@ class ChannelsAppExtra(ApplicationExtra):
         f.write("\n}\n")
 
 
-class ChannelsAppExtraParserListener(BaseListener):
+class ChannelsAppExtensionParserListener(BaseListener):
 
     def enterAn_channels(self, ctx: ZmeiLangParser.An_channelsContext):
-        self.application.extras.append(
-            ChannelsAppExtra(self.application)
+        self.application.extensions.append(
+            ChannelsAppExtension(self.application)
         )
         self.application.channels = True

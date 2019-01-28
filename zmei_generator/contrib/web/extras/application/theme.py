@@ -1,19 +1,19 @@
 
-from zmei_generator.domain.extras import ApplicationExtra
+from zmei_generator.domain.extensions import ApplicationExtension
 from zmei_generator.generator.utils import ThemeConfig
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
-class ThemeAppExtra(ApplicationExtra):
+class ThemeAppExtension(ApplicationExtension):
     def get_name(cls):
         return 'theme'
     
 
-class ThemeAppExtraParserListener(BaseListener):
+class ThemeAppExtensionParserListener(BaseListener):
 
     def enterAn_theme(self, ctx: ZmeiLangParser.An_themeContext):
-        self.application.extras.append(
-            ThemeAppExtra(self.application)
+        self.application.extensions.append(
+            ThemeAppExtension(self.application)
         )
 
     def enterAn_theme_name(self, ctx: ZmeiLangParser.An_theme_nameContext):

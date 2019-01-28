@@ -1,6 +1,6 @@
 
 application = {
-    'an_celery': 'AppExtraCelery.g4',
+    'an_celery': 'AppExtensionCelery.g4',
 }
 
 models = {}

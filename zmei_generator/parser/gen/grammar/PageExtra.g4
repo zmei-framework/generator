@@ -1,24 +1,24 @@
-parser grammar PageExtra;
+parser grammar PageExtension;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 
 import
-    PageExtraStream,
-    PageExtraReact,
-    PageExtraHtml,
-    PageExtraMarkdown,
-    PageExtraCrudDelete,
-    PageExtraPost,
-    PageExtraAuth,
-    PageExtraCrudCreate,
-    PageExtraCrudEdit,
-    PageExtraCrud,
-    PageExtraCrudList,
-    PageExtraMenu,
-    PageExtraCrudDetail,
-    PageExtraPriorityMarker,
-    PageExtraGet,
-    PageExtraError
+    PageExtensionStream,
+    PageExtensionReact,
+    PageExtensionHtml,
+    PageExtensionMarkdown,
+    PageExtensionCrudDelete,
+    PageExtensionPost,
+    PageExtensionAuth,
+    PageExtensionCrudCreate,
+    PageExtensionCrudEdit,
+    PageExtensionCrud,
+    PageExtensionCrudList,
+    PageExtensionMenu,
+    PageExtensionCrudDetail,
+    PageExtensionPriorityMarker,
+    PageExtensionGet,
+    PageExtensionError
     ;
 
 page_annotation:

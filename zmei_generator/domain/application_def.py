@@ -45,7 +45,7 @@ class ApplicationDef(object):
 
         self.deps = []
         self._apps = [app_name]
-        self.extras = []
+        self.extensions = []
 
         self.files = {}
         
@@ -118,17 +118,17 @@ class ApplicationDef(object):
         for col in self.models.values():
             col.post_process()
 
-    def post_process_extras(self):
-        for extra in self.extras:
-            extra.post_process()
+    def post_process_extensions(self):
+        for extension in self.extensions:
+            extension.post_process()
 
     def get_required_apps(self):
         all_apps = []
         for col in self.models.values():
             all_apps.extend(col.get_required_apps())
 
-        for extra in self.extras:
-            all_apps.extend(extra.get_required_apps())
+        for extension in self.extensions:
+            all_apps.extend(extension.get_required_apps())
 
         return list(set(all_apps))
 
@@ -137,8 +137,8 @@ class ApplicationDef(object):
         for col in self.models.values():
             all_deps.extend(col.get_required_deps())
 
-        for extra in self.extras:
-            all_deps.extend(extra.get_required_deps())
+        for extension in self.extensions:
+            all_deps.extend(extension.get_required_deps())
         return list(set(all_deps))
 
     def get_required_urls(self):
@@ -146,8 +146,8 @@ class ApplicationDef(object):
         for col in self.models.values():
             all_urls.extend(col.get_required_urls())
 
-        for extra in self.extras:
-            all_urls.extend(extra.get_required_urls())
+        for extension in self.extensions:
+            all_urls.extend(extension.get_required_urls())
         return all_urls
 
     def get_required_settings(self):
@@ -155,8 +155,8 @@ class ApplicationDef(object):
         for col in self.models.values():
             all_settings.update(col.get_required_settings())
 
-        for extra in self.extras:
-            all_settings.update(extra.get_required_settings())
+        for extension in self.extensions:
+            all_settings.update(extension.get_required_settings())
         return all_settings
 
 

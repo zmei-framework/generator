@@ -1,5 +1,5 @@
 
-parser grammar ModelExtraAdmin;
+parser grammar ModelExtensionAdmin;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 
@@ -38,7 +38,7 @@ an_admin_inline:
         (BRACE_OPEN
         (
              inline_type
-            |inline_extra
+            |inline_extension
             |inline_fields
             |NL
             |COMA
@@ -49,7 +49,7 @@ inline_name: id_or_kw;
 inline_type: KW_TYPE COLON inline_type_name;
 
 inline_type_name : (KW_INLINE_TYPE_TABULAR | KW_INLINE_TYPE_STACKED | KW_INLINE_TYPE_POLYMORPHIC) ;
-inline_extra: KW_EXTRA COLON DIGIT;
+inline_extension: KW_EXTENSION COLON DIGIT;
 inline_fields: KW_FIELDS COLON field_list_expr;
 
 an_admin_tabs: KW_TABS COLON an_admin_tab (COMA an_admin_tab)*;

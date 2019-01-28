@@ -1,9 +1,9 @@
-from zmei_generator.contrib.web.extras.page.crud import BaseCrudSubpageExtra
-from zmei_generator.contrib.web.extras.page.crud_parser import CrudBasePageExtraParserListener
+from zmei_generator.contrib.web.extensions.page.crud import BaseCrudSubpageExtension
+from zmei_generator.contrib.web.extensions.page.crud_parser import CrudBasePageExtensionParserListener
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 
 
-class CrudListPageExtra(BaseCrudSubpageExtra):
+class CrudListPageExtension(BaseCrudSubpageExtension):
     @classmethod
     def get_name(cls):
         return 'crud_list'
@@ -13,11 +13,11 @@ class CrudListPageExtra(BaseCrudSubpageExtra):
         return 'list'
 
 
-class CrudListPageExtraParserListener(CrudBasePageExtraParserListener):
+class CrudListPageExtensionParserListener(CrudBasePageExtensionParserListener):
 
     def enterAn_crud_list(self, ctx:ZmeiLangParser.An_crud_listContext):
-        self.extra_start(CrudListPageExtra, ctx)
+        self.extension_start(CrudListPageExtension, ctx)
         self.crud.skip = ['detail', 'create', 'edit', 'delete']
 
     def exitAn_crud_list(self, ctx:ZmeiLangParser.An_crud_listContext):
-        self.extra_end(CrudListPageExtra, ctx)
+        self.extension_end(CrudListPageExtension, ctx)

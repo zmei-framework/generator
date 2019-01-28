@@ -143,17 +143,17 @@ def build_parser():
             map(lambda x: x.values(), (pages, models, applications))):
         shutil.copy(source_file, target_file)
 
-    replace_in_file(f'{generator_path}/parser/gen/grammar/PageExtra.g4', {
-        '// {EXTRA_IMPORTS}': ',\n    '.join([os.path.basename(x[0])[:-3] for x in pages.values()]),
-        '// {EXTRA_ANNOT}': ' ' + '\n    |'.join(pages.keys()),
+    replace_in_file(f'{generator_path}/parser/gen/grammar/PageExtension.g4', {
+        '// {EXTENSION_IMPORTS}': ',\n    '.join([os.path.basename(x[0])[:-3] for x in pages.values()]),
+        '// {EXTENSION_ANNOT}': ' ' + '\n    |'.join(pages.keys()),
     })
-    replace_in_file(f'{generator_path}/parser/gen/grammar/ModelExtra.g4', {
-        '// {EXTRA_IMPORTS}': ',\n    '.join([os.path.basename(x[0])[:-3] for x in models.values()]),
-        '// {EXTRA_ANNOT}': ' ' + '\n    |'.join(models.keys()),
+    replace_in_file(f'{generator_path}/parser/gen/grammar/ModelExtension.g4', {
+        '// {EXTENSION_IMPORTS}': ',\n    '.join([os.path.basename(x[0])[:-3] for x in models.values()]),
+        '// {EXTENSION_ANNOT}': ' ' + '\n    |'.join(models.keys()),
     })
-    replace_in_file(f'{generator_path}/parser/gen/grammar/AppExtra.g4', {
-        '// {EXTRA_IMPORTS}': ',\n    '.join([os.path.basename(x[0])[:-3] for x in applications.values()]),
-        '// {EXTRA_ANNOT}': ' ' + '\n    |'.join(applications.keys()),
+    replace_in_file(f'{generator_path}/parser/gen/grammar/AppExtension.g4', {
+        '// {EXTENSION_IMPORTS}': ',\n    '.join([os.path.basename(x[0])[:-3] for x in applications.values()]),
+        '// {EXTENSION_ANNOT}': ' ' + '\n    |'.join(applications.keys()),
     })
     replace_in_file(f'{generator_path}/parser/gen/grammar/ZmeiLangSimpleLexer.g4', {
         '// {KEYWORDS}': '\n'.join([f"{name}: '{val}';" for name, val in keywords.items()]),

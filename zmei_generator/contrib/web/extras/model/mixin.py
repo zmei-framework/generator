@@ -1,18 +1,18 @@
 
-from zmei_generator.domain.extras import ModelExtra
+from zmei_generator.domain.extensions import ModelExtension
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
-class MixinModelExtra(ModelExtra):
+class MixinModelExtension(ModelExtension):
     def get_name(cls):
         return 'mixin'
     
 
-class MixinModelExtraParserListener(BaseListener):
+class MixinModelExtensionParserListener(BaseListener):
 
     def enterAn_mixin(self, ctx: ZmeiLangParser.An_mixinContext):
-        self.application.extras.append(
-            MixinModelExtra(self.model)
+        self.application.extensions.append(
+            MixinModelExtension(self.model)
         )
 
         class_name = ctx.classname().getText()

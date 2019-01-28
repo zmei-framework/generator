@@ -1,11 +1,11 @@
 from zmei_generator.domain.page_def import PageDef
 from zmei_generator.domain.page_expression import PageExpression
-from zmei_generator.contrib.web.extras.page.crud_create import CrudCreatePageExtra
-from zmei_generator.contrib.web.extras.page.crud_parser import CrudBasePageExtraParserListener
+from zmei_generator.contrib.web.extensions.page.crud_create import CrudCreatePageExtension
+from zmei_generator.contrib.web.extensions.page.crud_parser import CrudBasePageExtensionParserListener
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 
 
-class CrudEditPageExtra(CrudCreatePageExtra):
+class CrudEditPageExtension(CrudCreatePageExtension):
     @classmethod
     def get_name(cls):
         return 'crud_edit'
@@ -34,10 +34,10 @@ class CrudEditPageExtra(CrudCreatePageExtra):
         return "theme/crud_edit.html"
 
 
-class CrudEditPageExtraParserListener(CrudBasePageExtraParserListener):
+class CrudEditPageExtensionParserListener(CrudBasePageExtensionParserListener):
 
     def enterAn_crud_edit(self, ctx:ZmeiLangParser.An_crud_editContext):
-        self.extra_start(CrudEditPageExtra, ctx)
+        self.extension_start(CrudEditPageExtension, ctx)
 
     def exitAn_crud_edit(self, ctx:ZmeiLangParser.An_crud_editContext):
-        self.extra_end(CrudEditPageExtra, ctx)
+        self.extension_end(CrudEditPageExtension, ctx)

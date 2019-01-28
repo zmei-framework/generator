@@ -1,18 +1,18 @@
 from textwrap import indent
 
-from zmei_generator.domain.extras import PageExtra
+from zmei_generator.domain.extensions import PageExtension
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
-class GetPageExtra(PageExtra):
+class GetPageExtension(PageExtension):
     # get
     pass
     
-class GetPageExtraParserListener(BaseListener):
+class GetPageExtensionParserListener(BaseListener):
 
     def enterAn_get(self, ctx: ZmeiLangParser.An_getContext):
-        self.application.extras.append(
-            GetPageExtra(self.page)
+        self.application.extensions.append(
+            GetPageExtension(self.page)
         )
 
         if not self.page.page_code:

@@ -1,10 +1,10 @@
-from zmei_generator.domain.extras import PageExtra
-from zmei_generator.contrib.web.extras.page.block import InlineTemplatePageBlock
+from zmei_generator.domain.extensions import PageExtension
+from zmei_generator.contrib.web.extensions.page.block import InlineTemplatePageBlock
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
 
-class HtmlPageExtra(PageExtra):
+class HtmlPageExtension(PageExtension):
     def __init__(self, page) -> None:
         super().__init__(page)
 
@@ -24,15 +24,15 @@ class HtmlPageExtra(PageExtra):
 
 
 
-class HtmlPageExtraParserListener(BaseListener):
+class HtmlPageExtensionParserListener(BaseListener):
 
     def enterAn_html(self, ctx: ZmeiLangParser.An_htmlContext):
-        extra = HtmlPageExtra(self.page)
-        self.application.extras.append(
-            extra
+        extension = HtmlPageExtension(self.page)
+        self.application.extensions.append(
+            extension
         )
-        extra.area = 'content'
+        extension.area = 'content'
         if ctx.an_html_descriptor():
-            extra.area = ctx.an_html_descriptor().id_or_kw().getText()
+            extension.area = ctx.an_html_descriptor().id_or_kw().getText()
 
-        extra.code = self._get_code(ctx)
+        extension.code = self._get_code(ctx)

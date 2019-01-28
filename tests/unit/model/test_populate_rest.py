@@ -1,7 +1,7 @@
 from textwrap import dedent
 
-from zmei_generator.contrib.drf.extras.model.api import ApiModelExtra
-from zmei_generator.contrib.drf.extras.model.rest import RestModelExtra, RestSerializerConfig
+from zmei_generator.contrib.drf.extensions.model.api import ApiModelExtension
+from zmei_generator.contrib.drf.extensions.model.rest import RestModelExtension, RestSerializerConfig
 from zmei_generator.parser.parser import ZmeiParser
 
 
@@ -25,11 +25,11 @@ def test_rest_empty():
 
     boo = app.models['boo']
 
-    assert isinstance(boo.rest, RestModelExtra)
+    assert isinstance(boo.rest, RestModelExtension)
     assert isinstance(boo.rest_conf['_'], RestSerializerConfig)
 
     assert app.rest is True
-    assert boo.rest in app.extras
+    assert boo.rest in app.extensions
 
     assert boo.rest_conf['_'].serializer_name == boo.class_name
     assert boo.rest_conf['_'].parent_field is None
@@ -49,11 +49,11 @@ def test_rest_descriminator():
 
     boo = app.models['boo']
 
-    assert isinstance(boo.rest, RestModelExtra)
+    assert isinstance(boo.rest, RestModelExtension)
     assert isinstance(boo.rest_conf['foo'], RestSerializerConfig)
 
     assert app.rest is True
-    assert boo.rest in app.extras
+    assert boo.rest in app.extensions
 
     assert boo.rest_conf['foo'].serializer_name == boo.class_name + 'Foo'
 
@@ -405,9 +405,9 @@ def test_inline():
     boo = app.models['boo']
 
     assert 'abc' in boo.rest_conf['_'].inlines
-    assert len(boo.rest_conf['_'].extra_serializers) == 1
+    assert len(boo.rest_conf['_'].extension_serializers) == 1
 
-    assert [x.name for x in boo.rest_conf['_'].extra_serializers[0].fields] == ['lala1', 'lala3']
+    assert [x.name for x in boo.rest_conf['_'].extension_serializers[0].fields] == ['lala1', 'lala3']
 
 def test_inline_default():
     app = _("""
@@ -431,9 +431,9 @@ def test_inline_default():
     boo = app.models['boo']
 
     assert 'abc' in boo.rest_conf['_'].inlines
-    assert len(boo.rest_conf['_'].extra_serializers) == 1
+    assert len(boo.rest_conf['_'].extension_serializers) == 1
 
-    assert [x.name for x in boo.rest_conf['_'].extra_serializers[0].fields] == ['lala1', 'lala2', 'lala3']
+    assert [x.name for x in boo.rest_conf['_'].extension_serializers[0].fields] == ['lala1', 'lala2', 'lala3']
 
 
 def test_annotate():
@@ -471,7 +471,7 @@ def test_publish_default():
     boo = app.models['boo']
 
     assert app.api is True
-    assert isinstance(boo.api, ApiModelExtra)
+    assert isinstance(boo.api, ApiModelExtension)
 
     assert list(boo.published_apis.keys()) == ['_']
 
@@ -492,7 +492,7 @@ def test_publish_by_name():
     boo = app.models['boo']
 
     assert app.api is True
-    assert isinstance(boo.api, ApiModelExtra)
+    assert isinstance(boo.api, ApiModelExtension)
 
     assert list(boo.published_apis.keys()) == ['foo', 'boo']
 
@@ -513,7 +513,7 @@ def test_publish_default_one():
     boo = app.models['boo']
 
     assert app.api is True
-    assert isinstance(boo.api, ApiModelExtra)
+    assert isinstance(boo.api, ApiModelExtension)
 
     assert list(boo.published_apis.keys()) == ['_']
 
@@ -534,6 +534,6 @@ def test_publish_all():
     boo = app.models['boo']
 
     assert app.api is True
-    assert isinstance(boo.api, ApiModelExtra)
+    assert isinstance(boo.api, ApiModelExtension)
 
     assert list(boo.published_apis.keys()) == ['_', 'foo', 'boo']

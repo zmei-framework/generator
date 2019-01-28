@@ -1,6 +1,6 @@
 
 application = {
-    'an_gitlab': 'AppExtraGitlab.g4',
+    'an_gitlab': 'AppExtensionGitlab.g4',
 }
 
 models = {}

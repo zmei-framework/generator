@@ -58,7 +58,7 @@ class ThemeFileIncludePageBlock(Block):
         return f"{{% include '{self.template_name}'{self.with_expr} %}}"
 
 #
-# class BlocksPageExtra(PageExtra):
+# class BlocksPageExtension(PageExtension):
 #
 #     @classmethod
 #     def get_name(cls):
@@ -69,7 +69,7 @@ class ThemeFileIncludePageBlock(Block):
 #
 #         area_name = parsed_result.descriptor or 'content'
 #
-#         blocks = [PageBlock(source=parsed_result.extra_body, area_name=area_name)]
+#         blocks = [PageBlock(source=parsed_result.extension_body, area_name=area_name)]
 #
 #         if area_name not in page.blocks:
 #             page.blocks[area_name] = blocks

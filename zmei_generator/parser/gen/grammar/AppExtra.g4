@@ -1,17 +1,17 @@
-parser grammar AppExtra;
+parser grammar AppExtension;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 
 import
-    AppExtraSuit,
-    AppExtraCelery,
-    AppExtraChannels,
-    AppExtraDocker,
-    AppExtraFiler,
-    AppExtraGitlab,
-    AppExtraFile,
-    AppExtraTheme,
-    AppExtraLangs
+    AppExtensionSuit,
+    AppExtensionCelery,
+    AppExtensionChannels,
+    AppExtensionDocker,
+    AppExtensionFiler,
+    AppExtensionGitlab,
+    AppExtensionFile,
+    AppExtensionTheme,
+    AppExtensionLangs
     ;
 
 cs_annotation:

@@ -1,5 +1,5 @@
 
-parser grammar PageExtraAuth;
+parser grammar PageExtensionAuth;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 

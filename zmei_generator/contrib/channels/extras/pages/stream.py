@@ -1,7 +1,7 @@
 import re
 
 from zmei_generator.domain.application_def import ApplicationDef
-from zmei_generator.domain.extras import PageExtra
+from zmei_generator.domain.extensions import PageExtension
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
@@ -23,7 +23,7 @@ class StreamModel(object):
         return re.sub('[^a-z0-9]+', '_', self.target.lower())
 
 
-class StreamPageExtra(PageExtra):
+class StreamPageExtension(PageExtension):
     # stream
 
     def __init__(self, page) -> None:
@@ -38,7 +38,7 @@ class StreamPageExtra(PageExtra):
         return ['django-query-signals']
 
 
-class StreamPageExtraParserListener(BaseListener):
+class StreamPageExtensionParserListener(BaseListener):
 
     def __init__(self, application: ApplicationDef) -> None:
         super().__init__(application)
@@ -46,8 +46,8 @@ class StreamPageExtraParserListener(BaseListener):
         self.stream_model = None
 
     def enterAn_stream(self, ctx: ZmeiLangParser.An_streamContext):
-        stream = StreamPageExtra(self.page)
-        self.application.extras.append(
+        stream = StreamPageExtension(self.page)
+        self.application.extensions.append(
             stream
         )
 

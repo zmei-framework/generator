@@ -1,9 +1,9 @@
-from zmei_generator.domain.extras import PageExtra
+from zmei_generator.domain.extensions import PageExtension
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
 
-class ReactPageExtra(PageExtra):
+class ReactPageExtension(PageExtension):
     def __init__(self, page) -> None:
         super().__init__(page)
 
@@ -15,18 +15,18 @@ class ReactPageExtra(PageExtra):
         return ['py_mini_racer']
 
 
-class ReactPageExtraParserListener(BaseListener):
+class ReactPageExtensionParserListener(BaseListener):
 
     def enterAn_react(self, ctx: ZmeiLangParser.An_reactContext):
-        extra = ReactPageExtra(self.page)
-        self.application.extras.append(extra)
-        extra.react_type = ctx.an_react_type().getText()
+        extension = ReactPageExtension(self.page)
+        self.application.extensions.append(extension)
+        extension.react_type = ctx.an_react_type().getText()
         #
         # if self.react:
-        #     if 'ZmeiDataViewMixin' in self.extra_bases:
-        #         self.extra_bases.remove('ZmeiDataViewMixin')
+        #     if 'ZmeiDataViewMixin' in self.extension_bases:
+        #         self.extension_bases.remove('ZmeiDataViewMixin')
         #
-        #     self.extra_bases.append('ZmeiReactViewMixin')
+        #     self.extension_bases.append('ZmeiReactViewMixin')
 
 
 

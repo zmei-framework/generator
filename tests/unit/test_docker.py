@@ -1,6 +1,6 @@
 from textwrap import dedent
 
-from zmei_generator.contrib.docker.extras.application.docker import DockerAppExtra
+from zmei_generator.contrib.docker.extensions.application.docker import DockerAppExtension
 from zmei_generator.parser.parser import ZmeiParser
 
 
@@ -16,5 +16,5 @@ def test_docker_enabled():
         @docker
     """)
 
-    assert isinstance(app.docker, DockerAppExtra)
+    assert isinstance(app.docker, DockerAppExtension)
 

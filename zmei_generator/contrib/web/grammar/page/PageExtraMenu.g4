@@ -1,5 +1,5 @@
 
-parser grammar PageExtraMenu;
+parser grammar PageExtensionMenu;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 

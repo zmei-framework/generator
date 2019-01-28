@@ -1,5 +1,5 @@
 
-parser grammar AppExtraDocker;
+parser grammar AppExtensionDocker;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 

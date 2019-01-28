@@ -12,7 +12,7 @@ for entry_point in pkg_resources.iter_entry_points('zmei.parser.stage3'):
 parsers.append(BaseListener)
 
 
-class PageExtraListener(*parsers):
+class PageExtensionListener(*parsers):
 
     def __init__(self, application: ApplicationDef) -> None:
         super().__init__(application)

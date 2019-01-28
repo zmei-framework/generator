@@ -1,11 +1,11 @@
 from zmei_generator.domain.page_expression import PageExpression
-from zmei_generator.contrib.web.extras.page.block import InlineTemplatePageBlock
-from zmei_generator.contrib.web.extras.page.crud import BaseCrudSubpageExtra
-from zmei_generator.contrib.web.extras.page.crud_parser import CrudBasePageExtraParserListener
+from zmei_generator.contrib.web.extensions.page.block import InlineTemplatePageBlock
+from zmei_generator.contrib.web.extensions.page.crud import BaseCrudSubpageExtension
+from zmei_generator.contrib.web.extensions.page.crud_parser import CrudBasePageExtensionParserListener
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 
 
-class CrudDetailPageExtra(BaseCrudSubpageExtra):
+class CrudDetailPageExtension(BaseCrudSubpageExtension):
     @classmethod
     def get_name(cls):
         return 'crud_detail'
@@ -39,10 +39,10 @@ class CrudDetailPageExtra(BaseCrudSubpageExtra):
         )
 
 
-class CrudDetailPageExtraParserListener(CrudBasePageExtraParserListener):
+class CrudDetailPageExtensionParserListener(CrudBasePageExtensionParserListener):
 
     def enterAn_crud_detail(self, ctx: ZmeiLangParser.An_crud_detailContext):
-        self.extra_start(CrudDetailPageExtra, ctx)
+        self.extension_start(CrudDetailPageExtension, ctx)
 
     def exitAn_crud_detail(self, ctx: ZmeiLangParser.An_crud_detailContext):
-        self.extra_end(CrudDetailPageExtra, ctx)
+        self.extension_end(CrudDetailPageExtension, ctx)

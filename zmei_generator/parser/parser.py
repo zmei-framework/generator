@@ -5,8 +5,8 @@ from zmei_generator.domain.application_def import ApplicationDef
 from zmei_generator.generator.utils import handle_parse_exception
 from zmei_generator.parser.errors import ValidationError
 from zmei_generator.parser.populate import PartsCollectorListener
-from zmei_generator.parser.populate_model_extras import ModelExtraListener
-from zmei_generator.parser.populate_page_extras import PageExtraListener
+from zmei_generator.parser.populate_model_extensions import ModelExtensionListener
+from zmei_generator.parser.populate_page_extensions import PageExtensionListener
 from .gen.ZmeiLangSimpleLexer import ZmeiLangSimpleLexer
 from .gen.ZmeiLangParser import ZmeiLangParser
 
@@ -60,20 +60,20 @@ class ZmeiParser(object):
         self.process_application(app)
         app.post_process()
 
-        self.process_model_extras(app)
+        self.process_model_extensions(app)
 
-        self.process_page_extras(app)
-        app.post_process_extras()
+        self.process_page_extensions(app)
+        app.post_process_extensions()
 
         return app
 
-    def process_page_extras(self, app):
-        page_extra_listener = PageExtraListener(app)
-        self.walker.walk(page_extra_listener, self.tree)
+    def process_page_extensions(self, app):
+        page_extension_listener = PageExtensionListener(app)
+        self.walker.walk(page_extension_listener, self.tree)
 
-    def process_model_extras(self, app):
-        model_extra_listener = ModelExtraListener(app)
-        self.walker.walk(model_extra_listener, self.tree)
+    def process_model_extensions(self, app):
+        model_extension_listener = ModelExtensionListener(app)
+        self.walker.walk(model_extension_listener, self.tree)
 
     def process_application(self, app):
         listener = PartsCollectorListener(app)

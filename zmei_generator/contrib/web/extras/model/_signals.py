@@ -1,7 +1,7 @@
-from zmei_generator.domain.extras import ModelExtra
+from zmei_generator.domain.extensions import ModelExtension
 
 
-class SignalBaseModelExtra(ModelExtra):
+class SignalBaseModelExtension(ModelExtension):
     pass
     # def get_required_apps(self):
     #     return ['django_query_signals']

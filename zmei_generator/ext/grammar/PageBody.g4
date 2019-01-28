@@ -3,7 +3,7 @@ parser grammar PageBase;
 options { tokenVocab=ZmeiLangSimpleLexer; }
 
 import Base,
-       PageExtra
+       PageExtension
        ;
 
 /**************************

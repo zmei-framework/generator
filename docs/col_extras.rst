@@ -1,4 +1,4 @@
-.. _AppExtras:
+.. _AppExtensions:
 
 App annotations
 -------------------------
@@ -7,4 +7,4 @@ App annotations
     :maxdepth: 2
     :glob:
 
-    col/extras/*
+    col/extensions/*

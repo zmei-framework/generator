@@ -46,17 +46,17 @@ class ZmeiProjectParser(object):
         for app in project.applications.values():
             app.post_process()
 
-        # model extras parsing
+        # model extensions parsing
         for app_name, parser in parsers.items():
-            parser.process_model_extras(project.applications[app_name])
+            parser.process_model_extensions(project.applications[app_name])
 
         # page parsing
         for app_name, parser in parsers.items():
-            parser.process_page_extras(project.applications[app_name])
+            parser.process_page_extensions(project.applications[app_name])
 
-        # page extras parsing
+        # page extensions parsing
         for app in project.applications.values():
-            app.post_process_extras()
+            app.post_process_extensions()
 
         return project
 

@@ -1,18 +1,18 @@
 
-from zmei_generator.domain.extras import ModelExtra
+from zmei_generator.domain.extensions import ModelExtension
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
-class CleanModelExtra(ModelExtra):
+class CleanModelExtension(ModelExtension):
     def get_name(cls):
         return 'clean'
     
 
-class CleanModelExtraParserListener(BaseListener):
+class CleanModelExtensionParserListener(BaseListener):
 
     def enterAn_clean(self, ctx: ZmeiLangParser.An_cleanContext):
-        self.application.extras.append(
-            CleanModelExtra(self.model)
+        self.application.extensions.append(
+            CleanModelExtension(self.model)
         )
 
         self.model.validators.append(self._get_code(ctx.python_code()))

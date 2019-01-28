@@ -1,18 +1,18 @@
-from zmei_generator.domain.extras import ModelExtra
+from zmei_generator.domain.extensions import ModelExtension
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
 
-class SortableModelExtra(ModelExtra):
+class SortableModelExtension(ModelExtension):
     def get_name(cls):
         return 'sortable'
 
 
-class SortableModelExtraParserListener(BaseListener):
+class SortableModelExtensionParserListener(BaseListener):
 
     def enterAn_sortable(self, ctx: ZmeiLangParser.An_sortableContext):
-        self.application.extras.append(
-            SortableModelExtra(self.model)
+        self.application.extensions.append(
+            SortableModelExtension(self.model)
         )
 
         self.model.sortable = True

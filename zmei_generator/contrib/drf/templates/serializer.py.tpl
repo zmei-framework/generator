@@ -1,5 +1,5 @@
-{% for extra in rest_conf.extra_serializers  %}
-{% with rest_conf=extra %}
+{% for extension in rest_conf.extension_serializers  %}
+{% with rest_conf=extension %}
 {% include 'serializer.py.tpl' %}
 {% endwith %}
 {% endfor %}
@@ -15,16 +15,16 @@ class {{ rest_conf.serializer_name }}Serializer(serializers.ModelSerializer):
 
     {% if rest_conf.is_writable and rest_conf.is_root %}
     def create(self, validated_data):
-        {% for extra in rest_conf.extra_serializers  %}{% if extra.is_writable %}
-        {{ extra.parent_field.name }}_data = validated_data.pop('{{ extra.parent_field.name }}')
+        {% for extension in rest_conf.extension_serializers  %}{% if extension.is_writable %}
+        {{ extension.parent_field.name }}_data = validated_data.pop('{{ extension.parent_field.name }}')
         {% endif %}{% endfor %}
 
         item = {{ rest_conf.model.class_name }}.objects.create(
             {% if rest_conf.user_field %}{{ rest_conf.user_field }}=self.context.get('request').user, {% endif %}**validated_data)
 
-        {% for extra in rest_conf.extra_serializers  %}{% if extra.is_writable %}
-        for data in {{ extra.parent_field.name }}_data:
-            {{ extra.model.class_name }}.objects.create({{ extra.parent_field.source_field_name }}=item,{% if extra.user_field %}{{  extra.user_field }}=self.context.get('request').user, {% endif %}**data)
+        {% for extension in rest_conf.extension_serializers  %}{% if extension.is_writable %}
+        for data in {{ extension.parent_field.name }}_data:
+            {{ extension.model.class_name }}.objects.create({{ extension.parent_field.source_field_name }}=item,{% if extension.user_field %}{{  extension.user_field }}=self.context.get('request').user, {% endif %}**data)
         {% endif %}{% endfor %}
 
         {{ rest_conf.on_create|indent(8) }}

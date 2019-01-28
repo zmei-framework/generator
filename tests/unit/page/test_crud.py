@@ -1,14 +1,14 @@
 from textwrap import dedent
 
 import pytest
-from zmei_generator.contrib.web.extras.page.crud_list import CrudListPageExtra
+from zmei_generator.contrib.web.extensions.page.crud_list import CrudListPageExtension
 
 from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
-from zmei_generator.contrib.web.extras.page.crud import CrudParams, CrudPageExtra
-from zmei_generator.contrib.web.extras.page.crud_create import CrudCreatePageExtra
-from zmei_generator.contrib.web.extras.page.crud_delete import CrudDeletePageExtra
-from zmei_generator.contrib.web.extras.page.crud_detail import CrudDetailPageExtra
-from zmei_generator.contrib.web.extras.page.crud_edit import CrudEditPageExtra
+from zmei_generator.contrib.web.extensions.page.crud import CrudParams, CrudPageExtension
+from zmei_generator.contrib.web.extensions.page.crud_create import CrudCreatePageExtension
+from zmei_generator.contrib.web.extensions.page.crud_delete import CrudDeletePageExtension
+from zmei_generator.contrib.web.extensions.page.crud_detail import CrudDetailPageExtension
+from zmei_generator.contrib.web.extensions.page.crud_edit import CrudEditPageExtension
 from zmei_generator.parser.parser import ZmeiParser
 
 
@@ -18,20 +18,20 @@ def _(code):
     return parser.populate_application('example')
 
 
-@pytest.mark.parametrize("extra_type_name, extra_cls", [
-    ("crud", CrudPageExtra),
-    ("crud_list", CrudListPageExtra),
-    ("crud_create", CrudCreatePageExtra),
-    ("crud_delete", CrudDeletePageExtra),
-    ("crud_detail", CrudDetailPageExtra),
-    ("crud_edit", CrudEditPageExtra),
+@pytest.mark.parametrize("extension_type_name, extension_cls", [
+    ("crud", CrudPageExtension),
+    ("crud_list", CrudListPageExtension),
+    ("crud_create", CrudCreatePageExtension),
+    ("crud_delete", CrudDeletePageExtension),
+    ("crud_detail", CrudDetailPageExtension),
+    ("crud_edit", CrudEditPageExtension),
 ])
-def test_crud_no_uri_on_crud(extra_type_name, extra_cls):
+def test_crud_no_uri_on_crud(extension_type_name, extension_cls):
     with pytest.raises(ValidationException):
         app = _(f"""
     
             [boo]
-            @{extra_type_name}(#foo)
+            @{extension_type_name}(#foo)
             
             #foo
             ------
@@ -185,19 +185,19 @@ def test_crud_subpage_subcrud():
     assert boo_detail.page_items['lala'].expression == '123'
 
 
-@pytest.mark.parametrize("extra_type_name, extra_cls", [
-    ("crud", CrudPageExtra),
-    ("crud_list", CrudListPageExtra),
-    ("crud_create", CrudCreatePageExtra),
-    ("crud_delete", CrudDeletePageExtra),
-    ("crud_detail", CrudDetailPageExtra),
-    ("crud_edit", CrudEditPageExtra),
+@pytest.mark.parametrize("extension_type_name, extension_cls", [
+    ("crud", CrudPageExtension),
+    ("crud_list", CrudListPageExtension),
+    ("crud_create", CrudCreatePageExtension),
+    ("crud_delete", CrudDeletePageExtension),
+    ("crud_detail", CrudDetailPageExtension),
+    ("crud_edit", CrudEditPageExtension),
 ])
-def test_crud_model(extra_type_name, extra_cls):
+def test_crud_model(extension_type_name, extension_cls):
     app = _(f"""
 
         [boo: /mycrud]
-        @{extra_type_name}(#foo)
+        @{extension_type_name}(#foo)
 
         #foo
         ------
@@ -209,8 +209,8 @@ def test_crud_model(extra_type_name, extra_cls):
     assert app.crud is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extra_type_name]
-    assert isinstance(crud, extra_cls)
+    crud = boo.cruds['_'][extension_type_name]
+    assert isinstance(crud, extension_cls)
 
     params = crud.params
 
@@ -219,7 +219,7 @@ def test_crud_model(extra_type_name, extra_cls):
     assert crud.formatted_query == ".all()"
 
 
-@pytest.mark.parametrize("extra_type_name", [
+@pytest.mark.parametrize("extension_type_name", [
     "crud",
     "crud_list",
     "crud_create",
@@ -227,11 +227,11 @@ def test_crud_model(extra_type_name, extra_cls):
     "crud_detail",
     "crud_edit",
 ])
-def test_crud_theme(extra_type_name):
+def test_crud_theme(extension_type_name):
     app = _(f"""
 
         [boo: /mycrud]
-        @{extra_type_name}(
+        @{extension_type_name}(
             #foo
             
             theme: lala
@@ -246,7 +246,7 @@ def test_crud_theme(extra_type_name):
 
     boo = app.pages['boo']
 
-    params = boo.cruds['_'][extra_type_name].params
+    params = boo.cruds['_'][extension_type_name].params
 
     assert params.theme == 'lala'
 
@@ -267,7 +267,7 @@ def test_crud_subpages():
     assert app.crud is True
 
     boo = app.pages['boo']
-    assert isinstance(boo.cruds['_']['crud'], CrudPageExtra)
+    assert isinstance(boo.cruds['_']['crud'], CrudPageExtension)
 
     params = boo.cruds['_']['crud'].params
 
@@ -282,13 +282,13 @@ def test_crud_subpages():
         assert page.defined_uri.startswith('/mycrud')
 
         if page.name == 'boo_create':
-            assert 'CreateView' in page.extra_bases
+            assert 'CreateView' in page.extension_bases
         elif page.name == 'boo_edit':
-            assert 'UpdateView' in page.extra_bases
+            assert 'UpdateView' in page.extension_bases
         elif page.name == 'boo_detail':
-            assert 'DetailView' in page.extra_bases
+            assert 'DetailView' in page.extension_bases
         elif page.name == 'boo_delete':
-            assert 'DeleteView' in page.extra_bases
+            assert 'DeleteView' in page.extension_bases
         else:
             pytest.fail('Wrong page name: ', page.name)
 
@@ -312,14 +312,14 @@ def test_crud_subpages_skip():
 
     for page in boo.children:
         if page.name == 'boo_create':
-            assert 'CreateView' in page.extra_bases
+            assert 'CreateView' in page.extension_bases
         elif page.name == 'boo_detail':
-            assert 'DetailView' in page.extra_bases
+            assert 'DetailView' in page.extension_bases
         else:
             pytest.fail('Wrong page name: ', page.name)
 
 
-@pytest.mark.parametrize("extra_type_name", [
+@pytest.mark.parametrize("extension_type_name", [
     "crud",
     "crud_list",
     "crud_create",
@@ -327,11 +327,11 @@ def test_crud_subpages_skip():
     "crud_detail",
     "crud_edit",
 ])
-def test_crud_model_fields(extra_type_name):
+def test_crud_model_fields(extension_type_name):
     app = _(f"""
 
         [boo: /mycrud]
-        @{extra_type_name}(#foo, fields: *, ^b)
+        @{extension_type_name}(#foo, fields: *, ^b)
 
         #foo
         ------
@@ -343,13 +343,13 @@ def test_crud_model_fields(extra_type_name):
     assert app.crud is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extra_type_name]
+    crud = boo.cruds['_'][extension_type_name]
 
     assert list(crud.fields.keys()) == ['a', 'c']
 
     assert list(crud.list_fields.keys()) == ['a', 'c']
 
-@pytest.mark.parametrize("extra_type_name", [
+@pytest.mark.parametrize("extension_type_name", [
     "crud",
     "crud_list",
     "crud_create",
@@ -357,11 +357,11 @@ def test_crud_model_fields(extra_type_name):
     "crud_detail",
     "crud_edit",
 ])
-def test_crud_model_fields(extra_type_name):
+def test_crud_model_fields(extension_type_name):
     app = _(f"""
 
         [boo: /mycrud]
-        @{extra_type_name}(#foo, fields: a, b{{lala}})
+        @{extension_type_name}(#foo, fields: a, b{{lala}})
 
         #foo
         ------
@@ -373,14 +373,14 @@ def test_crud_model_fields(extra_type_name):
     assert app.crud is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extra_type_name]
+    crud = boo.cruds['_'][extension_type_name]
 
     assert list(crud.fields.keys()) == ['a', 'b']
     assert list(crud.list_fields.keys()) == ['a', 'b']
     assert crud.field_filters['b'] == 'lala'
 
 
-@pytest.mark.parametrize("extra_type_name", [
+@pytest.mark.parametrize("extension_type_name", [
     "crud",
     "crud_list",
     "crud_create",
@@ -388,11 +388,11 @@ def test_crud_model_fields(extra_type_name):
     "crud_detail",
     "crud_edit",
 ])
-def test_crud_model_list_fields(extra_type_name):
+def test_crud_model_list_fields(extension_type_name):
     app = _(f"""
 
         [boo: /mycrud]
-        @{extra_type_name}(#foo, fields: *, ^b list_fields: *, ^c)
+        @{extension_type_name}(#foo, fields: *, ^b list_fields: *, ^c)
 
         #foo
         ------
@@ -404,14 +404,14 @@ def test_crud_model_list_fields(extra_type_name):
     assert app.crud is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extra_type_name]
+    crud = boo.cruds['_'][extension_type_name]
 
     assert list(crud.fields.keys()) == ['a', 'c']
 
     assert list(crud.list_fields.keys()) == ['a', 'b']
 
 
-@pytest.mark.parametrize("extra_type_name", [
+@pytest.mark.parametrize("extension_type_name", [
     "crud",
     "crud_list",
     "crud_create",
@@ -419,11 +419,11 @@ def test_crud_model_list_fields(extra_type_name):
     "crud_detail",
     "crud_edit",
 ])
-def test_crud_pk_param(extra_type_name):
+def test_crud_pk_param(extension_type_name):
     app = _(f"""
 
         [boo: /mycrud]
-        @{extra_type_name}(#foo, pk_param: foo)
+        @{extension_type_name}(#foo, pk_param: foo)
 
         #foo
         ------
@@ -435,12 +435,12 @@ def test_crud_pk_param(extra_type_name):
     assert app.crud is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extra_type_name].params
+    crud = boo.cruds['_'][extension_type_name].params
 
     assert crud.pk_param == "foo"
 
 
-@pytest.mark.parametrize("extra_type_name", [
+@pytest.mark.parametrize("extension_type_name", [
     "crud",
     "crud_list",
     "crud_create",
@@ -448,11 +448,11 @@ def test_crud_pk_param(extra_type_name):
     "crud_detail",
     "crud_edit",
 ])
-def test_crud_item_name(extra_type_name):
+def test_crud_item_name(extension_type_name):
     app = _(f"""
 
         [boo: /mycrud]
-        @{extra_type_name}(#foo, item_name: foo)
+        @{extension_type_name}(#foo, item_name: foo)
 
         #foo
         ------
@@ -464,8 +464,8 @@ def test_crud_item_name(extra_type_name):
     assert app.crud is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extra_type_name]
-    params = boo.cruds['_'][extra_type_name].params
+    crud = boo.cruds['_'][extension_type_name]
+    params = boo.cruds['_'][extension_type_name].params
 
     assert params.item_name == "foo"
 
@@ -474,7 +474,7 @@ def test_crud_item_name(extra_type_name):
     assert crud.item_name == "foo"
 
 
-@pytest.mark.parametrize("extra_type_name", [
+@pytest.mark.parametrize("extension_type_name", [
     "crud",
     "crud_list",
     "crud_create",
@@ -482,11 +482,11 @@ def test_crud_item_name(extra_type_name):
     "crud_detail",
     "crud_edit",
 ])
-def test_crud_block(extra_type_name):
+def test_crud_block(extension_type_name):
     app = _(f"""
 
         [boo: /mycrud]
-        @{extra_type_name}(#foo, block: foo)
+        @{extension_type_name}(#foo, block: foo)
 
         #foo
         ------
@@ -498,12 +498,12 @@ def test_crud_block(extra_type_name):
     assert app.crud is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extra_type_name].params
+    crud = boo.cruds['_'][extension_type_name].params
 
     assert crud.block_name == "foo"
 
 
-@pytest.mark.parametrize("extra_type_name", [
+@pytest.mark.parametrize("extension_type_name", [
     "crud",
     "crud_list",
     "crud_create",
@@ -511,11 +511,11 @@ def test_crud_block(extra_type_name):
     "crud_detail",
     "crud_edit",
 ])
-def test_crud_object_expr1(extra_type_name):
+def test_crud_object_expr1(extension_type_name):
     app = _(f"""
 
         [boo: /mycrud]
-        @{extra_type_name}(#foo, 
+        @{extension_type_name}(#foo, 
             object_expr := request.user
         )
 
@@ -529,12 +529,12 @@ def test_crud_object_expr1(extra_type_name):
     assert app.crud is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extra_type_name].params
+    crud = boo.cruds['_'][extension_type_name].params
 
     assert crud.object_expr == "request.user"
 
 
-@pytest.mark.parametrize("extra_type_name", [
+@pytest.mark.parametrize("extension_type_name", [
     "crud",
     "crud_list",
     "crud_create",
@@ -542,11 +542,11 @@ def test_crud_object_expr1(extra_type_name):
     "crud_detail",
     "crud_edit",
 ])
-def test_crud_object_expr2(extra_type_name):
+def test_crud_object_expr2(extension_type_name):
     app = _(f"""
 
         [boo: /mycrud]
-        @{extra_type_name}(#foo, 
+        @{extension_type_name}(#foo, 
             object_expr: {{request.user}}
         )
 
@@ -560,12 +560,12 @@ def test_crud_object_expr2(extra_type_name):
     assert app.crud is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extra_type_name].params
+    crud = boo.cruds['_'][extension_type_name].params
 
     assert crud.object_expr == "request.user"
 
 
-@pytest.mark.parametrize("extra_type_name", [
+@pytest.mark.parametrize("extension_type_name", [
     "crud",
     "crud_list",
     "crud_create",
@@ -573,11 +573,11 @@ def test_crud_object_expr2(extra_type_name):
     "crud_detail",
     "crud_edit",
 ])
-def test_header(extra_type_name):
+def test_header(extension_type_name):
     app = _(f"""
 
         [boo: /mycrud]
-        @{extra_type_name}(#foo, 
+        @{extension_type_name}(#foo, 
             header: false
         )
 
@@ -591,12 +591,12 @@ def test_header(extra_type_name):
     assert app.crud is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extra_type_name].params
+    crud = boo.cruds['_'][extension_type_name].params
 
     assert crud.header is False
 
 
-@pytest.mark.parametrize("extra_type_name", [
+@pytest.mark.parametrize("extension_type_name", [
     "crud",
     "crud_list",
     "crud_create",
@@ -604,11 +604,11 @@ def test_header(extra_type_name):
     "crud_detail",
     "crud_edit",
 ])
-def test_header_default(extra_type_name):
+def test_header_default(extension_type_name):
     app = _(f"""
 
         [boo: /mycrud]
-        @{extra_type_name}(#foo)
+        @{extension_type_name}(#foo)
 
         #foo
         ------
@@ -620,12 +620,12 @@ def test_header_default(extra_type_name):
     assert app.crud is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extra_type_name].params
+    crud = boo.cruds['_'][extension_type_name].params
 
     assert crud.header is True
 
 
-@pytest.mark.parametrize("extra_type_name", [
+@pytest.mark.parametrize("extension_type_name", [
     "crud",
     "crud_list",
     "crud_create",
@@ -633,11 +633,11 @@ def test_header_default(extra_type_name):
     "crud_detail",
     "crud_edit",
 ])
-def test_list_type(extra_type_name):
+def test_list_type(extension_type_name):
     app = _(f"""
 
         [boo: /mycrud]
-        @{extra_type_name}(#foo, 
+        @{extension_type_name}(#foo, 
             list: stacked
         )
 
@@ -651,12 +651,12 @@ def test_list_type(extra_type_name):
     assert app.crud is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extra_type_name].params
+    crud = boo.cruds['_'][extension_type_name].params
 
     assert crud.list_type == 'stacked'
 
 
-@pytest.mark.parametrize("extra_type_name", [
+@pytest.mark.parametrize("extension_type_name", [
     "crud",
     "crud_list",
     "crud_create",
@@ -664,11 +664,11 @@ def test_list_type(extra_type_name):
     "crud_detail",
     "crud_edit",
 ])
-def test_list_type_default(extra_type_name):
+def test_list_type_default(extension_type_name):
     app = _(f"""
 
         [boo: /mycrud]
-        @{extra_type_name}(#foo)
+        @{extension_type_name}(#foo)
 
         #foo
         ------
@@ -680,12 +680,12 @@ def test_list_type_default(extra_type_name):
     assert app.crud is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extra_type_name].params
+    crud = boo.cruds['_'][extension_type_name].params
 
     assert crud.list_type == 'stacked'
 
 
-@pytest.mark.parametrize("extra_type_name", [
+@pytest.mark.parametrize("extension_type_name", [
     "crud",
     "crud_list",
     "crud_create",
@@ -693,11 +693,11 @@ def test_list_type_default(extra_type_name):
     "crud_detail",
     "crud_edit",
 ])
-def test_crud_can_edit1(extra_type_name):
+def test_crud_can_edit1(extension_type_name):
     app = _(f"""
 
         [boo: /mycrud]
-        @{extra_type_name}(#foo, 
+        @{extension_type_name}(#foo, 
             can_edit := request.user
         )
 
@@ -711,12 +711,12 @@ def test_crud_can_edit1(extra_type_name):
     assert app.crud is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extra_type_name].params
+    crud = boo.cruds['_'][extension_type_name].params
 
     assert crud.can_edit == "request.user"
 
 
-@pytest.mark.parametrize("extra_type_name", [
+@pytest.mark.parametrize("extension_type_name", [
     "crud",
     "crud_list",
     "crud_create",
@@ -724,11 +724,11 @@ def test_crud_can_edit1(extra_type_name):
     "crud_detail",
     "crud_edit",
 ])
-def test_crud_can_edit2(extra_type_name):
+def test_crud_can_edit2(extension_type_name):
     app = _(f"""
 
         [boo: /mycrud]
-        @{extra_type_name}(#foo, 
+        @{extension_type_name}(#foo, 
             can_edit: {{request.user}}
         )
 
@@ -742,12 +742,12 @@ def test_crud_can_edit2(extra_type_name):
     assert app.crud is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extra_type_name].params
+    crud = boo.cruds['_'][extension_type_name].params
 
     assert crud.can_edit == "request.user"
 
 
-@pytest.mark.parametrize("extra_type_name", [
+@pytest.mark.parametrize("extension_type_name", [
     "crud",
     "crud_list",
     "crud_create",
@@ -755,11 +755,11 @@ def test_crud_can_edit2(extra_type_name):
     "crud_detail",
     "crud_edit",
 ])
-def test_crud_url_prefix(extra_type_name):
+def test_crud_url_prefix(extension_type_name):
     app = _(f"""
 
         [boo: /mycrud]
-        @{extra_type_name}(#foo, 
+        @{extension_type_name}(#foo, 
             url_prefix: "this/is/custom/prefix/"
         )
 
@@ -773,12 +773,12 @@ def test_crud_url_prefix(extra_type_name):
     assert app.crud is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extra_type_name].params
+    crud = boo.cruds['_'][extension_type_name].params
 
     assert crud.url_prefix == "this/is/custom/prefix/"
 
 
-@pytest.mark.parametrize("extra_type_name", [
+@pytest.mark.parametrize("extension_type_name", [
     "crud",
     "crud_list",
     "crud_create",
@@ -786,11 +786,11 @@ def test_crud_url_prefix(extra_type_name):
     "crud_detail",
     "crud_edit",
 ])
-def test_crud_link_suffix(extra_type_name):
+def test_crud_link_suffix(extension_type_name):
     app = _(f"""
 
         [boo: /mycrud]
-        @{extra_type_name}(#foo, 
+        @{extension_type_name}(#foo, 
             link_suffix: "category=url.category"
         )
 
@@ -804,12 +804,12 @@ def test_crud_link_suffix(extra_type_name):
     assert app.crud is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extra_type_name].params
+    crud = boo.cruds['_'][extension_type_name].params
 
     assert crud.link_suffix == "category=url.category"
 
 
-@pytest.mark.parametrize("extra_type_name", [
+@pytest.mark.parametrize("extension_type_name", [
     "crud",
     "crud_list",
     "crud_create",
@@ -817,11 +817,11 @@ def test_crud_link_suffix(extra_type_name):
     "crud_detail",
     "crud_edit",
 ])
-def test_crud_filter(extra_type_name):
+def test_crud_filter(extension_type_name):
     app = _(f"""
 
         [boo: /mycrud]
-        @{extra_type_name}(#foo{{lala.lolo}})
+        @{extension_type_name}(#foo{{lala.lolo}})
 
         #foo
         ------
@@ -833,24 +833,24 @@ def test_crud_filter(extra_type_name):
     assert app.crud is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extra_type_name]
+    crud = boo.cruds['_'][extension_type_name]
 
     assert crud.params.query == "lala.lolo"
     assert crud.formatted_query == ".filter(lala.lolo)"
 
 
-@pytest.mark.parametrize("extra_type_name", [
+@pytest.mark.parametrize("extension_type_name", [
     "crud_create",
     "crud_list",
     "crud_delete",
     "crud_detail",
     "crud_edit",
 ])
-def test_crud_success_page(extra_type_name):
+def test_crud_success_page(extension_type_name):
     app = _(f"""
 
         [boo: /mycrud]
-        @{extra_type_name}(#foo
+        @{extension_type_name}(#foo
             => {{reverse_lazy('some_url', kwargs={{'param1': self.object.pk}})}}
         )
 
@@ -864,7 +864,7 @@ def test_crud_success_page(extra_type_name):
     assert app.crud is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extra_type_name]
+    crud = boo.cruds['_'][extension_type_name]
 
     assert crud.params.next_page == {'all': "reverse_lazy('some_url', kwargs={'param1': self.object.pk})"}
 
@@ -916,7 +916,7 @@ def test_crud_success_page_main_create_only():
             assert crud.next_page_expr != "reverse_lazy('some_url', kwargs={'param1': self.object.pk})"
 
 
-@pytest.mark.parametrize("extra_type_name", [
+@pytest.mark.parametrize("extension_type_name", [
     "crud",
     "crud_list",
     "crud_create",
@@ -924,11 +924,11 @@ def test_crud_success_page_main_create_only():
     "crud_detail",
     "crud_edit",
 ])
-def test_crud_success_url_dq(extra_type_name):
+def test_crud_success_url_dq(extension_type_name):
     app = _(f"""
 
         [boo: /mycrud]
-        @{extra_type_name}(#foo
+        @{extension_type_name}(#foo
             => "https://google.com/"
         )
 
@@ -942,11 +942,11 @@ def test_crud_success_url_dq(extra_type_name):
     assert app.crud is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extra_type_name]
+    crud = boo.cruds['_'][extension_type_name]
 
     assert crud.params.next_page == {'all': '"https://google.com/"'}
 
-@pytest.mark.parametrize("extra_type_name", [
+@pytest.mark.parametrize("extension_type_name", [
     "crud",
     "crud_list",
     "crud_create",
@@ -954,11 +954,11 @@ def test_crud_success_url_dq(extra_type_name):
     "crud_detail",
     "crud_edit",
 ])
-def test_crud_success_url_sq(extra_type_name):
+def test_crud_success_url_sq(extension_type_name):
     app = _(f"""
 
         [boo: /mycrud]
-        @{extra_type_name}(#foo
+        @{extension_type_name}(#foo
             => 'https://google.com/'
         )
 
@@ -972,12 +972,12 @@ def test_crud_success_url_sq(extra_type_name):
     assert app.crud is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extra_type_name]
+    crud = boo.cruds['_'][extension_type_name]
 
     assert crud.params.next_page == {'all': "'https://google.com/'"}
 
 
-@pytest.mark.parametrize("extra_type_name", [
+@pytest.mark.parametrize("extension_type_name", [
     "crud",
     "crud_list",
     "crud_create",
@@ -985,11 +985,11 @@ def test_crud_success_url_sq(extra_type_name):
     "crud_detail",
     "crud_edit",
 ])
-def test_crud_descriptor(extra_type_name):
+def test_crud_descriptor(extension_type_name):
     app = _(f"""
 
         [boo: /mycrud]
-        @{extra_type_name}.zoo(#foo)
+        @{extension_type_name}.zoo(#foo)
 
         #foo
         ------
@@ -1001,7 +1001,7 @@ def test_crud_descriptor(extra_type_name):
     assert app.crud is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['zoo'][extra_type_name]
+    crud = boo.cruds['zoo'][extension_type_name]
 
     assert crud.descriptor == "zoo"
 

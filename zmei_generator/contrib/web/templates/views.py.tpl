@@ -39,7 +39,7 @@ rs.load(settings.BASE_DIR + '/app/static/react/{{ application.app_name }}.bundle
 class {{ form.get_form_name() }}({{ form.get_form_class() }}):
     {{ form.get_form_code()|indent(8) }}
 {% endfor -%}
-class {{ page.view_name }}({% if page.get_extra_bases() %}{{ page.get_extra_bases()|join(", ") }}, {% endif %}{{ page.parent_view_name }}):
+class {{ page.view_name }}({% if page.get_extension_bases() %}{{ page.get_extension_bases()|join(", ") }}, {% endif %}{{ page.parent_view_name }}):
     {% if page.options %}{% for key, option in page.options.items() %}{{ key }} = {{ option }}
     {% endfor %}{% endif %}{% if page.react %}
     react_server = rs

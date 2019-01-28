@@ -1,5 +1,5 @@
 
-parser grammar ModelExtraApi;
+parser grammar ModelExtensionApi;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 

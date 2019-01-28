@@ -1,10 +1,10 @@
 
 application = {
-    'an_suit': 'AppExtraSuit.g4',
+    'an_suit': 'AppExtensionSuit.g4',
 }
 
 models = {
-    'an_admin': 'ModelExtraAdmin.g4',
+    'an_admin': 'ModelExtensionAdmin.g4',
 }
 
 pages = {}

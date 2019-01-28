@@ -1,4 +1,4 @@
-from zmei_generator.contrib.web.extras.page.menu import MenuItem
+from zmei_generator.contrib.web.extensions.page.menu import MenuItem
 from zmei_generator.generator.application import ZmeiProjectParser, ZmeiProject
 
 

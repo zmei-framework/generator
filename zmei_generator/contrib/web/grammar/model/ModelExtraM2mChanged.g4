@@ -1,5 +1,5 @@
 
-parser grammar ModelExtraM2mChanged;
+parser grammar ModelExtensionM2mChanged;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 

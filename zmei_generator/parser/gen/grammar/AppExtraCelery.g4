@@ -1,5 +1,5 @@
 
-parser grammar AppExtraCelery;
+parser grammar AppExtensionCelery;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 

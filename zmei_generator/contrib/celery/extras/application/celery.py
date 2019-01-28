@@ -1,10 +1,10 @@
-from zmei_generator.domain.extras import ApplicationExtra
+from zmei_generator.domain.extensions import ApplicationExtension
 from zmei_generator.generator.utils import generate_file
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
 
-class CeleryAppExtra(ApplicationExtra):
+class CeleryAppExtension(ApplicationExtension):
     def get_name(cls):
         return 'celery'
 
@@ -27,11 +27,11 @@ class CeleryAppExtra(ApplicationExtra):
         f.write("\nCELERY_RESULT_BACKEND = 'redis://127.0.0.1'")
 
 
-class CeleryAppExtraParserListener(BaseListener):
+class CeleryAppExtensionParserListener(BaseListener):
 
     def enterAn_celery(self, ctx: ZmeiLangParser.An_celeryContext):
-        extra = CeleryAppExtra(self.application)
-        self.application.extras.append(
-            extra
+        extension = CeleryAppExtension(self.application)
+        self.application.extensions.append(
+            extension
         )
-        self.application.celery = extra
+        self.application.celery = extension

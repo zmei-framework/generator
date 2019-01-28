@@ -1,5 +1,5 @@
-from zmei_generator.contrib.admin.extras.application.suit import SuitAppExtra
-from zmei_generator.contrib.admin.extras.model.admin import AdminExtra, AdminInlineConfig
+from zmei_generator.contrib.admin.extensions.application.suit import SuitAppExtension
+from zmei_generator.contrib.admin.extensions.model.admin import AdminExtension, AdminInlineConfig
 from zmei_generator.domain.application_def import ApplicationDef
 from zmei_generator.parser.errors import TabsSuitRequiredValidationError
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
@@ -17,9 +17,9 @@ class AdminParserListener(BaseListener):
     ############################################
 
     def enterAn_admin(self, ctx: ZmeiLangParser.An_adminContext):
-        self.model.admin = AdminExtra(self.model)
+        self.model.admin = AdminExtension(self.model)
         self.application.admin = True
-        self.application.extras.append(self.model.admin)
+        self.application.extensions.append(self.model.admin)
 
     def enterAn_admin_list(self, ctx: ZmeiLangParser.An_admin_listContext):
         self.model.admin.admin_list = self.model.filter_fields(self._get_fields(ctx))
@@ -67,8 +67,8 @@ class AdminParserListener(BaseListener):
     def enterInline_fields(self, ctx: ZmeiLangParser.Inline_fieldsContext):
         self.inline.fields_expr = self._get_fields(ctx)
 
-    def enterInline_extra(self, ctx: ZmeiLangParser.Inline_extraContext):
-        self.inline.extra_count = int(ctx.DIGIT().getText())
+    def enterInline_extension(self, ctx: ZmeiLangParser.Inline_extensionContext):
+        self.inline.extension_count = int(ctx.DIGIT().getText())
 
     def enterAn_admin_css_file_name(self, ctx: ZmeiLangParser.An_admin_css_file_nameContext):
         self.model.admin.css.append(ctx.getText().strip('"\''))
@@ -85,8 +85,8 @@ class AdminParserListener(BaseListener):
     # Suit
 
     def enterAn_suit(self, ctx: ZmeiLangParser.An_suitContext):
-        suit = SuitAppExtra(self.application)
-        self.application.extras.append(suit)
+        suit = SuitAppExtension(self.application)
+        self.application.extensions.append(suit)
         self.application.suit = suit
 
     def enterAn_suit_app_name(self, ctx: ZmeiLangParser.An_suit_app_nameContext):

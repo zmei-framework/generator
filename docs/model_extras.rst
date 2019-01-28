@@ -1,4 +1,4 @@
-.. _ModelExtras:
+.. _ModelExtensions:
 
 Model annotations
 ---------------------
@@ -7,4 +7,4 @@ Model annotations
     :maxdepth: 2
     :glob:
 
-    models/extras/*
+    models/extensions/*

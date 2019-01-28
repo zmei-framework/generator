@@ -105,7 +105,7 @@ KW_QUERY: 'query';
 KW_AUTH: 'auth';
 KW_COUNT: 'count';
 KW_I18N: 'i18n';
-KW_EXTRA: 'extra';
+KW_EXTENSION: 'extension';
 KW_TABS: 'tabs';
 KW_LIST: 'list';
 KW_READ_ONLY: 'read_only';

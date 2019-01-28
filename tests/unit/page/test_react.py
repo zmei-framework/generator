@@ -27,19 +27,19 @@ def test_page_react():
 
     assert boo.name == 'boo'
     assert boo.react is True
-    assert boo.extra_bases == ['ZmeiReactViewMixin']
+    assert boo.extension_bases == ['ZmeiReactViewMixin']
 
 @pytest.mark.skip
-@pytest.mark.parametrize("extra_type_name, client_enabled, server_enabled", [
+@pytest.mark.parametrize("extension_type_name, client_enabled, server_enabled", [
     ("react", True, True),
     ("react_client", True, False),
     ("react_server", False, True),
 ])
-def test_page_react_type(extra_type_name, client_enabled, server_enabled):
+def test_page_react_type(extension_type_name, client_enabled, server_enabled):
     app = _(f"""
 
         [boo]
-        @{extra_type_name} {{
+        @{extension_type_name} {{
             <Foo>test</Foo>
         }}
     """)
@@ -70,4 +70,4 @@ def test_page_react_another_area():
     assert boo.name == 'boo'
     assert boo.blocks['foo'][0].source == "<Foo>test</Foo>"
     assert boo.react is True
-    assert boo.extra_bases == ['ZmeiReactViewMixin']
+    assert boo.extension_bases == ['ZmeiReactViewMixin']

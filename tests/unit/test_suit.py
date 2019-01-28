@@ -2,7 +2,7 @@ from textwrap import dedent
 
 import pytest
 
-from zmei_generator.contrib.admin.extras.application.suit import SuitAppExtra
+from zmei_generator.contrib.admin.extensions.application.suit import SuitAppExtension
 from zmei_generator.parser.errors import TabsSuitRequiredValidationError
 from zmei_generator.parser.parser import ZmeiParser
 
@@ -20,7 +20,7 @@ def test_suit():
 
     assert 'django-suit' in app.get_required_deps()
     assert 'suit' in app.get_required_apps()
-    assert isinstance(app.suit, SuitAppExtra)
+    assert isinstance(app.suit, SuitAppExtension)
 
 
 def test_app_name():

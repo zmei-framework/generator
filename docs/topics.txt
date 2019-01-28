@@ -39,7 +39,7 @@ models
         class level
         imports
     mixins
-extras
+extensions
     syntax
     admin
         fields

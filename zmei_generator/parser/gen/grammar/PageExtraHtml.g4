@@ -1,5 +1,5 @@
 
-parser grammar PageExtraHtml;
+parser grammar PageExtensionHtml;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 

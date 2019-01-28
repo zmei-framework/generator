@@ -158,7 +158,7 @@ Some useful configuration options::
     @admin(
         inline: lala(
             type: stacked
-            extra: 300
+            extension: 300
             fields: *, ^c
         )
     )
@@ -170,7 +170,7 @@ Some useful configuration options::
     d
 
 Type: stacked (form under another), tabular (as a table), polymorphic (see later)
-Extra: amount of empty lines
+Extension: amount of empty lines
 Fields: fields to show (:ref:`FieldList` syntax)
 
 Polymorphic inline
@@ -412,7 +412,7 @@ Inlines also can be used in tabs::
     @admin(
         inline: lala(
             type: stacked
-            extra: 300
+            extension: 300
             fields: *, ^c
         )
         tabs: main(*), other(lala)

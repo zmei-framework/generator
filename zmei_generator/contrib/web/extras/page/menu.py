@@ -1,11 +1,11 @@
 from zmei_generator.domain.application_def import ApplicationDef
-from zmei_generator.domain.extras import PageExtra
-from zmei_generator.contrib.web.extras.page.block import InlineTemplatePageBlock
+from zmei_generator.domain.extensions import PageExtension
+from zmei_generator.contrib.web.extensions.page.block import InlineTemplatePageBlock
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
 
-class MenuPageExtra(PageExtra):
+class MenuPageExtension(PageExtension):
 
     def __init__(self, page) -> None:
         super().__init__(page)
@@ -85,7 +85,7 @@ class MenuItem(object):
         self.args = {}
 
 
-class MenuPageExtraParserListener(BaseListener):
+class MenuPageExtensionParserListener(BaseListener):
     def __init__(self, application: ApplicationDef) -> None:
         super().__init__(application)
 
@@ -93,9 +93,9 @@ class MenuPageExtraParserListener(BaseListener):
         self.menu_item = None
 
     def enterAn_menu(self, ctx: ZmeiLangParser.An_menuContext):
-        self.menu = MenuPageExtra(self.page)
+        self.menu = MenuPageExtension(self.page)
 
-        self.application.extras.append(
+        self.application.extensions.append(
             self.menu
         )
 

@@ -1,7 +1,7 @@
 import re
 from functools import lru_cache
 
-from zmei_generator.contrib.web.extras.page.block import BlockPlaceholder
+from zmei_generator.contrib.web.extensions.page.block import BlockPlaceholder
 from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
 
 
@@ -38,7 +38,7 @@ class PageDef(object):
         self.rss = None
         self.auth = False
 
-        self.extra_bases = ['ZmeiDataViewMixin']
+        self.extension_bases = ['ZmeiDataViewMixin']
 
         self.template = True
         self.name = None
@@ -102,10 +102,10 @@ class PageDef(object):
 
         self.page_items = {}
 
-        self._extras = {}
+        self._extensions = {}
 
-    def register_extra(self, extra):
-        self.extras[extr]
+    def register_extension(self, extension):
+        self.extensions[extr]
 
     def get_template_libs(self):
         libs = self.template_libs.copy()
@@ -145,36 +145,36 @@ class PageDef(object):
 
         return params
 
-    def get_extra_bases(self):
+    def get_extension_bases(self):
         parent = self.get_parent()
 
         if parent:
-            if 'ZmeiDataViewMixin' in self.extra_bases:
-                self.extra_bases.remove('ZmeiDataViewMixin')
+            if 'ZmeiDataViewMixin' in self.extension_bases:
+                self.extension_bases.remove('ZmeiDataViewMixin')
 
         if len(self.functions) and not self.react:
             if parent:
-                if 'ZmeiDataViewMixin' in parent.extra_bases:
-                    parent.extra_bases.remove('ZmeiDataViewMixin')
+                if 'ZmeiDataViewMixin' in parent.extension_bases:
+                    parent.extension_bases.remove('ZmeiDataViewMixin')
 
-                if 'ZmeiRemoteInvocationViewMixin' not in parent.extra_bases:
-                    parent.extra_bases.append('ZmeiRemoteInvocationViewMixin')
+                if 'ZmeiRemoteInvocationViewMixin' not in parent.extension_bases:
+                    parent.extension_bases.append('ZmeiRemoteInvocationViewMixin')
             else:
-                if 'ZmeiDataViewMixin' in self.extra_bases:
-                    self.extra_bases.remove('ZmeiDataViewMixin')
+                if 'ZmeiDataViewMixin' in self.extension_bases:
+                    self.extension_bases.remove('ZmeiDataViewMixin')
 
-                if 'ZmeiRemoteInvocationViewMixin' not in self.extra_bases:
-                    self.extra_bases.append('ZmeiRemoteInvocationViewMixin')
+                if 'ZmeiRemoteInvocationViewMixin' not in self.extension_bases:
+                    self.extension_bases.append('ZmeiRemoteInvocationViewMixin')
 
         if not parent:
-            return self.extra_bases
+            return self.extension_bases
 
         all_bases = self.get_parent().get_all_bases()
 
-        return [x for x in self.extra_bases if x not in all_bases]
+        return [x for x in self.extension_bases if x not in all_bases]
 
     def get_all_bases(self):
-        bases = self.extra_bases.copy()
+        bases = self.extension_bases.copy()
         if self.parent_name:
             bases += self.get_parent().get_all_bases()
         return bases

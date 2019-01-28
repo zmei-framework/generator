@@ -1,4 +1,4 @@
-class Extra(object):
+class Extension(object):
 
     def post_process(self):
         pass
@@ -24,7 +24,7 @@ class Extra(object):
         pass
 
 
-class ApplicationExtra(Extra):
+class ApplicationExtension(Extension):
 
     def __init__(self, application):
         super().__init__()
@@ -32,7 +32,7 @@ class ApplicationExtra(Extra):
         self.application = application
 
 
-class ModelExtra(Extra):
+class ModelExtension(Extension):
 
     def __init__(self, model) -> None:
         super().__init__()
@@ -40,7 +40,7 @@ class ModelExtra(Extra):
         self.model = model
 
 
-class PageExtra(Extra):
+class PageExtension(Extension):
 
     def __init__(self, page) -> None:
         super().__init__()

@@ -1,4 +1,4 @@
-.. _PageExtras:
+.. _PageExtensions:
 
 Page annotations
 ---------------------
@@ -7,4 +7,4 @@ Page annotations
     :maxdepth: 2
     :glob:
 
-    page/extras/*
+    page/extensions/*

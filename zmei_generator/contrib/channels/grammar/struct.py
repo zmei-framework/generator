@@ -1,10 +1,10 @@
 
 application = {
-    'an_channels': 'AppExtraChannels.g4',
+    'an_channels': 'AppExtensionChannels.g4',
 }
 
 models = {}
 
 pages = {
-    'an_stream': 'PageExtraStream.g4',
+    'an_stream': 'PageExtensionStream.g4',
 }

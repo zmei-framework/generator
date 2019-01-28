@@ -1,11 +1,11 @@
 from zmei_generator.domain.page_def import PageDef
 from zmei_generator.domain.page_expression import PageExpression
-from zmei_generator.contrib.web.extras.page.crud_create import CrudCreatePageExtra
-from zmei_generator.contrib.web.extras.page.crud_parser import CrudBasePageExtraParserListener
+from zmei_generator.contrib.web.extensions.page.crud_create import CrudCreatePageExtension
+from zmei_generator.contrib.web.extensions.page.crud_parser import CrudBasePageExtensionParserListener
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 
 
-class CrudDeletePageExtra(CrudCreatePageExtra):
+class CrudDeletePageExtension(CrudCreatePageExtension):
     @classmethod
     def get_name(cls):
         return 'crud_delete'
@@ -42,10 +42,10 @@ class CrudDeletePageExtra(CrudCreatePageExtra):
         return "theme/crud_delete.html"
 
 
-class CrudDeletePageExtraParserListener(CrudBasePageExtraParserListener):
+class CrudDeletePageExtensionParserListener(CrudBasePageExtensionParserListener):
 
     def enterAn_crud_delete(self, ctx:ZmeiLangParser.An_crud_deleteContext):
-        self.extra_start(CrudDeletePageExtra, ctx)
+        self.extension_start(CrudDeletePageExtension, ctx)
 
     def exitAn_crud_delete(self, ctx:ZmeiLangParser.An_crud_deleteContext):
-        self.extra_end(CrudDeletePageExtra, ctx)
+        self.extension_end(CrudDeletePageExtension, ctx)

@@ -1,20 +1,20 @@
 from textwrap import dedent
 
-from zmei_generator.domain.extras import PageExtra
+from zmei_generator.domain.extensions import PageExtension
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
 
-class AuthPageExtra(PageExtra):
+class AuthPageExtension(PageExtension):
     # auth
     pass
 
 
-class AuthPageExtraParserListener(BaseListener):
+class AuthPageExtensionParserListener(BaseListener):
 
     def enterAn_auth(self, ctx: ZmeiLangParser.An_authContext):
-        self.application.extras.append(
-            AuthPageExtra(self.page)
+        self.application.extensions.append(
+            AuthPageExtension(self.page)
         )
         expr = None
         if ctx.code_block():
@@ -31,7 +31,7 @@ def add_page_auth(auth_expr, page):
     ]
 
     if need_add_auth(page):
-        page.extra_bases.append('AccessMixin')
+        page.extension_bases.append('AccessMixin')
 
     page.auth = True
 

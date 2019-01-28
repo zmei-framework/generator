@@ -17,7 +17,7 @@ def test_simple_page():
 
     boo = app.pages['boo']
 
-    assert boo.get_extra_bases() == [
+    assert boo.get_extension_bases() == [
         'ZmeiDataViewMixin'
     ]
 
@@ -32,11 +32,11 @@ def test_simple_inherited_page():
     boo = app.pages['boo']
     foo = app.pages['foo']
 
-    assert boo.get_extra_bases() == [
+    assert boo.get_extension_bases() == [
         'ZmeiDataViewMixin'
     ]
 
-    assert foo.get_extra_bases() == []
+    assert foo.get_extension_bases() == []
 
 def test_simple_inherited2_page():
     app = _("""
@@ -50,11 +50,11 @@ def test_simple_inherited2_page():
     foo = app.pages['foo']
     zoo = app.pages['zoo']
 
-    assert boo.get_extra_bases() == [
+    assert boo.get_extension_bases() == [
         'ZmeiDataViewMixin'
     ]
-    assert foo.get_extra_bases() == []
-    assert zoo.get_extra_bases() == []
+    assert foo.get_extension_bases() == []
+    assert zoo.get_extension_bases() == []
 
 
 def test_simple_inherited2_page_with_functions():
@@ -74,11 +74,11 @@ def test_simple_inherited2_page_with_functions():
     foo = app.pages['foo']
     zoo = app.pages['zoo']
 
-    assert boo.get_extra_bases() == [
+    assert boo.get_extension_bases() == [
         'ZmeiRemoteInvocationViewMixin'
     ]
-    assert foo.get_extra_bases() == []
-    assert zoo.get_extra_bases() == []
+    assert foo.get_extension_bases() == []
+    assert zoo.get_extension_bases() == []
 
 
 def test_long_inherited_page():
@@ -101,13 +101,13 @@ def test_long_inherited_page():
     boo = another_app.pages['boo']
     goo = another_app.pages['goo']
 
-    assert bar.get_extra_bases() == [
+    assert bar.get_extension_bases() == [
         'ZmeiDataViewMixin'
     ]
 
-    assert boo.get_extra_bases() == []
+    assert boo.get_extension_bases() == []
 
-    assert goo.get_extra_bases() == [
+    assert goo.get_extension_bases() == [
         'ZmeiDataViewMixin'
     ]
 
@@ -136,12 +136,12 @@ def test_long_inherited_page_with_functions():
     boo = another_app.pages['boo']
     goo = another_app.pages['goo']
 
-    assert bar.get_extra_bases() == [
+    assert bar.get_extension_bases() == [
         'ZmeiRemoteInvocationViewMixin'
     ]
 
-    assert boo.get_extra_bases() == []
+    assert boo.get_extension_bases() == []
 
-    assert goo.get_extra_bases() == [
+    assert goo.get_extension_bases() == [
         'ZmeiRemoteInvocationViewMixin'
     ]

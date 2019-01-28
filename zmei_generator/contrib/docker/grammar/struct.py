@@ -1,6 +1,6 @@
 
 application = {
-    'an_docker': 'AppExtraDocker.g4',
+    'an_docker': 'AppExtensionDocker.g4',
 }
 
 models = {}

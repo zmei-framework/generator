@@ -1,6 +1,6 @@
 from textwrap import dedent
 
-from zmei_generator.contrib.gitlab.extras.application.gitlab import GitlabAppExtra, SeleniumPytestConfig
+from zmei_generator.contrib.gitlab.extensions.application.gitlab import GitlabAppExtension, SeleniumPytestConfig
 from zmei_generator.parser.parser import ZmeiParser
 
 
@@ -20,7 +20,7 @@ def test_gitlab_full_config():
 
     """)
 
-    assert isinstance(app.gitlab, GitlabAppExtra)
+    assert isinstance(app.gitlab, GitlabAppExtension)
 
     assert len(app.gitlab.configs) == 2
 
@@ -47,7 +47,7 @@ def test_gitlab_deploy_type():
 
     """)
 
-    assert isinstance(app.gitlab, GitlabAppExtra)
+    assert isinstance(app.gitlab, GitlabAppExtension)
 
     assert len(app.gitlab.configs) == 2
 
@@ -80,7 +80,7 @@ def test_wildcard():
 
     """)
 
-    assert isinstance(app.gitlab, GitlabAppExtra)
+    assert isinstance(app.gitlab, GitlabAppExtension)
 
     assert len(app.gitlab.configs) == 1
 
@@ -102,7 +102,7 @@ def test_artifacts():
 
     """)
 
-    assert isinstance(app.gitlab, GitlabAppExtra)
+    assert isinstance(app.gitlab, GitlabAppExtension)
 
     assert len(app.gitlab.configs) == 2
 
@@ -131,7 +131,7 @@ def test_gitlab_with_tests():
 
     """)
 
-    assert isinstance(app.gitlab, GitlabAppExtra)
+    assert isinstance(app.gitlab, GitlabAppExtension)
 
     assert len(app.gitlab.configs) == 1
 
@@ -188,4 +188,4 @@ def test_can_parse_full_config():
 
     """)
 
-    assert isinstance(app.gitlab, GitlabAppExtra)
+    assert isinstance(app.gitlab, GitlabAppExtension)

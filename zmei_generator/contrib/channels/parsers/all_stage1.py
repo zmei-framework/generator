@@ -1,5 +1,5 @@
-from zmei_generator.contrib.channels.extras.application.channels import ChannelsAppExtraParserListener
+from zmei_generator.contrib.channels.extensions.application.channels import ChannelsAppExtensionParserListener
 
 parsers = [
-    ChannelsAppExtraParserListener,
+    ChannelsAppExtensionParserListener,
 ]

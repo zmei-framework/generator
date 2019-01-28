@@ -2,7 +2,7 @@
 ###################
 
 
-With @clean you can add extra validation logic to model. Also can be used to
+With @clean you can add extension validation logic to model. Also can be used to
 update model date before save.
 
 Overall validation

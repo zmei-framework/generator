@@ -1,5 +1,5 @@
 
-parser grammar ModelExtraRest;
+parser grammar ModelExtensionRest;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 

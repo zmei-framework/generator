@@ -1,12 +1,12 @@
-parser grammar ModelExtra;
+parser grammar ModelExtension;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 
 
 import
-    // {EXTRA_IMPORTS}
+    // {EXTENSION_IMPORTS}
     ;
 
 model_annotation:
-    // {EXTRA_ANNOT}
+    // {EXTENSION_ANNOT}
     |NL;

@@ -1,12 +1,12 @@
-parser grammar PageExtra;
+parser grammar PageExtension;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 
 import
-    // {EXTRA_IMPORTS}
+    // {EXTENSION_IMPORTS}
     ;
 
 page_annotation:
-    // {EXTRA_ANNOT}
+    // {EXTENSION_ANNOT}
     |NL;
 

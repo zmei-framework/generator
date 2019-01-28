@@ -1,5 +1,5 @@
 
-parser grammar ModelExtraMixin;
+parser grammar ModelExtensionMixin;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 

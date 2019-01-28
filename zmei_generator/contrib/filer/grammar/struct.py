@@ -1,6 +1,6 @@
 
 application = {
-    'an_filer': 'AppExtraFiler.g4',
+    'an_filer': 'AppExtensionFiler.g4',
 }
 
 models = {}

@@ -1,5 +1,5 @@
 
-parser grammar ModelExtraSortable;
+parser grammar ModelExtensionSortable;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 

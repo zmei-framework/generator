@@ -178,4 +178,4 @@ Annotations are super-powers in Zmei generator. They add different abilities to 
     name
 
 
-Read more about extras in the :ref:`ModelExtras` section.
+Read more about extensions in the :ref:`ModelExtensions` section.

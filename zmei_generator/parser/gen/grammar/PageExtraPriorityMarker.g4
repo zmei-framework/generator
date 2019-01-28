@@ -1,5 +1,5 @@
 
-parser grammar PageExtraPriorityMarker;
+parser grammar PageExtensionPriorityMarker;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 

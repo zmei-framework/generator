@@ -1,6 +1,6 @@
 from textwrap import dedent
 
-from zmei_generator.contrib.admin.extras.model.admin import AdminExtra, AdminInlineConfig
+from zmei_generator.contrib.admin.extensions.model.admin import AdminExtension, AdminInlineConfig
 from zmei_generator.parser.parser import ZmeiParser
 
 
@@ -24,10 +24,10 @@ def test_admin_empty():
 
     boo = app.models['boo']
 
-    assert isinstance(boo.admin, AdminExtra)
+    assert isinstance(boo.admin, AdminExtension)
     assert app.admin is True
 
-    assert boo.admin in app.extras
+    assert boo.admin in app.extensions
 
 
 def test_admin_one_line():
@@ -44,7 +44,7 @@ def test_admin_one_line():
 
     boo = app.models['boo']
 
-    assert isinstance(boo.admin, AdminExtra)
+    assert isinstance(boo.admin, AdminExtension)
     assert app.admin is True
     assert [x.name for x in boo.admin.admin_list] == ['abc', 'cda']
 
@@ -67,7 +67,7 @@ def test_admin_with_parent():
 
     boo = app.models['boo']
 
-    assert isinstance(boo.admin, AdminExtra)
+    assert isinstance(boo.admin, AdminExtension)
     assert app.admin is True
     assert [x.name for x in boo.admin.admin_list] == ['a', 'b', 'c']
 
@@ -90,7 +90,7 @@ def test_admin_with_parent_local_only():
 
     boo = app.models['boo']
 
-    assert isinstance(boo.admin, AdminExtra)
+    assert isinstance(boo.admin, AdminExtension)
     assert app.admin is True
     assert [x.name for x in boo.admin.admin_list] == ['b', 'c']
 
@@ -114,7 +114,7 @@ def test_admin_plain_list():
 
     boo = app.models['boo']
 
-    assert isinstance(boo.admin, AdminExtra)
+    assert isinstance(boo.admin, AdminExtension)
     assert app.admin is True
     assert [x.name for x in boo.admin.admin_list] == ['weight', 'size_x', 'size_y', 'color_front']
 
@@ -138,7 +138,7 @@ def test_admin_exclude():
 
     boo = app.models['boo']
 
-    assert isinstance(boo.admin, AdminExtra)
+    assert isinstance(boo.admin, AdminExtension)
     assert app.admin is True
     assert [x.name for x in boo.admin.admin_list] == ['weight', 'size_y', 'color_back']
 
@@ -162,7 +162,7 @@ def test_admin_exclude_wildcard():
 
     boo = app.models['boo']
 
-    assert isinstance(boo.admin, AdminExtra)
+    assert isinstance(boo.admin, AdminExtension)
     assert app.admin is True
     assert [x.name for x in boo.admin.admin_list] == ['weight', 'size_x', 'size_y']
 
@@ -186,7 +186,7 @@ def test_admin_include_wildcard():
 
     boo = app.models['boo']
 
-    assert isinstance(boo.admin, AdminExtra)
+    assert isinstance(boo.admin, AdminExtension)
     assert app.admin is True
     assert [x.name for x in boo.admin.admin_list] == ['weight', 'size_x', 'size_y']
 
@@ -212,7 +212,7 @@ def test_admin_list():
 
     boo = app.models['boo']
 
-    assert isinstance(boo.admin, AdminExtra)
+    assert isinstance(boo.admin, AdminExtension)
     assert app.admin is True
     assert [x.name for x in boo.admin.admin_list] == ['abc', 'cda']
     assert [x.name for x in boo.admin.read_only] == ['abc', 'cda']
@@ -472,7 +472,7 @@ def test_admin_inline_simple():
     inline = foo.admin.inlines[0]
 
     assert isinstance(inline, AdminInlineConfig)
-    assert inline.extra_count == 0
+    assert inline.extension_count == 0
     assert inline.model == foo
     assert inline.target_model == bar
     assert inline.inline_type == 'tabular'
@@ -575,7 +575,7 @@ def test_admin_inline_details():
     @admin(
         inline: lala(
             type: stacked
-            extra: 300
+            extension: 300
             fields: *, ^c
         )
     )
@@ -595,7 +595,7 @@ def test_admin_inline_details():
     inline = foo.admin.inlines[0]
 
     assert isinstance(inline, AdminInlineConfig)
-    assert inline.extra_count == 300
+    assert inline.extension_count == 300
     assert inline.inline_type == 'stacked'
     assert inline.field_names == ['d']
 
@@ -612,7 +612,7 @@ def test_admin_inline_tab():
     @admin(
         inline: lala(
             type: stacked
-            extra: 300
+            extension: 300
             fields: *, ^c
         )
         tabs: main(*), other(lala)

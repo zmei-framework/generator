@@ -1,10 +1,10 @@
 from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
-from zmei_generator.domain.extras import ModelExtra
+from zmei_generator.domain.extensions import ModelExtension
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
 
-class ApiModelExtra(ModelExtra):
+class ApiModelExtension(ModelExtension):
 
     def __init__(self, model) -> None:
         super().__init__(model)
@@ -31,16 +31,16 @@ class ApiModelExtra(ModelExtra):
             self.model.published_apis[api] = self.model.rest_conf[api]
 
 
-class ApiModelExtraParserListener(BaseListener):
+class ApiModelExtensionParserListener(BaseListener):
 
     def enterAn_api(self, ctx: ZmeiLangParser.An_apiContext):
-        extra = ApiModelExtra(self.model)
-        self.application.extras.append(
-            extra
+        extension = ApiModelExtension(self.model)
+        self.application.extensions.append(
+            extension
         )
 
         self.application.api = True
-        self.model.api = extra
+        self.model.api = extension
 
     def enterAn_api_name(self, ctx: ZmeiLangParser.An_api_nameContext):
         self.model.api.api_names.append(ctx.getText())

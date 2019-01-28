@@ -4,5 +4,5 @@ application = {}
 models = {}
 
 pages = {
-    'an_react': 'PageExtraReact.g4',
+    'an_react': 'PageExtensionReact.g4',
 }

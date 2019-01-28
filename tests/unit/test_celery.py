@@ -1,6 +1,6 @@
 from textwrap import dedent
 
-from zmei_generator.contrib.celery.extras.application.celery import CeleryAppExtra
+from zmei_generator.contrib.celery.extensions.application.celery import CeleryAppExtension
 
 from zmei_generator.parser.parser import ZmeiParser
 
@@ -18,4 +18,4 @@ def test_suit():
 
     assert 'celery' in app.get_required_deps()
 
-    assert isinstance(app.celery, CeleryAppExtra)
+    assert isinstance(app.celery, CeleryAppExtension)

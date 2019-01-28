@@ -1,5 +1,5 @@
 from zmei_generator.domain.application_def import ApplicationDef
-from zmei_generator.domain.extras import ApplicationExtra
+from zmei_generator.domain.extensions import ApplicationExtension
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
@@ -42,7 +42,7 @@ class DeploymentConfig(object):
         return self.environment.replace('/', '-')
 
 
-class GitlabAppExtra(ApplicationExtra):
+class GitlabAppExtension(ApplicationExtension):
 
     def __init__(self, application):
         super().__init__(application)
@@ -54,7 +54,7 @@ class GitlabAppExtra(ApplicationExtra):
         return 'gitlab'
     
 
-class GitlabAppExtraParserListener(BaseListener):
+class GitlabAppExtensionParserListener(BaseListener):
 
     def __init__(self, application: ApplicationDef) -> None:
         super().__init__(application)
@@ -64,11 +64,11 @@ class GitlabAppExtraParserListener(BaseListener):
         self.service = None  # type: ServiceConfig
 
     def enterAn_gitlab(self, ctx: ZmeiLangParser.An_gitlabContext):
-        extra = GitlabAppExtra(self.application)
-        self.application.extras.append(
-            extra
+        extension = GitlabAppExtension(self.application)
+        self.application.extensions.append(
+            extension
         )
-        self.application.gitlab = extra
+        self.application.gitlab = extension
 
     def enterAn_gitlab_test_declaration_selenium_pytest(self,
                                                         ctx: ZmeiLangParser.An_gitlab_test_declaration_selenium_pytestContext):

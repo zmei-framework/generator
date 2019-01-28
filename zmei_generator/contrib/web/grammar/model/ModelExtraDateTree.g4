@@ -1,5 +1,5 @@
 
-parser grammar ModelExtraDateTree;
+parser grammar ModelExtensionDateTree;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 

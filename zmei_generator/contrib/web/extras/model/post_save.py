@@ -1,17 +1,17 @@
-from zmei_generator.contrib.web.extras.model._signals import SignalBaseModelExtra
+from zmei_generator.contrib.web.extensions.model._signals import SignalBaseModelExtension
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
-class PostSaveModelExtra(SignalBaseModelExtra):
+class PostSaveModelExtension(SignalBaseModelExtension):
     def get_name(cls):
         return 'post_save'
     
 
-class PostSaveModelExtraParserListener(BaseListener):
+class PostSaveModelExtensionParserListener(BaseListener):
 
     def enterAn_post_save(self, ctx: ZmeiLangParser.An_post_saveContext):
-        self.application.extras.append(
-            PostSaveModelExtra(self.model)
+        self.application.extensions.append(
+            PostSaveModelExtension(self.model)
         )
 
         self.model.signal_handlers.append(

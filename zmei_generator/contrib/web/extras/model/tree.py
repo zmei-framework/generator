@@ -1,9 +1,9 @@
 
-from zmei_generator.domain.extras import ModelExtra
+from zmei_generator.domain.extensions import ModelExtension
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
-class TreeModelExtra(ModelExtra):
+class TreeModelExtension(ModelExtension):
     def get_required_deps(self):
         return ['django-mptt']
 
@@ -11,11 +11,11 @@ class TreeModelExtra(ModelExtra):
         return 'tree'
     
 
-class TreeModelExtraParserListener(BaseListener):
+class TreeModelExtensionParserListener(BaseListener):
 
     def enterAn_tree(self, ctx: ZmeiLangParser.An_treeContext):
-        self.application.extras.append(
-            TreeModelExtra(self.model)
+        self.application.extensions.append(
+            TreeModelExtension(self.model)
         )
 
         self.model.tree = True

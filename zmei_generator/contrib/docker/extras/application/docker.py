@@ -1,20 +1,20 @@
 
-from zmei_generator.domain.extras import ApplicationExtra
+from zmei_generator.domain.extensions import ApplicationExtension
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
-class DockerAppExtra(ApplicationExtra):
+class DockerAppExtension(ApplicationExtension):
     def get_name(cls):
         return 'docker'
     
 
-class DockerAppExtraParserListener(BaseListener):
+class DockerAppExtensionParserListener(BaseListener):
 
     def enterAn_docker(self, ctx: ZmeiLangParser.An_dockerContext):
-        extra = DockerAppExtra(self.application)
-        self.application.extras.append(
-            extra
+        extension = DockerAppExtension(self.application)
+        self.application.extensions.append(
+            extension
         )
 
-        self.application.docker = extra
+        self.application.docker = extension
 

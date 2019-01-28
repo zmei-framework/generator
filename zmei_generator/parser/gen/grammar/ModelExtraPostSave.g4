@@ -1,5 +1,5 @@
 
-parser grammar ModelExtraPostSave;
+parser grammar ModelExtensionPostSave;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 

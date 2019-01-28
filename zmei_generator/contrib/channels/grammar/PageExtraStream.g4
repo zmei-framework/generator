@@ -1,5 +1,5 @@
 
-parser grammar PageExtraStream;
+parser grammar PageExtensionStream;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 

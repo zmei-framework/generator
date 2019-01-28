@@ -1,9 +1,9 @@
 import json
 
-from zmei_generator.domain.extras import ApplicationExtra
+from zmei_generator.domain.extensions import ApplicationExtension
 
 
-class SuitAppExtra(ApplicationExtra):
+class SuitAppExtension(ApplicationExtension):
 
     def __init__(self, application):
         super().__init__(application)

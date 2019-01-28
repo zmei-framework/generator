@@ -1,6 +1,6 @@
 from textwrap import dedent
 
-from zmei_generator.contrib.channels.extras.pages.stream import StreamPageExtra
+from zmei_generator.contrib.channels.extensions.pages.stream import StreamPageExtension
 from zmei_generator.parser.parser import ZmeiParser
 
 
@@ -26,7 +26,7 @@ def test_page_stream_expr():
     boo = app.pages['boo']
 
     assert boo.stream is not None
-    assert isinstance(boo.stream, StreamPageExtra)
+    assert isinstance(boo.stream, StreamPageExtension)
     assert len(boo.stream.models) == 1
 
     assert boo.stream.models[0].target == 'foo.Article'
@@ -69,7 +69,7 @@ def test_page_stream_expr_full_syntax():
     boo = app.pages['boo']
 
     assert boo.stream is not None
-    assert isinstance(boo.stream, StreamPageExtra)
+    assert isinstance(boo.stream, StreamPageExtension)
     assert len(boo.stream.models) == 3
 
     m1 = boo.stream.models[0]

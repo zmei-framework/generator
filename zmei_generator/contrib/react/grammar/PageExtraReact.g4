@@ -1,5 +1,5 @@
 
-parser grammar PageExtraReact;
+parser grammar PageExtensionReact;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 

@@ -776,7 +776,7 @@ class ZmeiLangSimpleLexer(Lexer):
     KW_AUTH = 103
     KW_COUNT = 104
     KW_I18N = 105
-    KW_EXTRA = 106
+    KW_EXTENSION = 106
     KW_TABS = 107
     KW_LIST = 108
     KW_READ_ONLY = 109
@@ -856,7 +856,7 @@ class ZmeiLangSimpleLexer(Lexer):
             "'delete'", "'edit'", "'create'", "'detail'", "'skip'", "'from'", 
             "'+polymorphic_list'", "'css'", "'js'", "'tabular'", "'stacked'", 
             "'polymorphic'", "'inline'", "'type'", "'user_field'", "'annotate'", 
-            "'on_create'", "'query'", "'auth'", "'count'", "'i18n'", "'extra'", 
+            "'on_create'", "'query'", "'auth'", "'count'", "'i18n'", "'extension'",
             "'tabs'", "'list'", "'read_only'", "'list_editable'", "'list_filter'", 
             "'list_search'", "'fields'", "'import'", "'as'", "'<'", "'>'", 
             "':'", "'^'", "'('", "')'", "'['", "']'", "'?'", "'_'", "'-'", 
@@ -891,7 +891,7 @@ class ZmeiLangSimpleLexer(Lexer):
             "KW_JS", "KW_INLINE_TYPE_TABULAR", "KW_INLINE_TYPE_STACKED", 
             "KW_INLINE_TYPE_POLYMORPHIC", "KW_INLINE", "KW_TYPE", "KW_USER_FIELD", 
             "KW_ANNOTATE", "KW_ON_CREATE", "KW_QUERY", "KW_AUTH", "KW_COUNT", 
-            "KW_I18N", "KW_EXTRA", "KW_TABS", "KW_LIST", "KW_READ_ONLY", 
+            "KW_I18N", "KW_EXTENSION", "KW_TABS", "KW_LIST", "KW_READ_ONLY",
             "KW_LIST_EDITABLE", "KW_LIST_FILTER", "KW_LIST_SEARCH", "KW_FIELDS", 
             "KW_IMPORT", "KW_AS", "WRITE_MODE", "BOOL", "NL", "ID", "DIGIT", 
             "SIZE2D", "LT", "GT", "COLON", "EXCLUDE", "BRACE_OPEN", "BRACE_CLOSE", 
@@ -930,7 +930,7 @@ class ZmeiLangSimpleLexer(Lexer):
                   "KW_CSS", "KW_JS", "KW_INLINE_TYPE_TABULAR", "KW_INLINE_TYPE_STACKED", 
                   "KW_INLINE_TYPE_POLYMORPHIC", "KW_INLINE", "KW_TYPE", 
                   "KW_USER_FIELD", "KW_ANNOTATE", "KW_ON_CREATE", "KW_QUERY", 
-                  "KW_AUTH", "KW_COUNT", "KW_I18N", "KW_EXTRA", "KW_TABS", 
+                  "KW_AUTH", "KW_COUNT", "KW_I18N", "KW_EXTENSION", "KW_TABS",
                   "KW_LIST", "KW_READ_ONLY", "KW_LIST_EDITABLE", "KW_LIST_FILTER", 
                   "KW_LIST_SEARCH", "KW_FIELDS", "KW_IMPORT", "KW_AS", "WRITE_MODE", 
                   "BOOL", "ERR", "NL", "ID", "DIGIT", "SIZE2D", "LT", "GT", 

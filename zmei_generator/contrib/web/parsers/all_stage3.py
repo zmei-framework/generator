@@ -1,11 +1,11 @@
-from zmei_generator.contrib.web.extras.page.auth import AuthPageExtraParserListener
-from zmei_generator.contrib.web.extras.page.error import ErrorPageExtraParserListener
-from zmei_generator.contrib.web.extras.page.get import GetPageExtraParserListener
-from zmei_generator.contrib.web.extras.page.post import PostPageExtraParserListener
+from zmei_generator.contrib.web.extensions.page.auth import AuthPageExtensionParserListener
+from zmei_generator.contrib.web.extensions.page.error import ErrorPageExtensionParserListener
+from zmei_generator.contrib.web.extensions.page.get import GetPageExtensionParserListener
+from zmei_generator.contrib.web.extensions.page.post import PostPageExtensionParserListener
 
 parsers = [
-    GetPageExtraParserListener,
-    PostPageExtraParserListener,
-    ErrorPageExtraParserListener,
-    AuthPageExtraParserListener,
+    GetPageExtensionParserListener,
+    PostPageExtensionParserListener,
+    ErrorPageExtensionParserListener,
+    AuthPageExtensionParserListener,
 ]

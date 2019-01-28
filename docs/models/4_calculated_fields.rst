@@ -53,5 +53,5 @@ You can use any functionality in expressions by adding an import section::
 
 .. note::
 
-    Avoid overly complex expressions. There is a @mixin extra that allows complex functionality to be added to the model.
+    Avoid overly complex expressions. There is a @mixin extension that allows complex functionality to be added to the model.
     You can also use :ref:`Imports` to use external code in expression.

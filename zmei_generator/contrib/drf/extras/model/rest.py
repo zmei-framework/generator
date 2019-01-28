@@ -1,11 +1,11 @@
 from zmei_generator.domain.application_def import FieldDeclaration, ApplicationDef
 from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
-from zmei_generator.domain.extras import ModelExtra
+from zmei_generator.domain.extensions import ModelExtension
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
 
-class RestModelExtra(ModelExtra):
+class RestModelExtension(ModelExtension):
 
     def __init__(self, model) -> None:
         super().__init__(model)
@@ -20,7 +20,7 @@ class RestModelExtra(ModelExtra):
             config.post_process()
 
 
-class RestModelExtraParserListener(BaseListener):
+class RestModelExtensionParserListener(BaseListener):
     def __init__(self, application: ApplicationDef) -> None:
         super().__init__(application)
 
@@ -34,9 +34,9 @@ class RestModelExtraParserListener(BaseListener):
 
     def enterAn_rest(self, ctx: ZmeiLangParser.An_restContext):
         if not self.model.rest:
-            self.model.rest = RestModelExtra(self.model)
+            self.model.rest = RestModelExtension(self.model)
             self.application.rest = True
-            self.application.extras.append(self.model.rest)
+            self.application.extensions.append(self.model.rest)
 
         self.rest_config = RestSerializerConfig(self.model.class_name, self.model)
 
@@ -104,7 +104,7 @@ class RestModelExtraParserListener(BaseListener):
 
         self.rest_config.inlines[name] = new_config
 
-        self.rest_config.extra_serializers.append(new_config)
+        self.rest_config.extension_serializers.append(new_config)
 
         self.rest_config.field_imports.append(
             FieldDeclaration('{}.models'.format(inline_model.application.app_name),
@@ -164,7 +164,7 @@ class RestSerializerConfig(object):
         self.rest_mode = 'r'
         self.user_field = None
 
-        self.extra_serializers = []
+        self.extension_serializers = []
         self.inlines = {}
 
         self.read_only_fields = []
@@ -224,7 +224,7 @@ class RestSerializerConfig(object):
         if len(self.auth_method_classes) == 0:
             self.field_imports.append(('rest_framework.permissions', 'AllowAny'))
 
-        for config in self.extra_serializers:
+        for config in self.extension_serializers:
             config.post_process()
 
         for field in self.fields:
@@ -276,7 +276,7 @@ class RestSerializerConfig(object):
         for import_line in self.field_imports:
             imports.add(*import_line)
 
-        for conf in self.extra_serializers:
+        for conf in self.extension_serializers:
             conf.configure_imports(imports)
 
     def configure_model_imports(self, imports):
@@ -284,5 +284,5 @@ class RestSerializerConfig(object):
         if self.model:
             imports.add(f'{self.model.application.app_name}.models', self.model.class_name)
 
-        for conf in self.extra_serializers:
+        for conf in self.extension_serializers:
             conf.configure_model_imports(imports)

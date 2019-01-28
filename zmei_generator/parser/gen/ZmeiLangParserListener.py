@@ -1133,12 +1133,12 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ZmeiLangParser#inline_extra.
-    def enterInline_extra(self, ctx:ZmeiLangParser.Inline_extraContext):
+    # Enter a parse tree produced by ZmeiLangParser#inline_extension.
+    def enterInline_extension(self, ctx:ZmeiLangParser.Inline_extensionContext):
         pass
 
-    # Exit a parse tree produced by ZmeiLangParser#inline_extra.
-    def exitInline_extra(self, ctx:ZmeiLangParser.Inline_extraContext):
+    # Exit a parse tree produced by ZmeiLangParser#inline_extension.
+    def exitInline_extension(self, ctx:ZmeiLangParser.Inline_extensionContext):
         pass
 
 

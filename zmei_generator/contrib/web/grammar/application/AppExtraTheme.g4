@@ -1,5 +1,5 @@
 
-parser grammar AppExtraTheme;
+parser grammar AppExtensionTheme;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 

@@ -72,14 +72,14 @@ def generate(target_path, project):
     req_settings = {}
     installed_apps = [app.app_name for app in project.applications.values() if len(app.pages) > 0 or len(app.models) > 0]
 
-    extra_classes = list()
+    extension_classes = list()
     for application in sorted(project.applications.values(), key=lambda x: x.app_name):
         installed_apps.extend(application.get_required_apps())
         req_settings.update(application.get_required_settings())
 
-        for extra in application.extras:
-            if type(extra) not in extra_classes:
-                extra_classes.append(type(extra))
+        for extension in application.extensions:
+            if type(extension) not in extension_classes:
+                extension_classes.append(type(extension))
 
     # remove duplicates preserving order
     seen = set()
@@ -98,14 +98,14 @@ def generate(target_path, project):
             for key, val in req_settings.items():
                 f.write(f'{key} = {repr(val)}\n')
 
-            for extra in extra_classes:
-                extra.write_settings(project.applications, f)
+            for extension in extension_classes:
+                extension.write_settings(project.applications, f)
 
     generate_file(target_path, 'app/settings.py', template_name='settings.py.tpl')
     format_file(target_path, 'app/_settings.py')
 
-    for extra in extra_classes:
-        extra.generate(project.applications, target_path)
+    for extension in extension_classes:
+        extension.generate(project.applications, target_path)
 
     # base template
     generate_file(target_path, 'app/templates/base.html', template_name='theme/base.html')

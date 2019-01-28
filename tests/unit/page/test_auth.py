@@ -22,7 +22,7 @@ def test_page_auth():
     boo = app.pages['boo']
 
     assert boo.auth is not None
-    assert 'AccessMixin' in boo.extra_bases
+    assert 'AccessMixin' in boo.extension_bases
 
 
 def test_page_auth_custom():
@@ -37,7 +37,7 @@ def test_page_auth_custom():
     boo = app.pages['boo']
 
     assert boo.auth is not None
-    assert 'AccessMixin' in boo.extra_bases
+    assert 'AccessMixin' in boo.extension_bases
 
     # ensure the expression is inserted somehow in a page
     assert 'lalala whatever here' in boo.methods['dispatch']

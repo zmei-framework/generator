@@ -72,7 +72,7 @@ id_or_kw: ID
    |KW_AUTH
    |KW_COUNT
    |KW_I18N
-   |KW_EXTRA
+   |KW_EXTENSION
    |KW_TABS
    |KW_LIST
    |KW_READ_ONLY

@@ -1,4 +1,4 @@
-from zmei_generator.contrib.channels.extras.pages.stream import StreamPageExtra
+from zmei_generator.contrib.channels.extensions.pages.stream import StreamPageExtension
 from zmei_generator.generator.application import ZmeiProject, ZmeiProjectParser
 
 
@@ -42,7 +42,7 @@ def test_simple_reuse_another_app():
 
     bar = main_app.pages['bar']
 
-    assert isinstance(bar.stream, StreamPageExtra)
+    assert isinstance(bar.stream, StreamPageExtension)
 
     assert bar.stream.models[0].target == 'Foo'
     assert bar.stream.models[1].target == 'Boo'

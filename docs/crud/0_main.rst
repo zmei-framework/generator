@@ -124,7 +124,7 @@ Item name
 "item_name" is name of object that is passed to template on detail and edit pages::
 
     [boo: /mycrud]
-    @{extra_type_name}(#foo, item_name: foo)
+    @{extension_type_name}(#foo, item_name: foo)
 
     #foo
     ------
@@ -237,7 +237,7 @@ Add some parameters to all the links::
 Database query filter
 ------------------------
 
-Sometimes you may need extra filtering::
+Sometimes you may need extension filtering::
 
     [boo: /mycrud]
     @crud(#foo{active=request.GET.get('active') == '1')

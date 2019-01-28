@@ -2,13 +2,13 @@ from textwrap import dedent
 
 from zmei_generator.domain.page_def import PageDef
 from zmei_generator.domain.page_expression import PageExpression
-from zmei_generator.contrib.web.extras.page.block import InlineTemplatePageBlock
-from zmei_generator.contrib.web.extras.page.crud import BaseCrudSubpageExtra
-from zmei_generator.contrib.web.extras.page.crud_parser import CrudBasePageExtraParserListener
+from zmei_generator.contrib.web.extensions.page.block import InlineTemplatePageBlock
+from zmei_generator.contrib.web.extensions.page.crud import BaseCrudSubpageExtension
+from zmei_generator.contrib.web.extensions.page.crud_parser import CrudBasePageExtensionParserListener
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 
 
-class CrudCreatePageExtra(BaseCrudSubpageExtra):
+class CrudCreatePageExtension(BaseCrudSubpageExtension):
     @classmethod
     def get_name(cls):
         return 'crud_create'
@@ -116,11 +116,11 @@ class CrudCreatePageExtra(BaseCrudSubpageExtra):
         return "theme/crud_create.html"
 
 
-class CrudCreatePageExtraParserListener(CrudBasePageExtraParserListener):
+class CrudCreatePageExtensionParserListener(CrudBasePageExtensionParserListener):
 
     def enterAn_crud_create(self, ctx: ZmeiLangParser.An_crud_createContext):
-        self.extra_start(CrudCreatePageExtra, ctx)
+        self.extension_start(CrudCreatePageExtension, ctx)
 
     def exitAn_crud_create(self, ctx: ZmeiLangParser.An_crud_createContext):
-        self.extra_end(CrudCreatePageExtra, ctx)
+        self.extension_end(CrudCreatePageExtension, ctx)
 

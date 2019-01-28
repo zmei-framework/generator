@@ -1,5 +1,5 @@
 
-parser grammar AppExtraSuit;
+parser grammar AppExtensionSuit;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 

@@ -1,5 +1,5 @@
 
-parser grammar AppExtraFile;
+parser grammar AppExtensionFile;
 
 options { tokenVocab=ZmeiLangSimpleLexer; }
 
