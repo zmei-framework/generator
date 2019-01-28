@@ -6,7 +6,7 @@
 [![codecov](https://codecov.io/gh/zmei-framework/generator/branch/master/graph/badge.svg)](https://codecov.io/gh/zmei-framework/generator)
 [![Build Status](https://travis-ci.org/zmei-framework/generator.svg?branch=master)](https://travis-ci.org/zmei-framework/generator)
 
-[![Downloads](https://img.shields.io/pypi/dw/zmei-cli.svg)](https://pypi.org/project/zmei-cli/)
+[![Downloads](https://img.shields.io/pypi/dm/zmei-cli.svg)](https://pypi.org/project/zmei-cli/)
 [![Version](https://img.shields.io/pypi/v/zmei-cli.svg)](https://pypi.org/project/zmei-cli/)
 
 
