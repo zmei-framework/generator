@@ -85,12 +85,12 @@ class RelationOneDef(RelationDef):
         )
 
     def get_admin_widget(self):
-        if not self.model.application.features.cratis:
-            return None
-        return FieldDeclaration(
-            [('django_select2.forms', 'Select2Widget')],
-            'Select2Widget'
-        )
+        return None
+        # if select2 is installed
+        # return FieldDeclaration(
+        #     [('django_select2.forms', 'Select2Widget')],
+        #     'Select2Widget'
+        # )
 
     @property
     def qualifier(self):

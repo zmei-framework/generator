@@ -10,6 +10,7 @@
 Zmei generator is started as simple scaffolding tool for Django. Now it is powerfull
 code generator that automate routine work and gently integrates generated sources into your custom code.
 
+
 ## Features
 
 - Quick create configured Django project
@@ -50,6 +51,11 @@ See [documentation](https://zmei-framework.com/generator/).
 
 Read tests [unit](https://github.com/zmei-framework/generator/tree/master/tests/unit),
 [en2end](https://github.com/zmei-framework/generator/tree/master/tests/end2end).
+
+## Help
+
+Ask on [https://www.reddit.com/r/zmei/](https://www.reddit.com/r/zmei/) if you need
+any help, or fill an issue.
 
 
 ### Articles

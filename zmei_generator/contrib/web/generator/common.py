@@ -1,6 +1,6 @@
 import os
 
-from zmei_generator.generator.utils import generate_file, format_file
+from zmei_generator.generator.utils import generate_file, format_file, generate_package
 
 
 def generate(target_path, project):
@@ -18,6 +18,9 @@ def generate(target_path, project):
     urls += [
         "    url(r'^admin/', admin.site.urls),",
     ]
+    for app_name, application in project.applications.items():
+        generate_package(app_name, path=target_path)
+
     for app_name, application in project.applications.items():
         for import_def, url_def in application.get_required_urls():
             urls.append(url_def)
@@ -40,8 +43,9 @@ def generate(target_path, project):
             urls.append(f"    url(r'^api/', include({app_name}.urls_rest)),")
             imports.add(f'{app_name}.urls_rest')
 
-        urls.append(']')
-    
+    urls.append(']')
+
+    for app_name, application in project.applications.items():
         if has_i18n_pages:
             urls += [
                 'urlpatterns += i18n_patterns(',
@@ -49,20 +53,20 @@ def generate(target_path, project):
                 ")"
             ]
             imports.add(f'{app_name}.urls_i18n')
-    
-        # urls
-        with open(os.path.join(target_path, 'app/_urls.py'), 'w') as f:
-            f.write('from django.conf.urls import url, include\n')
-            f.write('from django.contrib import admin\n')
-    
-            f.write('\n')
-            f.write('\n'.join([f'import {app_name}' for app_name in imports]))
-            if has_i18n_pages:
-                f.write('\nfrom django.conf.urls.i18n import i18n_patterns\n')
-            f.write('\n\n')
-            f.write('\n'.join(urls))
-    
-        generate_file(target_path, 'app/urls.py', template_name='urls_main.py.tpl')
+
+    # urls
+    with open(os.path.join(target_path, 'app/_urls.py'), 'w') as f:
+        f.write('from django.conf.urls import url, include\n')
+        f.write('from django.contrib import admin\n')
+
+        f.write('\n')
+        f.write('\n'.join([f'import {app_name}' for app_name in imports]))
+        if has_i18n_pages:
+            f.write('\nfrom django.conf.urls.i18n import i18n_patterns\n')
+        f.write('\n\n')
+        f.write('\n'.join(urls))
+
+    generate_file(target_path, 'app/urls.py', template_name='urls_main.py.tpl')
 
     # settings
     req_settings = {}
