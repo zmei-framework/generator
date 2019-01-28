@@ -230,6 +230,7 @@ def gen(auto=False,
         if run and not django_process:
             django_process = run_django(run_host=host)
 
+        print('WEBPACKKKK', webpack)
         if webpack and not webpack_process:
             webpack_process = run_webpack()
 

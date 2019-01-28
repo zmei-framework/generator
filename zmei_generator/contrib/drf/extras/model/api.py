@@ -12,6 +12,9 @@ class ApiModelExtra(ModelExtra):
         self.api_names = []
         self.all = False
 
+    def get_required_apps(self):
+        return ['rest_framework']
+
     def post_process(self):
         if self.all:
             self.model.published_apis = self.model.rest_conf

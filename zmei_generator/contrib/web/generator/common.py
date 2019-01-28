@@ -72,9 +72,6 @@ def generate(target_path, project):
     req_settings = {}
     installed_apps = [app.app_name for app in project.applications.values() if len(app.pages) > 0 or len(app.models) > 0]
 
-    if has_rest:
-        installed_apps.append('rest_framework')
-
     extra_classes = list()
     for application in sorted(project.applications.values(), key=lambda x: x.app_name):
         installed_apps.extend(application.get_required_apps())

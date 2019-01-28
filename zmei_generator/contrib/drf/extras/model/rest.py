@@ -12,6 +12,9 @@ class RestModelExtra(ModelExtra):
 
         self.config = None
 
+    def get_required_apps(self):
+        return ['rest_framework']
+
     def post_process(self):
         for config in self.model.rest_conf.values():
             config.post_process()
@@ -109,7 +112,8 @@ class RestModelExtraParserListener(BaseListener):
 
         self.rest_config.field_declarations.append(
             (field.name, '{}Serializer(many={}, read_only={})'.format(serializer_name, repr(field.is_many),
-                                                                      repr(field.name in self.rest_config.read_only_fields))))
+                                                                      repr(
+                                                                          field.name in self.rest_config.read_only_fields))))
 
         self.rest_config_stack.append(self.rest_config)
         self.rest_config = new_config
@@ -118,7 +122,8 @@ class RestModelExtraParserListener(BaseListener):
         self.rest_config = self.rest_config_stack.pop()
 
     def enterAn_rest_read_only(self, ctx: ZmeiLangParser.An_rest_read_onlyContext):
-        self.rest_config.read_only_fields = [f.name for f in self.rest_config.model.filter_fields(self._get_fields(ctx))]
+        self.rest_config.read_only_fields = [f.name for f in
+                                             self.rest_config.model.filter_fields(self._get_fields(ctx))]
 
     def enterAn_rest_annotate_count(self, ctx: ZmeiLangParser.An_rest_annotate_countContext):
         field = ctx.an_rest_annotate_count_field().getText()
@@ -223,7 +228,8 @@ class RestSerializerConfig(object):
             config.post_process()
 
         for field in self.fields:
-            if self.parent_field and hasattr(self.parent_field, 'source_field_name') and field.name == self.parent_field.source_field_name:
+            if self.parent_field and hasattr(self.parent_field,
+                                             'source_field_name') and field.name == self.parent_field.source_field_name:
                 continue
             if self.user_field and field.name == self.user_field:
                 continue

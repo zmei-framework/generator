@@ -4,7 +4,7 @@ from zmei_generator.generator.utils import generate_file, generate_urls_file, Th
 
 def generate(target_path, project):
     for app_name, application in project.applications.items():
-        if not len(application.pages):
+        if not len(application.pages) and not application.rest:
             continue
 
         imports = ImportSet()

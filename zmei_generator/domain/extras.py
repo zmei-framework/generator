@@ -1,12 +1,4 @@
-from abc import abstractmethod, abstractclassmethod
-
-
 class Extra(object):
-
-    @classmethod
-    @abstractclassmethod
-    def get_name(cls):  # pragma: no cover
-        pass
 
     def post_process(self):
         pass
@@ -30,6 +22,7 @@ class Extra(object):
     @classmethod
     def generate(cls, apps, target_path):
         pass
+
 
 class ModelExtra(Extra):
 
