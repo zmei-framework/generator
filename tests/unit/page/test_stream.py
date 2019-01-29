@@ -19,17 +19,16 @@ def test_page_stream_expr():
         
     """)
 
-    assert app.channels is True
+    assert app.pages_support(StreamPageExtension)
 
     assert len(app.pages) == 1
 
     boo = app.pages['boo']
 
-    assert boo.stream is not None
-    assert isinstance(boo.stream, StreamPageExtension)
-    assert len(boo.stream.models) == 1
+    assert boo.supports(StreamPageExtension)
+    assert len(boo[StreamPageExtension].models) == 1
 
-    assert boo.stream.models[0].target == 'foo.Article'
+    assert boo[StreamPageExtension].models[0].target == 'foo.Article'
 
 
 def test_page_stream_expr_full_syntax():
@@ -68,13 +67,12 @@ def test_page_stream_expr_full_syntax():
 
     boo = app.pages['boo']
 
-    assert boo.stream is not None
-    assert isinstance(boo.stream, StreamPageExtension)
-    assert len(boo.stream.models) == 3
+    assert boo.supports(StreamPageExtension)
+    assert len(boo[StreamPageExtension].models) == 3
 
-    m1 = boo.stream.models[0]
-    m2 = boo.stream.models[1]
-    m3 = boo.stream.models[2]
+    m1 = boo[StreamPageExtension].models[0]
+    m2 = boo[StreamPageExtension].models[1]
+    m3 = boo[StreamPageExtension].models[2]
 
     assert m1.target == 'Lala'
     assert m1.filter_expr == 'me.name=="hoho"'

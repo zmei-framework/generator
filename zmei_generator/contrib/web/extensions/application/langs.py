@@ -54,7 +54,7 @@ class LangsAppExtensionParserListener(BaseListener):
     def enterAn_langs(self, ctx: ZmeiLangParser.An_langsContext):
         self.langs_extension = LangsAppExtension(self.application)
         self.application.extensions.append(self.langs_extension)
-        self.application.langs = self.langs_extension
+        self.application.register_extension(self.langs_extension)
 
     def exitAn_langs(self, ctx: ZmeiLangParser.An_langsContext):
         self.langs_extension = None

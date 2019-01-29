@@ -203,7 +203,6 @@ def test_page_items():
         [boo]
         lala:= 123
         boo:= a + lala
-        sitemap:= 321
     """)
 
     assert len(app.pages) == 1
@@ -213,9 +212,6 @@ def test_page_items():
     assert len(boo.page_items) == 2
     assert boo.page_items['lala'].expression == '123'
     assert boo.page_items['boo'].expression == 'a + lala'
-
-    # sitemap is special case
-    assert boo.sitemap_expr.expression == '321'
 
 
 def test_page_func():

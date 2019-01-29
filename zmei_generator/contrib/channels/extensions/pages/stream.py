@@ -50,9 +50,7 @@ class StreamPageExtensionParserListener(BaseListener):
         self.application.extensions.append(
             stream
         )
-
-        self.page.application.channels = True
-        self.page.stream = stream
+        self.page.register_extension(stream)
 
     def enterAn_stream_target_model(self, ctx: ZmeiLangParser.An_stream_target_modelContext):
         super().enterAn_stream_target_model(ctx)
@@ -67,7 +65,7 @@ class StreamPageExtensionParserListener(BaseListener):
         else:
             stream_model.target = target
 
-        self.page.stream.models.append(
+        self.page[StreamPageExtension].models.append(
             stream_model
         )
 

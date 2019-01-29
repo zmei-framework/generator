@@ -29,7 +29,6 @@ def test_page_html():
 
     assert boo.name == 'boo'
     assert boo.blocks['content'][0].context['content'] == "<h1>test</h1>"
-    assert boo.react is False
     assert boo.extension_bases == ['ZmeiDataViewMixin']
 
 
@@ -53,6 +52,5 @@ def test_page_html_area():
 
     assert boo.name == 'boo'
     assert boo.blocks['foo'][0].context['content'] == "<h1>test</h1>"
-    assert boo.react is False
     assert boo.extension_bases == ['ZmeiDataViewMixin']
 

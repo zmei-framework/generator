@@ -1,3 +1,4 @@
+from zmei_generator.contrib.web.extensions.application.langs import LangsAppExtension
 from zmei_generator.domain.application_def import ApplicationDef
 from zmei_generator.domain.page_def import PageDef, PageFunction
 from zmei_generator.domain.page_expression import PageExpression
@@ -38,7 +39,7 @@ class PageParserListener(BaseListener):
     def enterPage_url(self, ctx: ZmeiLangParser.Page_urlContext):
         url = ctx.getText().strip()
         if url[0] == '$':
-            if not self.application.langs:
+            if not self.application.supports(LangsAppExtension):
                 raise LangsRequiredValidationError(ctx.start)
         self.page.set_uri(url)
 
@@ -56,10 +57,7 @@ class PageParserListener(BaseListener):
 
         expr = PageExpression(field, val, self.page)
 
-        if field == 'sitemap':
-            self.page.sitemap_expr = expr
-        else:
-            self.page.page_items[field] = expr
+        self.page.page_items[field] = expr
 
     def enterPage_function(self, ctx: ZmeiLangParser.Page_functionContext):
         super().enterPage_function(ctx)

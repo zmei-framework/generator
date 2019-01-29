@@ -4,10 +4,12 @@ from zmei_generator.domain.extensions import PageExtension
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
+
 class GetPageExtension(PageExtension):
     # get
     pass
-    
+
+
 class GetPageExtensionParserListener(BaseListener):
 
     def enterAn_get(self, ctx: ZmeiLangParser.An_getContext):

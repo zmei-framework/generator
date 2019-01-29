@@ -20,6 +20,18 @@ class MenuPageExtension(PageExtension):
 
         self.page_refs = []
 
+    def format_extension_value(self, current_value):
+        if not current_value:
+            current_value = {}
+        descriptor = self.descriptor or '_'
+
+        if descriptor not in current_value:
+            current_value[descriptor] = {}
+
+        current_value[descriptor] = self
+
+        return current_value
+
     def render_ref(self, item):
         if item.page:
             page = self.page.application.resolve_page(item.page)
@@ -95,13 +107,14 @@ class MenuPageExtensionParserListener(BaseListener):
     def enterAn_menu(self, ctx: ZmeiLangParser.An_menuContext):
         self.menu = MenuPageExtension(self.page)
 
+        extension = self.menu
         self.application.extensions.append(
-            self.menu
+            extension
         )
+        self.page.register_extension(extension)
 
     def enterAn_menu_descriptor(self, ctx: ZmeiLangParser.An_menu_descriptorContext):
         self.menu.descriptor = ctx.getText()
-        self.page.menus[self.menu.descriptor] = self.menu
 
     def enterAn_menu_item(self, ctx: ZmeiLangParser.An_menu_itemContext):
         self.menu_item = MenuItem()
