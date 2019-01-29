@@ -18,6 +18,9 @@ class RestModelExtension(ModelExtension):
     def get_required_apps(self):
         return ['rest_framework']
 
+    def get_required_deps(self):
+        return ['djangorestframework']
+
     def post_process(self):
         for config in self.model[RestModelExtension].rest_conf.values():
             config.post_process()

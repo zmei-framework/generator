@@ -1,26 +1,24 @@
 import os
 
+from zmei_generator.contrib.drf.extensions.model.api import ApiModelExtension
+from zmei_generator.contrib.drf.extensions.model.rest import RestModelExtension
 from zmei_generator.generator.imports import ImportSet
 from zmei_generator.generator.utils import generate_file, package_to_path
 
 
 def generate(target_path, project):
-    for app_name, application in project.applications.items():
-        if not application.api:
-            continue
-
+    for app_name, application in project.applications_with(ApiModelExtension):
         imports = ImportSet()
         imports.add('rest_framework', 'serializers')
 
-        for col in application.models.values():
-            if col.rest:
-                for name, rest_conf in col.rest_conf.items():
-                    rest_conf.configure_model_imports(imports)
+        for model in application.models_with(RestModelExtension):
+            for name, rest_conf in model[RestModelExtension].rest_conf.items():
+                rest_conf.configure_model_imports(imports)
 
         generate_file(target_path, '{}/serializers.py'.format(app_name), 'serializers.py.tpl', {
             'imports': imports.import_sting(),
             'application': application,
-            'models': [(name, col) for name, col in application.models.items() if col.rest],
+            'models': [(name, model) for name, model in application.models_with(RestModelExtension)],
         })
 
         url_imports = ImportSet()
@@ -28,10 +26,9 @@ def generate(target_path, project):
         url_imports.add('django.conf.urls', 'include')
         url_imports.add('rest_framework', 'routers')
 
-        for name, model in application.models.items():
-            if model.api:
-                for rest_conf in model.published_apis.values():
-                    url_imports.add('.views', f'{rest_conf.serializer_name}ViewSet')
+        for name, model in application.models_with(ApiModelExtension):
+            for rest_conf in model[ApiModelExtension].published_apis.values():
+                url_imports.add('.views', f'{rest_conf.serializer_name}ViewSet')
 
         context = {
             'package_name': app_name,

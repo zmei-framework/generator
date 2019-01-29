@@ -16,6 +16,15 @@ class ApiModelExtension(ModelExtension):
     def get_required_apps(self):
         return ['rest_framework']
 
+    def get_required_deps(self):
+        return ['djangorestframework']
+
+    def get_required_urls(self):
+        app_name = self.model.application.app_name
+        return [
+            (f'{app_name}.urls_rest', f"    url(r'^api/', include({app_name}.urls_rest)),")
+        ]
+
     def post_process(self):
         if self.all:
             self.model[RestModelExtension].published_apis = self.model[RestModelExtension].rest_conf

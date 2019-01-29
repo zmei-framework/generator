@@ -38,11 +38,6 @@ def generate(target_path, project):
                 urls.append(f"    url(r'^', include({app_name}.urls)),")
                 imports.add(f'{app_name}.urls')
 
-        if application.api:
-            has_rest = True
-            urls.append(f"    url(r'^api/', include({app_name}.urls_rest)),")
-            imports.add(f'{app_name}.urls_rest')
-
     urls.append(']')
 
     for app_name, application in project.applications.items():
@@ -115,9 +110,6 @@ def generate(target_path, project):
         'wheel',
         'django>2',
     ]
-
-    if has_rest:
-        requirements.append('djangorestframework')
 
     for application in project.applications.values():
         requirements.extend(application.get_required_deps())

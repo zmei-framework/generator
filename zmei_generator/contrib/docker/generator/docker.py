@@ -2,13 +2,15 @@ import os
 import random
 import string
 
+from zmei_generator.contrib.celery.extensions.application.celery import CeleryAppExtension
+from zmei_generator.contrib.docker.extensions.application.docker import DockerAppExtension
 from zmei_generator.generator.application import ZmeiProject
 from zmei_generator.generator.utils import generate_file
 
 
 def generate(target_path, project: ZmeiProject):
-    has_docker = any([app.docker for app in project.applications.values()])
-    has_celery = any([app.celery for app in project.applications.values()])
+    has_docker = any([app.supports(DockerAppExtension) for app in project.applications.values()])
+    has_celery = any([app.supports(CeleryAppExtension) for app in project.applications.values()])
 
     if not has_docker:
         return

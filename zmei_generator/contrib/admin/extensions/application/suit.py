@@ -1,5 +1,6 @@
 import json
 
+from zmei_generator.contrib.admin.extensions.model.admin import AdminModelExtension
 from zmei_generator.domain.extensions import ApplicationExtension
 
 
@@ -29,10 +30,10 @@ class SuitAppExtension(ApplicationExtension):
         menu = []
 
         for app, application in apps.items():
-            if application.suit and application.suit.menu:
-                menu.extend(application.suit.menu)
+            if application.supports(SuitAppExtension) and application[SuitAppExtension].menu:
+                menu.extend(application[SuitAppExtension].menu)
 
-            if application.admin:
+            if application.supports(AdminModelExtension):
                 models = []
                 for model in application.models.values():
                     if model.admin and not model.parent:
@@ -45,8 +46,8 @@ class SuitAppExtension(ApplicationExtension):
 
         app_name = None
         for app, application in apps.items():
-            if application.suit and application.suit.app_name:
-                app_name = application.suit.app_name
+            if application.supports(SuitAppExtension) and application[SuitAppExtension].menu:
+                app_name = application[SuitAppExtension].app_name
 
         f.write("\nSUIT_CONFIG = {")
         f.write("\n'MENU': ")

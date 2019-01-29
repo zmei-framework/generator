@@ -4,10 +4,7 @@ from zmei_generator.generator.utils import generate_file
 
 
 def generate(target_path, project):
-    for app_name, application in project.applications.items():
-
-        if not application.pages_support(ReactPageExtension):
-            continue
+    for app_name, application in project.applications_with(ReactPageExtension):
 
         index_imports = ImportSet()
 

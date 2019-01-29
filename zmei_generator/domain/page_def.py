@@ -291,12 +291,12 @@ class PageDef(Extendable, FrozenClass):
     def get_imports(self):
         imports = self.imports
 
-        if self.react:
-            imports.append(('django.conf', 'settings'))
-            imports.append(('zmei.react', 'ZmeiReactServer'))
-            imports.append(('zmei.react', 'ZmeiReactViewMixin'))
+        # if self.react:
+        #     imports.append(('django.conf', 'settings'))
+        #     imports.append(('zmei.react', 'ZmeiReactServer'))
+        #     imports.append(('zmei.react', 'ZmeiReactViewMixin'))
 
-        elif len(self.functions) or self._flutter:
+        if len(self.functions):  # or self._flutter:
             imports.append(('zmei.views', 'ZmeiRemoteInvocationViewMixin'))
 
         imports.append(('zmei.views', 'ZmeiDataViewMixin'))
