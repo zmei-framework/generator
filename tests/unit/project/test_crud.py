@@ -37,11 +37,11 @@ def test_crud_model(extension_type_name, extension_cls):
 
     main_app = project.get_application('main')
 
-    assert main_app.crud is True
+    assert main_app.pages_support(CrudPageExtension)
 
     boo = main_app.pages['boo']
-    crud = boo.cruds['_'][extension_type_name]
-    assert isinstance(crud, extension_cls)
+    assert boo.supports(CrudPageExtension)
+    crud = boo[CrudPageExtension]['_'][extension_type_name]
 
     params = crud.params
 

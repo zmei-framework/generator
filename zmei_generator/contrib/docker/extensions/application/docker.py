@@ -16,5 +16,5 @@ class DockerAppExtensionParserListener(BaseListener):
             extension
         )
 
-        self.application.docker = extension
+        self.application.register_extension(extension)
 

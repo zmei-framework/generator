@@ -16,5 +16,5 @@ def test_docker_enabled():
         @docker
     """)
 
-    assert isinstance(app.docker, DockerAppExtension)
+    assert app.supports(DockerAppExtension)
 

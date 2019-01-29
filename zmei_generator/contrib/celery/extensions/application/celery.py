@@ -34,4 +34,4 @@ class CeleryAppExtensionParserListener(BaseListener):
         self.application.extensions.append(
             extension
         )
-        self.application.celery = extension
+        self.application.register_extension(extension)

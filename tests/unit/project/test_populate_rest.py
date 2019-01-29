@@ -1,3 +1,4 @@
+from zmei_generator.contrib.drf.extensions.model.rest import RestModelExtension
 from zmei_generator.generator.application import ZmeiProjectParser, ZmeiProject
 
 
@@ -30,13 +31,13 @@ def test_auth():
 
     boo = main_app.models['boo']
 
-    assert boo.rest_conf['default'].auth_method_classes == []
-    assert boo.rest_conf['default'].auth_methods == {}
+    assert boo[RestModelExtension].rest_conf['default'].auth_method_classes == []
+    assert boo[RestModelExtension].rest_conf['default'].auth_methods == {}
 
-    assert boo.rest_conf['yes'].auth_method_classes == [
+    assert boo[RestModelExtension].rest_conf['yes'].auth_method_classes == [
         'BasicAuthentication', 'SessionAuthentication', 'BooYesTokenAuthentication']
 
-    assert boo.rest_conf['yes'].auth_methods == {
+    assert boo[RestModelExtension].rest_conf['yes'].auth_methods == {
         'basic': {},
         'session': {},
         'token': {'model': 'MyToken'},

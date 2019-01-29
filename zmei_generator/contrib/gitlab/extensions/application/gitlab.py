@@ -68,7 +68,7 @@ class GitlabAppExtensionParserListener(BaseListener):
         self.application.extensions.append(
             extension
         )
-        self.application.gitlab = extension
+        self.application.register_extension(extension)
 
     def enterAn_gitlab_test_declaration_selenium_pytest(self,
                                                         ctx: ZmeiLangParser.An_gitlab_test_declaration_selenium_pytestContext):
@@ -76,7 +76,7 @@ class GitlabAppExtensionParserListener(BaseListener):
 
     def exitAn_gitlab_test_declaration_selenium_pytest(self,
                                                        ctx: ZmeiLangParser.An_gitlab_test_declaration_selenium_pytestContext):
-        self.application.gitlab.test = self.test
+        self.application[GitlabAppExtension].test = self.test
         self.test = None
 
     def enterAn_gitlab_test_service(self, ctx: ZmeiLangParser.An_gitlab_test_serviceContext):
@@ -130,7 +130,7 @@ class GitlabAppExtensionParserListener(BaseListener):
                 val += '/'
             self.dp.vars['coverage'] = val
 
-        self.application.gitlab.configs.append(self.dp)
+        self.application[GitlabAppExtension].configs.append(self.dp)
         self.dp = None
 
 

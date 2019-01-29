@@ -1,5 +1,6 @@
 from textwrap import dedent
 
+from zmei_generator.contrib.web.extensions.application.theme import ThemeAppExtension
 from zmei_generator.parser.parser import ZmeiParser
 
 
@@ -14,8 +15,7 @@ def test_theme_default():
         
     """)
 
-    assert app.theme is None
-    assert app.theme_install is False
+    assert app.supports(ThemeAppExtension) is False
 
 
 def test_theme_change():
@@ -23,8 +23,8 @@ def test_theme_change():
         @theme(bluma)
     """)
 
-    assert app.theme == 'bluma'
-    assert app.theme_install is False
+    assert app[ThemeAppExtension].theme == 'bluma'
+    assert app[ThemeAppExtension].theme_install is False
 
 
 def test_theme_change_install():
@@ -32,6 +32,6 @@ def test_theme_change_install():
         @theme(bluma, install=true)
     """)
 
-    assert app.theme == 'bluma'
-    assert app.theme_install is True
+    assert app[ThemeAppExtension].theme == 'bluma'
+    assert app[ThemeAppExtension].theme_install is True
 

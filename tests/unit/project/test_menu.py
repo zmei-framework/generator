@@ -1,4 +1,4 @@
-from zmei_generator.contrib.web.extensions.page.menu import MenuItem
+from zmei_generator.contrib.web.extensions.page.menu import MenuItem, MenuPageExtension
 from zmei_generator.generator.application import ZmeiProjectParser, ZmeiProject
 
 
@@ -27,7 +27,7 @@ def test_menu_cases():
 
     base = main_app.pages['base']
 
-    menu = base.menus['main']
+    menu = base[MenuPageExtension]['main']
 
     assert menu.descriptor == 'main'
     assert len(menu.items) == 2

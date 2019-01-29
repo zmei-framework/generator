@@ -45,8 +45,8 @@ class ApplicationDef(Extendable, FrozenClass):
 
         # self.react_deps = {}
         # self.react_imports = ImportSet()
-        # self.page_imports = ImportSet()
-        # self.model_imports = ImportSet()
+        self.page_imports = ImportSet()
+        self.model_imports = ImportSet()
 
         self.deps = []
         self._apps = [app_name]

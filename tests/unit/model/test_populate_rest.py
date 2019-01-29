@@ -29,7 +29,7 @@ def test_rest_empty():
     assert isinstance(boo[RestModelExtension].rest_conf['_'], RestSerializerConfig)
 
     assert app.models_support(RestModelExtension)
-    
+
     assert boo[RestModelExtension].rest_conf['_'].serializer_name == boo.class_name
     assert boo[RestModelExtension].rest_conf['_'].parent_field is None
 

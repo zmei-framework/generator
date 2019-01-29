@@ -20,7 +20,7 @@ def test_suit():
 
     assert 'django-suit' in app.get_required_deps()
     assert 'suit' in app.get_required_apps()
-    assert isinstance(app.suit, SuitAppExtension)
+    assert app.supports(SuitAppExtension)
 
 
 def test_app_name():
@@ -28,7 +28,7 @@ def test_app_name():
         @suit("hoho!")
     """)
 
-    assert app.suit.app_name == 'hoho!'
+    assert app[SuitAppExtension].app_name == 'hoho!'
 
 
 def test_admin_tabs_no_suit():

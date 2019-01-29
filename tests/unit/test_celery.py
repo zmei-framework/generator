@@ -18,4 +18,4 @@ def test_suit():
 
     assert 'celery' in app.get_required_deps()
 
-    assert isinstance(app.celery, CeleryAppExtension)
+    assert app.supports(CeleryAppExtension)
