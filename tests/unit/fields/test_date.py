@@ -1,5 +1,6 @@
 from textwrap import dedent
 
+from zmei_generator.contrib.admin.extensions.model.admin import AdminModelExtension
 from zmei_generator.contrib.web.fields.date import DateFieldDef, DateTimeFieldDef, AutoNowDateTimeFieldDef, \
     AutoNowAddDateTimeFieldDef
 from zmei_generator.parser.parser import ZmeiParser
@@ -89,6 +90,6 @@ def test_auto_fields_are_read_only():
         )
     """)
 
-    admin = app.models['data_set_order'].admin
+    admin = app.models['data_set_order'][AdminModelExtension]
 
     assert [x.name for x in admin.read_only] == ['ref_id', 'success', 'created']

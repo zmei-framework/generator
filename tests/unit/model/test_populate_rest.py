@@ -25,14 +25,13 @@ def test_rest_empty():
 
     boo = app.models['boo']
 
-    assert isinstance(boo.rest, RestModelExtension)
-    assert isinstance(boo.rest_conf['_'], RestSerializerConfig)
+    assert boo.supports(RestModelExtension)
+    assert isinstance(boo[RestModelExtension].rest_conf['_'], RestSerializerConfig)
 
-    assert app.rest is True
-    assert boo.rest in app.extensions
-
-    assert boo.rest_conf['_'].serializer_name == boo.class_name
-    assert boo.rest_conf['_'].parent_field is None
+    assert app.models_support(RestModelExtension)
+    
+    assert boo[RestModelExtension].rest_conf['_'].serializer_name == boo.class_name
+    assert boo[RestModelExtension].rest_conf['_'].parent_field is None
 
 
 def test_rest_descriminator():
@@ -49,13 +48,13 @@ def test_rest_descriminator():
 
     boo = app.models['boo']
 
-    assert isinstance(boo.rest, RestModelExtension)
-    assert isinstance(boo.rest_conf['foo'], RestSerializerConfig)
+    assert boo.supports(RestModelExtension)
+    assert isinstance(boo[RestModelExtension].rest_conf['foo'], RestSerializerConfig)
 
-    assert app.rest is True
-    assert boo.rest in app.extensions
+    assert app.models_support(RestModelExtension)
+    assert boo[RestModelExtension] in app.extensions
 
-    assert boo.rest_conf['foo'].serializer_name == boo.class_name + 'Foo'
+    assert boo[RestModelExtension].rest_conf['foo'].serializer_name == boo.class_name + 'Foo'
 
 
 def test_rest_discriminator_multiple():
@@ -73,8 +72,8 @@ def test_rest_discriminator_multiple():
 
     boo = app.models['boo']
 
-    assert boo.rest_conf['_'].serializer_name == boo.class_name
-    assert boo.rest_conf['foo'].serializer_name == boo.class_name + 'Foo'
+    assert boo[RestModelExtension].rest_conf['_'].serializer_name == boo.class_name
+    assert boo[RestModelExtension].rest_conf['foo'].serializer_name == boo.class_name + 'Foo'
 
 
 def test_rest_fields_field_names():
@@ -97,29 +96,29 @@ def test_rest_fields_field_names():
 
     boo = app.models['boo']
 
-    assert boo.rest_conf['_'].descriptor == '_'
-    assert boo.rest_conf['_'].descriptor_suffix == ''
-    assert boo.rest_conf['_'].model == boo
+    assert boo[RestModelExtension].rest_conf['_'].descriptor == '_'
+    assert boo[RestModelExtension].rest_conf['_'].descriptor_suffix == ''
+    assert boo[RestModelExtension].rest_conf['_'].model == boo
 
-    assert boo.rest_conf['boo'].descriptor == 'boo'
-    assert boo.rest_conf['boo'].descriptor_suffix == '_boo'
-    assert boo.rest_conf['boo'].model == boo
+    assert boo[RestModelExtension].rest_conf['boo'].descriptor == 'boo'
+    assert boo[RestModelExtension].rest_conf['boo'].descriptor_suffix == '_boo'
+    assert boo[RestModelExtension].rest_conf['boo'].model == boo
 
-    assert boo.rest_conf['one'].descriptor == 'one'
-    assert boo.rest_conf['one'].descriptor_suffix == '_one'
-    assert boo.rest_conf['boo'].model == boo
+    assert boo[RestModelExtension].rest_conf['one'].descriptor == 'one'
+    assert boo[RestModelExtension].rest_conf['one'].descriptor_suffix == '_one'
+    assert boo[RestModelExtension].rest_conf['boo'].model == boo
 
-    assert [x.name for x in boo.rest_conf['_'].fields] == ['abc', 'cda']
-    assert [x.name for x in boo.rest_conf['boo'].fields] == ['abc', 'cda']
-    assert [x.name for x in boo.rest_conf['one'].fields] == ['cda']
+    assert [x.name for x in boo[RestModelExtension].rest_conf['_'].fields] == ['abc', 'cda']
+    assert [x.name for x in boo[RestModelExtension].rest_conf['boo'].fields] == ['abc', 'cda']
+    assert [x.name for x in boo[RestModelExtension].rest_conf['one'].fields] == ['cda']
 
-    print(boo.rest_conf['_'].field_names)
-    print(boo.rest_conf['boo'].field_names)
-    print(boo.rest_conf['one'].field_names)
+    print(boo[RestModelExtension].rest_conf['_'].field_names)
+    print(boo[RestModelExtension].rest_conf['boo'].field_names)
+    print(boo[RestModelExtension].rest_conf['one'].field_names)
 
-    assert boo.rest_conf['_'].field_names == ['id', 'abc', 'cda']
-    assert boo.rest_conf['boo'].field_names == ['id', 'abc', 'cda']
-    assert boo.rest_conf['one'].field_names == ['id', 'cda']
+    assert boo[RestModelExtension].rest_conf['_'].field_names == ['id', 'abc', 'cda']
+    assert boo[RestModelExtension].rest_conf['boo'].field_names == ['id', 'abc', 'cda']
+    assert boo[RestModelExtension].rest_conf['one'].field_names == ['id', 'cda']
 
 
 def test_rest_fields_read_only():
@@ -143,8 +142,8 @@ def test_rest_fields_read_only():
 
     boo = app.models['boo']
 
-    assert [x.name for x in boo.rest_conf['_'].fields] == ['abc', 'cda', 'efg']
-    assert boo.rest_conf['_'].read_only_fields == ['cda', 'efg']
+    assert [x.name for x in boo[RestModelExtension].rest_conf['_'].fields] == ['abc', 'cda', 'efg']
+    assert boo[RestModelExtension].rest_conf['_'].read_only_fields == ['cda', 'efg']
 
 
 def test_rest_fields_simple():
@@ -164,7 +163,7 @@ def test_rest_fields_simple():
 
     boo = app.models['boo']
 
-    assert boo.rest_conf['_'].field_names == ['id', 'cat', 'dog', 'bird']
+    assert boo[RestModelExtension].rest_conf['_'].field_names == ['id', 'cat', 'dog', 'bird']
 
 
 def test_rest_i18n():
@@ -187,9 +186,9 @@ def test_rest_i18n():
 
     boo = app.models['boo']
 
-    assert boo.rest_conf['yes'].i18n is True
-    assert boo.rest_conf['no'].i18n is False
-    assert boo.rest_conf['default'].i18n is False
+    assert boo[RestModelExtension].rest_conf['yes'].i18n is True
+    assert boo[RestModelExtension].rest_conf['no'].i18n is False
+    assert boo[RestModelExtension].rest_conf['default'].i18n is False
 
 
 def test_rest_mode():
@@ -215,10 +214,10 @@ def test_rest_mode():
 
     boo = app.models['boo']
 
-    assert boo.rest_conf['r'].rest_mode == 'r'
-    assert boo.rest_conf['rw'].rest_mode == 'rw'
-    assert boo.rest_conf['w'].rest_mode == 'w'
-    assert boo.rest_conf['default'].rest_mode == 'r'
+    assert boo[RestModelExtension].rest_conf['r'].rest_mode == 'r'
+    assert boo[RestModelExtension].rest_conf['rw'].rest_mode == 'rw'
+    assert boo[RestModelExtension].rest_conf['w'].rest_mode == 'w'
+    assert boo[RestModelExtension].rest_conf['default'].rest_mode == 'r'
 
 
 def test_user_field():
@@ -238,8 +237,8 @@ def test_user_field():
 
     boo = app.models['boo']
 
-    assert boo.rest_conf['default'].user_field is None
-    assert boo.rest_conf['yes'].user_field == 'abc'
+    assert boo[RestModelExtension].rest_conf['default'].user_field is None
+    assert boo[RestModelExtension].rest_conf['yes'].user_field == 'abc'
 
 
 def test_query():
@@ -259,8 +258,8 @@ def test_query():
 
     boo = app.models['boo']
 
-    assert boo.rest_conf['default'].query == 'all()'
-    assert boo.rest_conf['yes'].query == 'filter(a=123)'
+    assert boo[RestModelExtension].rest_conf['default'].query == 'all()'
+    assert boo[RestModelExtension].rest_conf['yes'].query == 'filter(a=123)'
 
 
 def test_on_create():
@@ -286,9 +285,9 @@ def test_on_create():
 
     boo = app.models['boo']
 
-    assert boo.rest_conf['default'].on_create == ''
-    assert boo.rest_conf['yes'].on_create == '3 + 3 = 4'
-    assert boo.rest_conf['inline'].on_create == 'some()'
+    assert boo[RestModelExtension].rest_conf['default'].on_create == ''
+    assert boo[RestModelExtension].rest_conf['yes'].on_create == '3 + 3 = 4'
+    assert boo[RestModelExtension].rest_conf['inline'].on_create == 'some()'
 
 
 def test_filter_in():
@@ -314,9 +313,9 @@ def test_filter_in():
 
         boo = app.models['boo']
 
-        assert boo.rest_conf['default'].filter_in == ''
-        assert boo.rest_conf['yes'].filter_in == '3 + 3 = 4'
-        assert boo.rest_conf['inline'].filter_in == 'some()'
+        assert boo[RestModelExtension].rest_conf['default'].filter_in == ''
+        assert boo[RestModelExtension].rest_conf['yes'].filter_in == '3 + 3 = 4'
+        assert boo[RestModelExtension].rest_conf['inline'].filter_in == 'some()'
 
 
 def test_filter_out():
@@ -342,9 +341,9 @@ def test_filter_out():
 
         boo = app.models['boo']
 
-        assert boo.rest_conf['default'].filter_out == ''
-        assert boo.rest_conf['yes'].filter_out == '3 + 3 = 4'
-        assert boo.rest_conf['inline'].filter_out == 'some()'
+        assert boo[RestModelExtension].rest_conf['default'].filter_out == ''
+        assert boo[RestModelExtension].rest_conf['yes'].filter_out == '3 + 3 = 4'
+        assert boo[RestModelExtension].rest_conf['inline'].filter_out == 'some()'
 
 
 def test_auth():
@@ -368,13 +367,13 @@ def test_auth():
 
     boo = app.models['boo']
 
-    assert boo.rest_conf['default'].auth_method_classes == []
-    assert boo.rest_conf['default'].auth_methods == {}
+    assert boo[RestModelExtension].rest_conf['default'].auth_method_classes == []
+    assert boo[RestModelExtension].rest_conf['default'].auth_methods == {}
 
-    assert boo.rest_conf['yes'].auth_method_classes == [
+    assert boo[RestModelExtension].rest_conf['yes'].auth_method_classes == [
         'BasicAuthentication', 'SessionAuthentication', 'BooYesTokenAuthentication']
 
-    assert boo.rest_conf['yes'].auth_methods == {
+    assert boo[RestModelExtension].rest_conf['yes'].auth_methods == {
         'basic': {},
         'session': {},
         'token': {'model': 'MyToken'},
@@ -404,10 +403,10 @@ def test_inline():
 
     boo = app.models['boo']
 
-    assert 'abc' in boo.rest_conf['_'].inlines
-    assert len(boo.rest_conf['_'].extension_serializers) == 1
+    assert 'abc' in boo[RestModelExtension].rest_conf['_'].inlines
+    assert len(boo[RestModelExtension].rest_conf['_'].extension_serializers) == 1
 
-    assert [x.name for x in boo.rest_conf['_'].extension_serializers[0].fields] == ['lala1', 'lala3']
+    assert [x.name for x in boo[RestModelExtension].rest_conf['_'].extension_serializers[0].fields] == ['lala1', 'lala3']
 
 def test_inline_default():
     app = _("""
@@ -430,10 +429,10 @@ def test_inline_default():
 
     boo = app.models['boo']
 
-    assert 'abc' in boo.rest_conf['_'].inlines
-    assert len(boo.rest_conf['_'].extension_serializers) == 1
+    assert 'abc' in boo[RestModelExtension].rest_conf['_'].inlines
+    assert len(boo[RestModelExtension].rest_conf['_'].extension_serializers) == 1
 
-    assert [x.name for x in boo.rest_conf['_'].extension_serializers[0].fields] == ['lala1', 'lala2', 'lala3']
+    assert [x.name for x in boo[RestModelExtension].rest_conf['_'].extension_serializers[0].fields] == ['lala1', 'lala2', 'lala3']
 
 
 def test_annotate():
@@ -454,7 +453,7 @@ def test_annotate():
 
     boo = app.models['boo']
 
-    assert boo.rest_conf['_'].field_names == ['id', 'item_count', 'items']
+    assert boo[RestModelExtension].rest_conf['_'].field_names == ['id', 'item_count', 'items']
 
 
 def test_publish_default():
@@ -470,10 +469,9 @@ def test_publish_default():
 
     boo = app.models['boo']
 
-    assert app.api is True
-    assert isinstance(boo.api, ApiModelExtension)
+    assert app.models_support(ApiModelExtension) is True
 
-    assert list(boo.published_apis.keys()) == ['_']
+    assert list(boo[RestModelExtension].published_apis.keys()) == ['_']
 
 
 def test_publish_by_name():
@@ -491,10 +489,9 @@ def test_publish_by_name():
 
     boo = app.models['boo']
 
-    assert app.api is True
-    assert isinstance(boo.api, ApiModelExtension)
+    assert app.models_support(ApiModelExtension) is True
 
-    assert list(boo.published_apis.keys()) == ['foo', 'boo']
+    assert list(boo[RestModelExtension].published_apis.keys()) == ['foo', 'boo']
 
 
 def test_publish_default_one():
@@ -512,10 +509,9 @@ def test_publish_default_one():
 
     boo = app.models['boo']
 
-    assert app.api is True
-    assert isinstance(boo.api, ApiModelExtension)
+    assert app.models_support(ApiModelExtension) is True
 
-    assert list(boo.published_apis.keys()) == ['_']
+    assert list(boo[RestModelExtension].published_apis.keys()) == ['_']
 
 
 def test_publish_all():
@@ -533,7 +529,6 @@ def test_publish_all():
 
     boo = app.models['boo']
 
-    assert app.api is True
-    assert isinstance(boo.api, ApiModelExtension)
+    assert app.models_support(ApiModelExtension) is True
 
-    assert list(boo.published_apis.keys()) == ['_', 'foo', 'boo']
+    assert list(boo[RestModelExtension].published_apis.keys()) == ['_', 'foo', 'boo']

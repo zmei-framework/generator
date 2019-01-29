@@ -38,7 +38,7 @@ class AdminParserListener(BaseListener):
         self.model[AdminModelExtension].fields = self.model.filter_fields(self._get_fields(ctx))
 
     def enterAn_admin_tabs(self, ctx: ZmeiLangParser.An_admin_tabsContext):
-        if not self.application.suit:
+        if not self.application.supports(SuitAppExtension):
             raise TabsSuitRequiredValidationError(ctx.start)
 
     def enterAn_admin_tab(self, ctx: ZmeiLangParser.An_admin_tabContext):
@@ -79,13 +79,3 @@ class AdminParserListener(BaseListener):
             self.inline
         )
         self.inline = None
-
-    # Suit
-
-    def enterAn_suit(self, ctx: ZmeiLangParser.An_suitContext):
-        suit = SuitAppExtension(self.application)
-        self.application.extensions.append(suit)
-        self.application.suit = suit
-
-    def enterAn_suit_app_name(self, ctx: ZmeiLangParser.An_suit_app_nameContext):
-        self.application.suit.app_name = ctx.getText().strip('"\'')

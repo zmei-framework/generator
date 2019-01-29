@@ -33,23 +33,17 @@ class ModelDef(Extendable, FrozenClass):
         self.child_models = []
 
         self.fields = {}
+        self.translatable = False
 
-        # self.rest_conf = {}
-        # self.published_apis = {}
-        # self.rest_mode = None
-        # self.rest = False
-        # self.api = False
-        # self.mixin_classes = []
-        # self.validators = []
-        # self.signal_handlers = []
-        # self.translatable = False
-        # self.admin = None
-        # self.tree = False
-        # self.tree_polymorphic_list = False
-        # self.sortable = False
-        # self.sortable_field = None
+        self.mixin_classes = []
+        self.validators = []
+        self.signal_handlers = []
+        self.tree = False
+        self.tree_polymorphic_list = False
+        self.sortable = False
+        self.sortable_field = None
 
-        # self.date_hierarchy = None
+        self.date_hierarchy = None
 
         self._freeze()
 

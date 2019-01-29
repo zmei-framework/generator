@@ -45,7 +45,7 @@ def test_admin_one_line():
     boo = app.models['boo']
 
     assert isinstance(boo[AdminModelExtension], AdminModelExtension)
-    assert app.supports(AdminModelExtension) is True
+    assert app.models_support(AdminModelExtension) is True
     assert [x.name for x in boo[AdminModelExtension].admin_list] == ['abc', 'cda']
 
 
@@ -68,7 +68,7 @@ def test_admin_with_parent():
     boo = app.models['boo']
 
     assert isinstance(boo[AdminModelExtension], AdminModelExtension)
-    assert app.supports(AdminModelExtension) is True
+    assert app.models_support(AdminModelExtension) is True
     assert [x.name for x in boo[AdminModelExtension].admin_list] == ['a', 'b', 'c']
 
 
@@ -91,7 +91,7 @@ def test_admin_with_parent_local_only():
     boo = app.models['boo']
 
     assert isinstance(boo[AdminModelExtension], AdminModelExtension)
-    assert app.supports(AdminModelExtension) is True
+    assert app.models_support(AdminModelExtension) is True
     assert [x.name for x in boo[AdminModelExtension].admin_list] == ['b', 'c']
 
 
@@ -115,7 +115,7 @@ def test_admin_plain_list():
     boo = app.models['boo']
 
     assert isinstance(boo[AdminModelExtension], AdminModelExtension)
-    assert app.supports(AdminModelExtension) is True
+    assert app.models_support(AdminModelExtension) is True
     assert [x.name for x in boo[AdminModelExtension].admin_list] == ['weight', 'size_x', 'size_y', 'color_front']
 
 
@@ -139,7 +139,7 @@ def test_admin_exclude():
     boo = app.models['boo']
 
     assert isinstance(boo[AdminModelExtension], AdminModelExtension)
-    assert app.supports(AdminModelExtension) is True
+    assert app.models_support(AdminModelExtension) is True
     assert [x.name for x in boo[AdminModelExtension].admin_list] == ['weight', 'size_y', 'color_back']
 
 
@@ -163,7 +163,7 @@ def test_admin_exclude_wildcard():
     boo = app.models['boo']
 
     assert isinstance(boo[AdminModelExtension], AdminModelExtension)
-    assert app.supports(AdminModelExtension) is True
+    assert app.models_support(AdminModelExtension) is True
     assert [x.name for x in boo[AdminModelExtension].admin_list] == ['weight', 'size_x', 'size_y']
 
 
@@ -187,7 +187,7 @@ def test_admin_include_wildcard():
     boo = app.models['boo']
 
     assert isinstance(boo[AdminModelExtension], AdminModelExtension)
-    assert app.supports(AdminModelExtension) is True
+    assert app.models_support(AdminModelExtension) is True
     assert [x.name for x in boo[AdminModelExtension].admin_list] == ['weight', 'size_x', 'size_y']
 
 
@@ -213,7 +213,7 @@ def test_admin_list():
     boo = app.models['boo']
 
     assert isinstance(boo[AdminModelExtension], AdminModelExtension)
-    assert app.supports(AdminModelExtension) is True
+    assert app.models_support(AdminModelExtension) is True
     assert [x.name for x in boo[AdminModelExtension].admin_list] == ['abc', 'cda']
     assert [x.name for x in boo[AdminModelExtension].read_only] == ['abc', 'cda']
     assert [x.name for x in boo[AdminModelExtension].list_editable] == ['abc', 'cda']

@@ -1,3 +1,4 @@
+from zmei_generator.contrib.web.extensions.application.langs import LangsAppExtension
 from zmei_generator.contrib.web.fields.custom import CustomFieldDef
 from zmei_generator.contrib.web.fields.expression import ExpressionFieldDef
 from zmei_generator.contrib.web.fields.text import TextFieldDef
@@ -77,7 +78,7 @@ class ModelParserListener(BaseListener):
     def enterCol_modifier(self, ctx: ZmeiLangParser.Col_modifierContext):
         m = ctx.getText()
         if m == "$":
-            if not self.application.langs:
+            if not self.application.supports(LangsAppExtension):
                 raise LangsRequiredValidationError(ctx.start)
 
             self.field_config.translatable = True

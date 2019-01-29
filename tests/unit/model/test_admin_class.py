@@ -89,7 +89,7 @@ def test_admin_poly__non_poly_child():
 
     assert boo[AdminModelExtension].class_declaration == 'ModelAdmin'
 
-    assert foo1.admin is None
+    assert not foo1.supports(AdminModelExtension)
 
 
 def test_admin_poly_inline():

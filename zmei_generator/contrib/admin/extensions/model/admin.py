@@ -80,11 +80,11 @@ class AdminModelExtension(ModelExtension):
             self.add_tab_fieldset('general', 'General', general_fields, prepend=True)
 
     def post_process(self):
-        if self.model.parent and self.model.parent.admin:
-            self.tab_fields = self.model.parent.admin.tab_fields.copy()
-            self.tabs = self.model.parent.admin.tabs.copy()
-            self.tab_names = self.model.parent.admin.tab_names.copy()
-            self.inlines.extend(self.model.parent.admin.inlines.copy())
+        if self.model.parent and self.model.parent.supports(AdminModelExtension):
+            self.tab_fields = self.model.parent[AdminModelExtension].tab_fields.copy()
+            self.tabs = self.model.parent[AdminModelExtension].tabs.copy()
+            self.tab_names = self.model.parent[AdminModelExtension].tab_names.copy()
+            self.inlines.extend(self.model.parent[AdminModelExtension].inlines.copy())
 
         for tab in self.tabs_raw:
             self.add_tab(*tab)
@@ -139,7 +139,7 @@ class AdminModelExtension(ModelExtension):
             model_admin_added = True
 
         elif self.model.polymorphic:
-            children_have_admins = len([x for x in self.model.child_models if x.admin]) > 0
+            children_have_admins = len([x for x in self.model.child_models if x.supports(AdminModelExtension)]) > 0
 
             if children_have_admins:
                 classes.append(('polymorphic.admin', 'PolymorphicParentModelAdmin'))

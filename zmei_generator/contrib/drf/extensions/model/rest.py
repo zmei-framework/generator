@@ -11,12 +11,15 @@ class RestModelExtension(ModelExtension):
         super().__init__(model)
 
         self.config = None
+        self.rest_conf = {}
+        self.published_apis = {}
+        self.rest_mode = None
 
     def get_required_apps(self):
         return ['rest_framework']
 
     def post_process(self):
-        for config in self.model.rest_conf.values():
+        for config in self.model[RestModelExtension].rest_conf.values():
             config.post_process()
 
 
@@ -33,10 +36,10 @@ class RestModelExtensionParserListener(BaseListener):
             self.rest_config.set_fields(self.rest_config.model.filter_fields(['*'], include_refs=True))
 
     def enterAn_rest(self, ctx: ZmeiLangParser.An_restContext):
-        if not self.model.rest:
-            self.model.rest = RestModelExtension(self.model)
-            self.application.rest = True
-            self.application.extensions.append(self.model.rest)
+        if not self.model.supports(RestModelExtension):
+            ext = RestModelExtension(self.model)
+            self.application.extensions.append(ext)
+            self.model.register_extension(ext)
 
         self.rest_config = RestSerializerConfig(self.model.class_name, self.model)
 
@@ -47,10 +50,10 @@ class RestModelExtensionParserListener(BaseListener):
         self.ensure_defaults()
 
         # Place config where it should be
-        if not self.model.rest_conf:
-            self.model.rest_conf = {}
+        if not self.model[RestModelExtension].rest_conf:
+            self.model[RestModelExtension].rest_conf = {}
 
-        self.model.rest_conf[self.rest_config.descriptor] = self.rest_config
+        self.model[RestModelExtension].rest_conf[self.rest_config.descriptor] = self.rest_config
 
     def enterAn_rest_descriptor(self, ctx: ZmeiLangParser.An_rest_descriptorContext):
         self.rest_config.set_descriptor(ctx.getText())
