@@ -1,3 +1,4 @@
+from zmei_generator.domain.project import ZmeiProject
 from zmei_generator.parser.parser import ZmeiParser
 
 
@@ -59,18 +60,3 @@ class ZmeiProjectParser(object):
             app.post_process_extensions()
 
         return project
-
-
-class ZmeiProject(object):
-
-    def __init__(self) -> None:
-        super().__init__()
-
-        self.applications = {}
-
-    def add_application(self, name, application):
-        application.application = self
-        self.applications[name] = application
-
-    def get_application(self, name):
-        return self.applications[name]

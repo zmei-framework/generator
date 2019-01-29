@@ -1,22 +1,21 @@
+from zmei_generator.contrib.channels.extensions.application.channels import ChannelsAppExtension
 from zmei_generator.generator.imports import ImportSet
 from zmei_generator.generator.utils import generate_file
 
 
 def generate(target_path, project):
+    if not project.applications_support(ChannelsAppExtension):
+        return
+
     streams = []
     imports = ImportSet()
-    channels = False
-    for app in project.applications.values():
-        if not app.channels:
-            continue
-        channels = True
+    for app in project.applications_with(ChannelsAppExtension):
         for page in app.pages.values():
             if page.stream:
                 streams.append((app, page))
                 imports.add(f'{app.app_name}.views', f'{page.view_name}Consumer')
 
-    if channels:
-        generate_file(target_path, f'app/routing.py', 'channels.routing_main.tpl', context={
-            'streams': streams,
-            'imports': imports,
-        })
+    generate_file(target_path, f'app/routing.py', 'channels.routing_main.tpl', context={
+        'streams': streams,
+        'imports': imports,
+    })

@@ -1,14 +1,14 @@
 from zmei_generator.domain.application_def import FieldDeclaration
 from zmei_generator.domain.reference_field import ReferenceField
 from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
-from zmei_generator.domain.extensions import Extension
+from zmei_generator.domain.extensions import Extension, ModelExtension
 from zmei_generator.contrib.web.fields.date import AutoNowDateTimeFieldDef, AutoNowAddDateTimeFieldDef
 
 
-class AdminExtension(Extension):
+class AdminModelExtension(ModelExtension):
 
     def __init__(self, model) -> None:
-        super().__init__()
+        super().__init__(model)
 
         self.model = model
 
@@ -37,7 +37,6 @@ class AdminExtension(Extension):
         # media files
         self.css = []
         self.js = []
-
 
     def register_tab(self, name, verbose_name, fields_expr, prepend=False):
 
@@ -110,7 +109,6 @@ class AdminExtension(Extension):
 
                 self.read_only.append(field)
 
-
     def fields_for_tab(self, tab):
         fields = []
         for name, tab_name in self.tab_fields.items():
@@ -122,7 +120,6 @@ class AdminExtension(Extension):
                 fields.append(self.model.all_and_inherited_fields_map[name])
 
         return fields
-
 
     @property
     def class_declaration(self):
@@ -203,7 +200,8 @@ class AdminInlineConfig(object):
         self.source_field_name = field.source_field_name
         self.target_model = field.target_model
 
-        self.field_set = [f for f in field.target_model.filter_fields(self.fields_expr) if f.name != self.source_field_name]
+        self.field_set = [f for f in field.target_model.filter_fields(self.fields_expr) if
+                          f.name != self.source_field_name]
 
         if self.extension_count:
             if self.extension_count > 0 and self.inline_type == 'polymorphic':

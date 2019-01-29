@@ -22,7 +22,7 @@ class CrudBasePageExtensionParserListener(BaseListener):
         self.application.extensions.append(
             extension
         )
-        self.application.crud = True
+        # self.application.crud = True
         if self.crud:
             self.crud_stack.append(self.crud)
         self.crud = extension
@@ -32,7 +32,6 @@ class CrudBasePageExtensionParserListener(BaseListener):
             self.crud = self.crud_stack.pop()
         else:
             self.crud = None
-
 
     def enterAn_crud_descriptor(self, ctx: ZmeiLangParser.An_crud_descriptorContext):
         self.crud.descriptor = ctx.getText()

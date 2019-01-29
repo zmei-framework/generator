@@ -1,5 +1,6 @@
 from textwrap import dedent
 
+from zmei_generator.contrib.admin.extensions.model.admin import AdminModelExtension
 from zmei_generator.parser.parser import ZmeiParser
 
 
@@ -23,7 +24,7 @@ def test_admin_simple():
 
     boo = app.models['boo']
 
-    assert boo.admin.class_declaration == 'ModelAdmin'
+    assert boo[AdminModelExtension].class_declaration == 'ModelAdmin'
 
 
 def test_admin_i18n():
@@ -41,7 +42,7 @@ def test_admin_i18n():
 
     boo = app.models['boo']
 
-    assert boo.admin.class_declaration == 'TabbedTranslationAdmin'
+    assert boo[AdminModelExtension].class_declaration == 'TabbedTranslationAdmin'
 
 
 def test_admin_poly():
@@ -63,9 +64,9 @@ def test_admin_poly():
     boo = app.models['boo']
     foo1 = app.models['foo1']
 
-    assert boo.admin.class_declaration == 'PolymorphicParentModelAdmin'
+    assert boo[AdminModelExtension].class_declaration == 'PolymorphicParentModelAdmin'
 
-    assert foo1.admin.class_declaration == 'PolymorphicChildModelAdmin'
+    assert foo1[AdminModelExtension].class_declaration == 'PolymorphicChildModelAdmin'
 
 
 def test_admin_poly__non_poly_child():
@@ -86,7 +87,7 @@ def test_admin_poly__non_poly_child():
     boo = app.models['boo']
     foo1 = app.models['foo1']
 
-    assert boo.admin.class_declaration == 'ModelAdmin'
+    assert boo[AdminModelExtension].class_declaration == 'ModelAdmin'
 
     assert foo1.admin is None
 
@@ -114,5 +115,5 @@ def test_admin_poly_inline():
 
     zoo = app.models['zoo']
 
-    assert zoo.admin.class_declaration == \
+    assert zoo[AdminModelExtension].class_declaration == \
         'PolymorphicInlineSupportMixin, ModelAdmin'

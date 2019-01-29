@@ -2,7 +2,7 @@ import re
 from copy import copy
 
 from zmei_generator.contrib.web.extensions.page.block import InlineTemplatePageBlock
-from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
+from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException, GlobalScopeValidationError
 from zmei_generator.domain.page_def import PageDef
 from zmei_generator.domain.page_expression import PageExpression
 from zmei_generator.domain.extensions import PageExtension
@@ -42,10 +42,6 @@ class CrudParams(object):
 
 
 class CrudPageExtension(PageExtension):
-    @classmethod
-    def get_name(cls):
-        return 'crud'
-
     crud_page = None
 
     list_type = None
@@ -79,25 +75,44 @@ class CrudPageExtension(PageExtension):
 
     parent_base_page = None
 
+    @classmethod
+    def get_name(cls):
+        return 'crud'
+
     def __init__(self, page, params=None, descriptor=None):
+        self.descriptor = descriptor
+
         super().__init__(page)
 
         self.params = params or CrudParams()
-
-        self.descriptor = descriptor
         self.parent_crud = None
 
         if page.defined_uri is None and not page.override:  # override -> allow empty urls for override @crud's functionality
             raise ValidationException('@crud annotations require page to have url')
 
+        self.page.template_libs.append('i18n')
+
+    def format_extension_value(self, current_value):
+        if not current_value:
+            current_value = {}
+        descriptor = self.descriptor or '_'
+
+        if descriptor not in current_value:
+            current_value[descriptor] = {}
+
+        if self.get_name() in current_value[descriptor]:
+            raise GlobalScopeValidationError("Can not add another crud with same descriptor. Consider to specify"
+                                             "explicit descriptors for subsequent descriptors")
+        current_value[descriptor][self.get_name()] = self
+
+        return current_value
+
+    def get_extension_type(self):
+        return CrudPageExtension
+
     def post_process(self):
-        if self.descriptor not in self.page.cruds:
-            self.page.cruds[self.descriptor or '_'] = {}
-
-        self.page.cruds[self.descriptor or '_'][self.get_name()] = self
-
+        self.page.register_extension(self)
         self.prepare_environment(self.params, self.page)
-
         self.build_pages(self.page)
 
     def prepare_environment(self, crud, page):
@@ -275,8 +290,6 @@ class CrudPageExtension(PageExtension):
         return "{% url " + url + " %}" + self.link_suffix
 
     def build_pages(self, base_page):
-
-        base_page.add_crud(self.descriptor, self)
 
         if self.create_list:
             base_page.template_libs.append('i18n')

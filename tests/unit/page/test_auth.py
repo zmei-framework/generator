@@ -1,6 +1,8 @@
 from textwrap import dedent
 
 import pytest
+
+from zmei_generator.contrib.web.extensions.page.auth import AuthPageExtension
 from zmei_generator.parser.parser import ZmeiParser
 
 
@@ -21,7 +23,7 @@ def test_page_auth():
 
     boo = app.pages['boo']
 
-    assert boo.auth is not None
+    assert boo[AuthPageExtension].is_added is True
     assert 'AccessMixin' in boo.extension_bases
 
 
@@ -36,7 +38,7 @@ def test_page_auth_custom():
 
     boo = app.pages['boo']
 
-    assert boo.auth is not None
+    assert boo[AuthPageExtension].is_added is True
     assert 'AccessMixin' in boo.extension_bases
 
     # ensure the expression is inserted somehow in a page

@@ -2,11 +2,13 @@ import re
 
 from termcolor import colored
 
+from zmei_generator.domain.extensions import Extendable
 from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
 
 
-class PageExpression(object):
+class PageExpression(Extendable):
     def __init__(self, key, expression, page) -> None:
+        super().__init__()
         self.expression = expression
         self.page = page
         self.key = key

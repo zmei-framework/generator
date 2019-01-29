@@ -1,15 +1,18 @@
 from collections import namedtuple
+
+from zmei_generator.domain.extensions import Extendable
+from zmei_generator.domain.frozen import FrozenClass
 from zmei_generator.generator.imports import ImportSet
 from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
 
 
-class ApplicationDef(object):
+class ApplicationDef(Extendable, FrozenClass):
     # app_name: str
     # models: Dict[str, ModelDef]
 
     def __init__(self, app_name: str) -> None:
+        super().__init__()
 
-        # self.parser = parser
         self.application = None
 
         self.app_name = app_name
@@ -20,34 +23,54 @@ class ApplicationDef(object):
         # TODO: move platform-specific fields out of definition
         #
 
-        self.theme = None
-        self.theme_install = False
+        # self.theme = None
+        # self.theme_install = False
 
-        self.api = False
-        self.rest = False
-        self.docker = False
-        self.celery = False
-        self.gitlab = False
-        self.channels = False
-        self.crud = False
-        self.suit = False
-        self.filer = False
-        self.langs = False
-        self.admin = False
-        self.react = False
-        self.flutter = False
+        # self.api = False
+        # self.rest = False
+        # self.docker = False
+        # self.celery = False
+        # self.gitlab = False
+        # self.channels = False
+        # self.crud = False
+        # self.suit = False
+        # self.filer = False
+        # self.langs = False
+        # self.admin = False
+        # self.react = False
+        # self.flutter = False
+
         self.models = {}
         self.pages = {}
-        self.react_deps = {}
-        self.react_imports = ImportSet()
-        self.page_imports = ImportSet()
-        self.model_imports = ImportSet()
+
+        # self.react_deps = {}
+        # self.react_imports = ImportSet()
+        # self.page_imports = ImportSet()
+        # self.model_imports = ImportSet()
 
         self.deps = []
         self._apps = [app_name]
         self.extensions = []
 
-        self.files = {}
+        self._freeze()
+        
+    def pages_support(self, extension_cls):
+        for page in self.pages.values():
+            if page.supports(extension_cls):
+                return True
+        return False
+        
+    def pages_with(self, extension_cls):
+        return [page for page in self.pages.values() if page.supports(extension_cls)]
+        
+    def models_support(self, extension_cls):
+        for model in self.models.values():
+            if model.supports(extension_cls):
+                return True
+        return False
+        
+    def models_with(self, extension_cls):
+        return [model for model in self.models.values() if model.supports(extension_cls)]
         
     def resolve_page(self, page_name_def):
         if '.' in page_name_def:

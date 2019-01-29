@@ -30,4 +30,3 @@ class ChannelsAppExtensionParserListener(BaseListener):
         self.application.extensions.append(
             ChannelsAppExtension(self.application)
         )
-        self.application.channels = True

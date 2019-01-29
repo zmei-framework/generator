@@ -2,10 +2,12 @@ import re
 from functools import lru_cache
 
 from zmei_generator.contrib.web.extensions.page.block import BlockPlaceholder
+from zmei_generator.domain.extensions import Extendable, PageExtension
+from zmei_generator.domain.frozen import FrozenClass
 from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
 
 
-class PageFunction(object):
+class PageFunction(Extendable):
 
     def __init__(self) -> None:
         super().__init__()
@@ -23,7 +25,7 @@ class PageFunction(object):
         return f'_remote__{self.name}'
 
 
-class PageDef(object):
+class PageDef(Extendable, FrozenClass):
     def __init__(self, application, override=False) -> None:
         super().__init__()
 
@@ -35,8 +37,8 @@ class PageDef(object):
         """:type: ApplicationDef"""
         self.application = application
 
-        self.rss = None
-        self.auth = False
+        # self.rss = None
+        # self.auth = False
 
         self.extension_bases = ['ZmeiDataViewMixin']
 
@@ -68,27 +70,27 @@ class PageDef(object):
 
         self.options = {}
         self.methods = {}
-        self.menus = {}
+        # self.menus = {}
         self.blocks = {}
-        self.cruds = {}
-        self.react = False
-        self.react_components = {}
-        self.page_component_name = None
-        self.react_pages = {}
+        # self.cruds = {}
+        # self.react = False
+        # self.react_components = {}
+        # self.page_component_name = None
+        # self.react_pages = {}
         self.functions = {}
         self.template_libs = []
-        self.crud_views = {}
+        # self.crud_views = {}
         self.forms = {}
 
-        self.themed_files = {}
+        # self.themed_files = {}
 
-        self._flutter = False
+        # self._flutter = False
 
-        self.react = False
-        self.react_client = False
-        self.react_server = False
+        # self.react = False
+        # self.react_client = False
+        # self.react_server = False
 
-        self.stream = False
+        # self.stream = False
 
         self.defined_url_alias = None
 
@@ -98,27 +100,14 @@ class PageDef(object):
 
         self._i18n = False
 
-        self.crud_overrides = {}
+        # self.crud_overrides = {}
 
         self.page_items = {}
 
-        self._extensions = {}
-
-    def register_extension(self, extension):
-        self.extensions[extr]
+        self._freeze()
 
     def get_template_libs(self):
-        libs = self.template_libs.copy()
-
-        # crud templates have i18n tags in templates
-        if len(self.crud_views):
-            libs.append('i18n')
-        return set(libs)
-
-    def add_crud(self, descriptor, cls):
-        if descriptor in self.crud_views:
-            raise ValidationException('Two or more @crud annotations with same descriptor are not allowed.')
-        self.crud_views[descriptor] = cls
+        return set(self.template_libs)
 
     def add_form(self, name, definition):
         self.forms[name] = definition
@@ -152,7 +141,7 @@ class PageDef(object):
             if 'ZmeiDataViewMixin' in self.extension_bases:
                 self.extension_bases.remove('ZmeiDataViewMixin')
 
-        if len(self.functions) and not self.react:
+        if len(self.functions):
             if parent:
                 if 'ZmeiDataViewMixin' in parent.extension_bases:
                     parent.extension_bases.remove('ZmeiDataViewMixin')
@@ -171,7 +160,12 @@ class PageDef(object):
 
         all_bases = self.get_parent().get_all_bases()
 
-        return [x for x in self.extension_bases if x not in all_bases]
+        bases_collected = [x for x in self.extension_bases if x not in all_bases]
+
+        for extension in self._extensions:  # type: PageExtension
+            bases_collected = extension.get_extension_bases(bases_collected)
+
+        return bases_collected
 
     def get_all_bases(self):
         bases = self.extension_bases.copy()

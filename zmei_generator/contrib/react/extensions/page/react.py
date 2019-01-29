@@ -14,6 +14,9 @@ class ReactPageExtension(PageExtension):
     def get_required_deps(self):
         return ['py_mini_racer']
 
+    def modify_extension_bases(self, bases):
+        return super().modify_extension_bases(bases)
+
 
 class ReactPageExtensionParserListener(BaseListener):
 

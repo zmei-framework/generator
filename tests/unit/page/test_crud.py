@@ -66,21 +66,20 @@ def test_crud_same_descriptor():
 
 
 def test_crud_same_descriptor_different_annotations():
-    with pytest.raises(ValidationException):
-        app = _(f"""
-    
-            [boo: /lala]
-            @crud(#foo)
-            @crud_create(#boo)
-            
-            #boo
-            ------
-            a
-            
-            #foo
-            ------
-            a
-        """)
+    app = _(f"""
+
+        [boo: /lala]
+        @crud(#foo)
+        @crud_create(#boo)
+        
+        #boo
+        ------
+        a
+        
+        #foo
+        ------
+        a
+    """)
 
 
 def test_crud_diff_descriptor():
@@ -140,7 +139,7 @@ def test_crud_subpage_parsing():
         a
     """)
 
-    assert app.crud is True
+    assert app.pages_support(CrudPageExtension) is True
 
     boo = app.pages['boo']
     boo_detail = app.pages['boo_detail']
@@ -176,7 +175,7 @@ def test_crud_subpage_subcrud():
         a
     """)
 
-    assert app.crud is True
+    assert app.pages_support(CrudPageExtension) is True
 
     boo = app.pages['boo']
     boo_detail = app.pages['boo_detail']
@@ -206,10 +205,10 @@ def test_crud_model(extension_type_name, extension_cls):
         c
     """)
 
-    assert app.crud is True
+    assert app.pages_support(CrudPageExtension) is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extension_type_name]
+    crud = boo[CrudPageExtension]['_'][extension_type_name]
     assert isinstance(crud, extension_cls)
 
     params = crud.params
@@ -246,7 +245,7 @@ def test_crud_theme(extension_type_name):
 
     boo = app.pages['boo']
 
-    params = boo.cruds['_'][extension_type_name].params
+    params = boo[CrudPageExtension]['_'][extension_type_name].params
 
     assert params.theme == 'lala'
 
@@ -264,12 +263,12 @@ def test_crud_subpages():
         c
     """)
 
-    assert app.crud is True
+    assert app.pages_support(CrudPageExtension) is True
 
     boo = app.pages['boo']
-    assert isinstance(boo.cruds['_']['crud'], CrudPageExtension)
+    assert isinstance(boo[CrudPageExtension]['_']['crud'], CrudPageExtension)
 
-    params = boo.cruds['_']['crud'].params
+    params = boo[CrudPageExtension]['_']['crud'].params
 
     assert isinstance(params, CrudParams)
     assert params.model == '#foo'
@@ -340,10 +339,10 @@ def test_crud_model_fields(extension_type_name):
         c
     """)
 
-    assert app.crud is True
+    assert app.pages_support(CrudPageExtension) is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extension_type_name]
+    crud = boo[CrudPageExtension]['_'][extension_type_name]
 
     assert list(crud.fields.keys()) == ['a', 'c']
 
@@ -370,10 +369,10 @@ def test_crud_model_fields(extension_type_name):
         c
     """)
 
-    assert app.crud is True
+    assert app.pages_support(CrudPageExtension) is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extension_type_name]
+    crud = boo[CrudPageExtension]['_'][extension_type_name]
 
     assert list(crud.fields.keys()) == ['a', 'b']
     assert list(crud.list_fields.keys()) == ['a', 'b']
@@ -401,10 +400,10 @@ def test_crud_model_list_fields(extension_type_name):
         c
     """)
 
-    assert app.crud is True
+    assert app.pages_support(CrudPageExtension) is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extension_type_name]
+    crud = boo[CrudPageExtension]['_'][extension_type_name]
 
     assert list(crud.fields.keys()) == ['a', 'c']
 
@@ -432,10 +431,10 @@ def test_crud_pk_param(extension_type_name):
         c
     """)
 
-    assert app.crud is True
+    assert app.pages_support(CrudPageExtension) is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extension_type_name].params
+    crud = boo[CrudPageExtension]['_'][extension_type_name].params
 
     assert crud.pk_param == "foo"
 
@@ -461,11 +460,11 @@ def test_crud_item_name(extension_type_name):
         c
     """)
 
-    assert app.crud is True
+    assert app.pages_support(CrudPageExtension) is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extension_type_name]
-    params = boo.cruds['_'][extension_type_name].params
+    crud = boo[CrudPageExtension]['_'][extension_type_name]
+    params = boo[CrudPageExtension]['_'][extension_type_name].params
 
     assert params.item_name == "foo"
 
@@ -495,10 +494,10 @@ def test_crud_block(extension_type_name):
         c
     """)
 
-    assert app.crud is True
+    assert app.pages_support(CrudPageExtension) is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extension_type_name].params
+    crud = boo[CrudPageExtension]['_'][extension_type_name].params
 
     assert crud.block_name == "foo"
 
@@ -526,10 +525,10 @@ def test_crud_object_expr1(extension_type_name):
         c
     """)
 
-    assert app.crud is True
+    assert app.pages_support(CrudPageExtension) is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extension_type_name].params
+    crud = boo[CrudPageExtension]['_'][extension_type_name].params
 
     assert crud.object_expr == "request.user"
 
@@ -557,10 +556,10 @@ def test_crud_object_expr2(extension_type_name):
         c
     """)
 
-    assert app.crud is True
+    assert app.pages_support(CrudPageExtension) is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extension_type_name].params
+    crud = boo[CrudPageExtension]['_'][extension_type_name].params
 
     assert crud.object_expr == "request.user"
 
@@ -588,10 +587,10 @@ def test_header(extension_type_name):
         c
     """)
 
-    assert app.crud is True
+    assert app.pages_support(CrudPageExtension) is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extension_type_name].params
+    crud = boo[CrudPageExtension]['_'][extension_type_name].params
 
     assert crud.header is False
 
@@ -617,10 +616,10 @@ def test_header_default(extension_type_name):
         c
     """)
 
-    assert app.crud is True
+    assert app.pages_support(CrudPageExtension) is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extension_type_name].params
+    crud = boo[CrudPageExtension]['_'][extension_type_name].params
 
     assert crud.header is True
 
@@ -648,10 +647,10 @@ def test_list_type(extension_type_name):
         c
     """)
 
-    assert app.crud is True
+    assert app.pages_support(CrudPageExtension) is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extension_type_name].params
+    crud = boo[CrudPageExtension]['_'][extension_type_name].params
 
     assert crud.list_type == 'stacked'
 
@@ -677,10 +676,10 @@ def test_list_type_default(extension_type_name):
         c
     """)
 
-    assert app.crud is True
+    assert app.pages_support(CrudPageExtension) is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extension_type_name].params
+    crud = boo[CrudPageExtension]['_'][extension_type_name].params
 
     assert crud.list_type == 'stacked'
 
@@ -708,10 +707,10 @@ def test_crud_can_edit1(extension_type_name):
         c
     """)
 
-    assert app.crud is True
+    assert app.pages_support(CrudPageExtension) is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extension_type_name].params
+    crud = boo[CrudPageExtension]['_'][extension_type_name].params
 
     assert crud.can_edit == "request.user"
 
@@ -739,10 +738,10 @@ def test_crud_can_edit2(extension_type_name):
         c
     """)
 
-    assert app.crud is True
+    assert app.pages_support(CrudPageExtension) is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extension_type_name].params
+    crud = boo[CrudPageExtension]['_'][extension_type_name].params
 
     assert crud.can_edit == "request.user"
 
@@ -770,10 +769,10 @@ def test_crud_url_prefix(extension_type_name):
         c
     """)
 
-    assert app.crud is True
+    assert app.pages_support(CrudPageExtension) is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extension_type_name].params
+    crud = boo[CrudPageExtension]['_'][extension_type_name].params
 
     assert crud.url_prefix == "this/is/custom/prefix/"
 
@@ -801,10 +800,10 @@ def test_crud_link_suffix(extension_type_name):
         c
     """)
 
-    assert app.crud is True
+    assert app.pages_support(CrudPageExtension) is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extension_type_name].params
+    crud = boo[CrudPageExtension]['_'][extension_type_name].params
 
     assert crud.link_suffix == "category=url.category"
 
@@ -830,10 +829,10 @@ def test_crud_filter(extension_type_name):
         c
     """)
 
-    assert app.crud is True
+    assert app.pages_support(CrudPageExtension) is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extension_type_name]
+    crud = boo[CrudPageExtension]['_'][extension_type_name]
 
     assert crud.params.query == "lala.lolo"
     assert crud.formatted_query == ".filter(lala.lolo)"
@@ -861,10 +860,10 @@ def test_crud_success_page(extension_type_name):
         c
     """)
 
-    assert app.crud is True
+    assert app.pages_support(CrudPageExtension) is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extension_type_name]
+    crud = boo[CrudPageExtension]['_'][extension_type_name]
 
     assert crud.params.next_page == {'all': "reverse_lazy('some_url', kwargs={'param1': self.object.pk})"}
 
@@ -884,10 +883,10 @@ def test_crud_success_page_main():
         c
     """)
 
-    assert app.crud is True
+    assert app.pages_support(CrudPageExtension) is True
 
     for tname in ('create', 'delete', 'edit'):
-        crud = app.pages[f'boo_{tname}'].cruds['_'][f'crud_{tname}']
+        crud = app.pages[f'boo_{tname}'][CrudPageExtension]['_'][f'crud_{tname}']
         assert crud.params.next_page == {'all': "reverse_lazy('some_url', kwargs={'param1': self.object.pk})"}
 
 
@@ -906,10 +905,10 @@ def test_crud_success_page_main_create_only():
         c
     """)
 
-    assert app.crud is True
+    assert app.pages_support(CrudPageExtension) is True
 
     for tname in ('create', 'delete', 'edit'):
-        crud = app.pages[f'boo_{tname}'].cruds['_'][f'crud_{tname}']
+        crud = app.pages[f'boo_{tname}'][CrudPageExtension]['_'][f'crud_{tname}']
         if tname == 'create':
             assert crud.next_page_expr == "reverse_lazy('some_url', kwargs={'param1': self.object.pk})"
         else:
@@ -939,10 +938,10 @@ def test_crud_success_url_dq(extension_type_name):
         c
     """)
 
-    assert app.crud is True
+    assert app.pages_support(CrudPageExtension) is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extension_type_name]
+    crud = boo[CrudPageExtension]['_'][extension_type_name]
 
     assert crud.params.next_page == {'all': '"https://google.com/"'}
 
@@ -969,10 +968,10 @@ def test_crud_success_url_sq(extension_type_name):
         c
     """)
 
-    assert app.crud is True
+    assert app.pages_support(CrudPageExtension) is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['_'][extension_type_name]
+    crud = boo[CrudPageExtension]['_'][extension_type_name]
 
     assert crud.params.next_page == {'all': "'https://google.com/'"}
 
@@ -998,10 +997,10 @@ def test_crud_descriptor(extension_type_name):
         c
     """)
 
-    assert app.crud is True
+    assert app.pages_support(CrudPageExtension) is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['zoo'][extension_type_name]
+    crud = boo[CrudPageExtension]['zoo'][extension_type_name]
 
     assert crud.descriptor == "zoo"
 
@@ -1019,10 +1018,11 @@ def test_crud_list():
         c
     """)
 
-    assert app.crud is True
+    assert app.pages_support(CrudPageExtension) is True
 
     boo = app.pages['boo']
-    crud = boo.cruds['zoo']['crud_list']
+    print(boo[CrudPageExtension])
+    crud = boo[CrudPageExtension]['zoo']['crud_list']
 
     assert crud.skip == ['detail', 'create', 'edit', 'delete']
 

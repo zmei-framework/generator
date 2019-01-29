@@ -1,7 +1,9 @@
+from zmei_generator.domain.extensions import Extendable
+from zmei_generator.domain.frozen import FrozenClass
 from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
 
 
-class ModelDef(object):
+class ModelDef(Extendable, FrozenClass):
     #
     # ref: str
     # name: str
@@ -23,40 +25,33 @@ class ModelDef(object):
 
         self.name = None
         self.name_plural = None
+        self.extend_name = False
         self.to_string = None
-
-        #
-        # TODO: move platform-specific fields out of definition
-        #
 
         self.polymorphic = False
         self.parent = None
         self.child_models = []
 
-        self.mixin_classes = []
-        self.validators = []
-        self.signal_handlers = []
-
-        self.translatable = False
-        self.admin = None
-
-        self.tree = False
-        self.tree_polymorphic_list = False
-        self.sortable = False
-        self.sortable_field = None
-
         self.fields = {}
 
-        self.rest_conf = {}
-        self.published_apis = {}
+        # self.rest_conf = {}
+        # self.published_apis = {}
+        # self.rest_mode = None
+        # self.rest = False
+        # self.api = False
+        # self.mixin_classes = []
+        # self.validators = []
+        # self.signal_handlers = []
+        # self.translatable = False
+        # self.admin = None
+        # self.tree = False
+        # self.tree_polymorphic_list = False
+        # self.sortable = False
+        # self.sortable_field = None
 
-        self.rest_mode = None
-        self.rest = False
-        self.api = False
+        # self.date_hierarchy = None
 
-        self.extend_name = False
-
-        self.date_hierarchy = None
+        self._freeze()
 
     def post_process(self):
         for field in self.fields.values():

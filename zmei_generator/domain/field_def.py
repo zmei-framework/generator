@@ -1,3 +1,4 @@
+from zmei_generator.domain.extensions import Extendable
 from zmei_generator.domain.model_def import ModelDef
 
 
@@ -16,7 +17,7 @@ class FieldConfig(object):
     type_opts = {}
 
 
-class FieldDef(object):
+class FieldDef(Extendable):
     def __init__(self, model: ModelDef, field: FieldConfig) -> None:
         super().__init__()
 

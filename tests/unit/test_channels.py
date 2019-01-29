@@ -1,6 +1,8 @@
 from textwrap import dedent
 
 import pytest
+
+from zmei_generator.contrib.channels.extensions.application.channels import ChannelsAppExtension
 from zmei_generator.parser.parser import ZmeiParser
 
 
@@ -16,14 +18,14 @@ def test_channels_enabled():
         @channels
     """)
 
-    assert app.channels is True
+    assert app.supports(ChannelsAppExtension)
 
 
 def test_channels_disabled():
     app = _("""
     """)
 
-    assert app.channels is False
+    assert not app.supports(ChannelsAppExtension)
 
 
 def test_channels_disabled_real_example():
@@ -50,4 +52,4 @@ def test_channels_disabled_real_example():
 
     """)
 
-    assert app.channels is False
+    assert not app.supports(ChannelsAppExtension)

@@ -1,7 +1,8 @@
+from zmei_generator.domain.extensions import Extendable
 from zmei_generator.domain.no_model_field import NoModelField
 
 
-class ReferenceField(object):
+class ReferenceField(Extendable):
     def __init__(self, model, target_model, name: str, source_field) -> None:
         super().__init__()
 

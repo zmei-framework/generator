@@ -1,6 +1,6 @@
 from textwrap import dedent
 
-from zmei_generator.contrib.admin.extensions.model.admin import AdminExtension, AdminInlineConfig
+from zmei_generator.contrib.admin.extensions.model.admin import AdminModelExtension, AdminInlineConfig
 from zmei_generator.parser.parser import ZmeiParser
 
 
@@ -24,10 +24,10 @@ def test_admin_empty():
 
     boo = app.models['boo']
 
-    assert isinstance(boo.admin, AdminExtension)
-    assert app.admin is True
+    assert isinstance(boo[AdminModelExtension], AdminModelExtension)
+    assert app.models_support(AdminModelExtension)
 
-    assert boo.admin in app.extensions
+    assert boo[AdminModelExtension] in app.extensions
 
 
 def test_admin_one_line():
@@ -44,9 +44,9 @@ def test_admin_one_line():
 
     boo = app.models['boo']
 
-    assert isinstance(boo.admin, AdminExtension)
-    assert app.admin is True
-    assert [x.name for x in boo.admin.admin_list] == ['abc', 'cda']
+    assert isinstance(boo[AdminModelExtension], AdminModelExtension)
+    assert app.supports(AdminModelExtension) is True
+    assert [x.name for x in boo[AdminModelExtension].admin_list] == ['abc', 'cda']
 
 
 def test_admin_with_parent():
@@ -67,9 +67,9 @@ def test_admin_with_parent():
 
     boo = app.models['boo']
 
-    assert isinstance(boo.admin, AdminExtension)
-    assert app.admin is True
-    assert [x.name for x in boo.admin.admin_list] == ['a', 'b', 'c']
+    assert isinstance(boo[AdminModelExtension], AdminModelExtension)
+    assert app.supports(AdminModelExtension) is True
+    assert [x.name for x in boo[AdminModelExtension].admin_list] == ['a', 'b', 'c']
 
 
 def test_admin_with_parent_local_only():
@@ -90,9 +90,9 @@ def test_admin_with_parent_local_only():
 
     boo = app.models['boo']
 
-    assert isinstance(boo.admin, AdminExtension)
-    assert app.admin is True
-    assert [x.name for x in boo.admin.admin_list] == ['b', 'c']
+    assert isinstance(boo[AdminModelExtension], AdminModelExtension)
+    assert app.supports(AdminModelExtension) is True
+    assert [x.name for x in boo[AdminModelExtension].admin_list] == ['b', 'c']
 
 
 def test_admin_plain_list():
@@ -114,9 +114,9 @@ def test_admin_plain_list():
 
     boo = app.models['boo']
 
-    assert isinstance(boo.admin, AdminExtension)
-    assert app.admin is True
-    assert [x.name for x in boo.admin.admin_list] == ['weight', 'size_x', 'size_y', 'color_front']
+    assert isinstance(boo[AdminModelExtension], AdminModelExtension)
+    assert app.supports(AdminModelExtension) is True
+    assert [x.name for x in boo[AdminModelExtension].admin_list] == ['weight', 'size_x', 'size_y', 'color_front']
 
 
 def test_admin_exclude():
@@ -138,9 +138,9 @@ def test_admin_exclude():
 
     boo = app.models['boo']
 
-    assert isinstance(boo.admin, AdminExtension)
-    assert app.admin is True
-    assert [x.name for x in boo.admin.admin_list] == ['weight', 'size_y', 'color_back']
+    assert isinstance(boo[AdminModelExtension], AdminModelExtension)
+    assert app.supports(AdminModelExtension) is True
+    assert [x.name for x in boo[AdminModelExtension].admin_list] == ['weight', 'size_y', 'color_back']
 
 
 def test_admin_exclude_wildcard():
@@ -162,9 +162,9 @@ def test_admin_exclude_wildcard():
 
     boo = app.models['boo']
 
-    assert isinstance(boo.admin, AdminExtension)
-    assert app.admin is True
-    assert [x.name for x in boo.admin.admin_list] == ['weight', 'size_x', 'size_y']
+    assert isinstance(boo[AdminModelExtension], AdminModelExtension)
+    assert app.supports(AdminModelExtension) is True
+    assert [x.name for x in boo[AdminModelExtension].admin_list] == ['weight', 'size_x', 'size_y']
 
 
 def test_admin_include_wildcard():
@@ -186,9 +186,9 @@ def test_admin_include_wildcard():
 
     boo = app.models['boo']
 
-    assert isinstance(boo.admin, AdminExtension)
-    assert app.admin is True
-    assert [x.name for x in boo.admin.admin_list] == ['weight', 'size_x', 'size_y']
+    assert isinstance(boo[AdminModelExtension], AdminModelExtension)
+    assert app.supports(AdminModelExtension) is True
+    assert [x.name for x in boo[AdminModelExtension].admin_list] == ['weight', 'size_x', 'size_y']
 
 
 def test_admin_list():
@@ -212,14 +212,14 @@ def test_admin_list():
 
     boo = app.models['boo']
 
-    assert isinstance(boo.admin, AdminExtension)
-    assert app.admin is True
-    assert [x.name for x in boo.admin.admin_list] == ['abc', 'cda']
-    assert [x.name for x in boo.admin.read_only] == ['abc', 'cda']
-    assert [x.name for x in boo.admin.list_editable] == ['abc', 'cda']
-    assert [x.name for x in boo.admin.list_filter] == ['abc', 'cda']
-    assert [x.name for x in boo.admin.list_search] == ['abc', 'cda']
-    assert [x.name for x in boo.admin.fields] == ['abc', 'cda']
+    assert isinstance(boo[AdminModelExtension], AdminModelExtension)
+    assert app.supports(AdminModelExtension) is True
+    assert [x.name for x in boo[AdminModelExtension].admin_list] == ['abc', 'cda']
+    assert [x.name for x in boo[AdminModelExtension].read_only] == ['abc', 'cda']
+    assert [x.name for x in boo[AdminModelExtension].list_editable] == ['abc', 'cda']
+    assert [x.name for x in boo[AdminModelExtension].list_filter] == ['abc', 'cda']
+    assert [x.name for x in boo[AdminModelExtension].list_search] == ['abc', 'cda']
+    assert [x.name for x in boo[AdminModelExtension].fields] == ['abc', 'cda']
 
 
 def test_admin_tabs_all():
@@ -240,9 +240,9 @@ def test_admin_tabs_all():
 
     boo = app.models['boo']
 
-    assert boo.admin.tabs == ['foo']
-    assert boo.admin.tab_names == {'foo': 'Foo'}
-    assert boo.admin.tab_fields == {
+    assert boo[AdminModelExtension].tabs == ['foo']
+    assert boo[AdminModelExtension].tab_names == {'foo': 'Foo'}
+    assert boo[AdminModelExtension].tab_fields == {
         'a': 'foo',
         'b': 'foo',
         'c': 'foo',
@@ -273,9 +273,9 @@ def test_admin_tabs_inherited():
 
     foo = app.models['foo']
 
-    assert foo.admin.tabs == ['general', 'foo']
-    assert foo.admin.tab_names == {'general': 'General', 'foo': 'Foo'}
-    assert foo.admin.tab_fields == {
+    assert foo[AdminModelExtension].tabs == ['general', 'foo']
+    assert foo[AdminModelExtension].tab_names == {'general': 'General', 'foo': 'Foo'}
+    assert foo[AdminModelExtension].tab_fields == {
         'a': 'foo',
         'b': 'foo',
         'c': 'foo',
@@ -311,24 +311,24 @@ def test_admin_tabs_inherited_merged():
 
     foo = app.models['db_data_source']
 
-    assert foo.admin.tab_fields == {
+    assert foo[AdminModelExtension].tab_fields == {
         'name': 'general',
         'database': 'general',
         'server': 'general',
     }
 
-    assert foo.admin.tabs == ['general']
-    assert foo.admin.tab_names == {'general': 'General'}
+    assert foo[AdminModelExtension].tabs == ['general']
+    assert foo[AdminModelExtension].tab_names == {'general': 'General'}
 
     foo = app.models['report_data_source']
 
-    assert foo.admin.tab_fields == {
+    assert foo[AdminModelExtension].tab_fields == {
         'name': 'general',
         'report': 'general',
     }
 
-    assert foo.admin.tabs == ['general']
-    assert foo.admin.tab_names == {'general': 'General'}
+    assert foo[AdminModelExtension].tabs == ['general']
+    assert foo[AdminModelExtension].tab_names == {'general': 'General'}
 
 
 def test_admin_tabs_all_but_some():
@@ -350,9 +350,9 @@ def test_admin_tabs_all_but_some():
 
     boo = app.models['boo']
 
-    assert boo.admin.tabs == ['foo', 'lolo']
-    assert boo.admin.tab_names == {'foo': 'Foo', 'lolo': 'Lolo'}
-    assert boo.admin.tab_fields == {
+    assert boo[AdminModelExtension].tabs == ['foo', 'lolo']
+    assert boo[AdminModelExtension].tab_names == {'foo': 'Foo', 'lolo': 'Lolo'}
+    assert boo[AdminModelExtension].tab_fields == {
         'a': 'foo',
         'b': 'lolo',
         'c': 'foo',
@@ -378,9 +378,9 @@ def test_admin_tabs_verbose_name():
 
     boo = app.models['boo']
 
-    assert boo.admin.tabs == ['foo']
-    assert boo.admin.tab_names == {'foo': 'Фу'}
-    assert boo.admin.tab_fields == {
+    assert boo[AdminModelExtension].tabs == ['foo']
+    assert boo[AdminModelExtension].tab_names == {'foo': 'Фу'}
+    assert boo[AdminModelExtension].tab_fields == {
         'a': 'foo',
         'b': 'foo',
         'c': 'foo',
@@ -405,9 +405,9 @@ def test_admin_tabs_left_to_general():
 
     boo = app.models['boo']
 
-    assert boo.admin.tabs == ['general', 'foo']
-    assert boo.admin.tab_names == {'general': 'General', 'foo': 'Foo'}
-    assert boo.admin.tab_fields == {
+    assert boo[AdminModelExtension].tabs == ['general', 'foo']
+    assert boo[AdminModelExtension].tab_names == {'general': 'General', 'foo': 'Foo'}
+    assert boo[AdminModelExtension].tab_fields == {
         'a': 'general',
         'b': 'foo',
         'c': 'foo',
@@ -436,8 +436,8 @@ def test_admin_tabs_with_fields():
 
     boo = app.models['car']
 
-    assert boo.admin.tabs == ['main', 'options']
-    assert boo.admin.tab_fields == {
+    assert boo[AdminModelExtension].tabs == ['main', 'options']
+    assert boo[AdminModelExtension].tab_fields == {
         'nr': 'main',
         'mark': 'main',
         'model': 'main',
@@ -468,8 +468,8 @@ def test_admin_inline_simple():
     foo = app.models['foo']
     bar = app.models['bar']
 
-    assert len(foo.admin.inlines) == 1
-    inline = foo.admin.inlines[0]
+    assert len(foo[AdminModelExtension].inlines) == 1
+    inline = foo[AdminModelExtension].inlines[0]
 
     assert isinstance(inline, AdminInlineConfig)
     assert inline.extension_count == 0
@@ -510,8 +510,8 @@ def test_admin_inline_inheritance():
     db_data_source = app.models['db_data_source']
     data_source_field = app.models['data_source_field']
 
-    assert len(db_data_source.admin.inlines) == 1
-    inline = db_data_source.admin.inlines[0]
+    assert len(db_data_source[AdminModelExtension].inlines) == 1
+    inline = db_data_source[AdminModelExtension].inlines[0]
 
     assert isinstance(inline, AdminInlineConfig)
     assert inline.model == data_source
@@ -552,8 +552,8 @@ def test_admin_inline_endclass_with_parent():
     db_data_source = app.models['db_data_source']
     table = app.models['table']
 
-    assert len(db_data_source.admin.inlines) == 1
-    inline = db_data_source.admin.inlines[0]
+    assert len(db_data_source[AdminModelExtension].inlines) == 1
+    inline = db_data_source[AdminModelExtension].inlines[0]
 
     assert isinstance(inline, AdminInlineConfig)
     assert inline.model == db_data_source
@@ -591,8 +591,8 @@ def test_admin_inline_details():
     foo = app.models['foo']
     bar = app.models['bar']
 
-    assert len(foo.admin.inlines) == 1
-    inline = foo.admin.inlines[0]
+    assert len(foo[AdminModelExtension].inlines) == 1
+    inline = foo[AdminModelExtension].inlines[0]
 
     assert isinstance(inline, AdminInlineConfig)
     assert inline.extension_count == 300
@@ -629,12 +629,12 @@ def test_admin_inline_tab():
     foo = app.models['foo']
     bar = app.models['bar']
 
-    assert len(foo.admin.inlines) == 1
-    inline = foo.admin.inlines[0]
+    assert len(foo[AdminModelExtension].inlines) == 1
+    inline = foo[AdminModelExtension].inlines[0]
     assert inline.tab == 'other'
 
-    assert foo.admin.tabs == ['main', 'other']
-    assert foo.admin.tab_fields == {
+    assert foo[AdminModelExtension].tabs == ['main', 'other']
+    assert foo[AdminModelExtension].tab_fields == {
         'a': 'main',
         'b': 'main',
         'lala': 'other',
@@ -659,9 +659,9 @@ def test_admin_js_css():
 
     foo = app.models['foo']
 
-    assert foo.admin.css == [
+    assert foo[AdminModelExtension].css == [
         "foo.css", "another/boo.css"
     ]
-    assert foo.admin.js == [
+    assert foo[AdminModelExtension].js == [
         "foo.js", "another/boo.js"
     ]

@@ -6,19 +6,24 @@ from zmei_generator.parser.utils import BaseListener
 
 
 class AuthPageExtension(PageExtension):
-    # auth
-    pass
+    def __init__(self, page) -> None:
+        super().__init__(page)
+
+        self.is_added = False
 
 
 class AuthPageExtensionParserListener(BaseListener):
 
     def enterAn_auth(self, ctx: ZmeiLangParser.An_authContext):
+        extension = AuthPageExtension(self.page)
         self.application.extensions.append(
-            AuthPageExtension(self.page)
+            extension
         )
         expr = None
         if ctx.code_block():
             expr = dedent(ctx.code_block().getText().strip('\n'))
+
+        self.page.register_extension(extension)
 
         add_page_auth(expr, self.page)
 
@@ -33,7 +38,7 @@ def add_page_auth(auth_expr, page):
     if need_add_auth(page):
         page.extension_bases.append('AccessMixin')
 
-    page.auth = True
+    page[AuthPageExtension].is_added = True
 
     code = ""
     code += "if not self.request.user.is_authenticated:\n"
@@ -47,7 +52,7 @@ def add_page_auth(auth_expr, page):
 
 
 def need_add_auth(page):
-    if page.auth:
+    if page[AuthPageExtension].is_added:
         return False
 
     if page.parent_name:

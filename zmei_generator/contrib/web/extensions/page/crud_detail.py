@@ -15,7 +15,6 @@ class CrudDetailPageExtension(BaseCrudSubpageExtension):
         return 'detail'
 
     def build_pages(self, base_page):
-        base_page.add_crud(self.descriptor, self)
 
         items = {}
         items[self.item_name] = PageExpression(

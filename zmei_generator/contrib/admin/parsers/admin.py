@@ -1,5 +1,5 @@
 from zmei_generator.contrib.admin.extensions.application.suit import SuitAppExtension
-from zmei_generator.contrib.admin.extensions.model.admin import AdminExtension, AdminInlineConfig
+from zmei_generator.contrib.admin.extensions.model.admin import AdminModelExtension, AdminInlineConfig
 from zmei_generator.domain.application_def import ApplicationDef
 from zmei_generator.parser.errors import TabsSuitRequiredValidationError
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
@@ -17,27 +17,25 @@ class AdminParserListener(BaseListener):
     ############################################
 
     def enterAn_admin(self, ctx: ZmeiLangParser.An_adminContext):
-        self.model.admin = AdminExtension(self.model)
-        self.application.admin = True
-        self.application.extensions.append(self.model.admin)
+        self.application.extensions.append(AdminModelExtension(self.model))
 
     def enterAn_admin_list(self, ctx: ZmeiLangParser.An_admin_listContext):
-        self.model.admin.admin_list = self.model.filter_fields(self._get_fields(ctx))
+        self.model[AdminModelExtension].admin_list = self.model.filter_fields(self._get_fields(ctx))
 
     def enterAn_admin_read_only(self, ctx: ZmeiLangParser.An_admin_read_onlyContext):
-        self.model.admin.read_only = self.model.filter_fields(self._get_fields(ctx))
+        self.model[AdminModelExtension].read_only = self.model.filter_fields(self._get_fields(ctx))
 
     def enterAn_admin_list_editable(self, ctx: ZmeiLangParser.An_admin_list_editableContext):
-        self.model.admin.list_editable = self.model.filter_fields(self._get_fields(ctx))
+        self.model[AdminModelExtension].list_editable = self.model.filter_fields(self._get_fields(ctx))
 
     def enterAn_admin_list_filter(self, ctx: ZmeiLangParser.An_admin_list_filterContext):
-        self.model.admin.list_filter = self.model.filter_fields(self._get_fields(ctx))
+        self.model[AdminModelExtension].list_filter = self.model.filter_fields(self._get_fields(ctx))
 
     def enterAn_admin_list_search(self, ctx: ZmeiLangParser.An_admin_list_searchContext):
-        self.model.admin.list_search = self.model.filter_fields(self._get_fields(ctx))
+        self.model[AdminModelExtension].list_search = self.model.filter_fields(self._get_fields(ctx))
 
     def enterAn_admin_fields(self, ctx: ZmeiLangParser.An_admin_fieldsContext):
-        self.model.admin.fields = self.model.filter_fields(self._get_fields(ctx))
+        self.model[AdminModelExtension].fields = self.model.filter_fields(self._get_fields(ctx))
 
     def enterAn_admin_tabs(self, ctx: ZmeiLangParser.An_admin_tabsContext):
         if not self.application.suit:
@@ -51,16 +49,16 @@ class AdminParserListener(BaseListener):
             vname = vname.getText().strip('"\' ')
         else:
             vname = None
-        self.model.admin.register_tab(name, vname, fields)
+        self.model[AdminModelExtension].register_tab(name, vname, fields)
 
     def enterAn_admin_inline(self, ctx: ZmeiLangParser.An_admin_inlineContext):
-        self.inline = AdminInlineConfig(self.model.admin, ctx.inline_name().getText())
+        self.inline = AdminInlineConfig(self.model[AdminModelExtension], ctx.inline_name().getText())
 
     def enterInline_type(self, ctx: ZmeiLangParser.Inline_typeContext):
         type_name = ctx.inline_type_name().getText()
 
         if type_name == 'polymorphic':
-            self.model.admin.has_polymorphic_inlines = True
+            self.model[AdminModelExtension].has_polymorphic_inlines = True
 
         self.inline.inline_type = type_name
 
@@ -71,13 +69,13 @@ class AdminParserListener(BaseListener):
         self.inline.extension_count = int(ctx.DIGIT().getText())
 
     def enterAn_admin_css_file_name(self, ctx: ZmeiLangParser.An_admin_css_file_nameContext):
-        self.model.admin.css.append(ctx.getText().strip('"\''))
+        self.model[AdminModelExtension].css.append(ctx.getText().strip('"\''))
 
     def enterAn_admin_js_file_name(self, ctx: ZmeiLangParser.An_admin_js_file_nameContext):
-        self.model.admin.js.append(ctx.getText().strip('"\''))
+        self.model[AdminModelExtension].js.append(ctx.getText().strip('"\''))
 
     def exitAn_admin_inline(self, ctx: ZmeiLangParser.An_admin_inlineContext):
-        self.model.admin.inlines.append(
+        self.model[AdminModelExtension].inlines.append(
             self.inline
         )
         self.inline = None
