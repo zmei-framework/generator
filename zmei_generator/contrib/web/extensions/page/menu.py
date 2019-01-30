@@ -1,6 +1,7 @@
 from zmei_generator.domain.application_def import ApplicationDef
 from zmei_generator.domain.extensions import PageExtension
 from zmei_generator.contrib.web.extensions.page.block import InlineTemplatePageBlock
+from zmei_generator.parser.errors import ValidationError
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
@@ -35,6 +36,9 @@ class MenuPageExtension(PageExtension):
     def render_ref(self, item):
         if item.page:
             page = self.page.application.resolve_page(item.page)
+
+            if not page.uri:
+                raise ValidationError(0, 0, f"You are trying to add page {item.page} to a menu, however page has no url defined.")
 
             self.page_refs.append(
                 (item.page, item.ref, page)

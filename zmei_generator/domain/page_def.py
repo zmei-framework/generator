@@ -162,7 +162,7 @@ class PageDef(Extendable, FrozenClass):
 
         bases_collected = [x for x in self.extension_bases if x not in all_bases]
 
-        for extension in self._extensions:  # type: PageExtension
+        for extension in self._extensions.values():  # type: PageExtension
             bases_collected = extension.get_extension_bases(bases_collected)
 
         return bases_collected

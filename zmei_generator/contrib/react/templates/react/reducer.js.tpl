@@ -1,4 +1,5 @@
 
+import {combineReducers} from "redux";
 
 export const reloadPageDataAction = (newState) => ({
     /**
@@ -8,12 +9,19 @@ export const reloadPageDataAction = (newState) => ({
     newState
 });
 
-const {{ name }}Reducer = (state, action) => {
+const pageDataReducer = (state, action) => {
     if (action.type === 'SERVER_DATA_RELOAD') {
         console.log('Reloading state from server: ', state);
         return {...state, ...action.newState}
     }
-    return state
+
+    return state || {};
 };
+
+
+const RootReducer = combineReducers({
+    data: pageDataReducer
+});
+
 
 export default {{ name }}Reducer;

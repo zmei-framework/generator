@@ -335,7 +335,13 @@ def migrate_db(apps, features=None):
     print(colored('> ', 'white', 'on_blue'), 'Migrating database')
     django_command = get_django_command(features)
 
-    subprocess.run('{} makemigrations {}'.format(django_command, ' '.join(apps)), shell=True, check=True)
+    db_apps = [app for app in apps if os.path.exists(f'{app}/models.py')]
+
+    try:
+        subprocess.run('{} makemigrations {}'.format(django_command, ' '.join(db_apps)), shell=True, check=True)
+    except subprocess.CalledProcessError:
+        pass
+
     try:
         subprocess.run('{} migrate'.format(django_command), shell=True, check=True)
     except subprocess.CalledProcessError:
@@ -486,15 +492,15 @@ def wait_for_file_changes(paths, initial=True, watch=True):
         initial_hash = files_hash(paths)
 
         while True:
-            try:
-                sleep(3)
-                new_hash = files_hash(paths)
-                if initial_hash != new_hash:
-                    initial_hash = new_hash
-                    yield
-            except KeyboardInterrupt:
-                print('Reloading ... (hit ctrl+c twice to stop process)')
+            # try:
+            sleep(3)
+            new_hash = files_hash(paths)
+            if initial_hash != new_hash:
+                initial_hash = new_hash
                 yield
+            # except KeyboardInterrupt:
+            #     print('Reloading ... (hit ctrl+c twice to stop process)')
+            #     yield
 
 
 def files_hash(paths):

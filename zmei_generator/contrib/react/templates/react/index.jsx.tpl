@@ -14,7 +14,7 @@ axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
 const renderElement = (rootReducer, component, state) => {
-    const store = createStore(RootReducer, state);
+    const store = createStore(RootReducer, {data: state});
 
     store.dispatch({type: 'INIT'});
 

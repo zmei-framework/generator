@@ -17,10 +17,12 @@ def generate(target_path, project):
         has_react = True
 
         for page in application.pages_with(ReactPageExtension):
+
             name = f'{page.name.capitalize()}'
             name_ui = f'{page.name.capitalize()}Ui'
 
-            react_pages.append((app_name.capitalize(), name, format_uri(page.uri)))
+            if page.uri:
+                react_pages.append((app_name.capitalize(), name, format_uri(page.uri)))
 
             page_component_name = f'Page{page.name.capitalize()}'
 

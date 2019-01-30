@@ -61,8 +61,12 @@ class ApplicationDef(Extendable, FrozenClass):
                 raise ValidationException(
                     f'Unknown application: {app_name}, when trying to resolve model name "{page_name_def}". '
                     f'Available apps are: {",".join(self.application.applications)}')
-
-            return self.application.applications[app_name].pages[page_name]
+            try:
+                return self.application.applications[app_name].pages[page_name]
+            except KeyError:
+                raise ValidationException(
+                    f'Unknown page: "{page_name}" in app "{app_name}" '
+                    f'Available pages are: {",".join(self.application.applications[app_name].pages.keys())}')
         else:
             return self.pages[page_name_def]
 

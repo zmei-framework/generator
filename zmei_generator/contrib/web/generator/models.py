@@ -7,6 +7,9 @@ from zmei_generator.generator.utils import generate_file
 
 def generate(target_path, project):
     for app_name, application in project.applications.items():
+        if not len(application.models):
+            continue
+
         imports = ImportSet()
         imports.add('django.db', 'models')
 
