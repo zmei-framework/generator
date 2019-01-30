@@ -1,21 +1,28 @@
+from textwrap import indent, dedent
 from zmei_generator.contrib.react.extensions.page.react import ReactPageExtension
 from zmei_generator.generator.imports import ImportSet
-from zmei_generator.generator.utils import generate_file
+from zmei_generator.generator.utils import generate_file, format_uri
 
 
 def generate(target_path, project):
-    for app_name, application in project.applications_with(ReactPageExtension):
+    has_react = False
 
-        index_imports = ImportSet()
+    react_pages = []
+    index_imports = ImportSet()
 
-        react_components = {}
-        react_pages = {}
+    for app_name, application in project.applications.items():
+        if not application.pages_support(ReactPageExtension):
+            continue
 
-        react_pages = []
+        has_react = True
 
         for page in application.pages_with(ReactPageExtension):
-            name = f'Page{page.name.capitalize()}'
-            page_component_name = f'Page{page.name.capitalize()}Component'
+            name = f'{page.name.capitalize()}'
+            name_ui = f'{page.name.capitalize()}Ui'
+
+            react_pages.append((app_name.capitalize(), name, format_uri(page.uri)))
+
+            page_component_name = f'Page{page.name.capitalize()}'
 
             react_components_imports = ImportSet()
             react_components_imports.add('react', 'React')
@@ -23,75 +30,71 @@ def generate(target_path, project):
 
             imports = ImportSet()
             imports.add('react', 'React')
+            imports.add(f'./{name_ui}', name_ui)
+            imports.add(f'../../layout', 'BaseLayout')
+            imports.add(f'../layouts/{app_name.capitalize()}Layout', f'{app_name.capitalize()}Layout')
 
             react_components_imports.add(f'../Reducers/{page_component_name}Reducers',
-                                              f'*reloadPageDataAction')
+                                         f'*reloadPageDataAction')
 
-            # self.react_components_imports.add(f'./{self.parent_component}', f'{{{self.parent_component}}}')
+            index_imports.add(f'./pages/{name}', '*' + name)
 
-            var_names = ', '.join(page.page_item_names_with_parents)
-            body = '\nconst {store, dispatch, children} = this.props;' \
-                   '\nconst {%s} = store;\n\n' % var_names
+            wrappers = [
+                f'BaseLayout',
+                f'{app_name.capitalize()}Layout'
+            ]
 
-            # react_components.update(react_components)
+            def wrap(source, cmp_list):
+                source = indent(source, '    ')
 
-            # page.react_pages.update({page.page_component_name: (react_components_imports, body, 'lala')})
+                if not len(cmp_list):
+                    return dedent(source)
 
-            # return '<div id="reactEl-%s">{{ react_page_%s|default:""|safe }}</div>' % (
-            #     page_component_name,
-            #     page_component_name
-            # )
-            source = ''
+                w = cmp_list.pop()
 
-            generate_file(target_path, 'react/src/{}/Components/{}.jsx'.format(app_name.capitalize(), name),
-                          'react.jsx.tpl', {
+                return wrap(f'<{w} {{...this.props}}>\n{source}\n</{w}>', wrappers)
+
+            generate_file(target_path, 'react/src/{}/pages/{}.jsx'.format(app_name, name),
+                          'react/page.jsx.tpl', {
                               'imports': imports.import_sting_js(),
                               'name': name,
-                              'body': body,
-                              'source': source
-                          })
-
-            index_imports.add(f'./Pages/{name}', '*' + name)
-            index_imports.add(f'./Reducers/{name}Reducers', '*' + name + 'Reducer')
-            # react_pages.append(name)
-
-            generate_file(target_path, 'react/src/{}/Reducers/{}Reducers.js'.format(app_name.capitalize(), name),
-                          'react_reducer.js.tpl', {
-                              'name': name,
-                          })
-
-            generate_file(target_path, 'react/src/{}/Pages/{}.jsx'.format(app_name.capitalize(), name),
-                          'react_page.jsx.tpl', {
-                              'imports': imports.import_sting_js(),
-                              'name': name,
-                              'body': body,
                               'page': page,
-                              'source': source
+                              'source': wrap(f'<{name_ui}  {{...this.props}} />', wrappers)
                           })
 
-        generate_file(target_path, 'react/src/{}/index.scss'.format(app_name.capitalize()), 'react.index.scss.tpl', {
+            generate_file(target_path, f'react/src/{app_name}/pages/{name_ui}.jsx',
+                          'react/cmp.jsx.tpl', {
+                              'name': name_ui,
+                              'source': f"<>{{children || 'Empty react component. Edit {name_ui}.jsx'}}</>"
+                          })
+
+        generate_file(target_path, f'react/src/{app_name}/layouts/{app_name.capitalize()}Layout.jsx',
+                      'react/cmp.jsx.tpl', {
+                          'name': f'{app_name.capitalize()}Layout',
+                          'source': '<>{children}</>'
+                      })
+
+    if has_react:
+        generate_file(target_path, f'react/src/layout.jsx',
+                      'react/cmp.jsx.tpl', {
+                          'name': f'BaseLayout',
+                          'source': '<>{children}</>'
+                      })
+        generate_file(target_path, f'react/src/index.scss', 'react/index.scss.tpl', {
             'pages': react_pages
         })
-        generate_file(target_path, 'react/src/{}/index.jsx'.format(app_name.capitalize()), 'react.index.js.tpl', {
-            'imports': index_imports.import_sting_js(),
+        generate_file(target_path, 'react/src/index.jsx', 'react/index.jsx.tpl')
+        generate_file(target_path, 'react/src/reducer.jsx', 'react/reducer.js.tpl', {
+            'name': 'Root'
+        })
+        generate_file(target_path, 'react/src/router.jsx', 'react/router.jsx.tpl', {
+            'name': 'Root',
             'pages': react_pages
         })
 
-        entries = {}
-
-        for app_name, application in project.applications.items():
-            if application.react:
-                # entries[app_name] = ["babel-polyfill", f'./src/{app_name.capitalize()}/index.jsx']
-                entries[app_name] = [f'./src/index.jsx']
-
-        packages = {}
-
-        for app_name, application in project.applications.items():
-            packages.update(application.react_deps)
-
-        generate_file(target_path, 'react/package.json', 'package.json.tpl', {
-            'packages': packages
+        generate_file(target_path, 'react/package.json', 'react/package.json.tpl', {
+            'packages': {}
         })
-        generate_file(target_path, 'react/webpack.config.js', 'webpack.config.js.tpl', {
-            'entries': entries
+        generate_file(target_path, 'react/webpack.config.js', 'react/webpack.config.js.tpl', {
+            'entries': {'all': f'./src/index.jsx'}
         })

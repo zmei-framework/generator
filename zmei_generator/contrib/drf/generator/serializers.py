@@ -39,3 +39,18 @@ def generate(target_path, project):
         filepath = os.path.join(package_to_path(app_name), 'urls_rest.py')
         generate_file(target_path, filepath, 'urls_rest.py.tpl', context)
 
+        # views_rest.py
+
+        imports = ImportSet()
+
+        for model in application.models_with(RestModelExtension):
+            for name, rest_conf in model[RestModelExtension].rest_conf.items():
+                rest_conf.configure_imports(imports)
+
+        generate_file(target_path, f'{app_name}/views_rest.py', 'views_rest.py.tpl', {
+            'package_name': app_name,
+            'application': application,
+            'ext': RestModelExtension,
+            'models': [(name, model) for name, model in application.models.items() if model.supports(RestModelExtension)],
+            'imports': imports
+        })

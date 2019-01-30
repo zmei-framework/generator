@@ -33,10 +33,10 @@ class SuitAppExtension(ApplicationExtension):
             if application.supports(SuitAppExtension) and application[SuitAppExtension].menu:
                 menu.extend(application[SuitAppExtension].menu)
 
-            if application.supports(AdminModelExtension):
+            if application.models_support(AdminModelExtension):
                 models = []
                 for model in application.models.values():
-                    if model.admin and not model.parent:
+                    if model.supports(AdminModelExtension) and not model.parent:
                         models.append(f'{app}.{model.class_name}', )
 
                 if len(models):

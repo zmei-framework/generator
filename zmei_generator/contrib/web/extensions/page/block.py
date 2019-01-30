@@ -21,6 +21,16 @@ class BlockPlaceholder(Block):
     pass
 
 
+class InlinePageBlock(Block):
+    def __init__(self, source) -> None:
+        super().__init__()
+
+        self.source = source
+
+    def render(self, area=None, index=None):
+        return self.source
+
+
 class InlineTemplatePageBlock(Block):
     def __init__(self, template_name, context=None) -> None:
         super().__init__()

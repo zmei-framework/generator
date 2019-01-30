@@ -3,14 +3,14 @@ from zmei_generator.generator.utils import generate_file
 
 
 def generate(target_path, project):
-    for app_name, application in project.applications_with(GitlabAppExtension):
+    for application in project.applications_with(GitlabAppExtension):
         for file in [
             '.gitlab-ci.yml',
             '.gitignore',
             'README.md'
         ]:
             generate_file(target_path, file, f"gitlab/{file.strip('.')}.tpl", {
-                'gitlab': application.gitlab,
+                'gitlab': application[GitlabAppExtension],
             })
         if application[GitlabAppExtension].test:
             for file in [

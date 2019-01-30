@@ -1,6 +1,1 @@
 {{ "{% extends 'base.html' %}}" }}
-
-{% if application.react %}
-{{ '{% block css %}' }}<link media="all" rel="stylesheet" href="/static/react/{{ application.app_name }}.bundle.css" />{{ '{% endblock %}' }}
-{{ '{% block js %}' }}<script type="text/javascript" src="/static/react/{{ application.app_name }}.bundle.js"></script>{{ '{% endblock %}' }}
-{% endif %}

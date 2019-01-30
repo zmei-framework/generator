@@ -19,32 +19,9 @@ class ApplicationDef(Extendable, FrozenClass):
 
         self.translatable = False
 
-        #
-        # TODO: move platform-specific fields out of definition
-        #
-
-        # self.theme = None
-        # self.theme_install = False
-
-        # self.api = False
-        # self.rest = False
-        # self.docker = False
-        # self.celery = False
-        # self.gitlab = False
-        # self.channels = False
-        # self.crud = False
-        # self.suit = False
-        # self.filer = False
-        # self.langs = False
-        # self.admin = False
-        # self.react = False
-        # self.flutter = False
-
         self.models = {}
         self.pages = {}
 
-        # self.react_deps = {}
-        # self.react_imports = ImportSet()
         self.page_imports = ImportSet()
         self.model_imports = ImportSet()
 

@@ -26,7 +26,6 @@ class {{ name }} extends React.Component {
     {%- endfor %}
 
     render() {
-        {{ body|indent(8) }}
         return (
             {{ source|indent(12) }}
         );
@@ -42,4 +41,4 @@ class {{ name }} extends React.Component {
     },
 )({{ name }});
 
-export { {{ name }} };
+export default {{ name }};

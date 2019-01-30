@@ -50,7 +50,7 @@ class PageDef(Extendable, FrozenClass):
         self.parsed_template_expr = None
 
         self.page_code = None
-        self.functions = None  # TODO: [PageFunction(x) for x in parse_result.functions]
+        self.functions = None
 
         self.allow_merge = False
 
@@ -236,33 +236,22 @@ class PageDef(Extendable, FrozenClass):
 
             self._uri = re.sub(r'<(\w+)(\s*:\s*([^\>]+))?>', self._find_params, uri)
 
-    def get_parent_flutter(self):
-        if self._flutter and self.flutter.include_child:
-            return self._flutter
-
-        if self.get_parent():
-            return self.get_parent().get_parent_flutter()
-
-    @property
-    @lru_cache(maxsize=1)
-    def flutter(self):
-        if self._flutter:
-            return self._flutter
-
-        if self.get_parent():
-            return self.get_parent().get_parent_flutter()
-
-    @property
-    def react_component_names(self):
-        return list(self.react_pages.keys())
-
-    @property
-    def page_item_names_with_parents(self):
-        names = self.page_item_names
-        parent = self.get_parent()
-        if parent:
-            names += parent.page_item_names_with_parents
-        return set(names)
+    # TODO: restore?
+    # def get_parent_flutter(self):
+    #     if self._flutter and self.flutter.include_child:
+    #         return self._flutter
+    #
+    #     if self.get_parent():
+    #         return self.get_parent().get_parent_flutter()
+    #
+    # @property
+    # @lru_cache(maxsize=1)
+    # def flutter(self):
+    #     if self._flutter:
+    #         return self._flutter
+    #
+    #     if self.get_parent():
+    #         return self.get_parent().get_parent_flutter()
 
     @property
     def own_item_names(self):
@@ -276,10 +265,6 @@ class PageDef(Extendable, FrozenClass):
     @property
     def url_alias(self):
         return self.defined_url_alias or self.name
-
-    @property
-    def page_item_names(self):
-        return self.own_item_names
 
     @property
     def parent_view_name(self):
@@ -317,25 +302,26 @@ class PageDef(Extendable, FrozenClass):
 
         return False
 
-    @property
-    def has_streams(self):
-        if self.stream:
-            return True
-
-        if self.get_parent():
-            return self.get_parent().has_streams
-
-        return False
-
-    @property
-    def streaming_page(self):
-        if self.stream:
-            return self
-
-        if self.get_parent():
-            return self.get_parent().streaming_page
-
-        return None
+    # TODO: restore?
+    # @property
+    # def has_streams(self):
+    #     if self.stream:
+    #         return True
+    #
+    #     if self.get_parent():
+    #         return self.get_parent().has_streams
+    #
+    #     return False
+    #
+    # @property
+    # def streaming_page(self):
+    #     if self.stream:
+    #         return self
+    #
+    #     if self.get_parent():
+    #         return self.get_parent().streaming_page
+    #
+    #     return None
 
     @property
     def has_data(self):
@@ -358,6 +344,25 @@ class PageDef(Extendable, FrozenClass):
 
         uri = _uri[1:] if _uri.startswith('/') else _uri
         return '^{}$'.format(uri)
+
+
+    @property
+    def page_item_names_with_parents(self):
+        names = self.page_item_names
+        parent = self.get_parent()
+        if parent:
+            names += parent.page_item_names_with_parents
+        return set(names)
+
+    @property
+    def page_item_names(self):
+        names = ['url']
+        for key in self.page_items.keys():
+            if key.startswith('_'):
+                key = key[1:]
+            names.append(key)
+        return list(names)
+
 
     def render_method_headers(self, use_data=False, use_parent=False, use_url=False, use_request=False):
         code = ""

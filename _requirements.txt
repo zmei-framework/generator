@@ -1,0 +1,5 @@
+# generated: bebeb2c6cd385646754db19b763411fa
+
+django>2
+wheel
+zmei-utils>=0.1.15

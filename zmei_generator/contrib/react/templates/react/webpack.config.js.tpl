@@ -3,7 +3,7 @@ const path = require('path');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
-    entry: {{ entries|tojson }},
+    entry: {"all": ["./src/index.jsx"]},
 
     mode: "development",
     module: {
@@ -18,6 +18,7 @@ module.exports = {
                     ],
                     plugins: [
                         '@babel/plugin-proposal-class-properties',
+                        "dynamic-import-webpack"
                     ]
                 },
 
@@ -55,6 +56,8 @@ module.exports = {
         path: path.resolve(__dirname, '../app/static/react'),
         filename: '[name].bundle.js',
         library: 'R',
-        libraryTarget: 'var'
+        libraryTarget: 'var',
+
+        publicPath: '/static/react/'
     }
 };

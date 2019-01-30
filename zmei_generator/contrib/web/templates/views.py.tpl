@@ -1,40 +1,20 @@
 {{ imports }}
 {{ application.page_imports }}
 {% if application.channels %}
-channel_layer = get_channel_layer()
 {% endif %}
 
 from django.utils.translation import gettext_lazy as _
 
-{% for cname, col in models %}
-{% for rest_conf in col.published_apis.values() %}
-
-{% if rest_conf.auth_methods.token %}
-class {{ col.class_name }}TokenAuthentication(TokenAuthentication):
-    model = {{ rest_conf.auth_methods.token.model }}
-{% endif %}
-
-class {{ rest_conf.serializer_name }}ViewSet({{ rest_conf.rest_class[1] }}):
-    """
-    {{ col.class_name }} API
-    """
-
-    filter_fields = ['{{ rest_conf.field_names|join("','") }}']
-    serializer_class = {{ rest_conf.serializer_name }}Serializer
-    {% if rest_conf.auth_methods %}
-    permission_classes = [IsAuthenticated]
-    authentication_classes = [{{ rest_conf.auth_method_classes|join(', ') }}]
-    {% endif %}
-
-    def get_queryset(self):
-        return {{ col.class_name }}.objects.{{ rest_conf.query }}{% if rest_conf.user_field %}.filter({{ rest_conf.user_field }}=self.request.user){% endif %}{% if rest_conf.annotations %}.annotate({{ rest_conf.annotations|join(", ") }}){% endif %}
-{% endfor %}
-{% endfor %}
 {%- if application.react %}
 rs = ZmeiReactServer()
 rs.load(settings.BASE_DIR + '/app/static/react/{{ application.app_name }}.bundle.js')
 {% endif -%}
+
 {% for page in pages %}
+{% if page.name == 'global' %}
+def global_context(request):
+    return GlobalView(request=request, kwargs={}, args=[]).get_context_data()
+{% endif %}
 {%- for prefix, form in page.forms.items() %}
 class {{ form.get_form_name() }}({{ form.get_form_class() }}):
     {{ form.get_form_code()|indent(8) }}
@@ -80,65 +60,7 @@ class {{ page.view_name }}({% if page.get_extension_bases() %}{{ page.get_extens
     {% if page.allow_post %}
     post = {{ page.parent_view_name }}.get
     {% endif %}
-{% if page.name == 'global' %}
-def global_context(request):
-    return GlobalView(request=request, kwargs={}, args=[]).get_context_data()
-{% endif %}
 
-{% if page.stream %}
-class {{ page.view_name }}Consumer(AsyncWebsocketConsumer):
-    async def connect(self):
-        await self.channel_layer.group_add('page_{{ page.name }}', self.channel_name)
-        await self.accept()
-
-    async def disconnect(self, close_code):
-        await self.channel_layer.group_discard('page_{{ page.name }}', self.channel_name)
-
-    {% for stream_model in page.stream.models %}
-    async def state_update__{{ stream_model.stream_name }}(self, event):
-        if event['wait_db_sync']:
-            await sleep(.3)
-
-        serialized_state = await self.get_new_state__{{ stream_model.stream_name }}(
-            me=event['instance'],
-            url=type('url', (object,), self.scope),
-            request=type('request', (object,), self.scope),
-            kwargs=self.scope['url_route']['kwargs'],
-        )
-        if serialized_state:
-            await self.send(text_data=serialized_state)
-
-    @database_sync_to_async
-    def get_new_state__{{ stream_model.stream_name }}(self, me, url, request, kwargs):
-        {%- if stream_model.filter_expr %}
-        if not ({{ stream_model.filter_expr }}):
-            return
-        {% endif %}
-        view = {{ page.view_name }}(request=request, kwargs=kwargs)
-        data = view.get_data(url, request, inherited=False)
-        {%- if stream_model.fields %}
-        data = {key:val for key, val in data.items() if key in {{ stream_model.fields|repr }} }
-        {% endif %}
-        return ZmeiJsonEncoder(view=view).encode({'__state__': data})
-    {%- endfor %}
-
-{% for stream_model in page.stream.models %}
-@receiver(post_save, sender={{ stream_model.class_name }})
-@receiver(post_delete, sender={{ stream_model.class_name }})
-@receiver(post_delete_bulk, sender={{ stream_model.class_name }})
-@receiver(post_bulk_create, sender={{ stream_model.class_name }})
-@receiver(post_get_or_create, sender={{ stream_model.class_name }})
-@receiver(post_update_or_create, sender={{ stream_model.class_name }})
-@receiver(post_update, sender={{ stream_model.class_name }})
-@receiver(m2m_changed, sender={{ stream_model.class_name }})
-def {{ page.name }}_{{ stream_model.class_name|lower }}_change_listener(sender=None, signal=None, instance=None, **kwargs):
-    async_to_sync(channel_layer.group_send)("page_{{ page.name }}", {
-        "type": f"state_update__{{ stream_model.stream_name }}",
-        "wait_db_sync": signal not in (post_delete, m2m_changed),
-        "instance": instance
-    })
-{%- endfor %}
-{% endif %}
 
 {% if page.handlers %}
 from django.conf import urls

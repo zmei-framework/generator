@@ -1,8 +1,3 @@
-{{ imports }}
-
-export { {% for page in pages %}{{ page }}{{ "," if not loop.last }}{% endfor %} };
-export { {% for page in pages %}{{ page }}Reducer{{ "," if not loop.last }}{% endfor %} };
-
 import './index.scss';
 
 import React from 'react';
@@ -12,19 +7,20 @@ import ReactDOMServer from 'react-dom/server';
 import {createStore} from 'redux'
 import {Provider} from 'react-redux'
 import axios from "axios";
+import RootRouter from "./router";
+import RootReducer from "./reducer";
 
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
 const renderElement = (rootReducer, component, state) => {
-
-    const store = createStore(rootReducer, state);
+    const store = createStore(RootReducer, state);
 
     store.dispatch({type: 'INIT'});
 
     return <Provider store={store}>
-        {React.createElement(component)}
-    </Provider>
+               <RootRouter/>
+           </Provider>
 };
 
 export const renderClient = (rootReducer, component, state, targetElement, hydrate) => {
