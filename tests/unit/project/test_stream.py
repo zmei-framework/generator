@@ -9,7 +9,7 @@ def test_simple_reuse_another_app():
         @channels
         
         [bar: /bar]
-        @react {}
+        @react
         @stream(
             #another.foo
             #another.boo

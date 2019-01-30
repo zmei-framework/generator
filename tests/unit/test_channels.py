@@ -33,15 +33,7 @@ def test_channels_disabled_real_example():
         [index: /]
         messages:= Message.objects.all()
         
-        @react_client{
-            <Main>{
-                messages.map((message) =>
-                    <li key={message.id}>
-                      {message.text}
-                    </li>
-                  )
-            }</Main>
-        }
+        @react
         
         [messages: /messages]
         @crud(#message)

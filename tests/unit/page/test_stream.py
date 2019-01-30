@@ -40,9 +40,7 @@ def test_page_stream_expr_full_syntax():
         zoo:= 123
         goo:= 123
         
-        @react {
-            <Foo />
-        }
+        @react
         @stream(
             #lala{me.name=="hoho"} => foo, goo
             #lolo
