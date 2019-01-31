@@ -9,18 +9,23 @@ import {Provider} from 'react-redux'
 import axios from "axios";
 import RootRouter from "./router";
 import RootReducer from "./reducer";
+import StreamHandler from "./streams";
 
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
+
 const renderElement = (rootReducer, component, state) => {
     const store = createStore(RootReducer, {data: state});
+    const handler = new StreamHandler(store);
+
+    store.subscribe(handler.onStoreUpdate);
 
     store.dispatch({type: 'INIT'});
 
     return <Provider store={store}>
-               <RootRouter/>
-           </Provider>
+        <RootRouter/>
+    </Provider>
 };
 
 export const renderClient = (rootReducer, component, state, targetElement, hydrate) => {

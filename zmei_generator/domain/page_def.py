@@ -333,6 +333,30 @@ class PageDef(Extendable, FrozenClass):
             ''.join([x.capitalize() for x in self.name.split('_')])
         )
 
+    def list_own_or_parent_extensions(self, cls):
+        extensions = []
+        if self.get_parent():
+            extensions.extend(self.get_parent().list_own_or_parent_extensions(cls))
+        if self.supports(cls):
+            extensions.append(self[cls])
+        return extensions
+
+    def list_own_or_parent_functions(self):
+        functions = {}
+        if self.get_parent():
+            functions.update(self.get_parent().list_own_or_parent_functions())
+        functions.update(self.functions)
+        return functions
+
+    def get_own_or_parent_extension(self, cls):
+        if self.supports(cls):
+            return self[cls]
+
+        if self.get_parent():
+            return self.get_parent().get_own_or_parent_extension(cls)
+
+        return None
+
     @property
     def urls_line(self):
         _uri = self.uri

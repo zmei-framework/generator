@@ -1,4 +1,6 @@
 from textwrap import indent, dedent
+
+from zmei_generator.contrib.channels.extensions.pages.stream import StreamPageExtension
 from zmei_generator.contrib.react.extensions.page.react import ReactPageExtension
 from zmei_generator.generator.imports import ImportSet
 from zmei_generator.generator.utils import generate_file, format_uri
@@ -56,11 +58,14 @@ def generate(target_path, project):
 
                 return wrap(f'<{w} {{...this.props}}>\n{source}\n</{w}>', wrappers)
 
+            streams = page.list_own_or_parent_extensions(StreamPageExtension)
             generate_file(target_path, 'react/src/{}/pages/{}.jsx'.format(app_name, name),
                           'react/page.jsx.tpl', {
                               'imports': imports.import_sting_js(),
                               'name': name,
                               'page': page,
+                              'app_name': app_name,
+                              'streams': streams,
                               'source': wrap(f'<{name_ui}  {{...this.props}} />', wrappers)
                           })
 
@@ -87,6 +92,8 @@ def generate(target_path, project):
         })
         generate_file(target_path, 'app/utils/react.py', 'react/utils.py.tpl')
         generate_file(target_path, 'react/src/index.jsx', 'react/index.jsx.tpl')
+        generate_file(target_path, 'react/src/state.jsx', 'react/state.js.tpl')
+        generate_file(target_path, 'react/src/streams.jsx', 'react/streams.js.tpl')
         generate_file(target_path, 'react/src/reducer.jsx', 'react/reducer.js.tpl', {
             'name': 'Root'
         })

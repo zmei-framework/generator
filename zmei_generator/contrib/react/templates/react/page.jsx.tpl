@@ -1,7 +1,7 @@
 {{ imports }}
 import {connect} from "react-redux";
 import axios from "axios";
-import ReconnectingWebSocket from 'reconnecting-websocket';
+import {streamEnterAction, streamLeaveAction} from "../../streams";
 
 class {{ name }} extends React.Component {
 
@@ -13,15 +13,28 @@ class {{ name }} extends React.Component {
         }
         return response.data;
     };
-    {% if page.stream -%}
+    {% if streams %}
     componentDidMount = () => {
-        const socket = new ReconnectingWebSocket('ws://' + window.location.host + '/ws/pages' + window.location.pathname);
-        socket.onmessage = (e) => this.setState({data: JSON.parse(e.data)});
+        {% for stream in streams -%}
+        this.props.dispatch(
+            streamEnterAction(window.location.protocol.replace('http', 'ws') + '//' + window.location.host + '/ws/pages/{{ stream.page.application.app_name }}/{{ stream.page.name }}')
+        );
+        {%- endfor %}
     };
+
+    componentWillUnmount() {
+        setTimeout(() => {
+            {% for stream in streams -%}
+            this.props.dispatch(
+                streamLeaveAction(window.location.protocol.replace('http', 'ws') + '//' + window.location.host + '/ws/pages/{{ stream.page.application.app_name }}/{{ stream.page.name }}')
+            );
+            {%- endfor %}
+        }, 1000);
+    }
     {%- endif %}
 
     reload = () => axios.get('').then(this.setState);
-    {% for name, func in page.functions.items() %}
+    {% for name, func in page.list_own_or_parent_functions().items() %}
     {{ name }} = ({% if func.args %}{{ func.render_python_args() }}{% endif %}) => axios.post('', {'method': '{{ name }}'{% if func.args %}, args: [{{ func.render_python_args() }}]{% else %}{% endif %}}).then(this.setState);
     {%- endfor %}
 
