@@ -2,17 +2,21 @@ import re
 
 from zmei_generator.domain.application_def import ApplicationDef
 from zmei_generator.domain.extensions import PageExtension
+from zmei_generator.domain.frozen import FrozenClass
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
 
-class StreamModel(object):
+class StreamModel(FrozenClass):
 
     def __init__(self, page) -> None:
         self.page = page
-        self.target = None
+        self.model_app_name = None
+        self.model_class_name = None
         self.filter_expr = None
         self.fields = None
+
+        self._freeze()
 
     @property
     def class_name(self):
@@ -60,10 +64,11 @@ class StreamPageExtensionParserListener(BaseListener):
 
         if target.startswith('#'):
             model = self.application.resolve_model(target[1:])
-            stream_model.target = model.class_name
-            self.page.imports.append((f'{model.application.app_name}.models', model.class_name))
+            stream_model.model_class_name = model.class_name
+            stream_model.model_app_name = model.application.app_name
         else:
-            stream_model.target = target
+            stream_model.model_class_name = target.split('.')[-1]
+            stream_model.model_app_name = '.'.join(target.split('.')[:-1])
 
         self.page[StreamPageExtension].models.append(
             stream_model

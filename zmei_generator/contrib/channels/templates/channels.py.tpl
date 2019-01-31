@@ -11,7 +11,7 @@ class {{ page.view_name }}Consumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard('page_{{ page.name }}', self.channel_name)
 
-    {% for stream_model in page.stream.models %}
+    {% for stream_model in page[ext].models %}
     async def state_update__{{ stream_model.stream_name }}(self, event):
         if event['wait_db_sync']:
             await sleep(.3)
@@ -41,15 +41,15 @@ class {{ page.view_name }}Consumer(AsyncWebsocketConsumer):
 
 
 {% for stream_model in page[ext].models %}
-@receiver(post_save, sender={{ stream_model.class_name }})
-@receiver(post_delete, sender={{ stream_model.class_name }})
-@receiver(post_delete_bulk, sender={{ stream_model.class_name }})
-@receiver(post_bulk_create, sender={{ stream_model.class_name }})
-@receiver(post_get_or_create, sender={{ stream_model.class_name }})
-@receiver(post_update_or_create, sender={{ stream_model.class_name }})
-@receiver(post_update, sender={{ stream_model.class_name }})
-@receiver(m2m_changed, sender={{ stream_model.class_name }})
-def {{ page.name }}_{{ stream_model.class_name|lower }}_change_listener(sender=None, signal=None, instance=None, **kwargs):
+@receiver(post_save, sender={{ stream_model.model_class_name }})
+@receiver(post_delete, sender={{ stream_model.model_class_name }})
+@receiver(post_delete_bulk, sender={{ stream_model.model_class_name }})
+@receiver(post_bulk_create, sender={{ stream_model.model_class_name }})
+@receiver(post_get_or_create, sender={{ stream_model.model_class_name }})
+@receiver(post_update_or_create, sender={{ stream_model.model_class_name }})
+@receiver(post_update, sender={{ stream_model.model_class_name }})
+@receiver(m2m_changed, sender={{ stream_model.model_class_name }})
+def {{ page.name }}_{{ stream_model.model_class_name|lower }}_change_listener(sender=None, signal=None, instance=None, **kwargs):
     async_to_sync(channel_layer.group_send)("page_{{ page.name }}", {
         "type": f"state_update__{{ stream_model.stream_name }}",
         "wait_db_sync": signal not in (post_delete, m2m_changed),

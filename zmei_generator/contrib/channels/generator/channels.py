@@ -13,7 +13,7 @@ def generate(target_path, project):
     for app in project.applications.values():
         for page in app.pages_with(StreamPageExtension):
             streams.append((app, page))
-            imports.add(f'{app.app_name}.views', f'{page.view_name}Consumer')
+            imports.add(f'{app.app_name}.channels', f'{page.view_name}Consumer')
 
     generate_file(target_path, f'app/routing.py', 'channels.routing_main.tpl', context={
         'streams': streams,
@@ -32,10 +32,17 @@ def generate(target_path, project):
             imports.add('asgiref.sync', 'async_to_sync')
             imports.add('asyncio', 'sleep')
             imports.add('django.dispatch', 'receiver')
-            imports.add('zmei.json', 'ZmeiJsonEncoder')
+            imports.add('app.utils.rest', 'ZmeiJsonEncoder')
 
-            generate_file(target_path, f'{app.app_name}/views_channels.py', 'channels.py.tpl', context={
-                'pages': app.pages_with(StreamPageExtension),
+            pages = app.pages_with(StreamPageExtension)
+
+            for page in pages:
+                for model in page[StreamPageExtension].models:
+                    imports.add(f'{model.model_app_name}.models', model.model_class_name)
+                imports.add(f'.views', page.view_name)
+
+            generate_file(target_path, f'{app.app_name}/channels.py', 'channels.py.tpl', context={
+                'pages': pages,
                 'ext': StreamPageExtension,
                 'imports': imports,
             })

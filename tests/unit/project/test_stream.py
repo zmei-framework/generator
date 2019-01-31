@@ -44,6 +44,8 @@ def test_simple_reuse_another_app():
 
     assert bar.supports(StreamPageExtension)
 
-    assert bar[StreamPageExtension].models[0].target == 'Foo'
-    assert bar[StreamPageExtension].models[1].target == 'Boo'
+    assert bar[StreamPageExtension].models[0].model_class_name == 'Foo'
+    assert bar[StreamPageExtension].models[0].model_app_name == 'another'
+    assert bar[StreamPageExtension].models[1].model_class_name == 'Boo'
+    assert bar[StreamPageExtension].models[1].model_app_name == 'another'
 

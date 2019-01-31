@@ -66,7 +66,7 @@ class ZmeiJsonEncoder(JSONEncoder):
                          allow_nan=allow_nan, sort_keys=sort_keys, indent=indent, separators=separators,
                          default=default)
         if not view:
-            raise AttributeError('ZmeiReactJsonEncoder: View is required')
+            raise AttributeError('ZmeiJsonEncoder: View is required')
         self.view = view
 
         self.serializers_cache = {}
@@ -94,7 +94,7 @@ class ZmeiJsonEncoder(JSONEncoder):
             return str(o)
 
         print(
-            f'WARN: ZmeiReactJsonEncoder -> Do not know how to encode "{o.__class__}"', o)
+            f'WARN: ZmeiJsonEncoder -> Do not know how to encode "{o.__class__}"', o)
         return None
 
 
@@ -105,7 +105,7 @@ class ZmeiRemoteInvocationViewMixin(ZmeiDataViewMixin):
 
         accept = self.request.META.get('HTTP_ACCEPT')
         if accept and 'application/json' in accept:
-            return HttpResponse(ZmeiReactJsonEncoder(view=self).encode(self._get_data()),
+            return HttpResponse(ZmeiJsonEncoder(view=self).encode(self._get_data()),
                                 content_type='application/json')
 
         return self.render_to_response(context)
