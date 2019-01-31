@@ -1,11 +1,14 @@
 from zmei_generator.generator.imports import ImportSet
-from zmei_generator.generator.utils import generate_file, generate_urls_file, ThemeConfig
+from zmei_generator.generator.utils import generate_file, generate_urls_file, ThemeConfig, generate_package
 
 
 def generate(target_path, project):
+    has_views = False
+
     for app_name, application in project.applications.items():
         if not len(application.pages):  # and not application.rest:
             continue
+        has_views = True
 
         imports = ImportSet()
 
@@ -72,4 +75,8 @@ def generate(target_path, project):
                           template_name='theme/base_app.html', context={
                     'application': application,
                 })
+
+    if has_views:
+        generate_package('app.utils')
+        generate_file(target_path, 'app/utils/views.py', template_name='views.utils.py.tpl')
 

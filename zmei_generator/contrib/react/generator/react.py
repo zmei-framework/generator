@@ -85,6 +85,7 @@ def generate(target_path, project):
         generate_file(target_path, f'react/src/index.scss', 'react/index.scss.tpl', {
             'pages': react_pages
         })
+        generate_file(target_path, 'app/utils/react.py', 'react/utils.py.tpl')
         generate_file(target_path, 'react/src/index.jsx', 'react/index.jsx.tpl')
         generate_file(target_path, 'react/src/reducer.jsx', 'react/reducer.js.tpl', {
             'name': 'Root'

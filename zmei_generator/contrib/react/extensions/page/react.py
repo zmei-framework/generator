@@ -12,8 +12,14 @@ class ReactPageExtension(PageExtension):
         self.area = None
         self.code = None
 
+    # def get_required_deps(self):
+    #     return ['py_mini_racer']
+
+    def get_required_apps(self):
+        return ['rest_framework']
+
     def get_required_deps(self):
-        return ['py_mini_racer']
+        return ['djangorestframework']
 
     def modify_extension_bases(self, bases):
         return super().modify_extension_bases(bases)
@@ -25,7 +31,7 @@ class ReactPageExtension(PageExtension):
         reducer_cmp = f'Page{self.page.name.capitalize()}Reducer'
         cmp = f'Page{self.page.name.capitalize()}Component'
 
-        self.page.imports.append(('zmei.react', 'ZmeiReactViewMixin'))
+        self.page.imports.append(('app.utils.react', 'ZmeiReactViewMixin'))
 
         self.page.add_block('content', InlinePageBlock(f"""
             <div id="reactEl-{cmp}">{{{{ react_page_{cmp}|default:""|safe }}}}</div>

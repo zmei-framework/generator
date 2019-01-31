@@ -60,7 +60,7 @@ class CrudCreatePageExtension(BaseCrudSubpageExtension):
         )
 
         base_page.imports.append(
-            ('zmei.views', 'RedirectAction')
+            ('app.utils.views', 'RedirectAction')
         )
 
         # Form requires post
@@ -79,7 +79,7 @@ class CrudCreatePageExtension(BaseCrudSubpageExtension):
             {self.get_form_action()}    
         """
         if self.next_page_expr:
-            base_page.imports.append(('zmei.views', 'RedirectAction'))
+            base_page.imports.append(('app.utils.views', 'RedirectAction'))
             code += f"""
                 raise RedirectAction({self.next_page_expr})
             """

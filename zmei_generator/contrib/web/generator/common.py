@@ -106,7 +106,6 @@ def generate(target_path, project):
     generate_file(target_path, 'app/templates/base.html', template_name='theme/base.html')
 
     requirements = [
-        'zmei-utils>=0.1.15',
         'wheel',
         'django>2',
     ]
@@ -131,4 +130,5 @@ def generate(target_path, project):
                 f.write('\n')
                 f.write('Compile translations:\n')
                 f.write('django-admin compilemessages\n')
+
 

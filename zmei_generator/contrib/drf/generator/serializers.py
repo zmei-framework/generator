@@ -3,11 +3,15 @@ import os
 from zmei_generator.contrib.drf.extensions.model.api import ApiModelExtension
 from zmei_generator.contrib.drf.extensions.model.rest import RestModelExtension
 from zmei_generator.generator.imports import ImportSet
-from zmei_generator.generator.utils import generate_file, package_to_path
+from zmei_generator.generator.utils import generate_file, package_to_path, generate_package
 
 
 def generate(target_path, project):
-    for app_name, application in project.applications_with(ApiModelExtension):
+    has_api = False
+    for application in project.applications_with(ApiModelExtension):
+        app_name = application.app_name
+
+        has_api = True
         imports = ImportSet()
         imports.add('rest_framework', 'serializers')
 
@@ -54,3 +58,12 @@ def generate(target_path, project):
             'models': [(name, model) for name, model in application.models.items() if model.supports(RestModelExtension)],
             'imports': imports
         })
+
+    has_pages = False
+    for application in project.applications.values():
+        if len(application.pages):
+            has_pages = True
+
+    if has_api or has_pages:
+        generate_package('app.utils')
+        generate_file(target_path, 'app/utils/rest.py', template_name='rest.utils.py.tpl')

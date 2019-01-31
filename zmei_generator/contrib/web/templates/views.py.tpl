@@ -5,11 +5,6 @@
 
 from django.utils.translation import gettext_lazy as _
 
-{%- if application.react %}
-rs = ZmeiReactServer()
-rs.load(settings.BASE_DIR + '/app/static/react/{{ application.app_name }}.bundle.js')
-{% endif -%}
-
 {% for page in pages %}
 {% if page.name == 'global' %}
 def global_context(request):
