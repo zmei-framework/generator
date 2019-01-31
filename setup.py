@@ -49,6 +49,7 @@ setup(
 
     install_requires=[
         "markdown",
+        "readchar",
         "autopep8",
         "django",
         'pip>8.0.0',

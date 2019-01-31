@@ -11,10 +11,13 @@ import threading
 import zipfile
 
 from contextlib import contextmanager
+from difflib import Differ
 from glob import glob
 from io import BytesIO
 from select import select
 
+import click
+import readchar
 from itertools import chain
 from shutil import rmtree
 
@@ -97,13 +100,56 @@ def write_generated_file(path, source):
         source_prefix = f"{{# {tag} #}}\n\n"
 
     if os.path.exists(path):
-        generated, changed, file_checksum = is_generated_file(path)
+        real_source, generated, changed, file_checksum = is_generated_file(path)
 
         if generated:
             if changed:
-                print(colored(f' ! {path}', 'white', 'on_red'),
-                      'Checksum failed: remove "generated" comment from file, or remove file if it is changed unintentionally')
-                return  # checksum failed. Changed by hands?
+                if sys.stdout.isatty():
+                    parts = path.split('/')
+                    print_path = colored(' ? ', 'white', 'on_red') + '   ' + '/'.join(parts[:-1]) + '/'
+                    print_path += colored(parts[-1], 'yellow')
+
+                    valid = False
+                    answer = None
+                    while not valid:
+                        print(f'{print_path}\nFile is modified. Should I remove "generated" marker? \n'
+                              f'(o = overwrite, d = show diff, a = abort, i = ignore, y = remove marker) [i]: ', end='')
+                        answer = readchar.readchar()
+                        if answer == 'd':
+                            for line in Differ().compare(
+                                real_source.splitlines(keepends=True),
+                                source.splitlines(keepends=True)
+                            ):
+                                if line[0] in ('+', '-'):
+                                    line = {'+': colored(line, 'green'), '-': colored(line, 'red')}[line[0]]
+
+                                sys.stdout.write(line)
+
+                        valid = answer in ['o', 'i', 'y']
+
+                        if answer == 'a' or ord(answer) in (3, 4):
+                            raise KeyboardInterrupt
+
+                        if answer.strip() == '':
+                            answer = 'i'
+                            valid = True
+
+                        if not valid and answer != 'd':
+                            print(ord(answer))
+                            print('Invalid input.')
+                        print('\n')
+
+                    if answer == 'o':
+                        pass  # overwrite
+                    elif answer == 'y':
+                        source = real_source
+                        source_prefix = ''
+                    else:
+                        return
+                else:
+                    print(colored(' ! ', 'white', 'on_red'), ' ', path)
+                    return
+
             else:
                 if file_checksum == chksum:
                     return  # already up to date
@@ -129,7 +175,7 @@ def is_generated_file(path):
     Checks if file is generated, and is it changed
     :param path:
 
-    :return: generated, changed, checksum
+    :return: real_source, generated, changed, checksum
     """
     with open(path, 'r') as f:
         content = f.read()
@@ -142,9 +188,9 @@ def is_generated_file(path):
             data = {}
 
         try:
-            file_chk_expected = data.get(PACKAGE_JSON_TOKEN)
+            file_chk_expected = data[PACKAGE_JSON_TOKEN]
         except KeyError:
-            return False, False, None
+            return content, False, False, None
 
         data = json.loads(content)
         if PACKAGE_JSON_TOKEN in data:
@@ -154,7 +200,7 @@ def is_generated_file(path):
     else:
         match = re.match('^(<!--\s*)?({|//)?# generated: ([a-f0-9]{32})( #})?(\s*-->)?\n\n', content)
         if not match:
-            return False, False, None
+            return content, False, False, None
 
         file_chk_expected = match.group(3)
         real_source = content[len(match.group(0)):]
@@ -162,9 +208,9 @@ def is_generated_file(path):
     file_chk_real = source_hash(real_source)
 
     if file_chk_expected != file_chk_real:
-        return True, True, file_chk_real  # checksum failed. Changed by hands?
+        return real_source, True, True, file_chk_real  # checksum failed. Changed by hands?
     else:
-        return True, False, file_chk_real
+        return real_source, True, False, file_chk_real
 
 
 def source_hash(source):
@@ -202,7 +248,7 @@ def clean_up_generated_files(path, file_list, remove_root=False):
             clean_up_generated_files(fullpath, file_list, remove_root=True)
         else:
             if file[0] != '.' and file.split('.')[-1] in ('js', 'jsx', 'py', 'html', 'dart'):
-                generated, changed, file_checksum = is_generated_file(fullpath)
+                real_source, generated, changed, file_checksum = is_generated_file(fullpath)
 
                 if generated and (fullpath not in file_list):
                     if changed:
@@ -280,7 +326,7 @@ def collect_files(src):
         files = zipfile.ZipFile(f, mode='w', compression=zipfile.ZIP_LZMA)
 
         for path in get_collect_paths():
-            generated, changed, checksum = is_generated_file(path)
+            real_source, generated, changed, checksum = is_generated_file(path)
 
             if not generated or changed:
                 files.write(path)
