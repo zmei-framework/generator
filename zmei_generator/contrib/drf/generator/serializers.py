@@ -65,5 +65,5 @@ def generate(target_path, project):
             has_pages = True
 
     if has_api or has_pages:
-        generate_package('app.utils')
+        generate_package('app.utils', path=target_path)
         generate_file(target_path, 'app/utils/rest.py', template_name='rest.utils.py.tpl')

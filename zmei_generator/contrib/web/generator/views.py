@@ -77,6 +77,6 @@ def generate(target_path, project):
                 })
 
     if has_views:
-        generate_package('app.utils')
+        generate_package('app.utils', path=target_path)
         generate_file(target_path, 'app/utils/views.py', template_name='views.utils.py.tpl')
 
