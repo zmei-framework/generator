@@ -40,3 +40,14 @@ MEDIA_ROOT = '/var/www/var/media/'
 CELERY_BROKER_URL = 'redis://redis'
 CELERY_RESULT_BACKEND = 'redis://redis'
 {% endif %}
+
+{% if has_channels %}
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },
+    },
+}
+{% endif %}

@@ -79,7 +79,8 @@ def write_generated_file(path, source):
     source_prefix = ''
 
     if path.endswith('.py') or path.endswith('.yaml') or path.endswith('.yml') or path.endswith('_requirements.txt')\
-            or path.endswith('requirements.prod.txt') or path.endswith('Dockerfile'):
+            or path.endswith('requirements.prod.txt') or path.endswith('Dockerfile') or path.endswith('nginx.conf') \
+            or path.endswith('.ini'):
         # settings.py is specially designed to be overriden
         if not path.endswith('app/settings.py') \
                 and not path.endswith('app/tasks.py') \

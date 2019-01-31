@@ -49,9 +49,24 @@ server {
     location @django {
         set $backend_servers app;
 
+        {% if has_channels %}
+        proxy_pass http://$backend_servers:8000;
+
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Host $server_name;
+        {% else %}
         include uwsgi_params;
         uwsgi_read_timeout 30;
         uwsgi_pass $backend_servers:8000;
+        {% endif %}
+
     }
 
 }

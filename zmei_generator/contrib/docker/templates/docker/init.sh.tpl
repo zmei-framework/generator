@@ -12,5 +12,8 @@ User = get_user_model()
 User.objects.filter(username="{{ admin_user }}").exists() or \
     User.objects.create_superuser("{{ admin_user }}", "", "{{ admin_pass }}")
 EOF
-
+{% if has_channels %}
+daphne -b 0.0.0.0 -p 8000 app.asgi:application
+{% else %}
 uwsgi --ini deploy/uwsgi.ini
+{% endif %}
