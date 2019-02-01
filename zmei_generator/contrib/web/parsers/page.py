@@ -65,8 +65,9 @@ class PageParserListener(BaseListener):
         func = PageFunction()
         func.name = ctx.page_function_name().getText()
         if ctx.page_function_args():
-            func.out_args = [x.strip() for x in ctx.page_function_args().getText().split(',')]
-            func.args = [x for x in func.out_args if x not in ('url', 'request')]
+            all_args = ctx.page_function_args().getText().split(',')
+            func.out_args = [x.strip(' .') for x in all_args]
+            func.args = [x for x in all_args if x not in ('url', 'request')]
         else:
             func.args = []
 

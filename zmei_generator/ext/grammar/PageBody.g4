@@ -46,4 +46,6 @@ page_function:
 
 page_function_name : id_or_kw ;
 
-page_function_args : id_or_kw (COMA id_or_kw)*;
+page_function_args : page_function_arg (COMA page_function_arg)*;
+
+page_function_arg : DOT? id_or_kw ;

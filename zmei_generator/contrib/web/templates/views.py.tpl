@@ -32,6 +32,10 @@ class {{ page.view_name }}({% if page.get_extension_bases() %}{{ page.get_extens
     {{ page.render_template_name_expr()|indent(4) }}
     {% for name, func in page.functions.items() %}
     def {{ func.python_name }}(self, url, request{% if func.args %}, {{ func.render_python_args() }}{% endif %}):
+        {% if func.has_data_arg %}data = self._get_data()
+        {% for arg in func.get_data_args() %}
+        {{ arg }} = data.get('{{ arg }}'){% endfor %}
+        {% endif %}
         {% if func.body -%}
         {{ func.body|indent(8) }}
         {%- else -%}

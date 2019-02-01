@@ -135,14 +135,11 @@ class ZmeiRemoteInvocationViewMixin(ZmeiDataViewMixin):
 
         method = getattr(self, method_name)
 
-        try:
-            result = method(
-                type('url', (object,), self.kwargs),
-                request,
-                *(call.get('args') or [])
-            )
-        except Exception as e:
-            return self._remote_response(self.error(str(e)))
+        result = method(
+            type('url', (object,), self.kwargs),
+            request,
+            *(call.get('args') or [])
+        )
 
         if not result:
             return self._remote_response(self.state(self._get_data()))

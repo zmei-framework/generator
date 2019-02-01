@@ -18,7 +18,25 @@ class PageFunction(Extendable):
         self.body = None
 
     def render_python_args(self, out=False):
-        return ', '.join(self.args if not out else self.out_args)
+        return ', '.join(self.get_remote_args() if not out else self.out_args)
+
+    def is_data_arg(self, arg):
+        if arg.startswith('.'):
+            return True
+        return False
+
+    def get_remote_args(self):
+        return [x for x in self.args if not self.is_data_arg(x)]
+
+    def get_data_args(self):
+        return [x[1:] for x in self.args if self.is_data_arg(x)]
+
+    @property
+    def has_data_arg(self):
+        for arg in self.args:
+            if self.is_data_arg(arg):
+                return True
+        return False
 
     @property
     def python_name(self):

@@ -56,7 +56,7 @@ def generate(target_path, project):
 
                 w = cmp_list.pop()
 
-                return wrap(f'<{w} {{...this.props}}>\n{source}\n</{w}>', wrappers)
+                return wrap(f'<{w} {{...this.props}} page={{this}}>\n{source}\n</{w}>', wrappers)
 
             streams = page.list_own_or_parent_extensions(StreamPageExtension)
             generate_file(target_path, 'react/src/{}/pages/{}.jsx'.format(app_name, name),
@@ -66,7 +66,7 @@ def generate(target_path, project):
                               'page': page,
                               'app_name': app_name,
                               'streams': streams,
-                              'source': wrap(f'<{name_ui}  {{...this.props}} />', wrappers)
+                              'source': wrap(f'<{name_ui}  {{...this.props}} page={{this}} />', wrappers)
                           })
 
             generate_file(target_path, f'react/src/{app_name}/pages/{name_ui}.jsx',

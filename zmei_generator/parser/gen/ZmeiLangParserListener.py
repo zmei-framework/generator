@@ -1826,6 +1826,15 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#page_function_arg.
+    def enterPage_function_arg(self, ctx:ZmeiLangParser.Page_function_argContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#page_function_arg.
+    def exitPage_function_arg(self, ctx:ZmeiLangParser.Page_function_argContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#page_annotation.
     def enterPage_annotation(self, ctx:ZmeiLangParser.Page_annotationContext):
         pass

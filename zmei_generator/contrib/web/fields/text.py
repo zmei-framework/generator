@@ -15,8 +15,8 @@ class DefaultTextMixin(FieldDef):
         if not self.extension_args_append and self.extension_args:
             return args
 
-        if not self.required and 'required' not in args:
-            args['default'] = ''
+        # if not self.required and 'required' not in args:
+        #     args['default'] = ''
 
         return args
 

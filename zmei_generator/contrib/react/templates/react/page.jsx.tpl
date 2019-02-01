@@ -1,7 +1,8 @@
 {{ imports }}
 import {connect} from "react-redux";
 import axios from "axios";
-import {streamEnterAction, streamLeaveAction} from "../../streams";
+import {reloadPageDataAction} from "../../state";{% if streams %}
+import {streamEnterAction, streamLeaveAction} from "../../streams";{% endif %}
 
 class {{ name }} extends React.Component {
 
