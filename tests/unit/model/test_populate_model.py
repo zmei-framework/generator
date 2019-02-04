@@ -135,6 +135,28 @@ def test_verbose_name():
     assert foo.fields['title4'].verbose_name == 'This is title4'
 
 
+def test_verbose_name_real():
+    app = _("""
+
+        #tootaja_report: "Töötaja report"/"Töötaja reportid"
+        --------------------
+        *tooline: one(auth.User -> repordid)
+        
+        tooaeg_paevane: int /"Tööaeg päevane kokku (kella 6:00-21:59:59)"
+        tooaeg_oine: int /"Tööaeg öine kokku (Kella 22:00:00-5:59:59"
+        tooaeg_kokku: int /"Töötunnid kokku (päevane ja öine)"
+        haigusleht: int /"Haigusleht (mitu tk. kuus)"
+        puhkuse_paev: int /"Puhkuse päev (mitu tk. kuus)"
+
+
+    """)
+
+    assert len(app.models) == 1
+
+    foo = app.models['tootaja_report']
+    assert foo.fields['tooaeg_paevane'].verbose_name == 'Tööaeg päevane kokku (kella 6:00-21:59:59)'
+
+
 def test_help():
     app = _("""
 

@@ -41,3 +41,23 @@ def test_calculated_field():
 
     assert a.get_model_field() is None
     assert a.admin_list_renderer.strip() == "return obj.a"
+
+
+def test_calculated_field2():
+    app = _("""    
+        
+        #dog
+        -------
+        sound:= 'Bark!'
+    """)
+
+    dog = app.models['dog']
+    a = dog.fields['sound']
+
+    assert isinstance(a, ExpressionFieldDef)
+    print('Type is', a.type_name)
+    assert a.expression == "'Bark!'"
+    assert a.static is False
+    assert a.boolean is False
+    assert a in dog.expression_fields
+    assert a not in dog.own_fields_non_expr

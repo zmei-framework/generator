@@ -181,7 +181,8 @@ class PageDef(Extendable, FrozenClass):
         bases_collected = [x for x in self.extension_bases if x not in all_bases]
 
         for extension in self._extensions.values():  # type: PageExtension
-            bases_collected = extension.get_extension_bases(bases_collected)
+            if isinstance(extension, PageExtension):
+                bases_collected = extension.get_extension_bases(bases_collected)
 
         return bases_collected
 
@@ -295,7 +296,7 @@ class PageDef(Extendable, FrozenClass):
         imports = self.imports
 
         if len(self.functions):  # or self._flutter:
-            imports.append(('app.utils.react', 'ZmeiRemoteInvocationViewMixin'))
+            imports.append(('app.utils.rest', 'ZmeiRemoteInvocationViewMixin'))
 
         imports.append(('app.utils.views', 'ZmeiDataViewMixin'))
 

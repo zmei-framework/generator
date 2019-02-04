@@ -174,13 +174,12 @@ class RelationManyDef(RelationDef):
         )
 
     def get_admin_widget(self):
-        if not self.model.application.features.cratis:
-            return None
+        return None  # TODO: requires to install package and url, which is not implemented now
 
-        return FieldDeclaration(
-            [('django_select2.forms', 'Select2MultipleWidget')],
-            'Select2MultipleWidget'
-        )
+        # return FieldDeclaration(
+        #     [('django_select2.forms', 'Select2MultipleWidget')],
+        #     'Select2MultipleWidget'
+        # )
 
     @property
     def admin_list_renderer(self):

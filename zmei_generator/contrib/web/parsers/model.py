@@ -100,6 +100,8 @@ class ModelParserListener(BaseListener):
         if not self.field:
             self.field = TextFieldDef(self.model, self.field_config)
 
+        self.field.load_field_config()
+
         self.model.fields[self.field.name] = self.field
         self.field = None
         self.field_config = None

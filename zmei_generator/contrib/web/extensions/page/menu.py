@@ -115,7 +115,9 @@ class MenuPageExtensionParserListener(BaseListener):
         self.application.extensions.append(
             extension
         )
-        self.page.register_extension(extension)
+
+    def exitAn_menu(self, ctx: ZmeiLangParser.An_menuContext):
+        self.page.register_extension(self.menu)
 
     def enterAn_menu_descriptor(self, ctx: ZmeiLangParser.An_menu_descriptorContext):
         self.menu.descriptor = ctx.getText()

@@ -21,12 +21,36 @@ class FieldDef(Extendable):
     def __init__(self, model: ModelDef, field: FieldConfig) -> None:
         super().__init__()
 
+        self.field_config = field
+
+        self.model = model
+
         self.type_name = field.type_name
+        self.name = None
+        self.verbose_name = None
+        self.help = None
+        self.required = None
+        self.not_null = None
+        self.unique = None
+        self.index = None
+        self.display_field = None
+        self.translatable = None
+        self.comment = None
+
+        self.read_only = False
+        self.inline = False
+        self.extension_args = None
+        self.extension_args_append = False
+
+        self.options = None
+
+    def load_field_config(self):
+
+        field = self.field_config
+
         self.name = field.name
         self.verbose_name = field.verbose_name
         self.help = field.field_help
-
-        self.model = model
         self.required = field.required
         self.not_null = field.not_null
         self.unique = field.unique
@@ -35,16 +59,9 @@ class FieldDef(Extendable):
         self.translatable = field.translatable
         self.comment = field.comment.strip() if field.comment else None
 
-        self.read_only = False
-
-        self.inline = False
-
-        self.extension_args = None
-        self.extension_args_append = False
-
         if self.translatable:
-            model.translatable = True
-            model.application.translatable = True
+            self.model.translatable = True
+            self.model.application.translatable = True
 
         self.options = field.type_opts
 

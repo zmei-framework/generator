@@ -2,6 +2,7 @@ from django.conf.locale import LANG_INFO
 
 from zmei_generator.domain.application_def import ApplicationDef
 from zmei_generator.domain.extensions import ApplicationExtension
+from zmei_generator.parser.errors import ValidationError
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 from zmei_generator.parser.utils import BaseListener
 
@@ -26,11 +27,14 @@ class LangsAppExtension(ApplicationExtension):
     def write_settings(cls, apps, f):
         _langs = {}
         for app in apps.values():
-            if not app.langs:
+            if not app.supports(LangsAppExtension):
                 continue
-            for code in app.langs.langs:
-                name = LANG_INFO[code]['name_local'].capitalize()
-                _langs[code] = name
+            for code in app[LangsAppExtension].langs:
+                try:
+                    name = LANG_INFO[code]['name_local'].capitalize()
+                    _langs[code] = name
+                except KeyError:
+                    raise ValidationError(0,0, f'Unknown language {code}. Available options are: {", ".join(LANG_INFO.keys())}')
 
         if len(_langs) == 0:
             _langs = {'en': 'English'}
