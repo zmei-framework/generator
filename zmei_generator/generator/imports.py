@@ -36,6 +36,7 @@ class ImportSet(object):
 
     def get_items(self):
         def simplify(a, b):
+            # print(a, b)
             if b == '*':
                 a = [x for x in a if ' as ' in x]
 
@@ -47,7 +48,7 @@ class ImportSet(object):
 
             return a + [b]
 
-        return sorted([(source, reduce(simplify, values, [])) for source, values in self.imports.items() if source])
+        return sorted([(source, reduce(simplify, values, [])) for source, values in self.imports.items()])  # NB! source maybe None as well
 
     def import_sting_js(self):
         items = self.get_items()
