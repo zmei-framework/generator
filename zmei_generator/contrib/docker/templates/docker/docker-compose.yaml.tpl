@@ -42,6 +42,8 @@ services:
       labels:
         - "traefik.port=80"
         - "traefik.frontend.rule=PathPrefix:/"
+        - "traefik.frontend.passHostHeader=true"
+        - "traefik.frontend.whiteList.useXForwardedFor=true"
         - "traefik.frontend.rule=Host:${APP_HOSTNAME}"
         - "traefik.docker.network=proxy"
 

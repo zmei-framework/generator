@@ -47,7 +47,7 @@ class {{ page.view_name }}({% if page.get_extension_bases() %}{{ page.get_extens
         {%- if page.parent_name %}
         data = super().get_data(url, request, inherited)
         {% else %}
-        data = {}
+        data = Data()
         {% endif %}
         {% if code %}{{ code|indent(8) }}{% endif %}
         {%- if page.page_item_names %}

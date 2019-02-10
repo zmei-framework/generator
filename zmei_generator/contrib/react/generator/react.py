@@ -44,6 +44,7 @@ def generate(target_path, project):
             index_imports.add(f'./pages/{name}', '*' + name)
 
             wrappers = [
+                f'PageContextProvider',
                 f'BaseLayout',
                 f'{app_name.capitalize()}Layout'
             ]

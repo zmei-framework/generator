@@ -7,12 +7,9 @@ class ImproperlyConfigured(Exception):
     pass
 
 
-class _Data(object):
-    def __init__(self, data=None):
-        self.__dict__.update(data or {})
-
-    def __add__(self, data):
-        return _Data({**self.__dict__, **data})
+class Data(dict):
+    def __getattr__(self, item):
+        return self[item]
 
 
 class RedirectAction(Exception):

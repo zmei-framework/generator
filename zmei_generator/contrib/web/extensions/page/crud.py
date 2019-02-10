@@ -271,7 +271,7 @@ class CrudPageExtension(PageExtension):
         if self.create_list:
             self.links['list'] = f"{link_page.application.app_name}.{link_page.name}"
 
-        if self.parent_base_page:
+        if self.parent_base_page and 'list' in self.links:
             self.links['parent'] = self.links['list']
 
     def format_link(self, kind):

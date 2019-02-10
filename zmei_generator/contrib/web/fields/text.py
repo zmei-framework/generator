@@ -51,20 +51,22 @@ class SlugFieldDef(DefaultTextMixin, FieldDef):
     def get_model_field(self):
         max_len = 0
 
-        for field_name in self.field_names:
-            if field_name not in model.all_and_inherited_fields_map:
-                raise ValidationException(
-                    'Slug field "{}" can not find field "{}" in the model'.format(self.name, field_name))
+        # TODO: get validation back
+        # for field_name in self.field_names:
+        #
+        #     if field_name not in self.model.all_and_inherited_fields_map:
+        #         raise ValidationException(
+        #             'Slug field "{}" can not find field "{}" in the model'.format(self.name, field_name))
+        #
+        #     target_field = self.model.all_and_inherited_fields_map[field_name]
+        #
+        #     if not isinstance(target_field, TextFieldDef):
+        #         raise ValidationException(
+        #             'Slug field "{}" target field is not of type text()'.format(self.name))
+        #
+        #     max_len += target_field.max_length
 
-            target_field = model.all_and_inherited_fields_map[field_name]
-
-            if not isinstance(target_field, TextFieldDef):
-                raise ValidationException(
-                    'Slug field "{}" target field is not of type text()'.format(self.name))
-
-            max_len += target_field.max_length
-
-        args = self.prepare_field_arguemnts({'max_length': max_len})
+        args = self.prepare_field_arguemnts({'max_length': 100})
 
         return FieldDeclaration(
             [('django.db', 'models')],

@@ -52,7 +52,7 @@ def add_page_auth(auth_expr, page):
 
 
 def need_add_auth(page):
-    if page[AuthPageExtension].is_added:
+    if page.supports(AuthPageExtension) and page[AuthPageExtension].is_added:
         return False
 
     if page.parent_name:

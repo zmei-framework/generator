@@ -1,3 +1,4 @@
+import React, { Component, createContext } from "react";
 
 export const reloadPageDataAction = (newState) => ({
     /**
@@ -15,3 +16,19 @@ export const pageDataReducer = (state, action) => {
 
     return state || {};
 };
+
+
+const PageContext = createContext({page: null});
+
+class PageContextProvider extends Component {
+   render() {
+      return (
+         <PageContext.Provider value={ {page: this.props.page } }>
+            {this.props.children}
+         </PageContext.Provider>
+      );
+   }
+}
+const PageContextConsumer = PageContext.Consumer;
+
+export { PageContextProvider, PageContextConsumer };

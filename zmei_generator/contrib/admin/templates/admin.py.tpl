@@ -120,7 +120,7 @@ class {{ model.class_name }}Admin({{ model[ext].class_declaration }}):
     {% if field.admin_list_renderer %}
     def get_{{ field.name }}(self, obj):
         {{ field.admin_list_renderer }}
-    get_{{ field.name }}.short_description = {{ field.verbose_name|repr }}
+    get_{{ field.name }}.short_description = {{ field.verbose_name or field.name|repr }}
     get_{{ field.name }}.allow_tags = True{% if field.boolean %}
     get_{{ field.name }}.boolean = True{% endif %}
     {% endif %}

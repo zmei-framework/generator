@@ -48,7 +48,7 @@ class ModelDef(Extendable, FrozenClass):
         self._freeze()
 
     def post_process(self):
-        for field in self.fields.values():
+        for field in list(self.fields.values()):
             field.post_process()
 
     def set_parent(self, parent):

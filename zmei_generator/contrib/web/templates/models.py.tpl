@@ -13,9 +13,9 @@ class {{ col.class_name }}({% for import_str, class_name, alias in col.mixin_cla
     """
 
     {% if col.tree and col.polymorphic %}
-    parent = PolymorphicTreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
+    parent = PolymorphicTreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True, on_delete=models.PROTECT)
     {% elif col.tree %}
-    parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True, on_delete=models.PROTECT)
     {% endif %}
 
     {% for field in col.own_fields_non_expr %}

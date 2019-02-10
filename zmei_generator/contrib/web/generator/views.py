@@ -21,6 +21,9 @@ def generate(target_path, project):
 
             for page in application.pages.values():
 
+                if not page.parent_name:
+                    imports.add('app.utils.views', 'Data')
+
                 for import_spec in page.get_imports():
                     imports.add(*import_spec)
 

@@ -100,6 +100,7 @@ env.filters['to_name'] = to_name
 env.filters['repr'] = repr
 env.globals['include_block'] = include_block
 
+NO_PEP = os.environ.get('NOFORMAT')
 
 def generate_file(target_path, filename, template_name, context=None, raw=False):
     """
@@ -122,7 +123,7 @@ def generate_file(target_path, filename, template_name, context=None, raw=False)
         else:
             rendered = render_file(template_name)
 
-        if filename.endswith('.py'):
+        if not NO_PEP and filename.endswith('.py'):
             rendered = autopep8.fix_code(rendered)
 
         f.write(rendered)

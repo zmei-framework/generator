@@ -1,7 +1,8 @@
 {{ imports }}
 import {connect} from "react-redux";
 import axios from "axios";
-import {reloadPageDataAction} from "../../state";{% if streams %}
+import {withRouter} from "react-router-dom";
+import {PageContextProvider, reloadPageDataAction} from "../../state";{% if streams %}
 import {streamEnterAction, streamLeaveAction} from "../../streams";{% endif %}
 
 class {{ name }} extends React.Component {
@@ -21,6 +22,7 @@ class {{ name }} extends React.Component {
             streamEnterAction(window.location.protocol.replace('http', 'ws') + '//' + window.location.host + '/ws/pages/{{ stream.page.application.app_name }}/{{ stream.page.name }}')
         );
         {%- endfor %}
+        this.reload();
     };
 
     componentWillUnmount() {
@@ -32,11 +34,15 @@ class {{ name }} extends React.Component {
             {%- endfor %}
         }, 1000);
     }
+    {% else %}
+    componentDidMount() {
+        this.reload();
+    }
     {%- endif %}
 
     reload = () => axios.get('').then(this.setState);
     {% for name, func in page.list_own_or_parent_functions().items() %}
-    {{ name }} = ({% if func.args %}{{ func.render_python_args() }}{% endif %}) => axios.post('', {'method': '{{ name }}'{% if func.args %}, args: [{{ func.render_python_args() }}]{% else %}{% endif %}}).then(this.setState);
+    {{ name }} = ({% if func.args %}{{ func.render_python_args() }}{% endif %}) => axios.post(window.location.href, {'method': '{{ name }}'{% if func.args %}, args: [{{ func.render_python_args() }}]{% else %}{% endif %}}).then(this.setState);
     {%- endfor %}
 
     render() {
@@ -54,5 +60,7 @@ class {{ name }} extends React.Component {
         return {dispatch}
     },
 )({{ name }});
+
+{{ name }} = withRouter({{ name }});
 
 export default {{ name }};

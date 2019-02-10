@@ -41,7 +41,7 @@ def generate(target_path, project):
     urls.append(']')
 
     for app_name, application in project.applications.items():
-        if has_i18n_pages:
+        if any([page.i18n for page in application.pages.values()]):
             urls += [
                 'urlpatterns += i18n_patterns(',
                 f"    url(r'^', include({app_name}.urls_i18n)),",

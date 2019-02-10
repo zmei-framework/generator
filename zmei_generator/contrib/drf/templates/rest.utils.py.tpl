@@ -105,7 +105,7 @@ class ZmeiRemoteInvocationViewMixin(ZmeiDataViewMixin):
 
         accept = self.request.META.get('HTTP_ACCEPT')
         if accept and 'application/json' in accept:
-            return HttpResponse(ZmeiJsonEncoder(view=self).encode(self._get_data()),
+            return HttpResponse(ZmeiJsonEncoder(view=self).encode(self.state(self._get_data())),
                                 content_type='application/json')
 
         return self.render_to_response(context)

@@ -1,3 +1,4 @@
+from zmei_generator.contrib.web.fields.expression import ExpressionFieldDef
 from zmei_generator.domain.application_def import FieldDeclaration
 from zmei_generator.domain.reference_field import ReferenceField
 from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
@@ -114,6 +115,9 @@ class AdminModelExtension(ModelExtension):
         for name, tab_name in self.tab_fields.items():
             # skip references
             if isinstance(self.model.all_and_inherited_fields_map[name], ReferenceField):
+                continue
+
+            if isinstance(self.model.all_and_inherited_fields_map[name], ExpressionFieldDef):
                 continue
 
             if tab_name == tab:
