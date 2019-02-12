@@ -44,7 +44,7 @@ class CrudCreatePageExtension(BaseCrudSubpageExtension):
         return '[' + ', '.join([repr(x) for x in self.fields]) + ']'
 
     def get_form_init(self):
-        return f"request.POST if request.method == 'POST' else None, instance={self.model_cls}({self.query})"
+        return f"request.POST if request.method == 'POST' else None, request.FILES if request.method == 'POST' else None, instance={self.model_cls}({self.query})"
 
     def get_form_action(self):
         form_name = f'form{self.name_suffix}'

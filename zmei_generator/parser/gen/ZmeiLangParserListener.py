@@ -1925,6 +1925,15 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ZmeiLangParser#an_react_child.
+    def enterAn_react_child(self, ctx:ZmeiLangParser.An_react_childContext):
+        pass
+
+    # Exit a parse tree produced by ZmeiLangParser#an_react_child.
+    def exitAn_react_child(self, ctx:ZmeiLangParser.An_react_childContext):
+        pass
+
+
     # Enter a parse tree produced by ZmeiLangParser#an_html.
     def enterAn_html(self, ctx:ZmeiLangParser.An_htmlContext):
         pass

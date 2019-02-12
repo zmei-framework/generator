@@ -15,7 +15,7 @@ class CrudEditPageExtension(CrudCreatePageExtension):
         return 'edit'
 
     def get_form_init(self):
-        return f"request.POST if request.method == 'POST' else None, instance={self.item_name}"
+        return f"request.POST if request.method == 'POST' else None, request.FILES if request.method == 'POST' else None, instance={self.item_name}"
 
     def build_pages(self, base_page: PageDef):
         items = {}

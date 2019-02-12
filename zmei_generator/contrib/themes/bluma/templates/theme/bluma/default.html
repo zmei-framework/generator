@@ -7,7 +7,7 @@
 
 {{ "{% load " }}{{ ' '.join(page.get_template_libs()) }}{{ " %}" }}
 {%- endif %}
-{% for area, blocks in page.get_blocks() -%}
+{% for area, blocks in page.get_blocks().items() -%}
 {{ "{% block " }}{{ area }}{{ " %}" }}
 {% for block in blocks -%}
 {% if block.name == '..' -%}

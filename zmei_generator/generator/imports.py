@@ -48,7 +48,8 @@ class ImportSet(object):
 
             return a + [b]
 
-        return sorted([(source, reduce(simplify, values, [])) for source, values in self.imports.items()])  # NB! source maybe None as well
+        # NB! source maybe None as well, so can not be sorted easily
+        return [(source, reduce(simplify, values, [])) for source, values in self.imports.items()]
 
     def import_sting_js(self):
         items = self.get_items()

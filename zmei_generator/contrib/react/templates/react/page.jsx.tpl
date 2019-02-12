@@ -50,6 +50,16 @@ class {{ name }} extends React.Component {
             {{ source|indent(12) }}
         );
     }
+    {% with blocks=page.get_blocks(platform=ext) %}
+    {% if 'content' not in blocks %}
+    renderContent = () => <p>Nothing here!</p>;
+    {% endif %}
+    {% for area, blocks in blocks.items() -%}
+    render{{ area|capitalize }} = () => <>{% for block in blocks -%}
+        {{ block.render(area=area, index=loop.index)|indent(8) }}
+    {% endfor %}</>;
+    {% endfor %}
+    {% endwith %}
 }
 
 {{ name }} = connect(

@@ -130,8 +130,17 @@ class PageDef(Extendable, FrozenClass):
     def add_form(self, name, definition):
         self.forms[name] = definition
 
-    def get_blocks(self):
-        return self.blocks.items()
+    def get_blocks(self, platform=None):
+        filtered = {}
+        for area, blocks in self.blocks.items():
+            for ext in self.get_extensions():
+                if isinstance(ext, PageExtension):
+                    blocks = ext.filter_blocks(area, blocks, platform)
+
+            if len(blocks):
+                filtered[area] = blocks
+
+        return filtered
 
     def add_block(self, area, block, append=False):
         if area not in self.blocks:

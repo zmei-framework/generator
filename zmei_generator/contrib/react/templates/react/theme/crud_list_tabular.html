@@ -1,0 +1,19 @@
+
+<div>{% if crud.header %}
+    <h2>{{ crud.model_name_plural }}</h2>
+    {% endif %}
+    {this.props.store.data.{{ crud.items_name }} ?
+    <table>
+        <thead>
+        <tr>{% for field_name in crud.list_fields %}
+            <th>{{ field_name }}</th>{% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+            {this.props.store.data.{{ crud.items_name }}.map(({{ crud.item_name }}) => <tr>{% for field in crud.list_fields %}
+                <td>{ {{ crud.item_name }}.{{ field }} }</td>{% endfor %}
+            </tr>)}
+        </tbody>
+    </table> :
+    <p>No {{ crud.model_name_plural }}</p>}
+</div>

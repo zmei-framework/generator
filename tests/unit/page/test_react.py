@@ -29,3 +29,26 @@ def test_page_react():
     assert boo.name == 'boo'
     assert boo.supports(ReactPageExtension)
     assert boo.get_extension_bases() == ['ZmeiReactViewMixin']
+
+
+def test_page_react_child_if_marked_deeper():
+    app = _("""
+
+        [foo]
+        @react(child: true)
+
+        [foo->boo]
+        [boo->zoo]
+    """)
+
+    assert len(app.pages) == 3
+
+    foo = app.pages['foo']
+    boo = app.pages['boo']
+    zoo = app.pages['zoo']
+
+    assert foo.supports(ReactPageExtension)
+    assert foo[ReactPageExtension].include_child is True
+
+    assert boo.supports(ReactPageExtension)
+    assert zoo.supports(ReactPageExtension)

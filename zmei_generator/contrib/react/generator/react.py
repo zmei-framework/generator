@@ -18,7 +18,10 @@ def generate(target_path, project):
 
         has_react = True
 
-        for page in application.pages_with(ReactPageExtension):
+        for name, page in application.pages.items():
+            ext = page.get_own_or_parent_extension(ReactPageExtension)
+            if not ext:
+                continue
 
             name = f'{page.name.capitalize()}'
             name_ui = f'{page.name.capitalize()}Ui'
@@ -65,9 +68,10 @@ def generate(target_path, project):
                               'imports': imports.import_sting_js(),
                               'name': name,
                               'page': page,
+                              'ext': ReactPageExtension,
                               'app_name': app_name,
                               'streams': streams,
-                              'source': wrap(f'<{name_ui}  {{...this.props}} page={{this}} />', wrappers)
+                              'source': wrap(f'<{name_ui}  {{...this.props}} page={{this}}>{{this.renderContent()}}</{name_ui}>', wrappers)
                           })
 
             generate_file(target_path, f'react/src/{app_name}/pages/{name_ui}.jsx',

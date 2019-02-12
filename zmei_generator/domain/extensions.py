@@ -71,6 +71,9 @@ class PageExtension(Extension):
 
         self.page = page
 
+    def filter_blocks(self, area, blocks, platform):
+        return blocks
+
     def get_extension_bases(self, bases):
         return bases
 

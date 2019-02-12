@@ -255,7 +255,7 @@ class CrudPageExtension(PageExtension):
 
         # pages that are not needed
         self.crud_pages = [
-            x for x in ['detail', 'create', 'edit', 'delete'] if x not in list(crud.skip or [])
+            x for x in ['detail', 'create', 'edit', 'delete', 'list'] if x not in list(crud.skip or [])
         ]
 
         if self.parent_crud:
@@ -290,26 +290,15 @@ class CrudPageExtension(PageExtension):
         return "{% url " + url + " %}" + self.link_suffix
 
     def build_pages(self, base_page):
-
-        if self.create_list:
-            base_page.template_libs.append('i18n')
-
-            base_page.page_items[self.items_name] = PageExpression(
-                self.items_name, f"{self.model_cls}.objects{self.formatted_query}", base_page)
-
-            base_page.page_items[self.can_edit_item] = PageExpression(
-                self.can_edit_item, self.can_edit, base_page)
-
-            base_page.add_block(
-                self.block_name,
-
-                InlineTemplatePageBlock(f"theme/crud_list_{self.list_type}.html", {
-                    'page': base_page,
-                    'crud': self,
-                })
-            )
+        from zmei_generator.contrib.web.extensions.page.crud_list import build_list_page
 
         for crud_page in self.crud_pages:
+
+            if crud_page == 'list':
+
+                build_list_page(self, base_page)
+
+                continue
 
             crud_page_name = f"{base_page.name}{self.name_suffix}_{crud_page}"
 
@@ -352,12 +341,14 @@ def crud_cls_by_name(name):
     from zmei_generator.contrib.web.extensions.page.crud_delete import CrudDeletePageExtension
     from zmei_generator.contrib.web.extensions.page.crud_detail import CrudDetailPageExtension
     from zmei_generator.contrib.web.extensions.page.crud_edit import CrudEditPageExtension
+    from zmei_generator.contrib.web.extensions.page.crud_list import CrudListPageExtension
 
     return dict((
         ("create", CrudCreatePageExtension),
         ("delete", CrudDeletePageExtension),
         ("detail", CrudDetailPageExtension),
         ("edit", CrudEditPageExtension),
+        ("list", CrudListPageExtension),
     ))[name]
 
 
