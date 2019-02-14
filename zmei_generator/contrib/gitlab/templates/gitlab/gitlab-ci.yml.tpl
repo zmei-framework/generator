@@ -111,7 +111,7 @@ destroy_{{ config.deployment|replace("*", "all")|replace("-", "_") }}:
     GIT_STRATEGY: none
     APP_STACK_NAME: {{ config.deployment|replace("*", "$CI_COMMIT_REF_SLUG") }}
   script:
-  - export DOCKER_HOST="tcp://dev.negative.ee:2376"
+  - export DOCKER_HOST={{ config.vars.docker }}
   - export DOCKER_TLS_VERIFY="1"
   - export DOCKER_CERT_PATH="/root/.dockercerts"
   # extract certs (collected with "tar -czf - -C $DOCKER_CERT_PATH . |base64 |pbcopy")
