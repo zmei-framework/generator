@@ -1,5 +1,6 @@
 import json
 
+from django.forms import Form, BaseForm
 from django.http import HttpResponse
 from django.utils.decorators import classonlymethod
 from django.utils.module_loading import import_string
@@ -92,6 +93,9 @@ class ZmeiJsonEncoder(JSONEncoder):
 
         if o.__class__.__name__ == '__proxy__':
             return str(o)
+
+        if isinstance(o, BaseForm):
+            return str(o.__class__)
 
         print(
             f'WARN: ZmeiJsonEncoder -> Do not know how to encode "{o.__class__}"', o)

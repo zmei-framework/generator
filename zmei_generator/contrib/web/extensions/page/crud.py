@@ -126,7 +126,7 @@ class CrudPageExtension(PageExtension):
         if next_page:
             self.next_page_expr = f"{next_page}"
         else:
-            self.next_page_expr = f"self.request.get_full_path()" + self.link_suffix
+            self.next_page_expr = f"url=self.request.get_full_path()" + self.link_suffix
 
         self.field_filters = {}
         if crud.fields:
@@ -150,7 +150,7 @@ class CrudPageExtension(PageExtension):
             self.fields = {field.name: field.verbose_name or field.name.replace('_', ' ').capitalize() for field in
                            model.filter_fields(crud_fields or '*') if not field.read_only}
             self.list_fields = {field.name: field.verbose_name or field.name.replace('_', ' ').capitalize() for field in
-                                model.filter_fields(crud.list_fields or crud_fields or '*') if not field.read_only}
+                                model.filter_fields(crud.list_fields or crud_fields or '*')}
         else:
             parts = crud.model.split('.')
             self.app_name = '.'.join(parts[:-1]) + '.models'
@@ -289,6 +289,44 @@ class CrudPageExtension(PageExtension):
 
         return "{% url " + url + " %}" + self.link_suffix
 
+    def format_link_django(self, kind):
+        if kind not in self.links:
+            return ''
+
+        params = []
+        for param in self.page.get_uri_params():
+            if param != self.pk_param:
+                params.append(f'"{param}":url.{param}')
+
+        if kind in ('edit', 'detail', 'delete'):
+            params.append(f'"{self.pk_param}":{self.item_name}.pk')
+
+        url = f"reverse_lazy({repr(self.links[kind])}, kwargs={{{','.join(params)}}})"
+
+        if self.link_suffix:
+            url += ' + ' + repr(self.link_suffix)
+
+        return url
+
+    def format_link_react(self, kind):
+        if kind not in self.links:
+            return ''
+
+        params = []
+        for param in self.page.get_uri_params():
+            if param != self.pk_param:
+                params.append(f'"{param}":url.{param}')
+
+        if kind in ('edit', 'detail', 'delete'):
+            params.append(f'"{self.pk_param}": this.props.store.data.{self.item_name}? this.props.store.data.{self.item_name}.id : {self.item_name}.id')
+
+        url = f"reverse(routes.{self.links[kind]}, {{{','.join(params)}}})"
+
+        if self.link_suffix:
+            url += ' + ' + repr(self.link_suffix)
+
+        return url
+
     def build_pages(self, base_page):
         from zmei_generator.contrib.web.extensions.page.crud_list import build_list_page
 
@@ -311,6 +349,11 @@ class CrudPageExtension(PageExtension):
                 new_page.parent_name = base_page.name
                 new_page.name = crud_page_name
                 base_page.application.pages[new_page.name] = new_page
+
+            # copy extensions
+            for ext in base_page.get_extensions():
+                if isinstance(ext, PageExtension) and ext.can_inherit:
+                    new_page.register_extension(ext)
 
             if crud_page == 'create':
                 new_page.set_uri(f"./{self.url_prefix}{crud_page}")

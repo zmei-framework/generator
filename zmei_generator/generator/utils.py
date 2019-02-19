@@ -70,10 +70,13 @@ class ThemeConfig(object):
     theme = 'default'
 
 
-loaders = [
-    FileSystemLoader('col/templates'),
-    PackageLoader('zmei_generator', 'templates')
-]
+loaders = []
+
+local_templates = os.path.join(os.getcwd(), 'col/templates')
+if os.path.exists(local_templates):
+    loaders.append(FileSystemLoader(local_templates))
+
+loaders.append(PackageLoader('zmei_generator', 'templates'))
 
 for entry_point in pkg_resources.iter_entry_points('zmei.templates'):
     loaders.append(FileSystemLoader(entry_point.load().__path__._path))

@@ -17,15 +17,29 @@ class CrudDeletePageExtension(CrudCreatePageExtension):
     def get_model_fields(self):
         return repr([])
 
+    def format_next_page_expr(self):
+        return ''
+
     def get_form_action(self):
+        form_name = f'form{self.name_suffix}'
         return f"""
-            {self.item_name}.delete()
+            {form_name}.full_clean()
+            try:
+                {self.item_name}.delete()
+                raise RedirectAction({self.next_page_expr})
+            except ProtectedError as e:
+                v.add_error(None, str(e))
+            
         """
 
     def get_form_init(self):
-        return f"instance={self.item_name}"
+        return f"request.POST if request.method == 'POST' else None, request.FILES if request.method == 'POST' else None, instance={self.item_name}"
 
     def build_pages(self, base_page: PageDef):
+        base_page.imports.append(
+            ('django.db.models', 'ProtectedError')
+        )
+
         items = {}
         items[self.item_name] = PageExpression(
             self.item_name, self.object_expr, base_page)

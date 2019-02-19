@@ -4,11 +4,14 @@ import axios from "axios";
 import {withRouter} from "react-router-dom";
 import {PageContextProvider, reloadPageDataAction} from "../../state";{% if streams %}
 import {streamEnterAction, streamLeaveAction} from "../../streams";{% endif %}
+import { reverse } from "named-urls";
+import { routes } from '../../router'
 
 class {{ name }} extends React.Component {
 
-    setState = (response) => {
+    handleResponse = (response) => {
         if (response.data.__error__) throw response.data.__error__;
+        if (response.data.__redirect__) this.props.history.push(response.data.__redirect__);
         if (response.data.__state__) {
             this.props.dispatch(reloadPageDataAction(response.data.__state__));
             return response.data.__state__;
@@ -40,9 +43,10 @@ class {{ name }} extends React.Component {
     }
     {%- endif %}
 
-    reload = () => axios.get('').then(this.setState);
+    reload = () => axios.get('').then(this.handleResponse);
+    submit = (data) => axios.post('', data).then(this.handleResponse);
     {% for name, func in page.list_own_or_parent_functions().items() %}
-    {{ name }} = ({% if func.args %}{{ func.render_python_args() }}{% endif %}) => axios.post(window.location.href, {'method': '{{ name }}'{% if func.args %}, args: [{{ func.render_python_args() }}]{% else %}{% endif %}}).then(this.setState);
+    {{ name }} = ({% if func.args %}{{ func.render_python_args() }}{% endif %}) => axios.post(window.location.href, {'method': '{{ name }}'{% if func.args %}, args: [{{ func.render_python_args() }}]{% else %}{% endif %}}).then(this.handleResponse);
     {%- endfor %}
 
     render() {
@@ -50,16 +54,14 @@ class {{ name }} extends React.Component {
             {{ source|indent(12) }}
         );
     }
-    {% with blocks=page.get_blocks(platform=ext) %}
     {% if 'content' not in blocks %}
     renderContent = () => <p>Nothing here!</p>;
     {% endif %}
     {% for area, blocks in blocks.items() -%}
     render{{ area|capitalize }} = () => <>{% for block in blocks -%}
-        {{ block.render(area=area, index=loop.index)|indent(8) }}
+        {{ block|indent(8) }}
     {% endfor %}</>;
     {% endfor %}
-    {% endwith %}
 }
 
 {{ name }} = connect(

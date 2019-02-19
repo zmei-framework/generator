@@ -53,6 +53,11 @@ class CrudCreatePageExtension(BaseCrudSubpageExtension):
                 model = {form_name}.save()
         """
 
+    def format_next_page_expr(self):
+        return f"""
+            raise RedirectAction({self.next_page_expr})
+        """
+
     def build_pages(self, base_page: PageDef):
 
         base_page.imports.append(
@@ -80,9 +85,7 @@ class CrudCreatePageExtension(BaseCrudSubpageExtension):
         """
         if self.next_page_expr:
             base_page.imports.append(('app.utils.views', 'RedirectAction'))
-            code += f"""
-                raise RedirectAction({self.next_page_expr})
-            """
+            code += self.format_next_page_expr()
 
         base_page.add_form(
             self.get_form_name(),

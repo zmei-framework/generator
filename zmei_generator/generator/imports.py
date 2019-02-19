@@ -35,18 +35,17 @@ class ImportSet(object):
         return '\n'.join([format_expr(source, what) for source, what in items])
 
     def get_items(self):
-        def simplify(a, b):
-            # print(a, b)
+        def simplify(imports, b):
             if b == '*':
-                a = [x for x in a if ' as ' in x]
+                imports = [x for x in imports if ' as ' in x]
 
-            if '*' in a and ' as ' not in b:
-                return a
+            if '*' in imports and ' as ' not in b:
+                return imports
 
-            if b in a:
-                return a
+            if b in imports:
+                return imports
 
-            return a + [b]
+            return imports + [b]
 
         # NB! source maybe None as well, so can not be sorted easily
         return [(source, reduce(simplify, values, [])) for source, values in self.imports.items()]
@@ -59,7 +58,7 @@ class ImportSet(object):
 
         for source, what_items in items:
             for what in what_items:
-                if what[0] == '*':
+                if what[0] == '*' and ' as ' not in what:
                     if source not in grouped:
                         grouped[source] = set()
 

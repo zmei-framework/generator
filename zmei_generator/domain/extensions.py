@@ -71,6 +71,10 @@ class PageExtension(Extension):
 
         self.page = page
 
+    @property
+    def can_inherit(self):
+        return False
+
     def filter_blocks(self, area, blocks, platform):
         return blocks
 

@@ -355,6 +355,7 @@ def get_watch_paths():
     paths += list(glob('*.col'))
     paths += list(glob('col/*.col'))
     paths += list(glob('col/**/*.col', recursive=True))
+    paths += list(glob('col/**/*.html', recursive=True))
     # paths += list(glob('react/src/**/*.js', recursive=True))
     # paths += list(glob('react/src/**/*.jsx', recursive=True))
     # paths += list(glob('react/*.js'))

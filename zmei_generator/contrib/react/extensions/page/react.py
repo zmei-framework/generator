@@ -18,6 +18,10 @@ class ReactPageExtension(PageExtension):
     # def get_required_deps(self):
     #     return ['py_mini_racer']
 
+    @property
+    def can_inherit(self):
+        return self.include_child
+
     def get_required_apps(self):
         return ['rest_framework']
 

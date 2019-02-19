@@ -4,6 +4,7 @@ from zmei_generator.contrib.web.extensions.page.crud import BaseCrudSubpageExten
 from zmei_generator.contrib.web.extensions.page.crud_parser import CrudBasePageExtensionParserListener
 from zmei_generator.parser.gen.ZmeiLangParser import ZmeiLangParser
 
+
 def build_list_page(crud, base_page):
     base_page.template_libs.append('i18n')
 
