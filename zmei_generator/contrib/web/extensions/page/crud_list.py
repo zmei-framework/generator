@@ -20,7 +20,7 @@ def build_list_page(crud, base_page):
         InlineTemplatePageBlock(f"theme/crud_list_{crud.list_type}.html", {
             'page': base_page,
             'crud': crud,
-        })
+        }, ref=f"{crud.get_name()}{crud.name_suffix}")
     )
 
 class CrudListPageExtension(BaseCrudSubpageExtension):

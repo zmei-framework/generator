@@ -11,6 +11,96 @@ from django.db.models import QuerySet, Model
 
 from .views import ZmeiDataViewMixin
 
+from django.forms import widgets, fields
+
+
+def pretty_name(name):
+    """Converts 'first_name' to 'First name'"""
+    if not name:
+        return u''
+    return name.replace('_', ' ').capitalize()
+
+
+class FormJSONSchemaEncoder(object):
+    def convert_form(self, form, json_schema=None):
+        json_schema = json_schema or {
+            # 'title':dockit_schema._meta
+            # 'description'
+            'type': 'object',
+            'fields': [],
+            'required': []
+        }
+
+        initial = {}
+
+        for bound_field in form:
+            json_schema['fields'].append(self.convert_formfield(form, bound_field.name, bound_field))
+
+            if bound_field.field.required:
+                json_schema['required'].append(bound_field.name)
+
+            if bound_field.value():
+                initial[f'{form.prefix}-{bound_field.name}' if form.prefix else bound_field.name] = bound_field.value()
+
+        return {
+            'prefix': form.prefix,
+            'schema': json_schema,
+            'initial': initial,
+            'errors': form.non_field_errors(),
+        }
+
+    input_type_map = {
+        'text': 'string',
+    }
+
+    def convert_formfield(self, form, name, bound_field):
+        field = bound_field.field
+        widget = field.widget
+
+        target_def = {
+            'name': f'{form.prefix}-{name}' if form.prefix else name,
+            'title': field.label or pretty_name(name),
+            'description': field.help_text,
+        }
+        if bound_field.errors:
+            target_def['serverErrors'] = bound_field.errors
+
+        # if bound_field.value():
+        # target_def['value'] = bound_field.value() or ''
+
+        if isinstance(field, fields.URLField):
+            target_def['type'] = 'url'
+            # target_def['format'] = 'url'
+        elif isinstance(field, fields.FileField):
+            target_def['type'] = 'text'
+        elif isinstance(field, fields.DateField):
+            target_def['type'] = 'date'
+        elif isinstance(field, fields.DateTimeField):
+            target_def['type'] = 'datetime'
+        elif isinstance(field, (fields.DecimalField, fields.FloatField)):
+            target_def['type'] = 'number'
+        elif isinstance(field, fields.IntegerField):
+            target_def['type'] = 'number'
+        elif isinstance(field, fields.EmailField):
+            target_def['type'] = 'email'
+        elif isinstance(field, fields.NullBooleanField):
+            target_def['type'] = 'checkbox'
+        elif isinstance(widget, widgets.CheckboxInput):
+            target_def['type'] = 'checkbox'
+        elif isinstance(widget, widgets.Select):
+            if widget.allow_multiple_selected:
+                target_def['type'] = 'choices'
+            else:
+                target_def['type'] = 'choices'
+            target_def['options'] = [{'label': title, 'value': value} for value, title in field.choices]
+
+        elif isinstance(widget, widgets.Input):
+            # translated_type = self.input_type_map.get(widget.input_type, 'text')
+            target_def['type'] = 'text'
+        else:
+            target_def['type'] = 'text'
+        return target_def
+
 
 class DefaultModelSerializer(serializers.ModelSerializer):
     class Meta:
@@ -95,7 +185,7 @@ class ZmeiJsonEncoder(JSONEncoder):
             return str(o)
 
         if isinstance(o, BaseForm):
-            return str(o.__class__)
+            return FormJSONSchemaEncoder().convert_form(o)
 
         print(
             f'WARN: ZmeiJsonEncoder -> Do not know how to encode "{o.__class__}"', o)

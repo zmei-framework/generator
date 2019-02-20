@@ -85,7 +85,7 @@ class MenuPageExtension(PageExtension):
             f"menu_{self.descriptor}",
             InlineTemplatePageBlock(f"theme/menu[_{self.descriptor}].html", {
                 'menu_descriptor': self.descriptor
-            })
+            }, ref=f"menu_{self.descriptor}")
         )
 
 

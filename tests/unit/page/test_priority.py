@@ -37,7 +37,7 @@ def test_page_priority_default():
     assert isinstance(boo.blocks['content'][1], BlockPlaceholder)
     assert boo.blocks['content'][2].context['content'] == "<h1>cats</h1>"
 
-    boo.add_block('content', InlineTemplatePageBlock(template_name='lala.html', context={'content': 'lala'}))
+    boo.add_block('content', InlineTemplatePageBlock(template_name='lala.html', context={'content': 'lala'}, ref='hoho'))
 
     assert len(boo.blocks['content']) == 4
     assert boo.blocks['content'][0].context['content'] == "<h1>test</h1>"
@@ -45,6 +45,7 @@ def test_page_priority_default():
     assert boo.blocks['content'][2].context['content'] == "<h1>cats</h1>"
     assert isinstance(boo.blocks['content'][3], InlineTemplatePageBlock)
     assert boo.blocks['content'][3].context['content'] == 'lala'
+    assert boo.blocks['content'][3].ref == 'hoho'
 
 
 def test_page_priority_before_after():

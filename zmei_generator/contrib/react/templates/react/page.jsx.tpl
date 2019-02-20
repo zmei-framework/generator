@@ -1,11 +1,8 @@
 {{ imports }}
-import {connect} from "react-redux";
 import axios from "axios";
-import {withRouter} from "react-router-dom";
 import {PageContextProvider, reloadPageDataAction} from "../../state";{% if streams %}
 import {streamEnterAction, streamLeaveAction} from "../../streams";{% endif %}
-import { reverse } from "named-urls";
-import { routes } from '../../router'
+
 
 class {{ name }} extends React.Component {
 
@@ -55,24 +52,24 @@ class {{ name }} extends React.Component {
         );
     }
     {% if 'content' not in blocks %}
-    renderContent = () => <p>Nothing here!</p>;
+    renderContent() {
+        return <p>Nothing here!</p>;
+    }
     {% endif %}
     {% for area, blocks in blocks.items() -%}
-    render{{ area|capitalize }} = () => <>{% for block in blocks -%}
-        {{ block|indent(8) }}
-    {% endfor %}</>;
+    render{{ area|capitalize }}() {
+        return <>
+        {% for block_ref, block in blocks -%}
+            {% if block_ref %}{this.renderBlock{{ to_camel_case(block_ref) }}()}{% else %}{{ block|indent(8) }}{% endif %}
+        {% endfor %}</>;
+    }
     {% endfor %}
+
+    {% for area, blocks in blocks.items() %}{% for block_ref, block in blocks if block_ref -%}
+    renderBlock{{ to_camel_case(block_ref) }}() {
+        return {{ block|indent(8) }};
+    }
+    {% endfor %}{% endfor %}
 }
-
-{{ name }} = connect(
-    store => {
-        return {store}
-    },
-    dispatch => {
-        return {dispatch}
-    },
-)({{ name }});
-
-{{ name }} = withRouter({{ name }});
 
 export default {{ name }};

@@ -99,7 +99,7 @@ class CrudCreatePageExtension(BaseCrudSubpageExtension):
                 'page': base_page,
                 'crud': self,
                 'form_name': form_name,
-            }),
+            }, ref=f"{self.get_name()}{self.name_suffix}"),
 
             append=self.append
         )

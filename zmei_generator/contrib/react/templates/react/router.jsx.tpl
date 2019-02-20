@@ -5,12 +5,12 @@ import Switch from "react-router-dom/es/Switch";
 import Route from "react-router-dom/es/Route";
 import { include } from "named-urls";
 
-{% if pages|length > 15 %}
+{% if pages|length > 50 %}
 {% for app_name, page_name, uri in pages %}
-const {{ app_name }}{{ page_name }} = lazy(() => import("./{{ app_name|lower }}/pages/{{ page_name }}"));{% endfor %}
+const {{ app_name }}{{ page_name }} = lazy(() => import("./{{ app_name|lower }}/ui/{{ page_name }}"));{% endfor %}
 {%- else -%}
 {% for app_name, page_name, uri in pages %}
-import {{ app_name }}{{ page_name }} from "./{{ app_name|lower }}/pages/{{ page_name }}";{% endfor %}
+import {{ app_name }}{{ page_name }} from "./{{ app_name|lower }}/ui/{{ page_name }}";{% endfor %}
 {% endif %}
 
 export const routes = {
@@ -32,7 +32,7 @@ class {{ name }}Router extends React.Component {
                    <Route path={ routes.{{ app_name }}.{{ page_name }} } exact
                           render={matchprops => (
                           <Suspense fallback={<></>}>
-                            <{{ to_camel_case(app_name) }}{{ to_camel_case(page_name) }} {...matchprops} />
+                            <{{ to_camel_case(app_name) }}{{ to_camel_case(page_name) }}Ui {...matchprops} />
                          </Suspense>
                       )}
                    />

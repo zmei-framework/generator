@@ -39,7 +39,7 @@ class ReactPageExtension(PageExtension):
                 if isinstance(block, InlineTemplatePageBlock):
                     if block.template_name.startswith('theme/'):
                         new_context = copy(block.context)
-                        block = InlineTemplatePageBlock(template_name='react/' + block.template_name)
+                        block = InlineTemplatePageBlock(template_name='react/' + block.template_name, ref=block.ref)
                         block.context = new_context
                 else:
                     continue

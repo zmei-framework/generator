@@ -1,17 +1,12 @@
-import re
-from xml.etree import ElementTree
-
-from defusedxml.ElementTree import fromstring, tostring
-
-from zmei_generator.generator.imports import ImportSet
 from zmei_generator.generator.utils import render_template, render_file
 
 
 class Block(object):
-    def __init__(self) -> None:
+    def __init__(self, ref=None) -> None:
         super().__init__()
 
         self.sorting = 0
+        self.ref = ref
 
     def render(self, area=None, index=None):
         pass
@@ -22,8 +17,8 @@ class BlockPlaceholder(Block):
 
 
 class InlinePageBlock(Block):
-    def __init__(self, source) -> None:
-        super().__init__()
+    def __init__(self, source, ref=None) -> None:
+        super().__init__(ref=ref)
 
         self.source = source
 
@@ -32,8 +27,8 @@ class InlinePageBlock(Block):
 
 
 class InlineTemplatePageBlock(Block):
-    def __init__(self, template_name, context=None) -> None:
-        super().__init__()
+    def __init__(self, template_name, context=None, ref=None) -> None:
+        super().__init__(ref=ref)
 
         self.template_name = template_name
         self.context = context
@@ -43,8 +38,8 @@ class InlineTemplatePageBlock(Block):
 
 
 class InlineFilePageBlock(Block):
-    def __init__(self, template_name) -> None:
-        super().__init__()
+    def __init__(self, template_name, ref=None) -> None:
+        super().__init__(ref=ref)
 
         self.template_name = template_name
 
@@ -53,8 +48,8 @@ class InlineFilePageBlock(Block):
 
 
 class ThemeFileIncludePageBlock(Block):
-    def __init__(self, page, source, template_name, ns, theme='default', with_expr=None) -> None:
-        super().__init__()
+    def __init__(self, page, source, template_name, ns, theme='default', with_expr=None, ref=None) -> None:
+        super().__init__(ref=ref)
 
         self.template_name = f'{ns}/{theme}/{template_name}'
         self.theme = theme

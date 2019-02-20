@@ -7,7 +7,7 @@ from zmei_generator.contrib.react.extensions.page.react import ReactPageExtensio
 from zmei_generator.generator.imports import ImportSet
 from zmei_generator.generator.utils import generate_file, format_uri
 
-REACT_IMPORT_RX = re.compile('^import\s+((\*\s+as\s+)?[a-zA-Z0-9_]+)?\s*,?\s*({([a-zA-Z0-9_]+\s*(,\s*[a-zA-Z0-9_]+)*)})?\s+from\s+"([^;]+)";$', re.MULTILINE)
+REACT_IMPORT_RX = re.compile('^import\s+((\*\s+as\s+)?[a-zA-Z0-9_]+)?\s*,?\s*({\s*([a-zA-Z0-9_]+\s*(,\s*[a-zA-Z0-9_]+)*)\s*})?\s+from\s+"([^;]+)";$', re.MULTILINE)
 
 
 def to_camel_case(name):
@@ -37,11 +37,11 @@ def generate(target_path, project):
 
             page_cmp_name = to_camel_case(page.name)
 
-            name = f'{page_cmp_name}'
+            name = f'{page_cmp_name}Page'
             name_ui = f'{page_cmp_name}Ui'
 
             if page.uri:
-                react_pages.append((app_cmp_name, name, format_uri(page.uri)))
+                react_pages.append((app_cmp_name, name_ui, format_uri(page.uri)))
                 react_pages_by_app[app_name][page.name] = format_uri(page.uri)
 
             page_component_name = f'Page{page_cmp_name}'
@@ -52,7 +52,6 @@ def generate(target_path, project):
 
             imports = ImportSet()
             imports.add('react', 'React')
-            imports.add(f'./{name_ui}', name_ui)
             imports.add(f'../../layout', 'BaseLayout')
             imports.add(f'../layouts/{app_cmp_name}Layout', f'{app_cmp_name}Layout')
 
@@ -81,6 +80,7 @@ def generate(target_path, project):
             for area, blocks in page.get_blocks(platform=ReactPageExtension).items():
                 blocks_rendered[area] = []
                 for index, block in enumerate(blocks):
+
                     rendered = block.render(area=area, index=index)
 
                     import_section, rendered = rendered.split('<', maxsplit=1)
@@ -97,7 +97,7 @@ def generate(target_path, project):
 
                     rendered = '<' + rendered
 
-                    blocks_rendered[area].append(rendered)
+                    blocks_rendered[area].append((block.ref, rendered))
 
             streams = page.list_own_or_parent_extensions(StreamPageExtension)
             generate_file(target_path, 'react/src/{}/pages/{}.jsx'.format(app_name, name),
@@ -109,13 +109,19 @@ def generate(target_path, project):
                               'ext': ReactPageExtension,
                               'app_name': app_name,
                               'streams': streams,
-                              'source': wrap(f'<{name_ui}  {{...this.props}} page={{this}}>{{this.renderContent()}}</{name_ui}>', wrappers)
+                              'to_camel_case': to_camel_case,
+                              'source': wrap('{this.renderContent()}', wrappers)
                           })
 
-            generate_file(target_path, f'react/src/{app_name}/pages/{name_ui}.jsx',
-                          'react/cmp.jsx.tpl', {
-                              'name': name_ui,
-                              'source': f"<>{{children || 'Empty react component. Edit {name_ui}.jsx'}}</>"
+            ui_imports = ImportSet()
+            ui_imports.add('react', 'React')
+            ui_imports.add(f'../pages/{name}', name)
+
+            generate_file(target_path, f'react/src/{app_name}/ui/{name_ui}.jsx',
+                          'react/ui.jsx.tpl', {
+                              'imports': ui_imports.import_sting_js(),
+                              'parent': name,
+                              'name': name_ui
                           })
 
         generate_file(target_path, f'react/src/{app_name}/layouts/{app_cmp_name}Layout.jsx',

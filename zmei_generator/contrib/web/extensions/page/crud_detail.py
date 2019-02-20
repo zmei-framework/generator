@@ -32,7 +32,7 @@ class CrudDetailPageExtension(BaseCrudSubpageExtension):
             InlineTemplatePageBlock(f"theme/crud_detail.html", {
                 'page': base_page,
                 'crud': self,
-            }),
+            }, ref=f"{self.get_name()}{self.name_suffix}"),
 
             append=self.append
         )
