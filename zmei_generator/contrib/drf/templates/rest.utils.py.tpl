@@ -107,6 +107,9 @@ class DefaultModelSerializer(serializers.ModelSerializer):
         model = None
         exclude = []
 
+    def get_field_names(self, declared_fields, info):
+        return super().get_field_names(declared_fields, info) + '__str__'
+
 
 def create_default_serializer(model):
     serializer = type('_', (DefaultModelSerializer,), {})

@@ -24,3 +24,30 @@ def test_slug_field():
 
     assert isinstance(c, SlugFieldDef)
     assert c.field_names == ['a', 'b']
+
+
+def test_slug_field_2models():
+    app = _("""
+    
+        #boo
+        ----------
+        a: str(15)
+        b: str(10)
+        c: slug(a)
+    
+        #foo
+        ----------
+        a: str(15)
+        b: str(10)
+        c: slug(b)
+    """)
+
+    boo = app.models['boo'].fields['c']
+
+    assert isinstance(boo, SlugFieldDef)
+    assert boo.field_names == ['a']
+
+    foo = app.models['foo'].fields['c']
+
+    assert isinstance(foo, SlugFieldDef)
+    assert foo.field_names == ['b']

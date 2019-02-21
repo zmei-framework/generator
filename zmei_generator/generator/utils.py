@@ -97,6 +97,20 @@ env = Environment(
     loader=loader,
     bytecode_cache=bcc
 )
+
+
+def to_camel_case(val):
+    val = to_camel_case_class(val)
+    val = val[0].lower() + val[1:]
+    return val
+
+
+def to_camel_case_class(val):
+    return ''.join([x.capitalize() for x in val.split('_')])
+
+
+env.filters['camel_case'] = to_camel_case
+env.filters['camel_case_class'] = to_camel_case_class
 env.filters['field_names'] = field_names
 env.filters['format_names'] = format_names
 env.filters['to_name'] = to_name
@@ -104,6 +118,7 @@ env.filters['repr'] = repr
 env.globals['include_block'] = include_block
 
 NO_PEP = os.environ.get('NOFORMAT')
+
 
 def generate_file(target_path, filename, template_name, context=None, raw=False):
     """

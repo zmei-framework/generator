@@ -8,6 +8,19 @@ from zmei_generator.domain.page_expression import PageExpression
 from zmei_generator.domain.extensions import PageExtension
 
 
+def to_camel_case(name):
+    return ''.join([x.capitalize() for x in name.split('_')])
+
+
+def to_camel_case_decap(name):
+    name = ''.join([x.capitalize() for x in name.split('_')])
+    return name[0].lower() + name[1:]
+
+
+def to_camel_case_path(name):
+    return '.'.join([to_camel_case_decap(x) for x in name.split('.')])
+
+
 def format_field_names(names):
     return '{%s}' % ', '.join([f"'{key}': _('{val}')" for key, val in names.items()])
 
@@ -321,6 +334,25 @@ class CrudPageExtension(PageExtension):
             params.append(f'"{self.pk_param}": this.props.store.data.{self.item_name}? this.props.store.data.{self.item_name}.id : {self.item_name}.id')
 
         url = f"reverse(routes.{self.links[kind]}, {{{','.join(params)}}})"
+
+        if self.link_suffix:
+            url += ' + ' + repr(self.link_suffix)
+
+        return url
+
+    def format_link_flutter(self, kind):
+        if kind not in self.links:
+            return ''
+
+        params = []
+        for param in self.page.get_uri_params():
+            if param != self.pk_param:
+                params.append(f'{to_camel_case(param)}:url.{param}')
+
+        if kind in ('edit', 'detail', 'delete'):
+            params.append(f"{to_camel_case_decap(self.pk_param)}: {to_camel_case_decap(self.item_name)}['id']")
+
+        url = f"App.url.{to_camel_case_path(self.links[kind])}({','.join(params)})"
 
         if self.link_suffix:
             url += ' + ' + repr(self.link_suffix)

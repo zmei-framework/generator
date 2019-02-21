@@ -67,6 +67,9 @@ class RestModelExtensionParserListener(BaseListener):
     def enterAn_rest_i18n(self, ctx: ZmeiLangParser.An_rest_i18nContext):
         self.rest_config.i18n = ctx.BOOL().getText() == 'true'
 
+    def enterAn_rest_str(self, ctx: ZmeiLangParser.An_rest_strContext):
+        self.rest_config.str = ctx.BOOL().getText() == 'true'
+
     def enterAn_rest_fields_write_mode(self, ctx: ZmeiLangParser.An_rest_fields_write_modeContext):
         if ctx.write_mode_expr():
             self.rest_config.rest_mode = ctx.write_mode_expr().WRITE_MODE().getText()
@@ -153,6 +156,7 @@ class RestSerializerConfig(object):
         self.fields = None
         self.fields_index = {}
         self.i18n = False
+        self.str = True
         self.model = model
         self.parent_field = parent_field
         self.serializer_name = serializer_name
@@ -249,6 +253,10 @@ class RestSerializerConfig(object):
                     for line in rest_field.import_def:
                         self.field_imports.append(line)
                     self.field_declarations.append((field.name, rest_field.declaration))
+
+        if self.str:
+            self.field_names.append('__str__')
+            self.read_only_fields.append('__str__')
 
     @property
     def descriptor_suffix(self):

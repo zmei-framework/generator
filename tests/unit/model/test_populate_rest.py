@@ -89,6 +89,7 @@ def test_rest_fields_field_names():
         )   
         @rest.boo
         @rest.one(
+            str: false
             fields: cda
         )
     
@@ -112,12 +113,8 @@ def test_rest_fields_field_names():
     assert [x.name for x in boo[RestModelExtension].rest_conf['boo'].fields] == ['abc', 'cda']
     assert [x.name for x in boo[RestModelExtension].rest_conf['one'].fields] == ['cda']
 
-    print(boo[RestModelExtension].rest_conf['_'].field_names)
-    print(boo[RestModelExtension].rest_conf['boo'].field_names)
-    print(boo[RestModelExtension].rest_conf['one'].field_names)
-
-    assert boo[RestModelExtension].rest_conf['_'].field_names == ['id', 'abc', 'cda']
-    assert boo[RestModelExtension].rest_conf['boo'].field_names == ['id', 'abc', 'cda']
+    assert boo[RestModelExtension].rest_conf['_'].field_names == ['id', 'abc', 'cda', '__str__']
+    assert boo[RestModelExtension].rest_conf['boo'].field_names == ['id', 'abc', 'cda', '__str__']
     assert boo[RestModelExtension].rest_conf['one'].field_names == ['id', 'cda']
 
 
@@ -143,7 +140,7 @@ def test_rest_fields_read_only():
     boo = app.models['boo']
 
     assert [x.name for x in boo[RestModelExtension].rest_conf['_'].fields] == ['abc', 'cda', 'efg']
-    assert boo[RestModelExtension].rest_conf['_'].read_only_fields == ['cda', 'efg']
+    assert boo[RestModelExtension].rest_conf['_'].read_only_fields == ['cda', 'efg', '__str__']
 
 
 def test_rest_fields_simple():
@@ -163,7 +160,7 @@ def test_rest_fields_simple():
 
     boo = app.models['boo']
 
-    assert boo[RestModelExtension].rest_conf['_'].field_names == ['id', 'cat', 'dog', 'bird']
+    assert boo[RestModelExtension].rest_conf['_'].field_names == ['id', 'cat', 'dog', 'bird', '__str__']
 
 
 def test_rest_i18n():
@@ -453,7 +450,7 @@ def test_annotate():
 
     boo = app.models['boo']
 
-    assert boo[RestModelExtension].rest_conf['_'].field_names == ['id', 'item_count', 'items']
+    assert boo[RestModelExtension].rest_conf['_'].field_names == ['id', 'item_count', 'items', '__str__']
 
 
 def test_publish_default():

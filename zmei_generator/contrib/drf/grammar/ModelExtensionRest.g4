@@ -25,6 +25,7 @@ an_rest_config:
 an_rest_main_part: (
          an_rest_fields
         |an_rest_i18n
+        |an_rest_str
         |an_rest_auth
         |an_rest_query
         |an_rest_on_create
@@ -40,6 +41,7 @@ an_rest_main_part: (
 an_rest_descriptor : id_or_kw;
 
 an_rest_i18n: KW_I18N COLON BOOL NL*;
+an_rest_str: COL_FIELD_TYPE_TEXT COLON BOOL NL*;
 
 an_rest_query: KW_QUERY python_code NL*;
 

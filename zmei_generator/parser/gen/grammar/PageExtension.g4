@@ -18,7 +18,8 @@ import
     PageExtensionCrudDetail,
     PageExtensionPriorityMarker,
     PageExtensionGet,
-    PageExtensionError
+    PageExtensionError,
+    PageExtensionFlutter
     ;
 
 page_annotation:
@@ -38,5 +39,6 @@ page_annotation:
     |an_priority_marker
     |an_get
     |an_error
+    |an_flutter
     |NL;
 

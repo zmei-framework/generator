@@ -1,6 +1,7 @@
 from zmei_generator.domain.application_def import FieldDeclaration
+from zmei_generator.domain.model_def import ModelDef
 from zmei_generator.parser.errors import GlobalScopeValidationError as ValidationException
-from zmei_generator.domain.field_def import FieldDef
+from zmei_generator.domain.field_def import FieldDef, FieldConfig
 from zmei_generator.generator.utils import gen_args
 
 
@@ -38,7 +39,11 @@ class TextFieldDef(DefaultTextMixin, FieldDef):
 
 
 class SlugFieldDef(DefaultTextMixin, FieldDef):
-    field_names = []
+
+    def __init__(self, model: ModelDef, field: FieldConfig) -> None:
+        super().__init__(model, field)
+
+        self.field_names = []
 
     def parse_options(self):
         if isinstance(self.options, str) and self.options.strip() != '':

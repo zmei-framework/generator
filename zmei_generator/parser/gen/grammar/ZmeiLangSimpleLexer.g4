@@ -41,6 +41,7 @@ AN_CLEAN: '@clean';
 AN_ORDER: '@order';
 AN_SORTABLE: '@sortable';
 AN_LANGS: '@langs';
+AN_FLUTTER: '@flutter';
 KW_AUTH_TYPE_BASIC: 'basic';
 KW_AUTH_TYPE_SESSION: 'session';
 KW_AUTH_TYPE_TOKEN: 'token';
