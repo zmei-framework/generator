@@ -1,4 +1,5 @@
 <img align="right" width="33.3%" src="logo.png">
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
 
 # Zmei code generator
 
@@ -109,3 +110,15 @@ In-short about GPLv3:
  
 
 Software is free for non-commercial use. For commercial use ask for dual-licensing options. 
+
+## Contributors
+
+Thanks goes to these wonderful people ([emoji key](https://github.com/all-contributors/all-contributors#emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore -->
+| [<img src="https://avatars3.githubusercontent.com/u/41049901?v=4" width="100px;" alt="rumjantsevv"/><br /><sub><b>rumjantsevv</b></sub>](https://github.com/rumjantsevv)<br />[🐛](https://github.com/zmei-framework/generator/issues?q=author%3Arumjantsevv "Bug reports") [📓](#userTesting-rumjantsevv "User Testing") |
+| :---: |
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
