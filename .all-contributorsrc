@@ -1,0 +1,24 @@
+{
+  "projectName": "generator",
+  "projectOwner": "zmei-framework",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "rumjantsevv",
+      "name": "rumjantsevv",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/41049901?v=4",
+      "profile": "https://github.com/rumjantsevv",
+      "contributions": [
+        "bug",
+        "userTesting"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7
+}
