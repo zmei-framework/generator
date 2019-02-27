@@ -1,11 +1,11 @@
 <img align="right" width="33.3%" src="logo.png">
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
 
 # Zmei code generator
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/38ef9b69c0a0927285a2/maintainability)](https://codeclimate.com/github/zmei-framework/generator/maintainability)
 [![codecov](https://codecov.io/gh/zmei-framework/generator/branch/master/graph/badge.svg)](https://codecov.io/gh/zmei-framework/generator)
 [![Build Status](https://travis-ci.org/zmei-framework/generator.svg?branch=master)](https://travis-ci.org/zmei-framework/generator)
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
 
 [![Downloads](https://img.shields.io/pypi/dm/zmei-cli.svg)](https://pypi.org/project/zmei-cli/)
 [![Version](https://img.shields.io/pypi/v/zmei-cli.svg)](https://pypi.org/project/zmei-cli/)
@@ -70,7 +70,7 @@ any help, or fill an issue.
 ## Plugins
 
 - [Flutter plugin](https://github.com/zmei-framework/zmei-gen-flutter)
-    
+
 ## Contribution
 
 Contributions are highly appreciated. Project is huge and it is hard to develop it alone.
@@ -83,16 +83,21 @@ You can contribute by:
 - Write articles, blog-posts with your experience using the generator
 - Write plugins, improve existing ones
 
-Pull requests, please. Ask me, if you don't know where to start.
-
-Sorry, no contribution docs yet. Will fix it shortly...
-
 ## Authors
 
-### Conributors
+- Alex Rudakov @ribozz
 
-- Alex Rudakov @ribozz (maintainer)
-- ... your name here?
+## Contributors
+
+Thanks goes to these wonderful people ([emoji key](https://github.com/all-contributors/all-contributors#emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore -->
+| [<img src="https://avatars3.githubusercontent.com/u/41049901?v=4" width="100px;" alt="rumjantsevv"/><br /><sub><b>rumjantsevv</b></sub>](https://github.com/rumjantsevv)<br />[🐛](https://github.com/zmei-framework/generator/issues?q=author%3Arumjantsevv "Bug reports") [📓](#userTesting-rumjantsevv "User Testing") |
+| :---: |
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
 
 ### Thanks to
 
@@ -111,14 +116,3 @@ In-short about GPLv3:
 
 Software is free for non-commercial use. For commercial use ask for dual-licensing options. 
 
-## Contributors
-
-Thanks goes to these wonderful people ([emoji key](https://github.com/all-contributors/all-contributors#emoji-key)):
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore -->
-| [<img src="https://avatars3.githubusercontent.com/u/41049901?v=4" width="100px;" alt="rumjantsevv"/><br /><sub><b>rumjantsevv</b></sub>](https://github.com/rumjantsevv)<br />[🐛](https://github.com/zmei-framework/generator/issues?q=author%3Arumjantsevv "Bug reports") [📓](#userTesting-rumjantsevv "User Testing") |
-| :---: |
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
