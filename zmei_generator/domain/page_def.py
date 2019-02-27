@@ -60,6 +60,7 @@ class PageDef(Extendable, FrozenClass):
 
         self.extension_bases = ['ZmeiDataViewMixin']
 
+        self.auto_page = False
         self.template = True
         self.name = None
         self.extend_name = False

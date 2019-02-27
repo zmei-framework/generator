@@ -397,6 +397,8 @@ class CrudPageExtension(PageExtension):
 
             new_page.template_libs.append('i18n')
 
+            new_page.auto_page = True
+
             params = copy(self.params)
             link_extension_params = ', '.join([f"{x}=url.{x}" for x in self.page.get_uri_params() if x != self.pk_param])
 

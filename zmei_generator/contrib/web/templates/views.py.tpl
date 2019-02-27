@@ -6,10 +6,6 @@
 from django.utils.translation import gettext_lazy as _
 
 {% for page in pages %}
-{% if page.name == 'global' %}
-def global_context(request):
-    return GlobalView(request=request, kwargs={}, args=[]).get_context_data()
-{% endif %}
 {%- for prefix, form in page.forms.items() %}
 class {{ form.get_form_name() }}({{ form.get_form_class() }}):
     {{ form.get_form_code()|indent(8) }}
