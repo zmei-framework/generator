@@ -83,21 +83,24 @@ def generate(target_path, project):
 
                     rendered = block.render(area=area, index=index)
 
-                    import_section, rendered = rendered.split('<', maxsplit=1)
+                    try:
+                        import_section, rendered = rendered.split('<', maxsplit=1)
+                    except ValueError:
+                        pass
+                    else:
+                        for im in REACT_IMPORT_RX.findall(import_section):
+                            what = ['*' + x.strip() for x in im[3].split(',') if x != '']
+                            def_what = im[0].strip(' ,')
 
-                    for im in REACT_IMPORT_RX.findall(import_section):
-                        what = ['*' + x.strip() for x in im[3].split(',') if x != '']
-                        def_what = im[0].strip(' ,')
+                            if len(def_what):
+                                what.append(def_what)
+                            src = im[5]
 
-                        if len(def_what):
-                            what.append(def_what)
-                        src = im[5]
+                            imports.add(src, *what)
 
-                        imports.add(src, *what)
+                        rendered = '<' + rendered
 
-                    rendered = '<' + rendered
-
-                    blocks_rendered[area].append((block.ref, rendered))
+                        blocks_rendered[area].append((block.ref, rendered))
 
             streams = page.list_own_or_parent_extensions(StreamPageExtension)
             generate_file(target_path, 'react/src/{}/pages/{}.jsx'.format(app_name, name),
