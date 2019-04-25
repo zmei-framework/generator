@@ -1,7 +1,7 @@
 pytest==4.0.2
 pytest-cov==2.6.0
 pytest-forked
-pytest-xdist=1.27.0
+pytest-xdist==1.27.0
 jinja2
 autopep8
 termcolor
