@@ -76,6 +76,10 @@ def generate(target_path, project):
             if type(extension) not in extension_classes:
                 extension_classes.append(type(extension))
 
+    # sort apps alphabetically
+    # prevent _settings repopulate
+    installed_apps = sorted(installed_apps)
+
     # remove duplicates preserving order
     seen = set()
     seen_add = seen.add
