@@ -139,7 +139,7 @@ def generate(target_path, project):
     # sort react_pages
     react_pages = sorted(react_pages)
 
-    #sort routes
+    # sort routes
     temp_dict = {}
     for key in sorted(react_pages_by_app):
         temp_dict.update({key: react_pages_by_app[key]})
