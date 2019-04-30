@@ -4,7 +4,6 @@ from zmei_generator.generator.utils import generate_file, format_file, generate_
 
 
 def generate(target_path, project):
-
     # config
     has_rest = False
     has_i18n_pages = False
@@ -18,6 +17,13 @@ def generate(target_path, project):
     urls += [
         "    url(r'^admin/', admin.site.urls),",
     ]
+
+    # Sort applications alphabetically
+    temp_dict = {}
+    for key in sorted(project.applications):
+        temp_dict.update({key: project.applications[key]})
+    project.applications = temp_dict
+
     for app_name, application in project.applications.items():
         generate_package(app_name, path=target_path)
 
@@ -28,6 +34,11 @@ def generate(target_path, project):
                 imports.add(import_def)
 
         if application.pages:
+            # Sort urls alphabetically
+            temp_dict = {}
+            for key in sorted(application.pages):
+                temp_dict.update({key: application.pages[key]})
+            application.pages = temp_dict
             for page in application.pages.values():
                 if page.i18n:
                     has_i18n_pages = True
@@ -49,6 +60,8 @@ def generate(target_path, project):
             ]
             imports.add(f'{app_name}.urls_i18n')
 
+    # sort url imports
+    imports = sorted(imports)
     # urls
     with open(os.path.join(target_path, 'app/_urls.py'), 'w') as f:
         f.write('from django.conf.urls import url, include\n')
@@ -65,7 +78,8 @@ def generate(target_path, project):
 
     # settings
     req_settings = {}
-    installed_apps = [app.app_name for app in project.applications.values() if len(app.pages) > 0 or len(app.models) > 0]
+    installed_apps = [app.app_name for app in project.applications.values() if
+                      len(app.pages) > 0 or len(app.models) > 0]
 
     extension_classes = list()
     for application in sorted(project.applications.values(), key=lambda x: x.app_name):
