@@ -51,7 +51,7 @@ setup(
         "markdown",
         "readchar",
         "autopep8",
-        "django",
+        "django<2.2",
         'pip>8.0.0',
         'tree-format',
         'python-dateutil',

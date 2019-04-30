@@ -85,7 +85,9 @@ def generate(target_path, project):
 
                     try:
                         import_section, rendered = rendered.split('<', maxsplit=1)
-
+                    except ValueError:
+                        pass
+                    else:
                         for im in REACT_IMPORT_RX.findall(import_section):
                             what = ['*' + x.strip() for x in im[3].split(',') if x != '']
                             def_what = im[0].strip(' ,')
@@ -95,13 +97,10 @@ def generate(target_path, project):
                             src = im[5]
 
                             imports.add(src, *what)
-                    except ValueError as e:
-                        pass
 
-                    if rendered:
                         rendered = '<' + rendered
 
-                    blocks_rendered[area].append((block.ref, rendered))
+                        blocks_rendered[area].append((block.ref, rendered))
 
             streams = page.list_own_or_parent_extensions(StreamPageExtension)
             generate_file(target_path, 'react/src/{}/pages/{}.jsx'.format(app_name, name),
@@ -136,6 +135,15 @@ def generate(target_path, project):
 
         if not len(react_pages_by_app[app_name]):
             del react_pages_by_app[app_name]
+
+    # sort react_pages
+    react_pages = sorted(react_pages)
+
+    # sort routes
+    temp_dict = {}
+    for key in sorted(react_pages_by_app):
+        temp_dict.update({key: react_pages_by_app[key]})
+    react_pages_by_app = temp_dict
 
     if has_react:
         generate_file(target_path, f'react/src/layout.jsx',

@@ -72,6 +72,7 @@ class ImportSet(object):
         stm = []
 
         for source, what in grouped.items():
+            what = sorted(what)
             stm.append("import {{{}}} from '{}';".format(', '.join(what), source))
 
         for source, what in ungrouped.items():
