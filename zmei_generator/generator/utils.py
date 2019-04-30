@@ -163,6 +163,8 @@ def render_template(template_name, context=None):
         else:
             names = [template_name]
 
+        print(names)
+
         template = None
         while len(names):
             try:

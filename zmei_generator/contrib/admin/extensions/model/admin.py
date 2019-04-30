@@ -245,7 +245,7 @@ class AdminInlineConfig(object):
                 declarations.append(FieldDeclaration('suit.admin', 'SortableStackedInline'))
             else:
                 declarations.append(FieldDeclaration('django.contrib.admin', 'StackedInline'))
-        
+
         if self.target_model.translatable:
             declarations.append(FieldDeclaration('modeltranslation.admin', 'TranslationInlineModelAdmin'))
 
