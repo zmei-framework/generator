@@ -5,7 +5,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/38ef9b69c0a0927285a2/maintainability)](https://codeclimate.com/github/zmei-framework/generator/maintainability)
 [![codecov](https://codecov.io/gh/zmei-framework/generator/branch/master/graph/badge.svg)](https://codecov.io/gh/zmei-framework/generator)
 [![Build Status](https://travis-ci.org/zmei-framework/generator.svg?branch=master)](https://travis-ci.org/zmei-framework/generator)
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors)
 
 [![Downloads](https://img.shields.io/pypi/dm/zmei-cli.svg)](https://pypi.org/project/zmei-cli/)
 [![Version](https://img.shields.io/pypi/v/zmei-cli.svg)](https://pypi.org/project/zmei-cli/)
@@ -93,8 +93,8 @@ Thanks goes to these wonderful people ([emoji key](https://github.com/all-contri
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore -->
-| [<img src="https://avatars3.githubusercontent.com/u/41049901?v=4" width="100px;" alt="rumjantsevv"/><br /><sub><b>rumjantsevv</b></sub>](https://github.com/rumjantsevv)<br />[🐛](https://github.com/zmei-framework/generator/issues?q=author%3Arumjantsevv "Bug reports") [📓](#userTesting-rumjantsevv "User Testing") |
-| :---: |
+<table><tr><td align="center"><a href="https://github.com/rumjantsevv"><img src="https://avatars3.githubusercontent.com/u/41049901?v=4" width="100px;" alt="rumjantsevv"/><br /><sub><b>rumjantsevv</b></sub></a><br /><a href="https://github.com/zmei-framework/generator/issues?q=author%3Arumjantsevv" title="Bug reports">🐛</a> <a href="#userTesting-rumjantsevv" title="User Testing">📓</a></td><td align="center"><a href="https://github.com/EternalSoul"><img src="https://avatars0.githubusercontent.com/u/1576654?v=4" width="100px;" alt="Vladimir Bezuglõi"/><br /><sub><b>Vladimir Bezuglõi</b></sub></a><br /><a href="https://github.com/zmei-framework/generator/issues?q=author%3AEternalSoul" title="Bug reports">🐛</a> <a href="https://github.com/zmei-framework/generator/commits?author=EternalSoul" title="Code">💻</a></td></tr></table>
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
