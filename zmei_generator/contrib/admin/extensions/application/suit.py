@@ -42,8 +42,9 @@ class SuitAppExtension(ApplicationExtension):
                 if len(models):
                     menu.append({'label': app, 'models': models})
 
-        if len(menu)>0:
-            menu = sorted(menu, key=lambda k: k['label'])  # Sort apps by label name
+        if len(menu) > 0:
+            # Sort apps by label name
+            menu = sorted(menu, key=lambda k: k['label'])
 
         # app name
 
