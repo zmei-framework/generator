@@ -136,6 +136,15 @@ def generate(target_path, project):
         if not len(react_pages_by_app[app_name]):
             del react_pages_by_app[app_name]
 
+    # sort react_pages
+    react_pages = sorted(react_pages)
+
+    #sort routes
+    temp_dict = {}
+    for key in sorted(react_pages_by_app):
+        temp_dict.update({key: react_pages_by_app[key]})
+    react_pages_by_app = temp_dict
+
     if has_react:
         generate_file(target_path, f'react/src/layout.jsx',
                       'react/cmp.jsx.tpl', {
