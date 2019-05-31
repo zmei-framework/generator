@@ -17,7 +17,7 @@ class {{ inline.class_name }}({{ inline.parent_classes|join(', ') }}):
     {% endif %}{% if inline.target_model.sortable %}
     sortable = {{ inline.target_model.sortable_field.0|repr }}
     {% endif %}{% if not inline.inline_type == 'polymorphic' %}
-    extension = {{ inline.extension_count }}
+    extra = {{ inline.extra_count }}
     fk_name = '{{ inline.source_field_name }}'
     fields = [{{ inline.field_set|field_names() }}]
     {% else %}{% for model in inline.target_model.child_models %}

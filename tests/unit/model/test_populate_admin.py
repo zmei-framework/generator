@@ -472,7 +472,7 @@ def test_admin_inline_simple():
     inline = foo[AdminModelExtension].inlines[0]
 
     assert isinstance(inline, AdminInlineConfig)
-    assert inline.extension_count == 0
+    assert inline.extra_count == 0
     assert inline.model == foo
     assert inline.target_model == bar
     assert inline.inline_type == 'tabular'
@@ -575,7 +575,7 @@ def test_admin_inline_details():
     @admin(
         inline: lala(
             type: stacked
-            extension: 300
+            extra: 300
             fields: *, ^c
         )
     )
@@ -595,7 +595,7 @@ def test_admin_inline_details():
     inline = foo[AdminModelExtension].inlines[0]
 
     assert isinstance(inline, AdminInlineConfig)
-    assert inline.extension_count == 300
+    assert inline.extra_count == 300
     assert inline.inline_type == 'stacked'
     assert inline.field_names == ['d']
 
@@ -612,7 +612,7 @@ def test_admin_inline_tab():
     @admin(
         inline: lala(
             type: stacked
-            extension: 300
+            extra: 300
             fields: *, ^c
         )
         tabs: main(*), other(lala)

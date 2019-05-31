@@ -65,8 +65,8 @@ class AdminParserListener(BaseListener):
     def enterInline_fields(self, ctx: ZmeiLangParser.Inline_fieldsContext):
         self.inline.fields_expr = self._get_fields(ctx)
 
-    def enterInline_extension(self, ctx: ZmeiLangParser.Inline_extensionContext):
-        self.inline.extension_count = int(ctx.DIGIT().getText())
+    def enterInline_extra(self, ctx: ZmeiLangParser.Inline_extraContext):
+        self.inline.extra_count = int(ctx.DIGIT().getText())
 
     def enterAn_admin_css_file_name(self, ctx: ZmeiLangParser.An_admin_css_file_nameContext):
         self.model[AdminModelExtension].css.append(ctx.getText().strip('"\''))

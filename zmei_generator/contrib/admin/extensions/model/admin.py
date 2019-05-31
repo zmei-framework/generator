@@ -177,7 +177,7 @@ class AdminInlineConfig(object):
         self.model = admin.model
         self.inline_name = name
         self.fields_expr = ['*']
-        self.extension_count = 0
+        self.extra_count = 0
         self.inline_type = 'tabular'
 
         self.field = None
@@ -207,8 +207,8 @@ class AdminInlineConfig(object):
         self.field_set = [f for f in field.target_model.filter_fields(self.fields_expr) if
                           f.name != self.source_field_name]
 
-        if self.extension_count:
-            if self.extension_count > 0 and self.inline_type == 'polymorphic':
+        if self.extra_count:
+            if self.extra_count > 0 and self.inline_type == 'polymorphic':
                 raise ValidationException('{}->{}: When using inline type "polymorphic" extension must be 0'.format(
                     self.model.name,
                     self.inline_name

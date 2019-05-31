@@ -1,4 +1,4 @@
-# Generated from /Users/aleksandrrudakov/dev/zmei/generator/zmei_generator/parser/gen/grammar/ZmeiLangParser.g4 by ANTLR 4.7.2
+# Generated from /Users/alexanderbudanov/Sites/negative/generator/zmei_generator/parser/gen/grammar/ZmeiLangParser.g4 by ANTLR 4.7.2
 from antlr4 import *
 if __name__ is not None and "." in __name__:
     from .ZmeiLangParser import ZmeiLangParser
@@ -1133,12 +1133,12 @@ class ZmeiLangParserListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ZmeiLangParser#inline_extension.
-    def enterInline_extension(self, ctx:ZmeiLangParser.Inline_extensionContext):
+    # Enter a parse tree produced by ZmeiLangParser#inline_extra.
+    def enterInline_extra(self, ctx:ZmeiLangParser.Inline_extraContext):
         pass
 
-    # Exit a parse tree produced by ZmeiLangParser#inline_extension.
-    def exitInline_extension(self, ctx:ZmeiLangParser.Inline_extensionContext):
+    # Exit a parse tree produced by ZmeiLangParser#inline_extra.
+    def exitInline_extra(self, ctx:ZmeiLangParser.Inline_extraContext):
         pass
 
 
