@@ -1,4 +1,4 @@
-# Generated from /Users/aleksandrrudakov/dev/zmei/generator/zmei_generator/parser/gen/grammar/ZmeiLangParser.g4 by ANTLR 4.7.2
+# Generated from /Users/alexanderbudanov/Sites/negative/generator/zmei_generator/parser/gen/grammar/ZmeiLangParser.g4 by ANTLR 4.7.2
 # encoding: utf-8
 from antlr4 import *
 from io import StringIO
@@ -1409,7 +1409,7 @@ class ZmeiLangParser ( Parser ):
                      "'css'", "'js'", "'tabular'", "'stacked'", "'polymorphic'", 
                      "'inline'", "'type'", "'user_field'", "'annotate'", 
                      "'on_create'", "'query'", "'auth'", "'count'", "'i18n'", 
-                     "'extension'", "'tabs'", "'list'", "'read_only'", "'list_editable'", 
+                     "'extra'", "'tabs'", "'list'", "'read_only'", "'list_editable'", 
                      "'list_filter'", "'list_search'", "'fields'", "'import'", 
                      "'as'", "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                      "<INVALID>", "<INVALID>", "'<'", "'>'", "':'", "'^'", 
@@ -1448,19 +1448,19 @@ class ZmeiLangParser ( Parser ):
                       "KW_CSS", "KW_JS", "KW_INLINE_TYPE_TABULAR", "KW_INLINE_TYPE_STACKED", 
                       "KW_INLINE_TYPE_POLYMORPHIC", "KW_INLINE", "KW_TYPE", 
                       "KW_USER_FIELD", "KW_ANNOTATE", "KW_ON_CREATE", "KW_QUERY", 
-                      "KW_AUTH", "KW_COUNT", "KW_I18N", "KW_EXTRA",
-                      "KW_TABS", "KW_LIST", "KW_READ_ONLY", "KW_LIST_EDITABLE", 
-                      "KW_LIST_FILTER", "KW_LIST_SEARCH", "KW_FIELDS", "KW_IMPORT", 
-                      "KW_AS", "WRITE_MODE", "BOOL", "NL", "ID", "DIGIT", 
-                      "SIZE2D", "LT", "GT", "COLON", "EXCLUDE", "BRACE_OPEN", 
-                      "BRACE_CLOSE", "SQ_BRACE_OPEN", "SQ_BRACE_CLOSE", 
-                      "QUESTION_MARK", "UNDERSCORE", "DASH", "COMA", "DOT", 
-                      "HASH", "SLASH", "EQUALS", "DOLLAR", "AMP", "EXCLAM", 
-                      "STAR", "APPROX", "PIPE", "STRING_DQ", "STRING_SQ", 
-                      "COMMENT_LINE", "COMMENT_BLOCK", "UNICODE", "WS", 
-                      "COL_FIELD_CALCULATED", "ASSIGN", "ASSIGN_STATIC", 
-                      "CODE_BLOCK", "ERRCHAR", "PYTHON_CODE", "PYTHON_LINE_ERRCHAR", 
-                      "PYTHON_LINE_END", "PYTHON_EXPR_ERRCHAR", "PYTHON_LINE_NL" ]
+                      "KW_AUTH", "KW_COUNT", "KW_I18N", "KW_EXTRA", "KW_TABS", 
+                      "KW_LIST", "KW_READ_ONLY", "KW_LIST_EDITABLE", "KW_LIST_FILTER", 
+                      "KW_LIST_SEARCH", "KW_FIELDS", "KW_IMPORT", "KW_AS", 
+                      "WRITE_MODE", "BOOL", "NL", "ID", "DIGIT", "SIZE2D", 
+                      "LT", "GT", "COLON", "EXCLUDE", "BRACE_OPEN", "BRACE_CLOSE", 
+                      "SQ_BRACE_OPEN", "SQ_BRACE_CLOSE", "QUESTION_MARK", 
+                      "UNDERSCORE", "DASH", "COMA", "DOT", "HASH", "SLASH", 
+                      "EQUALS", "DOLLAR", "AMP", "EXCLAM", "STAR", "APPROX", 
+                      "PIPE", "STRING_DQ", "STRING_SQ", "COMMENT_LINE", 
+                      "COMMENT_BLOCK", "UNICODE", "WS", "COL_FIELD_CALCULATED", 
+                      "ASSIGN", "ASSIGN_STATIC", "CODE_BLOCK", "ERRCHAR", 
+                      "PYTHON_CODE", "PYTHON_LINE_ERRCHAR", "PYTHON_LINE_END", 
+                      "PYTHON_EXPR_ERRCHAR", "PYTHON_LINE_NL" ]
 
     RULE_col_file = 0
     RULE_page_imports = 1
@@ -1781,7 +1781,7 @@ class ZmeiLangParser ( Parser ):
                    "field_relation_related_name", "model_annotation", "an_admin", 
                    "an_admin_js", "an_admin_css", "an_admin_css_file_name", 
                    "an_admin_js_file_name", "an_admin_inlines", "an_admin_inline", 
-                   "inline_name", "inline_type", "inline_type_name", "inline_extra",
+                   "inline_name", "inline_type", "inline_type_name", "inline_extra", 
                    "inline_fields", "an_admin_tabs", "an_admin_tab", "tab_name", 
                    "tab_verbose_name", "an_admin_list", "an_admin_read_only", 
                    "an_admin_list_editable", "an_admin_list_filter", "an_admin_list_search", 
