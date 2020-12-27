@@ -56,13 +56,22 @@ def do_generate(target_path, app_names):
     app_parser = ZmeiProjectParser()
 
     for app_name in app_names:
-        filename = '{}.col'.format(app_name)
+        possible_options = [
+            'col/{}.col'.format(app_name),
+            'col/{}.hcl'.format(app_name),
+            '{}.col'.format(app_name),
+            '{}.hcl'.format(app_name),
+        ]
 
-        if not os.path.exists(os.path.join(target_path, 'col/' + filename)):
-            if not os.path.exists(os.path.join(target_path, filename)):
-                raise StopGenerator('File col/{filename} or {filename} do not exist'.format(filename=filename))
-        else:
-            filename = 'col/' + filename
+        filename = None
+
+        for option in possible_options:
+            if os.path.exists(os.path.join(target_path, option)):
+                filename = option
+                break
+
+        if not filename:
+            raise StopGenerator('File col/{filename} or {filename} do not exist'.format(filename=filename))
 
         with open(os.path.join(target_path, filename)) as f:
             app_parser.add_file(filename, f.read())

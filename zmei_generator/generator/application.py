@@ -1,4 +1,5 @@
 from zmei_generator.domain.project import ZmeiProject
+from zmei_generator.parser.hcl_parser import HclParser
 from zmei_generator.parser.parser import ZmeiParser
 
 
@@ -10,16 +11,22 @@ class ZmeiProjectParser(object):
         self.files = {}
 
     def _parse_file(self, app, name, source):
+        extension = name[-3:]
         app_name = name[:-4]
 
-        parser = ZmeiParser()
+        if extension == "col":
+            parser = ZmeiParser()
+        elif extension == "hcl":
+            parser = HclParser()
+        else:
+            raise NotImplementedError(f"Not supported file extension: .{extension}")
 
         parser.parse_string(source)
 
         return app_name, parser
 
     def add_file(self, name, source):
-        if not name.endswith('.col'):
+        if not name.endswith('.col') and not name.endswith('.hcl'):
             raise ValueError('Only col files allowed')
 
         if name.startswith('col/'):

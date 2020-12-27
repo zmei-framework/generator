@@ -343,6 +343,9 @@ def get_collect_paths():
     paths += list(glob('*.col'))
     paths += list(glob('col/*.col'))
     paths += list(glob('col/**/*.col', recursive=True))
+    paths += list(glob('*.hcl'))
+    paths += list(glob('col/*.hcl'))
+    paths += list(glob('col/**/*.hcl', recursive=True))
     # paths += list(glob('react/src/**/*.jsx', recursive=True))
     # paths += list(glob('react/*.js'))
     # paths += list(glob('react/*.json'))
@@ -368,8 +371,8 @@ def collect_app_names():
     models = []
 
     for filename in get_collect_paths():
-        if os.path.isfile(filename) and filename.endswith('.col'):
-            if not re.match('^(col/)?[a-zA-Z][a-zA-Z0-9_]+\.col$', filename):
+        if os.path.isfile(filename) and (filename.endswith('.col') or filename.endswith('.hcl')):
+            if not re.match('^(col/)?[a-zA-Z][a-zA-Z0-9_]+\.(col|hcl)$', filename):
                 print('Model file has incorrect name: {}'.format(filename))
             if filename.startswith('col/'):
                 filename = filename[4:]
