@@ -157,10 +157,10 @@ def gen(auto=False,
         app = collect_app_names()
 
     # Generate parser if something new is installed
-    if is_parser_declaration_changed():
-        if not build_parser():
-            print('Can not generate parser definition, sorry.')
-            return
+    # if is_parser_declaration_changed():
+    #     if not build_parser():
+    #         print('Can not generate parser definition, sorry.')
+    #         return
 
     src = os.path.realpath(src)
     dst = os.path.realpath(dst)
@@ -184,6 +184,7 @@ def gen(auto=False,
         print('\n')
 
     atexit.register(emergency_stop)
+    print("YO!")
 
     for i in wait_for_file_changes(get_watch_paths(), watch=watch):
         print('--------------------------------------------')

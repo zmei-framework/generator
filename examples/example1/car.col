@@ -1,0 +1,19 @@
+@suit
+
+#car
+-------
+nr
+mark
+model
+weight: int
+crashed: bool(true)
+painted: bool
+
+@admin(
+    list: *, ^crashed
+    list_editable: painted
+    list_filter: mark, model
+    list_search: nr
+
+    tabs: main(*, ^weight), options(crashed, painted)
+)

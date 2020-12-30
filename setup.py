@@ -51,7 +51,7 @@ setup(
         "markdown",
         "readchar",
         "autopep8",
-        "django<2.2",
+        "django",
         'pip>8.0.0',
         'tree-format',
         'python-dateutil',
@@ -62,7 +62,8 @@ setup(
         'jinja2',
         'defusedxml',
         'django',
-        'antlr4-python3-runtime'
+        'python-hcl2'
+        # 'antlr4-python3-runtime'
     ],
 
     entry_points={

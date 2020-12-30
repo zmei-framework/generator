@@ -48,13 +48,13 @@ def pytest_runtest_setup(item):
     import sys
     import os
 
-    before = item.get_marker("zmei_before")
+    before = item.get_closest_marker("zmei_before")
     if before:
         commands_before = before.args
     else:
         commands_before = []
 
-    colmarker = item.get_marker("zmei")
+    colmarker = item.get_closest_marker("zmei")
     zmei = item.config.getoption("--zmei")
 
     if zmei and not colmarker:
@@ -121,7 +121,7 @@ def call_django_command(django_command, work_dir):
 
 @pytest.mark.tryfirst
 def pytest_runtest_protocol(item):
-    colmarker = item.get_marker("zmei")
+    colmarker = item.get_closest_marker("zmei")
 
     if colmarker:
         reports = forked_run_report(item)

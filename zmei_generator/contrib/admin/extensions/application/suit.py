@@ -28,11 +28,18 @@ class SuitAppExtension(ApplicationExtension):
         # menu
 
         menu = []
+        menu_index = []
 
+        # add suit extension menu
         for app, application in apps.items():
             if application.supports(SuitAppExtension) and application[SuitAppExtension].menu:
-                menu.extend(application[SuitAppExtension].menu)
+                for m in application[SuitAppExtension].menu:
+                    m_i = json.dumps(m, sort_keys=True)
+                    if m_i not in menu_index:
+                        menu.append(m)
+                        menu_index.append(m_i)
 
+        for app, application in apps.items():
             if application.models_support(AdminModelExtension):
                 models = []
                 for model in application.models.values():

@@ -39,7 +39,7 @@ def collect_files(target_path, request_files):
 
     f = io.BytesIO()
 
-    files = zipfile.ZipFile(f, mode='w', compression=zipfile.ZIP_LZMA)
+    files = zipfile.ZipFile(f, mode='w')
     for path in (paths - request_files):
         files.write(f'{target_path}/{path}', arcname=path)
     files.close()
@@ -102,7 +102,7 @@ def copy_skeleton_files(target_path):
 
 def extract_files(target_path, zip_data):
     files = BytesIO(zip_data)
-    files = zipfile.ZipFile(files, mode='r', compression=zipfile.ZIP_LZMA)
+    files = zipfile.ZipFile(files, mode='r')
     files.extractall(path=target_path)
 
     return set(files.namelist())

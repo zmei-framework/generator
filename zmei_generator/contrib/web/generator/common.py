@@ -66,6 +66,8 @@ def generate(target_path, project):
     with open(os.path.join(target_path, 'app/_urls.py'), 'w') as f:
         f.write('from django.conf.urls import url, include\n')
         f.write('from django.contrib import admin\n')
+        f.write('from django.conf import settings\n')
+        f.write('from django.conf.urls.static import static\n')
 
         f.write('\n')
         f.write('\n'.join([f'import {app_name}' for app_name in imports]))
@@ -73,6 +75,10 @@ def generate(target_path, project):
             f.write('\nfrom django.conf.urls.i18n import i18n_patterns\n')
         f.write('\n\n')
         f.write('\n'.join(urls))
+        f.write('\n\n')
+        f.write('if settings.DEBUG:\n')
+        f.write('    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)\n')
+        f.write('    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)\n')
 
     generate_file(target_path, 'app/urls.py', template_name='urls_main.py.tpl')
 

@@ -178,3 +178,45 @@ With image, you can also specify image size, it is used when generating REST API
 
     my_field: image(default=300x300|crop|upscale)
 
+Filer files
+-------------
+
+filer_image
+^^^^^^^^^^^^^^^
+
+Same as image but uses filer field::
+
+    my_field: filer_image(default=300x300|crop|upscale)
+
+Requires @filer annotation.
+
+filer_file
+^^^^^^^^^^^^^^^
+
+Same as file but uses filer field::
+
+    my_field: filer_file
+
+Requires @filer annotation.
+
+
+filer_folder
+^^^^^^^^^^^^^^^
+
+Picks entire filer folder::
+
+    my_field: filer_folder
+
+Requires @filer annotation.
+
+filer_image_folder
+^^^^^^^^^^^^^^^
+
+Picks entire filer folder with images::
+
+    my_field: filer_image_folder(default=300x300|crop|upscale)
+
+Requires @filer annotation.
+
+
+

@@ -296,7 +296,7 @@ def extract_files(dst, file_bytes):
 
     changed_files = FileChangeSet()
 
-    files = zipfile.ZipFile(BytesIO(file_bytes), mode='r', compression=zipfile.ZIP_LZMA)
+    files = zipfile.ZipFile(BytesIO(file_bytes), mode='r')
 
     file_mapping = None
 
@@ -324,7 +324,7 @@ def extract_files(dst, file_bytes):
 def collect_files(src):
     with chdir(src):
         f = io.BytesIO()
-        files = zipfile.ZipFile(f, mode='w', compression=zipfile.ZIP_LZMA)
+        files = zipfile.ZipFile(f, mode='w')
 
         for path in get_collect_paths():
             real_source, generated, changed, checksum = is_generated_file(path)
@@ -358,6 +358,9 @@ def get_watch_paths():
     paths += list(glob('*.col'))
     paths += list(glob('col/*.col'))
     paths += list(glob('col/**/*.col', recursive=True))
+    paths += list(glob('*.hcl'))
+    paths += list(glob('col/*.hcl'))
+    paths += list(glob('col/**/*.hcl', recursive=True))
     paths += list(glob('col/**/*.html', recursive=True))
     # paths += list(glob('react/src/**/*.js', recursive=True))
     # paths += list(glob('react/src/**/*.jsx', recursive=True))

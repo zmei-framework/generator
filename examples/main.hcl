@@ -1,5 +1,5 @@
 page project "/projects/" {
-  _projects = python("Projects.objects.all()") ||
+  _projects = "Projects.objects.all()"
   foo = 123
 }
 
